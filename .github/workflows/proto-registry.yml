@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - seiv2
+      - refactor**
     paths:
       - "proto/**"
 

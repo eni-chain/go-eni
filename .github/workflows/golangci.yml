@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - main
-      - seiv2
+      - refactor**
   pull_request:
 permissions:
   contents: read

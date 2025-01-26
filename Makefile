@@ -97,6 +97,7 @@ lint:
 
 build:
 	go build $(BUILD_FLAGS) -o ./build/seid ./cmd/seid
+.PHONY: build
 
 build-price-feeder:
 	go build $(BUILD_FLAGS) -o ./build/price-feeder ./oracle/price-feeder

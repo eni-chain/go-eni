@@ -6,8 +6,8 @@ on:
       - "**.go"
     branches:
       - main
-      - seiv2
-      - evm
+      - base
+      - refactor**
       - release/**
 
 jobs:
