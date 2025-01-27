@@ -1,4 +1,3 @@
-//module github.com/eni-chain/go-eni
 module github.com/eni-chain/go-eni
 
 go 1.21
