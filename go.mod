@@ -1,4 +1,5 @@
-module github.com/eni-chain/go-eni
+//module github.com/eni-chain/go-eni
+module github.com/sei-protocol/sei-chain
 
 go 1.21
 
@@ -348,18 +349,18 @@ require (
 )
 
 replace (
-	github.com/CosmWasm/wasmd => github.com/eni-chain/eni-wasmd v0.3.0
-	github.com/CosmWasm/wasmvm => github.com/eni-chain/eni-wasmvm v1.5.4-sei.0.0.1
+	github.com/CosmWasm/wasmd => github.com/eni-chain/eni-wasmd v0.0.1
+	github.com/CosmWasm/wasmvm => github.com/eni-chain/eni-wasmvm v0.0.1
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.3.51
-	github.com/cosmos/iavl => github.com/eni-chain/eni-iavl v0.2.0
-	github.com/cosmos/ibc-go/v3 => github.com/eni-chain/eni-ibc-go/v3 v3.3.5
-	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v1.13.5-sei-9.0.20241224143343-21ee50facc96
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.1
+	github.com/cosmos/iavl => github.com/eni-chain/eni-iavl v0.0.1
+	github.com/cosmos/ibc-go/v3 => github.com/eni-chain/eni-ibc-go/v3 v3.0.0
+	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.1
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/sei-protocol/sei-db => github.com/eni-chain/eni-db v0.0.46
+	github.com/sei-protocol/sei-db => github.com/eni-chain/eni-db v0.0.1
 	// Latest goleveldb is broken, we have to stick to this version
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
-	github.com/tendermint/tendermint => github.com/eni-chain/eni-tendermint v0.4.6
-	github.com/tendermint/tm-db => github.com/eni-chain/tm-db v0.0.4
+	github.com/tendermint/tendermint => github.com/eni-chain/eni-tendermint v0.0.1
+	github.com/tendermint/tm-db => github.com/eni-chain/tm-db v0.0.1
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
