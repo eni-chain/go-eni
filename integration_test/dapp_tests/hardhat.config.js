@@ -19,7 +19,7 @@ module.exports = {
     seilocal: {
       url: "http://127.0.0.1:8545",
       accounts: {
-        mnemonic: process.env.DAPP_TESTS_MNEMONIC,
+        mnemonic: "end luxury shell adapt notice garbage unhappy lend firm spike fog document",
         path: "m/44'/118'/0'/0/0",
         initialIndex: 0,
         count: 1
@@ -28,7 +28,7 @@ module.exports = {
     testnet: {
       url: "https://evm-rpc-testnet.sei-apis.com",
       accounts: {
-        mnemonic: process.env.DAPP_TESTS_MNEMONIC,
+        mnemonic: "end luxury shell adapt notice garbage unhappy lend firm spike fog document",
         path: "m/44'/118'/0'/0/0",
         initialIndex: 0,
         count: 1
@@ -37,7 +37,7 @@ module.exports = {
     devnet: {
       url: "https://evm-rpc-arctic-1.sei-apis.com",
       accounts: {
-        mnemonic: process.env.DAPP_TESTS_MNEMONIC,
+        mnemonic: "end luxury shell adapt notice garbage unhappy lend firm spike fog document",
         path: "m/44'/118'/0'/0/0",
         initialIndex: 0,
         count: 1
