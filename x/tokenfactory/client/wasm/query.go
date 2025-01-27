@@ -2,8 +2,8 @@ package wasm
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tokenfactorykeeper "github.com/sei-protocol/sei-chain/x/tokenfactory/keeper"
-	"github.com/sei-protocol/sei-chain/x/tokenfactory/types"
+	tokenfactorykeeper "github.com/eni-chain/go-eni/x/tokenfactory/keeper"
+	"github.com/eni-chain/go-eni/x/tokenfactory/types"
 )
 
 type TokenFactoryWasmQueryHandler struct {

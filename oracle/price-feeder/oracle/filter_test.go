@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/config"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/oracle/provider"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/oracle/types"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/config"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/oracle/provider"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/oracle/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/rs/zerolog"

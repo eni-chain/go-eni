@@ -14,10 +14,10 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibctypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	"github.com/eni-chain/go-eni/utils"
+	oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/sei-protocol/sei-chain/utils"
-	oracletypes "github.com/sei-protocol/sei-chain/x/oracle/types"
 )
 
 type BankKeeper interface {

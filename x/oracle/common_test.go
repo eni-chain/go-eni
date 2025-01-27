@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sei-protocol/sei-chain/x/oracle"
-	"github.com/sei-protocol/sei-chain/x/oracle/keeper"
-	"github.com/sei-protocol/sei-chain/x/oracle/utils"
+	"github.com/eni-chain/go-eni/x/oracle"
+	"github.com/eni-chain/go-eni/x/oracle/keeper"
+	"github.com/eni-chain/go-eni/x/oracle/utils"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"

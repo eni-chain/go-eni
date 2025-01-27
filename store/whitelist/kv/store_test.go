@@ -3,8 +3,8 @@ package kv_test
 import (
 	"testing"
 
-	"github.com/sei-protocol/sei-chain/store"
-	"github.com/sei-protocol/sei-chain/store/whitelist/kv"
+	"github.com/eni-chain/go-eni/store"
+	"github.com/eni-chain/go-eni/store/whitelist/kv"
 	"github.com/stretchr/testify/require"
 )
 

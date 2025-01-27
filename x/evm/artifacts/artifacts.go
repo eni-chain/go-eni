@@ -3,11 +3,11 @@ package artifacts
 import (
 	"fmt"
 
+	"github.com/eni-chain/go-eni/x/evm/artifacts/cw1155"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/cw20"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/cw721"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/native"
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/cw1155"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/cw20"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/cw721"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/native"
 )
 
 func GetParsedABI(typ string) *abi.ABI {

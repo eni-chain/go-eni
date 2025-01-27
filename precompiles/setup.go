@@ -3,21 +3,21 @@ package precompiles
 import (
 	"sync"
 
+	"github.com/eni-chain/go-eni/precompiles/addr"
+	"github.com/eni-chain/go-eni/precompiles/bank"
+	"github.com/eni-chain/go-eni/precompiles/common"
+	"github.com/eni-chain/go-eni/precompiles/distribution"
+	"github.com/eni-chain/go-eni/precompiles/gov"
+	"github.com/eni-chain/go-eni/precompiles/ibc"
+	"github.com/eni-chain/go-eni/precompiles/json"
+	"github.com/eni-chain/go-eni/precompiles/oracle"
+	"github.com/eni-chain/go-eni/precompiles/pointer"
+	"github.com/eni-chain/go-eni/precompiles/pointerview"
+	"github.com/eni-chain/go-eni/precompiles/staking"
+	"github.com/eni-chain/go-eni/precompiles/wasmd"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	ecommon "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/sei-protocol/sei-chain/precompiles/addr"
-	"github.com/sei-protocol/sei-chain/precompiles/bank"
-	"github.com/sei-protocol/sei-chain/precompiles/common"
-	"github.com/sei-protocol/sei-chain/precompiles/distribution"
-	"github.com/sei-protocol/sei-chain/precompiles/gov"
-	"github.com/sei-protocol/sei-chain/precompiles/ibc"
-	"github.com/sei-protocol/sei-chain/precompiles/json"
-	"github.com/sei-protocol/sei-chain/precompiles/oracle"
-	"github.com/sei-protocol/sei-chain/precompiles/pointer"
-	"github.com/sei-protocol/sei-chain/precompiles/pointerview"
-	"github.com/sei-protocol/sei-chain/precompiles/staking"
-	"github.com/sei-protocol/sei-chain/precompiles/wasmd"
 )
 
 var SetupMtx = &sync.Mutex{}

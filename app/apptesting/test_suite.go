@@ -23,7 +23,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/sei-protocol/sei-chain/app"
+	"github.com/eni-chain/go-eni/app"
 )
 
 type KeeperTestHelper struct {

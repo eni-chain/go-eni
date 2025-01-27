@@ -11,10 +11,10 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/config"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/oracle/types"
 	"github.com/gorilla/websocket"
 	"github.com/rs/zerolog"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/config"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/oracle/types"
 )
 
 const (

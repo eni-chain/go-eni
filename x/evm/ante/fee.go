@@ -5,17 +5,17 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/eni-chain/go-eni/app/antedecorators"
+	"github.com/eni-chain/go-eni/utils"
+	"github.com/eni-chain/go-eni/utils/metrics"
+	"github.com/eni-chain/go-eni/x/evm/derived"
+	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	"github.com/eni-chain/go-eni/x/evm/state"
+	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/consensus/misc/eip4844"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/sei-protocol/sei-chain/app/antedecorators"
-	"github.com/sei-protocol/sei-chain/utils"
-	"github.com/sei-protocol/sei-chain/utils/metrics"
-	"github.com/sei-protocol/sei-chain/x/evm/derived"
-	evmkeeper "github.com/sei-protocol/sei-chain/x/evm/keeper"
-	"github.com/sei-protocol/sei-chain/x/evm/state"
-	evmtypes "github.com/sei-protocol/sei-chain/x/evm/types"
-	"github.com/sei-protocol/sei-chain/x/evm/types/ethtx"
 )
 
 type EVMFeeCheckDecorator struct {

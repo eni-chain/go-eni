@@ -12,13 +12,13 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	stakingacl "github.com/sei-protocol/sei-chain/aclmapping/staking"
-	aclutils "github.com/sei-protocol/sei-chain/aclmapping/utils"
-	"github.com/sei-protocol/sei-chain/app/apptesting"
-	oracletypes "github.com/sei-protocol/sei-chain/x/oracle/types"
+	stakingacl "github.com/eni-chain/go-eni/aclmapping/staking"
+	aclutils "github.com/eni-chain/go-eni/aclmapping/utils"
+	"github.com/eni-chain/go-eni/app/apptesting"
+	oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 
 	acltypes "github.com/cosmos/cosmos-sdk/x/accesscontrol/types"
-	"github.com/sei-protocol/sei-chain/app"
+	"github.com/eni-chain/go-eni/app"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )

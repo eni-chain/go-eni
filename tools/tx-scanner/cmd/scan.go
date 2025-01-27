@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sei-protocol/sei-chain/tools/tx-scanner/client"
-	"github.com/sei-protocol/sei-chain/tools/tx-scanner/query"
-	"github.com/sei-protocol/sei-chain/tools/tx-scanner/state"
+	"github.com/eni-chain/go-eni/tools/tx-scanner/client"
+	"github.com/eni-chain/go-eni/tools/tx-scanner/query"
+	"github.com/eni-chain/go-eni/tools/tx-scanner/state"
 	"github.com/spf13/cobra"
 	"golang.org/x/time/rate"
 )

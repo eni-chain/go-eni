@@ -8,9 +8,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/rootmulti"
 	"github.com/cosmos/iavl"
-	"github.com/sei-protocol/sei-chain/tools/migration/sc"
-	"github.com/sei-protocol/sei-chain/tools/migration/ss"
-	"github.com/sei-protocol/sei-chain/tools/migration/utils"
+	"github.com/eni-chain/go-eni/tools/migration/sc"
+	"github.com/eni-chain/go-eni/tools/migration/ss"
+	"github.com/eni-chain/go-eni/tools/migration/utils"
 	"github.com/sei-protocol/sei-db/config"
 	sstypes "github.com/sei-protocol/sei-db/ss"
 	"github.com/spf13/cobra"

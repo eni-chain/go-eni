@@ -1,8 +1,8 @@
 FROM golang:alpine AS oracle
 RUN apk add --no-cache git make gcc libc-dev
 WORKDIR /go/src/github.com/sei-protocol
-RUN git clone https://github.com/sei-protocol/sei-chain.git
-WORKDIR /go/src/github.com/sei-protocol/sei-chain/oracle/price-feeder
+RUN git clone https://github.com/eni-chain/go-eni.git
+WORKDIR /go/src/github.com/eni-chain/go-eni/oracle/price-feeder
 RUN wget -O /lib/libwasmvm_muslc.a https://github.com/CosmWasm/wasmvm/releases/download/v1.0.0/libwasmvm_muslc.x86_64.a
 ARG VERSION=main
 RUN git checkout ${VERSION}
@@ -11,8 +11,8 @@ RUN COMMIT="$(git rev-parse HEAD)"; BUILD_TAGS=muslc CGO_ENABLED=1 go install -m
 FROM golang:alpine AS sei
 RUN apk add --no-cache git make gcc libc-dev
 WORKDIR /go/src/github.com/sei-protocol
-RUN git clone https://github.com/sei-protocol/sei-chain.git
-WORKDIR /go/src/github.com/sei-protocol/sei-chain
+RUN git clone https://github.com/eni-chain/go-eni.git
+WORKDIR /go/src/github.com/eni-chain/go-eni
 RUN wget -O /lib/libwasmvm_muslc.a https://github.com/CosmWasm/wasmvm/releases/download/v1.0.0/libwasmvm_muslc.x86_64.a
 ARG VERSION=main
 RUN git checkout ${VERSION}

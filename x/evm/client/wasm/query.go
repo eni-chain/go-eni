@@ -9,13 +9,13 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/cw1155"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/cw721"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/native"
+	"github.com/eni-chain/go-eni/x/evm/client/wasm/bindings"
+	"github.com/eni-chain/go-eni/x/evm/keeper"
+	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/cw1155"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/cw721"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/native"
-	"github.com/sei-protocol/sei-chain/x/evm/client/wasm/bindings"
-	"github.com/sei-protocol/sei-chain/x/evm/keeper"
-	"github.com/sei-protocol/sei-chain/x/evm/types"
 )
 
 type EVMQueryHandler struct {

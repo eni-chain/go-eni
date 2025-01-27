@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/sei-protocol/sei-chain/testutil/processblock"
+	"github.com/eni-chain/go-eni/testutil/processblock"
 )
 
 type BlockRunnable func() (resultCodes []uint32)

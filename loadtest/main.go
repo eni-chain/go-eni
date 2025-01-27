@@ -37,9 +37,9 @@ import (
 	"golang.org/x/sync/semaphore"
 	"golang.org/x/time/rate"
 
-	"github.com/sei-protocol/sei-chain/app"
-	"github.com/sei-protocol/sei-chain/utils/metrics"
-	tokenfactorytypes "github.com/sei-protocol/sei-chain/x/tokenfactory/types"
+	"github.com/eni-chain/go-eni/app"
+	"github.com/eni-chain/go-eni/utils/metrics"
+	tokenfactorytypes "github.com/eni-chain/go-eni/x/tokenfactory/types"
 )
 
 var TestConfig EncodingConfig

@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/sei-protocol/sei-chain/x/oracle/types"
+	"github.com/eni-chain/go-eni/x/oracle/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

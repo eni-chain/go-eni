@@ -4,9 +4,9 @@ import (
 	"math/big"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/sei-chain/utils"
-	"github.com/sei-protocol/sei-chain/x/evm/config"
-	"github.com/sei-protocol/sei-chain/x/evm/types"
+	"github.com/eni-chain/go-eni/utils"
+	"github.com/eni-chain/go-eni/x/evm/config"
+	"github.com/eni-chain/go-eni/x/evm/types"
 )
 
 const BaseDenom = "usei"

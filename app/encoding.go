@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/sei-protocol/sei-chain/app/params"
+	"github.com/eni-chain/go-eni/app/params"
 )
 
 // MakeEncodingConfig creates an EncodingConfig for testing.

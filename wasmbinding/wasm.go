@@ -8,14 +8,14 @@ import (
 	aclkeeper "github.com/cosmos/cosmos-sdk/x/accesscontrol/keeper"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	epochwasm "github.com/sei-protocol/sei-chain/x/epoch/client/wasm"
-	epochkeeper "github.com/sei-protocol/sei-chain/x/epoch/keeper"
-	evmwasm "github.com/sei-protocol/sei-chain/x/evm/client/wasm"
-	evmkeeper "github.com/sei-protocol/sei-chain/x/evm/keeper"
-	oraclewasm "github.com/sei-protocol/sei-chain/x/oracle/client/wasm"
-	oraclekeeper "github.com/sei-protocol/sei-chain/x/oracle/keeper"
-	tokenfactorywasm "github.com/sei-protocol/sei-chain/x/tokenfactory/client/wasm"
-	tokenfactorykeeper "github.com/sei-protocol/sei-chain/x/tokenfactory/keeper"
+	epochwasm "github.com/eni-chain/go-eni/x/epoch/client/wasm"
+	epochkeeper "github.com/eni-chain/go-eni/x/epoch/keeper"
+	evmwasm "github.com/eni-chain/go-eni/x/evm/client/wasm"
+	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	oraclewasm "github.com/eni-chain/go-eni/x/oracle/client/wasm"
+	oraclekeeper "github.com/eni-chain/go-eni/x/oracle/keeper"
+	tokenfactorywasm "github.com/eni-chain/go-eni/x/tokenfactory/client/wasm"
+	tokenfactorykeeper "github.com/eni-chain/go-eni/x/tokenfactory/keeper"
 )
 
 func RegisterCustomPlugins(

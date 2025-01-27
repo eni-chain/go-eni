@@ -6,13 +6,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	epochTypes "github.com/sei-protocol/sei-chain/x/epoch/types"
-	"github.com/sei-protocol/sei-chain/x/mint/keeper"
-	mintKeeper "github.com/sei-protocol/sei-chain/x/mint/keeper"
-	"github.com/sei-protocol/sei-chain/x/mint/types"
-	mintTypes "github.com/sei-protocol/sei-chain/x/mint/types"
+	epochTypes "github.com/eni-chain/go-eni/x/epoch/types"
+	"github.com/eni-chain/go-eni/x/mint/keeper"
+	mintKeeper "github.com/eni-chain/go-eni/x/mint/keeper"
+	"github.com/eni-chain/go-eni/x/mint/types"
+	mintTypes "github.com/eni-chain/go-eni/x/mint/types"
 
-	minttypes "github.com/sei-protocol/sei-chain/x/mint/types"
+	minttypes "github.com/eni-chain/go-eni/x/mint/types"
 	"github.com/stretchr/testify/require"
 )
 
