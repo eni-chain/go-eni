@@ -5,7 +5,7 @@ import (
 	"math"
 	"sort"
 
-	"github.com/sei-protocol/sei-chain/utils/metrics"
+	"github.com/eni-chain/go-eni/utils/metrics"
 
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -15,7 +15,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/sei-protocol/sei-chain/x/oracle/types"
+	"github.com/eni-chain/go-eni/x/oracle/types"
 )
 
 // Keeper of the oracle store

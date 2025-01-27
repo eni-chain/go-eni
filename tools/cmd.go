@@ -3,8 +3,8 @@ package tools
 import (
 	"github.com/spf13/cobra"
 
-	migration "github.com/sei-protocol/sei-chain/tools/migration/cmd"
-	scanner "github.com/sei-protocol/sei-chain/tools/tx-scanner/cmd"
+	migration "github.com/eni-chain/go-eni/tools/migration/cmd"
+	scanner "github.com/eni-chain/go-eni/tools/tx-scanner/cmd"
 )
 
 func ToolCmd() *cobra.Command {

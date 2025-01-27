@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/config"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/oracle/types"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/config"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/oracle/types"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	"github.com/gorilla/websocket"

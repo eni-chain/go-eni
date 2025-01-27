@@ -3,7 +3,7 @@ package oracle
 import (
 	"testing"
 
-	oracletypes "github.com/sei-protocol/sei-chain/x/oracle/types"
+	oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 	"github.com/stretchr/testify/require"
 )
 

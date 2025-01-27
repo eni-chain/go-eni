@@ -5,8 +5,8 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/sei-protocol/sei-chain/x/tokenfactory/keeper"
-	"github.com/sei-protocol/sei-chain/x/tokenfactory/types"
+	"github.com/eni-chain/go-eni/x/tokenfactory/keeper"
+	"github.com/eni-chain/go-eni/x/tokenfactory/types"
 	"reflect"
 	"testing"
 )

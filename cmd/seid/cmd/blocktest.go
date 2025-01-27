@@ -16,9 +16,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	aclkeeper "github.com/cosmos/cosmos-sdk/x/accesscontrol/keeper"
+	"github.com/eni-chain/go-eni/app"
+	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
 	ethtests "github.com/ethereum/go-ethereum/tests"
-	"github.com/sei-protocol/sei-chain/app"
-	evmtypes "github.com/sei-protocol/sei-chain/x/evm/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	//nolint:gosec,G108

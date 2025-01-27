@@ -3,7 +3,7 @@ package evmrpc
 import (
 	"errors"
 
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/cw20"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/cw20"
 )
 
 type TestAPI struct{}

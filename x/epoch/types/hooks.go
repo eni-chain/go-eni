@@ -2,7 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/sei-chain/utils"
+	"github.com/eni-chain/go-eni/utils"
 )
 
 type EpochHooks interface {

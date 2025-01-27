@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/sei-protocol/sei-chain/x/evm/state"
+	"github.com/eni-chain/go-eni/x/evm/state"
 	"github.com/stretchr/testify/require"
 )
 

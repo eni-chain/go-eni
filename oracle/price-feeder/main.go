@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/cmd"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/cmd"
 )
 
 func main() {

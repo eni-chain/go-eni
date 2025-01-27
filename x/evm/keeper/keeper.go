@@ -33,12 +33,12 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/sei-protocol/sei-chain/utils"
-	"github.com/sei-protocol/sei-chain/x/evm/blocktest"
-	"github.com/sei-protocol/sei-chain/x/evm/querier"
-	"github.com/sei-protocol/sei-chain/x/evm/replay"
-	"github.com/sei-protocol/sei-chain/x/evm/state"
-	"github.com/sei-protocol/sei-chain/x/evm/types"
+	"github.com/eni-chain/go-eni/utils"
+	"github.com/eni-chain/go-eni/x/evm/blocktest"
+	"github.com/eni-chain/go-eni/x/evm/querier"
+	"github.com/eni-chain/go-eni/x/evm/replay"
+	"github.com/eni-chain/go-eni/x/evm/state"
+	"github.com/eni-chain/go-eni/x/evm/types"
 )
 
 type Keeper struct {

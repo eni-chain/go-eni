@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/sei-chain/testutil/keeper"
-	evmkeeper "github.com/sei-protocol/sei-chain/x/evm/keeper"
+	"github.com/eni-chain/go-eni/testutil/keeper"
+	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/stretchr/testify/require"
 )
 

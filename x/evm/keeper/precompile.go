@@ -1,11 +1,11 @@
 package keeper
 
 import (
+	"github.com/eni-chain/go-eni/precompiles/bank"
+	"github.com/eni-chain/go-eni/precompiles/gov"
+	"github.com/eni-chain/go-eni/precompiles/staking"
+	"github.com/eni-chain/go-eni/precompiles/wasmd"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/sei-protocol/sei-chain/precompiles/bank"
-	"github.com/sei-protocol/sei-chain/precompiles/gov"
-	"github.com/sei-protocol/sei-chain/precompiles/staking"
-	"github.com/sei-protocol/sei-chain/precompiles/wasmd"
 )
 
 // add any payable precompiles here

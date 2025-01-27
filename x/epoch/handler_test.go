@@ -8,9 +8,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 
-	"github.com/sei-protocol/sei-chain/app"
-	"github.com/sei-protocol/sei-chain/x/epoch"
-	"github.com/sei-protocol/sei-chain/x/epoch/types"
+	"github.com/eni-chain/go-eni/app"
+	"github.com/eni-chain/go-eni/x/epoch"
+	"github.com/eni-chain/go-eni/x/epoch/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 

@@ -18,12 +18,12 @@ import (
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/config"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/oracle/client"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/oracle/provider"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/oracle/types"
-	pfsync "github.com/sei-protocol/sei-chain/oracle/price-feeder/pkg/sync"
-	oracletypes "github.com/sei-protocol/sei-chain/x/oracle/types"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/config"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/oracle/client"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/oracle/provider"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/oracle/types"
+	pfsync "github.com/eni-chain/go-eni/oracle/price-feeder/pkg/sync"
+	oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 )
 
 // Oracle implements the core component responsible for fetching exchange rates

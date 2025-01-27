@@ -9,8 +9,8 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/sei-protocol/sei-chain/x/oracle/keeper"
-	"github.com/sei-protocol/sei-chain/x/oracle/types"
+	"github.com/eni-chain/go-eni/x/oracle/keeper"
+	"github.com/eni-chain/go-eni/x/oracle/types"
 )
 
 // SpammingPreventionDecorator will check if the transaction's gas is smaller than
