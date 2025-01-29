@@ -4,8 +4,8 @@ on:
     tags:
       - v*
     branches:
-      - master
       - main
+      - base
       - refactor**
   pull_request:
 permissions:
