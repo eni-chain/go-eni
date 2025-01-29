@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/sei-protocol/sei-chain/x/oracle/types"
+	"github.com/eni-chain/go-eni/x/oracle/types"
 )
 
 // GetOracleAccount returns oracle ModuleAccount

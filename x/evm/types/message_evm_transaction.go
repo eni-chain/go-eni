@@ -4,9 +4,9 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/gogo/protobuf/proto"
-	"github.com/sei-protocol/sei-chain/x/evm/types/ethtx"
 )
 
 const TypeMsgEVMTransaction = "evm_transaction"

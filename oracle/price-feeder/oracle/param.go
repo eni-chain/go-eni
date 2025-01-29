@@ -1,6 +1,6 @@
 package oracle
 
-import oracletypes "github.com/sei-protocol/sei-chain/x/oracle/types"
+import oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 
 const (
 	// paramsCacheInterval represents the amount of blocks

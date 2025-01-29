@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
+	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
 	"github.com/ethereum/go-ethereum/common"
-	testkeeper "github.com/sei-protocol/sei-chain/testutil/keeper"
 	"github.com/stretchr/testify/require"
 )
 

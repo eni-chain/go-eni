@@ -3,7 +3,7 @@ package processblock
 import (
 	"time"
 
-	minttypes "github.com/sei-protocol/sei-chain/x/mint/types"
+	minttypes "github.com/eni-chain/go-eni/x/mint/types"
 )
 
 func (a *App) NewMinter(amount uint64) {

@@ -14,7 +14,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sei-protocol/sei-chain/x/oracle/utils"
+	"github.com/eni-chain/go-eni/x/oracle/utils"
 )
 
 func TestToMap(t *testing.T) {

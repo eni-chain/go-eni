@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sei-protocol/sei-chain/x/tokenfactory/types"
+	"github.com/eni-chain/go-eni/x/tokenfactory/types"
 )
 
 var _ types.QueryServer = Keeper{}

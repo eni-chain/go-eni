@@ -7,9 +7,9 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/sei-chain/app"
-	epochTypes "github.com/sei-protocol/sei-chain/x/epoch/types"
-	"github.com/sei-protocol/sei-chain/x/mint/types"
+	"github.com/eni-chain/go-eni/app"
+	epochTypes "github.com/eni-chain/go-eni/x/epoch/types"
+	"github.com/eni-chain/go-eni/x/mint/types"
 	"github.com/stretchr/testify/require"
 )
 

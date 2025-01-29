@@ -18,10 +18,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/sei-protocol/sei-chain/utils/metrics"
-	"github.com/sei-protocol/sei-chain/x/epoch/client/cli"
-	"github.com/sei-protocol/sei-chain/x/epoch/keeper"
-	"github.com/sei-protocol/sei-chain/x/epoch/types"
+	"github.com/eni-chain/go-eni/utils/metrics"
+	"github.com/eni-chain/go-eni/x/epoch/client/cli"
+	"github.com/eni-chain/go-eni/x/epoch/keeper"
+	"github.com/eni-chain/go-eni/x/epoch/types"
 )
 
 var (

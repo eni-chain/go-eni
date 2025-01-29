@@ -12,9 +12,9 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 
-	"github.com/sei-protocol/sei-chain/app"
-	evmkeeper "github.com/sei-protocol/sei-chain/x/evm/keeper"
-	evmtypes "github.com/sei-protocol/sei-chain/x/evm/types"
+	"github.com/eni-chain/go-eni/app"
+	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
 )
 
 var EVMTestApp = app.Setup(false, true)

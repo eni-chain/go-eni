@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/sei-protocol/sei-chain/testutil/processblock"
-	"github.com/sei-protocol/sei-chain/testutil/processblock/msgs"
-	"github.com/sei-protocol/sei-chain/testutil/processblock/verify"
+	"github.com/eni-chain/go-eni/testutil/processblock"
+	"github.com/eni-chain/go-eni/testutil/processblock/msgs"
+	"github.com/eni-chain/go-eni/testutil/processblock/verify"
 	"github.com/stretchr/testify/require"
 )
 

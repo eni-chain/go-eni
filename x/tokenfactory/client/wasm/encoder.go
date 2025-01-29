@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/sei-chain/wasmbinding/bindings"
-	"github.com/sei-protocol/sei-chain/x/tokenfactory/types"
+	"github.com/eni-chain/go-eni/wasmbinding/bindings"
+	"github.com/eni-chain/go-eni/x/tokenfactory/types"
 )
 
 func EncodeTokenFactoryCreateDenom(rawMsg json.RawMessage, sender sdk.AccAddress) ([]sdk.Msg, error) {

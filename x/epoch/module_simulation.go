@@ -9,9 +9,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/sei-protocol/sei-chain/testutil/sample"
-	epochsimulation "github.com/sei-protocol/sei-chain/x/epoch/simulation"
-	"github.com/sei-protocol/sei-chain/x/epoch/types"
+	"github.com/eni-chain/go-eni/testutil/sample"
+	epochsimulation "github.com/eni-chain/go-eni/x/epoch/simulation"
+	"github.com/eni-chain/go-eni/x/epoch/types"
 )
 
 // avoid unused import issue

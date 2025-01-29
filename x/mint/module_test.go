@@ -11,9 +11,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/simapp"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/sei-protocol/sei-chain/app"
-	"github.com/sei-protocol/sei-chain/x/mint"
-	"github.com/sei-protocol/sei-chain/x/mint/types"
+	"github.com/eni-chain/go-eni/app"
+	"github.com/eni-chain/go-eni/x/mint"
+	"github.com/eni-chain/go-eni/x/mint/types"
 )
 
 func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {

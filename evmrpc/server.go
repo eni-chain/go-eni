@@ -6,10 +6,10 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	evmCfg "github.com/eni-chain/go-eni/x/evm/config"
+	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rpc"
-	evmCfg "github.com/sei-protocol/sei-chain/x/evm/config"
-	"github.com/sei-protocol/sei-chain/x/evm/keeper"
 	"github.com/tendermint/tendermint/libs/log"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 )

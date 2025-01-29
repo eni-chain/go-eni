@@ -146,7 +146,7 @@ def compute_sha256(file_path):
 def compile_and_install_release(version):
     logging.info(f"Starting compilation and installation for version: {version}")
     try:
-        zip_url = f"https://github.com/sei-protocol/sei-chain/archive/refs/tags/{version}.zip"
+        zip_url = f"https://github.com/eni-chain/go-eni/archive/refs/tags/{version}.zip"
         logging.info(f"Constructed zip URL: {zip_url}")
 
         logging.info("Initiating download of the release zip file...")

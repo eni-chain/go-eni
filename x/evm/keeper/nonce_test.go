@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	testkeeper "github.com/sei-protocol/sei-chain/testutil/keeper"
+	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
 	"github.com/stretchr/testify/require"
 )
 

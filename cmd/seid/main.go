@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"github.com/sei-protocol/sei-chain/app/params"
-	"github.com/sei-protocol/sei-chain/cmd/seid/cmd"
+	"github.com/eni-chain/go-eni/app/params"
+	"github.com/eni-chain/go-eni/cmd/seid/cmd"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-	"github.com/sei-protocol/sei-chain/app"
+	"github.com/eni-chain/go-eni/app"
 )
 
 func main() {

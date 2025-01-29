@@ -7,15 +7,15 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/eni-chain/go-eni/app"
+	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/sei-protocol/sei-chain/app"
-	testkeeper "github.com/sei-protocol/sei-chain/testutil/keeper"
 
+	"github.com/eni-chain/go-eni/x/evm/derived"
+	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/sei-protocol/sei-chain/x/evm/derived"
-	"github.com/sei-protocol/sei-chain/x/evm/types"
-	"github.com/sei-protocol/sei-chain/x/evm/types/ethtx"
 	"github.com/stretchr/testify/require"
 )
 

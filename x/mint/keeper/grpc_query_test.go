@@ -4,16 +4,16 @@ import (
 	gocontext "context"
 	"testing"
 
-	"github.com/sei-protocol/sei-chain/x/mint/keeper"
+	"github.com/eni-chain/go-eni/x/mint/keeper"
 
-	"github.com/sei-protocol/sei-chain/app"
+	"github.com/eni-chain/go-eni/app"
 
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/sei-chain/x/mint/types" // TODO: Replace this with sei-chain. Leaving it for now otherwise tests fail
+	"github.com/eni-chain/go-eni/x/mint/types" // TODO: Replace this with sei-chain. Leaving it for now otherwise tests fail
 )
 
 type MintTestSuite struct {

@@ -3,10 +3,10 @@ package evm_test
 import (
 	"testing"
 
-	testkeeper "github.com/sei-protocol/sei-chain/testutil/keeper"
-	"github.com/sei-protocol/sei-chain/x/evm"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/native"
-	"github.com/sei-protocol/sei-chain/x/evm/types"
+	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
+	"github.com/eni-chain/go-eni/x/evm"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/native"
+	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/stretchr/testify/require"
 )
 

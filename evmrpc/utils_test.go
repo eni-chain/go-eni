@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sei-protocol/sei-chain/app"
-	"github.com/sei-protocol/sei-chain/evmrpc"
+	"github.com/eni-chain/go-eni/app"
+	"github.com/eni-chain/go-eni/evmrpc"
 	"github.com/stretchr/testify/require"
 )
 

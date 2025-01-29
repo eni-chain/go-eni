@@ -1,6 +1,6 @@
 package bindings
 
-import "github.com/sei-protocol/sei-chain/x/tokenfactory/types"
+import "github.com/eni-chain/go-eni/x/tokenfactory/types"
 
 type SeiTokenFactoryQuery struct {
 	// queries the tokenfactory authority metadata

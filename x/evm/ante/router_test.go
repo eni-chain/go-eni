@@ -8,9 +8,9 @@ import (
 	sdkacltypes "github.com/cosmos/cosmos-sdk/types/accesscontrol"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/sei-protocol/sei-chain/x/evm/ante"
-	"github.com/sei-protocol/sei-chain/x/evm/types"
-	"github.com/sei-protocol/sei-chain/x/evm/types/ethtx"
+	"github.com/eni-chain/go-eni/x/evm/ante"
+	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/stretchr/testify/require"
 )
 

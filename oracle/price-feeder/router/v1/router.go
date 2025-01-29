@@ -10,9 +10,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/config"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/pkg/httputil"
-	"github.com/sei-protocol/sei-chain/oracle/price-feeder/router/middleware"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/config"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/pkg/httputil"
+	"github.com/eni-chain/go-eni/oracle/price-feeder/router/middleware"
 )
 
 const (

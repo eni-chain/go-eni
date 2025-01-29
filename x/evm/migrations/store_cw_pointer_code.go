@@ -3,12 +3,12 @@ package migrations
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/erc1155"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/erc20"
-	"github.com/sei-protocol/sei-chain/x/evm/artifacts/erc721"
-	artifactsutils "github.com/sei-protocol/sei-chain/x/evm/artifacts/utils"
-	"github.com/sei-protocol/sei-chain/x/evm/keeper"
-	"github.com/sei-protocol/sei-chain/x/evm/types"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/erc1155"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/erc20"
+	"github.com/eni-chain/go-eni/x/evm/artifacts/erc721"
+	artifactsutils "github.com/eni-chain/go-eni/x/evm/artifacts/utils"
+	"github.com/eni-chain/go-eni/x/evm/keeper"
+	"github.com/eni-chain/go-eni/x/evm/types"
 )
 
 func StoreCWPointerCode(ctx sdk.Context, k *keeper.Keeper, store20 bool, store721 bool, store1155 bool) error {

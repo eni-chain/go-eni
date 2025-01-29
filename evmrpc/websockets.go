@@ -3,7 +3,7 @@ package evmrpc
 import (
 	"net/http"
 
-	"github.com/sei-protocol/sei-chain/utils/metrics"
+	"github.com/eni-chain/go-eni/utils/metrics"
 )
 
 type wsConnectionHandler struct {

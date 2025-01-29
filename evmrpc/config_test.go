@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sei-protocol/sei-chain/evmrpc"
+	"github.com/eni-chain/go-eni/evmrpc"
 	"github.com/stretchr/testify/require"
 )
 

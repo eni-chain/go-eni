@@ -9,8 +9,8 @@ import (
 	sdkacltypes "github.com/cosmos/cosmos-sdk/types/accesscontrol"
 	aclkeeper "github.com/cosmos/cosmos-sdk/x/accesscontrol/keeper"
 	acltypes "github.com/cosmos/cosmos-sdk/x/accesscontrol/types"
-	evmkeeper "github.com/sei-protocol/sei-chain/x/evm/keeper"
-	evmtypes "github.com/sei-protocol/sei-chain/x/evm/types"
+	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
 )
 
 type CustomRouter struct {
