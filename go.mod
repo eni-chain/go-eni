@@ -1,6 +1,8 @@
 module github.com/eni-chain/go-eni
 
-go 1.21
+go 1.22
+
+toolchain go1.22.10
 
 require (
 	github.com/BurntSushi/toml v1.3.2
@@ -12,6 +14,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/iavl v0.21.0-alpha.1.0.20230904092046-df3db2d96583
 	github.com/cosmos/ibc-go/v3 v3.0.0
+	github.com/eni-chain/eni-db v0.0.2-0.20250129181530-7ffab17c43f1
 	github.com/ethereum/go-ethereum v1.13.2
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/gogo/protobuf v1.3.3
@@ -31,7 +34,6 @@ require (
 	github.com/rs/cors v1.8.2
 	github.com/rs/zerolog v1.30.0
 	github.com/sei-protocol/goutils v0.0.2
-	github.com/sei-protocol/sei-db v0.0.27-0.20240123064153-d6dfa112e760
 	github.com/sirkon/goproxy v1.4.8
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.6.1
@@ -116,6 +118,7 @@ require (
 	github.com/dop251/goja v0.0.0-20230806174421-c933cf95e127 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
+	github.com/eni-chain/eni-tm-db v0.0.2-0.20250129181020-eee6ed7cbdbe // indirect
 	github.com/esimonov/ifshort v1.0.4 // indirect
 	github.com/ethereum/c-kzg-4844 v0.4.0 // indirect
 	github.com/ettle/strcase v0.1.1 // indirect
@@ -265,7 +268,6 @@ require (
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
 	github.com/savaki/jq v0.0.0-20161209013833-0e6baecebbf8 // indirect
 	github.com/securego/gosec/v2 v2.11.0 // indirect
-	github.com/sei-protocol/sei-tm-db v0.0.5 // indirect
 	github.com/shazow/go-diff v0.0.0-20160112020656-b6b7b6733b8c // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
@@ -351,12 +353,11 @@ replace (
 	github.com/CosmWasm/wasmd => github.com/eni-chain/eni-wasmd v0.0.1
 	github.com/CosmWasm/wasmvm => github.com/eni-chain/eni-wasmvm v0.0.1
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.1
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.2-0.20250129181310-c560fe3435ff
 	github.com/cosmos/iavl => github.com/eni-chain/eni-iavl v0.0.1
 	github.com/cosmos/ibc-go/v3 => github.com/eni-chain/eni-ibc-go/v3 v3.0.0
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.1
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/sei-protocol/sei-db => github.com/eni-chain/eni-db v0.0.1
 	// Latest goleveldb is broken, we have to stick to this version
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 	github.com/tendermint/tendermint => github.com/eni-chain/eni-tendermint v0.0.1

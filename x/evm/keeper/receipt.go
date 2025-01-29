@@ -7,8 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/iavl"
+	"github.com/eni-chain/eni-db/proto"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/sei-protocol/sei-db/proto"
 
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/x/evm/state"

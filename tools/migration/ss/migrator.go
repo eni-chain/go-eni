@@ -7,8 +7,8 @@ import (
 
 	"github.com/armon/go-metrics"
 	"github.com/cosmos/iavl"
+	"github.com/eni-chain/eni-db/ss/types"
 	"github.com/eni-chain/go-eni/tools/migration/utils"
-	"github.com/sei-protocol/sei-db/ss/types"
 	dbm "github.com/tendermint/tm-db"
 )
 

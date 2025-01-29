@@ -5,8 +5,8 @@ import (
 	"sort"
 	"sync"
 
-	seidbproto "github.com/sei-protocol/sei-db/proto"
-	"github.com/sei-protocol/sei-db/ss/types"
+	seidbproto "github.com/eni-chain/eni-db/proto"
+	"github.com/eni-chain/eni-db/ss/types"
 )
 
 // InMemoryStateStore this implements seidb state store with an inmemory store

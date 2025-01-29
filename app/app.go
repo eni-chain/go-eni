@@ -101,6 +101,8 @@ import (
 	ibcporttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
+	"github.com/eni-chain/eni-db/ss"
+	seidb "github.com/eni-chain/eni-db/ss/types"
 	"github.com/eni-chain/go-eni/aclmapping"
 	aclutils "github.com/eni-chain/go-eni/aclmapping/utils"
 	"github.com/eni-chain/go-eni/app/antedecorators"
@@ -136,8 +138,6 @@ import (
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
-	"github.com/sei-protocol/sei-db/ss"
-	seidb "github.com/sei-protocol/sei-db/ss/types"
 	"github.com/spf13/cast"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmcfg "github.com/tendermint/tendermint/config"
@@ -154,8 +154,8 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	// unnamed import of statik for openapi/swagger UI support
+	ssconfig "github.com/eni-chain/eni-db/config"
 	_ "github.com/eni-chain/go-eni/docs/swagger"
-	ssconfig "github.com/sei-protocol/sei-db/config"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals

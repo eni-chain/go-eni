@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/iavl"
-	seidbproto "github.com/sei-protocol/sei-db/proto"
+	seidbproto "github.com/eni-chain/eni-db/proto"
 	"github.com/stretchr/testify/assert"
 )
 

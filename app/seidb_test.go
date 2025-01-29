@@ -3,7 +3,7 @@ package app
 import (
 	"testing"
 
-	"github.com/sei-protocol/sei-db/config"
+	"github.com/eni-chain/eni-db/config"
 	"github.com/stretchr/testify/assert"
 )
 

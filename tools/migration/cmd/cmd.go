@@ -8,11 +8,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/rootmulti"
 	"github.com/cosmos/iavl"
+	"github.com/eni-chain/eni-db/config"
+	sstypes "github.com/eni-chain/eni-db/ss"
 	"github.com/eni-chain/go-eni/tools/migration/sc"
 	"github.com/eni-chain/go-eni/tools/migration/ss"
 	"github.com/eni-chain/go-eni/tools/migration/utils"
-	"github.com/sei-protocol/sei-db/config"
-	sstypes "github.com/sei-protocol/sei-db/ss"
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"

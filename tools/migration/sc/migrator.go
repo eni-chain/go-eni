@@ -19,9 +19,9 @@ import (
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	"github.com/eni-chain/eni-db/config"
 	"github.com/eni-chain/go-eni/app/params"
 	"github.com/eni-chain/go-eni/tools/migration/utils"
-	"github.com/sei-protocol/sei-db/config"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 )
