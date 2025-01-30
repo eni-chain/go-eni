@@ -150,7 +150,9 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.21
-
+      - name: Configure git to use PAT
+        run: |
+          git config --global url."https://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@github.com".insteadOf "https://github.com"
       - name: Start 4 node docker cluster
         run: make clean && INVARIANT_CHECK_INTERVAL=10 ${{matrix.test.env}} make docker-cluster-start &
 

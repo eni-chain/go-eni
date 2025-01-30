@@ -30,6 +30,9 @@ jobs:
             go.mod
             go.sum
             Makefile
+      - name: Configure git to use PAT
+        run: |
+          git config --global url."https://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@github.com".insteadOf "https://github.com"
       - name: Get data from Go build cache
         uses: actions/cache@v3
         with:
