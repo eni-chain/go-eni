@@ -22,7 +22,7 @@ defaults:
 jobs:
   integration-tests:
     name: Integration Test (${{ matrix.test.name }})
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 30
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -181,7 +181,7 @@ jobs:
 
   integration-test-check:
     name: Integration Test Check
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: integration-tests
     if: always()
     steps:
