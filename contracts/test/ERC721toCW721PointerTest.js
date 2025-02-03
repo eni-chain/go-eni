@@ -14,15 +14,15 @@ describe("ERC721 to CW721 Pointer", function () {
         accounts = await setupSigners(await hre.ethers.getSigners())
         admin = await getAdmin()
 
-        cw721Address = await deployWasm(WASM.CW721, admin.seiAddress, "cw721", {
+        cw721Address = await deployWasm(WASM.CW721, admin.eniAddress, "cw721", {
             name: "Test",
             symbol: "TEST",
-            minter: admin.seiAddress
+            minter: admin.eniAddress
         })
 
-        await executeWasm(cw721Address,  { mint : { token_id : "1", owner : admin.seiAddress, token_uri: "token uri 1"}});
-        await executeWasm(cw721Address,  { mint : { token_id : "2", owner : accounts[0].seiAddress, token_uri: "token uri 2"}});
-        await executeWasm(cw721Address,  { mint : { token_id : "3", owner : accounts[1].seiAddress, token_uri: "token uri 3"}});
+        await executeWasm(cw721Address,  { mint : { token_id : "1", owner : admin.eniAddress, token_uri: "token uri 1"}});
+        await executeWasm(cw721Address,  { mint : { token_id : "2", owner : accounts[0].eniAddress, token_uri: "token uri 2"}});
+        await executeWasm(cw721Address,  { mint : { token_id : "3", owner : accounts[1].eniAddress, token_uri: "token uri 3"}});
 
         const pointerAddr = await deployErc721PointerForCw721(hre.ethers.provider, cw721Address)
         const contract = new hre.ethers.Contract(pointerAddr, ABI.ERC721, hre.ethers.provider);
@@ -102,11 +102,11 @@ describe("ERC721 to CW721 Pointer", function () {
             const ethlogs = await ethers.provider.send('eth_getLogs', [filter]);
             expect(ethlogs.length).to.equal(1);
 
-            // send via sei_ endpoint - synthetic event shows up
-            const seilogs = await ethers.provider.send('sei_getLogs', [filter]);
-            expect(seilogs.length).to.equal(1);
+            // send via eni_ endpoint - synthetic event shows up
+            const enilogs = await ethers.provider.send('eni_getLogs', [filter]);
+            expect(enilogs.length).to.equal(1);
 
-            const logs = [...ethlogs, ...seilogs];
+            const logs = [...ethlogs, ...enilogs];
             logs.forEach(async (log) => {
                 expect(log["address"].toLowerCase()).to.equal((await pointer.getAddress()).toLowerCase());
                 expect(log["topics"][0]).to.equal(ethers.id("Transfer(address,address,uint256)"));
@@ -134,9 +134,9 @@ describe("ERC721 to CW721 Pointer", function () {
             // send via eth_ endpoint - synthetic event doesn't show up
             const ethlogs = await ethers.provider.send('eth_getLogs', [filter]);
             expect(ethlogs.length).to.equal(1);
-            const seilogs = await ethers.provider.send('sei_getLogs', [filter]);
-            expect(seilogs.length).to.equal(1);
-            const logs = [...ethlogs, ...seilogs];
+            const enilogs = await ethers.provider.send('eni_getLogs', [filter]);
+            expect(enilogs.length).to.equal(1);
+            const logs = [...ethlogs, ...enilogs];
             logs.forEach(async (log) => {
                 expect(log["address"].toLowerCase()).to.equal((await pointerAcc1.getAddress()).toLowerCase());
                 expect(log["topics"][0]).to.equal(ethers.id("Transfer(address,address,uint256)"));
@@ -149,11 +149,11 @@ describe("ERC721 to CW721 Pointer", function () {
             const balance1 = await pointerAcc0.balanceOf(accounts[1].evmAddress);
             expect(balance1).to.equal(2);
 
-            // do same for eth_getBlockReceipts and sei_getBlockReceipts
+            // do same for eth_getBlockReceipts and eni_getBlockReceipts
             const ethBlockReceipts = await ethers.provider.send('eth_getBlockReceipts', ['0x' + receipt.blockNumber.toString(16)]);
             expect(ethBlockReceipts.length).to.equal(1);
-            const seiBlockReceipts = await ethers.provider.send('sei_getBlockReceipts', ['0x' + receipt.blockNumber.toString(16)]);
-            expect(seiBlockReceipts.length).to.equal(1);
+            const eniBlockReceipts = await ethers.provider.send('eni_getBlockReceipts', ['0x' + receipt.blockNumber.toString(16)]);
+            expect(eniBlockReceipts.length).to.equal(1);
 
             const ethTx = await ethers.provider.send('eth_getTransactionReceipt', [receipt.hash]);
             expect(ethTx.logs.length).to.equal(1);

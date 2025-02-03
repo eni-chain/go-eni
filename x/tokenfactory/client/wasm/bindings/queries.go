@@ -2,7 +2,7 @@ package bindings
 
 import "github.com/eni-chain/go-eni/x/tokenfactory/types"
 
-type SeiTokenFactoryQuery struct {
+type EniTokenFactoryQuery struct {
 	// queries the tokenfactory authority metadata
 	DenomAuthorityMetadata *types.QueryDenomAuthorityMetadataRequest `json:"denom_authority_metadata,omitempty"`
 	// queries the tokenfactory denoms from a creator

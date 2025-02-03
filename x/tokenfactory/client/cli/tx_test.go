@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
+	"testing"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
-	"os"
-	"testing"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/testutil"
@@ -65,29 +66,29 @@ type MockQueryClient struct {
 	evmtypes.QueryClient
 }
 
-func (m *MockQueryClient) SeiAddressByEVMAddress(ctx context.Context, in *evmtypes.QuerySeiAddressByEVMAddressRequest, opts ...grpc.CallOption) (*evmtypes.QuerySeiAddressByEVMAddressResponse, error) {
+func (m *MockQueryClient) EniAddressByEVMAddress(ctx context.Context, in *evmtypes.QueryEniAddressByEVMAddressRequest, opts ...grpc.CallOption) (*evmtypes.QueryEniAddressByEVMAddressResponse, error) {
 	if in.EvmAddress == "0x0CF3Bb7Da9fea6a881987A5018740500C7d4BAaE" {
-		return &evmtypes.QuerySeiAddressByEVMAddressResponse{SeiAddress: "", Associated: false}, nil
+		return &evmtypes.QueryEniAddressByEVMAddressResponse{EniAddress: "", Associated: false}, nil
 	}
-	return &evmtypes.QuerySeiAddressByEVMAddressResponse{SeiAddress: "sei1u8j4gaxyzhg39dk848q5w9h53tgggpcx74m762", Associated: true}, nil
+	return &evmtypes.QueryEniAddressByEVMAddressResponse{EniAddress: "eni1u8j4gaxyzhg39dk848q5w9h53tgggpcx74m762", Associated: true}, nil
 }
 
 type MockErrorQueryClient struct {
 	evmtypes.QueryClient
 }
 
-func (m *MockErrorQueryClient) SeiAddressByEVMAddress(ctx context.Context, in *evmtypes.QuerySeiAddressByEVMAddressRequest, opts ...grpc.CallOption) (*evmtypes.QuerySeiAddressByEVMAddressResponse, error) {
+func (m *MockErrorQueryClient) EniAddressByEVMAddress(ctx context.Context, in *evmtypes.QueryEniAddressByEVMAddressRequest, opts ...grpc.CallOption) (*evmtypes.QueryEniAddressByEVMAddressResponse, error) {
 	return nil, fmt.Errorf("address is not associated")
 }
 
 func Test_ParseAllowListJSON(t *testing.T) {
 	mockQueryClient := &MockQueryClient{}
 
-	seiAddr1 := sdk.AccAddress("sei1_______________").String()
-	seiAddr2 := sdk.AccAddress("sei2_______________").String()
+	eniAddr1 := sdk.AccAddress("eni1_______________").String()
+	eniAddr2 := sdk.AccAddress("eni2_______________").String()
 	evmAddr := "0x5c71b5577B9223d39ae0B7Dcb3f1BC8e1aC81f3e"
 	notAssociatedEvmAddr := "0x0CF3Bb7Da9fea6a881987A5018740500C7d4BAaE"
-	convertedSeiAddr := "sei1u8j4gaxyzhg39dk848q5w9h53tgggpcx74m762"
+	convertedEniAddr := "eni1u8j4gaxyzhg39dk848q5w9h53tgggpcx74m762"
 
 	tests := []struct {
 		name    string
@@ -97,14 +98,14 @@ func Test_ParseAllowListJSON(t *testing.T) {
 		errMock bool
 	}{
 		{
-			name: "valid allow list with Sei addresses",
-			json: fmt.Sprintf(`{"addresses": ["%s", "%s"]}`, seiAddr1, seiAddr2),
-			want: banktypes.AllowList{Addresses: []string{seiAddr1, seiAddr2}},
+			name: "valid allow list with Eni addresses",
+			json: fmt.Sprintf(`{"addresses": ["%s", "%s"]}`, eniAddr1, eniAddr2),
+			want: banktypes.AllowList{Addresses: []string{eniAddr1, eniAddr2}},
 		},
 		{
-			name: "valid allow list with Sei and EVM addresses",
-			json: fmt.Sprintf(`{"addresses": ["%s", "%s", "%s"]}`, seiAddr1, seiAddr2, evmAddr),
-			want: banktypes.AllowList{Addresses: []string{seiAddr1, seiAddr2, convertedSeiAddr}},
+			name: "valid allow list with Eni and EVM addresses",
+			json: fmt.Sprintf(`{"addresses": ["%s", "%s", "%s"]}`, eniAddr1, eniAddr2, evmAddr),
+			want: banktypes.AllowList{Addresses: []string{eniAddr1, eniAddr2, convertedEniAddr}},
 		},
 		{
 			name:    "invalid JSON",
@@ -112,9 +113,9 @@ func Test_ParseAllowListJSON(t *testing.T) {
 			wantErr: "invalid character '[' looking for beginning of object key string",
 		},
 		{
-			name:    "invalid Sei address",
-			json:    `{"addresses": ["invalid_sei_address"]}`,
-			wantErr: "invalid address invalid_sei_address: decoding bech32 failed: invalid separator index -1",
+			name:    "invalid Eni address",
+			json:    `{"addresses": ["invalid_eni_address"]}`,
+			wantErr: "invalid address invalid_eni_address: decoding bech32 failed: invalid separator index -1",
 		},
 		{
 			name:    "invalid EVM address",
@@ -122,7 +123,7 @@ func Test_ParseAllowListJSON(t *testing.T) {
 			wantErr: "invalid address 0xinvalid_evm_address: decoding bech32 failed: invalid separator index -1",
 		},
 		{
-			name:    "EVM address error on getting Sei address",
+			name:    "EVM address error on getting Eni address",
 			json:    fmt.Sprintf(`{"addresses": ["%s"]}`, evmAddr),
 			wantErr: "address is not associated",
 			errMock: true,
@@ -139,8 +140,8 @@ func Test_ParseAllowListJSON(t *testing.T) {
 		},
 		{
 			name: "duplicate addresses",
-			json: fmt.Sprintf(`{"addresses": ["%s", "%s", "%s"]}`, seiAddr1, seiAddr1, seiAddr2),
-			want: banktypes.AllowList{Addresses: []string{seiAddr1, seiAddr2}},
+			json: fmt.Sprintf(`{"addresses": ["%s", "%s", "%s"]}`, eniAddr1, eniAddr1, eniAddr2),
+			want: banktypes.AllowList{Addresses: []string{eniAddr1, eniAddr2}},
 		},
 	}
 

@@ -21,10 +21,10 @@ func TestMigrate2to3(t *testing.T) {
 	// store the value with legacy proto
 	store := input.Ctx.KVStore(input.OracleKeeper.storeKey)
 	bz := input.OracleKeeper.cdc.MustMarshal(&sdk.DecProto{Dec: exchangeRate})
-	store.Set(types.GetExchangeRateKey(utils.MicroSeiDenom), bz)
+	store.Set(types.GetExchangeRateKey(utils.MicroEniDenom), bz)
 
 	// validate legacy store value
-	b := store.Get(types.GetExchangeRateKey(utils.MicroSeiDenom))
+	b := store.Get(types.GetExchangeRateKey(utils.MicroEniDenom))
 	dp := sdk.DecProto{}
 	input.OracleKeeper.cdc.MustUnmarshal(b, &dp)
 	require.Equal(t, dp.Dec, exchangeRate)
@@ -34,7 +34,7 @@ func TestMigrate2to3(t *testing.T) {
 	m.Migrate2to3(input.Ctx)
 
 	// Get rate
-	rate, lastUpdate, lastUpdateTimestamp, err := input.OracleKeeper.GetBaseExchangeRate(input.Ctx, utils.MicroSeiDenom)
+	rate, lastUpdate, lastUpdateTimestamp, err := input.OracleKeeper.GetBaseExchangeRate(input.Ctx, utils.MicroEniDenom)
 	require.NoError(t, err)
 	require.Equal(t, exchangeRate, rate)
 	require.Equal(t, sdk.ZeroInt(), lastUpdate)

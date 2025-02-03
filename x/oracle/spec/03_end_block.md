@@ -8,7 +8,7 @@ order: 3
 
 At the end of every block, the `Oracle` module checks whether it's the last block of the `VotePeriod`. If it is, it runs the [Voting Procedure](./01_concepts.md#Voting_Procedure):
 
-1. All current active Sei exchange rates are purged from the store
+1. All current active Eni exchange rates are purged from the store
 
 2. Received votes are organized into ballots by denomination. Abstained votes, as well as votes by inactive or jailed validators are ignored
 
@@ -21,7 +21,7 @@ At the end of every block, the `Oracle` module checks whether it's the last bloc
 
     - Tally up votes and find the weighted median exchange rate and winners with `tally()`
     - Iterate through winners of the ballot and add their weight to their running total
-    - Set the Sei exchange rate on the blockchain for that Sei<>`denom` with `k.SetSeiExchangeRate()`
+    - Set the Eni exchange rate on the blockchain for that Eni<>`denom` with `k.SetEniExchangeRate()`
    - Emit a `exchange_rate_update` event
 
 5. Count up the validators who [missed](./01_concepts.md#Slashing) the Oracle vote and increase the appropriate miss counters

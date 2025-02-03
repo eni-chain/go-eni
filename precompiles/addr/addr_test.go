@@ -29,20 +29,20 @@ func TestAssociatePubKey(t *testing.T) {
 	targetPrivKey := testkeeper.MockPrivateKey()
 	targetPubKey := targetPrivKey.PubKey()
 	targetPubKeyHex := hex.EncodeToString(targetPubKey.Bytes())
-	targetSeiAddress, targetEvmAddress := testkeeper.PrivateKeyToAddresses(targetPrivKey)
+	targetEniAddress, targetEvmAddress := testkeeper.PrivateKeyToAddresses(targetPrivKey)
 
 	// Caller refers to the party calling the precompile.
 	callerPrivKey := testkeeper.MockPrivateKey()
-	callerSeiAddress, callerEvmAddress := testkeeper.PrivateKeyToAddresses(callerPrivKey)
+	callerEniAddress, callerEvmAddress := testkeeper.PrivateKeyToAddresses(callerPrivKey)
 	callerPubKey := callerPrivKey.PubKey()
 	callerPubKeyHex := hex.EncodeToString(callerPubKey.Bytes())
 
 	// Associate these addresses, so we can use them to test the case where addresses are already associated association.
-	k.SetAddressMapping(ctx, callerSeiAddress, callerEvmAddress)
+	k.SetAddressMapping(ctx, callerEniAddress, callerEvmAddress)
 
 	require.Nil(t, err)
 
-	happyPathOutput, _ := associatePubKey.Outputs.Pack(targetSeiAddress.String(), targetEvmAddress)
+	happyPathOutput, _ := associatePubKey.Outputs.Pack(targetEniAddress.String(), targetEvmAddress)
 
 	type args struct {
 		evm      *vm.EVM
@@ -114,7 +114,7 @@ func TestAssociatePubKey(t *testing.T) {
 				value:  big.NewInt(0),
 			},
 			wantErr:    true,
-			wantErrMsg: fmt.Sprintf("address %s is already associated with evm address %s", callerSeiAddress, callerEvmAddress),
+			wantErrMsg: fmt.Sprintf("address %s is already associated with evm address %s", callerEniAddress, callerEvmAddress),
 		},
 		{
 			name: "happy path - associates addresses if signature is correct",
@@ -171,7 +171,7 @@ func TestAssociate(t *testing.T) {
 	// Target refers to the address that the caller is trying to associate.
 	targetPrivKey := testkeeper.MockPrivateKey()
 	targetPrivHex := hex.EncodeToString(targetPrivKey.Bytes())
-	targetSeiAddress, targetEvmAddress := testkeeper.PrivateKeyToAddresses(targetPrivKey)
+	targetEniAddress, targetEvmAddress := testkeeper.PrivateKeyToAddresses(targetPrivKey)
 	targetKey, _ := crypto.HexToECDSA(targetPrivHex)
 
 	// Create the inputs
@@ -187,18 +187,18 @@ func TestAssociate(t *testing.T) {
 
 	// Caller refers to the party calling the precompile.
 	callerPrivKey := testkeeper.MockPrivateKey()
-	callerSeiAddress, callerEvmAddress := testkeeper.PrivateKeyToAddresses(callerPrivKey)
+	callerEniAddress, callerEvmAddress := testkeeper.PrivateKeyToAddresses(callerPrivKey)
 	callerPrivHex := hex.EncodeToString(callerPrivKey.Bytes())
 	callerKey, _ := crypto.HexToECDSA(callerPrivHex)
 
 	// Associate these addresses, so we can use them to test the case where addresses are already associated association.
-	k.SetAddressMapping(ctx, callerSeiAddress, callerEvmAddress)
+	k.SetAddressMapping(ctx, callerEniAddress, callerEvmAddress)
 	callerSig, err := crypto.Sign(hash.Bytes(), callerKey)
 	callerR := fmt.Sprintf("0x%v", new(big.Int).SetBytes(callerSig[:32]).Text(16))
 	callerS := fmt.Sprintf("0x%v", new(big.Int).SetBytes(callerSig[32:64]).Text(16))
 	callerV := fmt.Sprintf("0x%v", new(big.Int).SetBytes([]byte{callerSig[64]}).Text(16))
 
-	happyPathOutput, _ := associate.Outputs.Pack(targetSeiAddress.String(), targetEvmAddress)
+	happyPathOutput, _ := associate.Outputs.Pack(targetEniAddress.String(), targetEvmAddress)
 
 	type args struct {
 		evm      *vm.EVM
@@ -285,7 +285,7 @@ func TestAssociate(t *testing.T) {
 				value:  big.NewInt(0),
 			},
 			wantErr:    true,
-			wantErrMsg: fmt.Sprintf("address %s is already associated with evm address %s", callerSeiAddress, callerEvmAddress),
+			wantErrMsg: fmt.Sprintf("address %s is already associated with evm address %s", callerEniAddress, callerEvmAddress),
 		},
 		{
 			name: "associates wrong address if invalid signature (different message)",
@@ -356,27 +356,27 @@ func TestGetAddr(t *testing.T) {
 	k := &testApp.EvmKeeper
 
 	pre, _ := addr.NewPrecompile(k, k.BankKeeper(), k.AccountKeeper())
-	getSeiAddr, err := pre.ABI.MethodById(pre.GetExecutor().(*addr.PrecompileExecutor).GetSeiAddressID)
+	getEniAddr, err := pre.ABI.MethodById(pre.GetExecutor().(*addr.PrecompileExecutor).GetEniAddressID)
 	require.Nil(t, err)
 	getEvmAddr, err := pre.ABI.MethodById(pre.GetExecutor().(*addr.PrecompileExecutor).GetEvmAddressID)
 	require.Nil(t, err)
 
-	seiAddr, evmAddr := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
+	eniAddr, evmAddr := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
 
 	stateDB := &state.DBImpl{}
 	stateDB.WithCtx(ctx)
 
-	getSeiAddrBz, err := getSeiAddr.Inputs.Pack(evmAddr)
+	getEniAddrBz, err := getEniAddr.Inputs.Pack(evmAddr)
 	require.Nil(t, err)
-	res, _, err := pre.RunAndCalculateGas(&vm.EVM{StateDB: stateDB}, evmAddr, evmAddr, append(getSeiAddr.ID, getSeiAddrBz...), 20000, common.Big0, nil, true, false)
+	res, _, err := pre.RunAndCalculateGas(&vm.EVM{StateDB: stateDB}, evmAddr, evmAddr, append(getEniAddr.ID, getEniAddrBz...), 20000, common.Big0, nil, true, false)
 	require.Nil(t, err)
-	unpacked, err := getSeiAddr.Outputs.Unpack(res)
+	unpacked, err := getEniAddr.Outputs.Unpack(res)
 	require.Nil(t, err)
 	require.Equal(t, 1, len(unpacked))
-	require.Equal(t, seiAddr.String(), unpacked[0].(string))
+	require.Equal(t, eniAddr.String(), unpacked[0].(string))
 
-	getEvmAddrBz, err := getEvmAddr.Inputs.Pack(seiAddr.String())
+	getEvmAddrBz, err := getEvmAddr.Inputs.Pack(eniAddr.String())
 	require.Nil(t, err)
 	res, _, err = pre.RunAndCalculateGas(&vm.EVM{StateDB: stateDB}, evmAddr, evmAddr, append(getEvmAddr.ID, getEvmAddrBz...), 20000, common.Big0, nil, true, false)
 	require.Nil(t, err)

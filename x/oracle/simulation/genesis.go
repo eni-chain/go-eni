@@ -99,7 +99,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 			VoteThreshold: voteThreshold,
 			RewardBand:    rewardBand,
 			Whitelist: types.DenomList{
-				{Name: utils.MicroSeiDenom},
+				{Name: utils.MicroEniDenom},
 				{Name: utils.MicroAtomDenom},
 			},
 			SlashFraction:     slashFraction,

@@ -201,12 +201,12 @@ func ValidateNonPayable(value *big.Int) error {
 	return nil
 }
 
-func HandlePaymentUsei(ctx sdk.Context, precompileAddr sdk.AccAddress, payer sdk.AccAddress, value *big.Int, bankKeeper BankKeeper) (sdk.Coin, error) {
-	usei, wei := state.SplitUseiWeiAmount(value)
+func HandlePaymentUeni(ctx sdk.Context, precompileAddr sdk.AccAddress, payer sdk.AccAddress, value *big.Int, bankKeeper BankKeeper) (sdk.Coin, error) {
+	ueni, wei := state.SplitUeniWeiAmount(value)
 	if !wei.IsZero() {
 		return sdk.Coin{}, fmt.Errorf("selected precompile function does not allow payment with non-zero wei remainder: received %s", value)
 	}
-	coin := sdk.NewCoin(sdk.MustGetBaseDenom(), usei)
+	coin := sdk.NewCoin(sdk.MustGetBaseDenom(), ueni)
 	// refund payer because the following precompile logic will debit the payments from payer's account
 	// this creates a new event manager to avoid surfacing these as cosmos events
 	if err := bankKeeper.SendCoins(ctx.WithEventManager(sdk.NewEventManager()), precompileAddr, payer, sdk.NewCoins(coin)); err != nil {
@@ -215,20 +215,20 @@ func HandlePaymentUsei(ctx sdk.Context, precompileAddr sdk.AccAddress, payer sdk
 	return coin, nil
 }
 
-func HandlePaymentUseiWei(ctx sdk.Context, precompileAddr sdk.AccAddress, payer sdk.AccAddress, value *big.Int, bankKeeper BankKeeper) (sdk.Int, sdk.Int, error) {
-	usei, wei := state.SplitUseiWeiAmount(value)
+func HandlePaymentUeniWei(ctx sdk.Context, precompileAddr sdk.AccAddress, payer sdk.AccAddress, value *big.Int, bankKeeper BankKeeper) (sdk.Int, sdk.Int, error) {
+	ueni, wei := state.SplitUeniWeiAmount(value)
 	// refund payer because the following precompile logic will debit the payments from payer's account
 	// this creates a new event manager to avoid surfacing these as cosmos events
-	if err := bankKeeper.SendCoinsAndWei(ctx.WithEventManager(sdk.NewEventManager()), precompileAddr, payer, usei, wei); err != nil {
+	if err := bankKeeper.SendCoinsAndWei(ctx.WithEventManager(sdk.NewEventManager()), precompileAddr, payer, ueni, wei); err != nil {
 		return sdk.Int{}, sdk.Int{}, err
 	}
-	return usei, wei, nil
+	return ueni, wei, nil
 }
 
 /*
 *
-sei gas = evm gas * multiplier
-sei gas price = fee / sei gas = fee / (evm gas * multiplier) = evm gas / multiplier
+eni gas = evm gas * multiplier
+eni gas price = fee / eni gas = fee / (evm gas * multiplier) = evm gas / multiplier
 */
 func GetRemainingGas(ctx sdk.Context, evmKeeper EVMKeeper) uint64 {
 	return evmKeeper.GetEVMGasLimitFromCtx(ctx)
@@ -263,18 +263,18 @@ func MustGetABI(f embed.FS, filename string) abi.ABI {
 	return newAbi
 }
 
-func GetSeiAddressByEvmAddress(ctx sdk.Context, evmAddress common.Address, evmKeeper EVMKeeper) (sdk.AccAddress, error) {
-	seiAddr, associated := evmKeeper.GetSeiAddress(ctx, evmAddress)
+func GetEniAddressByEvmAddress(ctx sdk.Context, evmAddress common.Address, evmKeeper EVMKeeper) (sdk.AccAddress, error) {
+	eniAddr, associated := evmKeeper.GetEniAddress(ctx, evmAddress)
 	if !associated {
 		return nil, types.NewAssociationMissingErr(evmAddress.Hex())
 	}
-	return seiAddr, nil
+	return eniAddr, nil
 }
 
-func GetSeiAddressFromArg(ctx sdk.Context, arg interface{}, evmKeeper EVMKeeper) (sdk.AccAddress, error) {
+func GetEniAddressFromArg(ctx sdk.Context, arg interface{}, evmKeeper EVMKeeper) (sdk.AccAddress, error) {
 	addr := arg.(common.Address)
 	if addr == (common.Address{}) {
 		return nil, errors.New("invalid addr")
 	}
-	return GetSeiAddressByEvmAddress(ctx, addr, evmKeeper)
+	return GetEniAddressByEvmAddress(ctx, addr, evmKeeper)
 }

@@ -112,34 +112,34 @@ Tokenfactory denoms are of form `factory/{creator address}/{subdenom}`.
 Please reference the Appendix for more details on the derivation of these limits.
 
 # Examples
-To create a new token, use the create-denom command from the tokenfactory module. The following example uses the address sei166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l from mylocalwallet as the default admin for the new token.
+To create a new token, use the create-denom command from the tokenfactory module. The following example uses the address eni166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l from mylocalwallet as the default admin for the new token.
 
 ## Creating a token
 To create a new token we can use the create-denom command.
 
 ```sh
-seid tx tokenfactory create-denom ufoo --from mylocalwallet
+enid tx tokenfactory create-denom ufoo --from mylocalwallet
 ```
 
 ## Mint a new token
 Once a new token is created, it can be minted using the mint command in the tokenfactory module. Note that the complete tokenfactory address, in the format of factory/{creator address}/{subdenom}, must be used to mint the token.
 
 ```sh
-seid tx tokenfactory mint 100000000000factory/sei166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l/ufoo --from mylocalwallet
+enid tx tokenfactory mint 100000000000factory/eni166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l/ufoo --from mylocalwallet
 ```
 
 ## Checking Token metadata
-To view a token's metadata, use the denom-metadata command in the bank module. The following example queries the metadata for the token factory/sei166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l/ufoo:
+To view a token's metadata, use the denom-metadata command in the bank module. The following example queries the metadata for the token factory/eni166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l/ufoo:
 
 ```sh
-seid query bank denom-metadata --denom factory/sei166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l/ufoo
+enid query bank denom-metadata --denom factory/eni166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l/ufoo
 ```
 
 ## Check the tokens created by an account
-To see a list of tokens created by a specific account, use the denoms-from-creator command in the tokenfactory module. The following example shows tokens created by the account sei166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l:
+To see a list of tokens created by a specific account, use the denoms-from-creator command in the tokenfactory module. The following example shows tokens created by the account eni166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4l:
 
 ```sh
-seid query tokenfactory denoms-from-creator sei166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4ls
+enid query tokenfactory denoms-from-creator eni166vhptur29s3gw5qr6dm30s06gej6pr4n6qc4ls
 ```
 
 ## Appendix: Expectations from the Chain

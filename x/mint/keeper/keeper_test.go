@@ -99,7 +99,7 @@ func TestGetNextScheduledTokenRelease(t *testing.T) {
 		secondMinter := mintTypes.NewMinter(
 			currentTime.AddDate(0, 0, 30).Format(minttypes.TokenReleaseDateFormat),
 			currentTime.AddDate(0, 2, 0).Format(minttypes.TokenReleaseDateFormat),
-			"usei",
+			"ueni",
 			200,
 		)
 		epoch.CurrentEpochStartTime = currentTime.AddDate(0, 5, 0)
@@ -154,7 +154,7 @@ func TestGetOrUpdateLatestMinter(t *testing.T) {
 		mintKeeper.SetMinter(ctx, mintTypes.NewMinter(
 			currentTime.Format(minttypes.TokenReleaseDateFormat),
 			currentTime.AddDate(1, 0, 0).Format(minttypes.TokenReleaseDateFormat),
-			"usei",
+			"ueni",
 			1000,
 		))
 		epoch.CurrentEpochStartTime = currentTime
@@ -178,7 +178,7 @@ func TestGetOrUpdateLatestMinter(t *testing.T) {
 		minter := types.Minter{
 			StartDate:           currentTime.Format(minttypes.TokenReleaseDateFormat),
 			EndDate:             currentTime.Format(minttypes.TokenReleaseDateFormat),
-			Denom:               "usei",
+			Denom:               "ueni",
 			TotalMintAmount:     100,
 			RemainingMintAmount: 0,
 			LastMintAmount:      100,

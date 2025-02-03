@@ -8,7 +8,7 @@ import (
 	"github.com/eni-chain/go-eni/tools/tx-scanner/client"
 )
 
-// GetTxsEvent query the detailed transaction data, same as `seid q txs --events`
+// GetTxsEvent query the detailed transaction data, same as `enid q txs --events`
 func GetTxsEvent(blockHeight int64) (*txtypes.GetTxsEventResponse, error) {
 	request := &txtypes.GetTxsEventRequest{
 		Events: []string{fmt.Sprintf("tx.height=%d", blockHeight)},
@@ -17,7 +17,7 @@ func GetTxsEvent(blockHeight int64) (*txtypes.GetTxsEventResponse, error) {
 	return client.GetTxClient().GetTxsEvent(context.Background(), request)
 }
 
-// GetTxByHash query the transaction by TX hash, same as `seid q tx --hash`
+// GetTxByHash query the transaction by TX hash, same as `enid q tx --hash`
 func GetTxByHash(txHash string) (*txtypes.GetTxResponse, error) {
 	request := &txtypes.GetTxRequest{
 		Hash: txHash,

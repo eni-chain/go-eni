@@ -36,11 +36,11 @@ jobs:
           {
             name: "Wasm Module",
             scripts: [
-              "docker exec sei-node-0 integration_test/contracts/deploy_timelocked_token_contract.sh",
+              "docker exec eni-node-0 integration_test/contracts/deploy_timelocked_token_contract.sh",
               "python3 integration_test/scripts/runner.py integration_test/wasm_module/timelocked_token_delegation_test.yaml",
               "python3 integration_test/scripts/runner.py integration_test/wasm_module/timelocked_token_admin_test.yaml",
               "python3 integration_test/scripts/runner.py integration_test/wasm_module/timelocked_token_withdraw_test.yaml",
-              "docker exec sei-node-0 integration_test/contracts/deploy_timelocked_token_contract.sh",
+              "docker exec eni-node-0 integration_test/contracts/deploy_timelocked_token_contract.sh",
               "python3 integration_test/scripts/runner.py integration_test/wasm_module/timelocked_token_emergency_withdraw_test.yaml"
             ]
           },
@@ -68,7 +68,7 @@ jobs:
             name: "Chain Operation Test",
             scripts: [
               "until [ $(cat build/generated/rpc-launch.complete |wc -l) = 1 ]; do sleep 10; done",
-              "until [[ $(docker exec sei-rpc-node build/seid status |jq -M -r .SyncInfo.latest_block_height) -gt 10 ]]; do sleep 10; done",
+              "until [[ $(docker exec eni-rpc-node build/enid status |jq -M -r .SyncInfo.latest_block_height) -gt 10 ]]; do sleep 10; done",
               "echo rpc node started",
               "python3 integration_test/scripts/runner.py integration_test/chain_operation/snapshot_operation.yaml",
               "python3 integration_test/scripts/runner.py integration_test/chain_operation/statesync_operation.yaml"
@@ -96,19 +96,19 @@ jobs:
             ]
           },
           {
-            name: "SeiDB State Store",
+            name: "EniDB State Store",
             scripts: [
-              "docker exec sei-node-0 integration_test/contracts/deploy_wasm_contracts.sh",
-              "docker exec sei-node-0 integration_test/contracts/create_tokenfactory_denoms.sh",
-              "python3 integration_test/scripts/runner.py integration_test/seidb/state_store_test.yaml",
+              "docker exec eni-node-0 integration_test/contracts/deploy_wasm_contracts.sh",
+              "docker exec eni-node-0 integration_test/contracts/create_tokenfactory_denoms.sh",
+              "python3 integration_test/scripts/runner.py integration_test/enidb/state_store_test.yaml",
             ],
           },
           {
-            name: "SeiDB State Store",
+            name: "EniDB State Store",
             scripts: [
-              "docker exec sei-node-0 integration_test/contracts/deploy_wasm_contracts.sh",
-              "docker exec sei-node-0 integration_test/contracts/create_tokenfactory_denoms.sh",
-              "python3 integration_test/scripts/runner.py integration_test/seidb/state_store_test.yaml",
+              "docker exec eni-node-0 integration_test/contracts/deploy_wasm_contracts.sh",
+              "docker exec eni-node-0 integration_test/contracts/create_tokenfactory_denoms.sh",
+              "python3 integration_test/scripts/runner.py integration_test/enidb/state_store_test.yaml",
             ]
           },
           {
@@ -126,7 +126,7 @@ jobs:
           {
             name: "dApp Tests",
             scripts: [
-              "./integration_test/dapp_tests/dapp_tests.sh seilocal"
+              "./integration_test/dapp_tests/dapp_tests.sh enilocal"
             ]
           },
         ]
@@ -165,7 +165,7 @@ jobs:
       - name: Start rpc node
         run: make run-rpc-node-skipbuild &
 
-      - name: Verify Sei Chain is running
+      - name: Verify Eni Chain is running
         run: python3 integration_test/scripts/runner.py integration_test/startup/startup_test.yaml
 
       - name: ${{ matrix.test.name }}

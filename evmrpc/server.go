@@ -55,8 +55,8 @@ func NewEVMHTTPServer(
 			return debugAPI.isPanicTx(ctx, hash)
 		}
 	}
-	seiTxAPI := NewSeiTransactionAPI(tmClient, k, ctxProvider, txConfig, homeDir, ConnectionTypeHTTP, isPanicTxFunc)
-	seiDebugAPI := NewSeiDebugAPI(tmClient, k, ctxProvider, txConfig.TxDecoder(), simulateConfig, ConnectionTypeHTTP)
+	eniTxAPI := NewEniTransactionAPI(tmClient, k, ctxProvider, txConfig, homeDir, ConnectionTypeHTTP, isPanicTxFunc)
+	eniDebugAPI := NewEniDebugAPI(tmClient, k, ctxProvider, txConfig.TxDecoder(), simulateConfig, ConnectionTypeHTTP)
 
 	apis := []rpc.API{
 		{
@@ -68,16 +68,16 @@ func NewEVMHTTPServer(
 			Service:   NewBlockAPI(tmClient, k, ctxProvider, txConfig, ConnectionTypeHTTP),
 		},
 		{
-			Namespace: "sei",
-			Service:   NewSeiBlockAPI(tmClient, k, ctxProvider, txConfig, ConnectionTypeHTTP, isPanicTxFunc),
+			Namespace: "eni",
+			Service:   NewEniBlockAPI(tmClient, k, ctxProvider, txConfig, ConnectionTypeHTTP, isPanicTxFunc),
 		},
 		{
 			Namespace: "eth",
 			Service:   txAPI,
 		},
 		{
-			Namespace: "sei",
-			Service:   seiTxAPI,
+			Namespace: "eni",
+			Service:   eniTxAPI,
 		},
 		{
 			Namespace: "eth",
@@ -104,11 +104,11 @@ func NewEVMHTTPServer(
 			Service:   NewFilterAPI(tmClient, k, ctxProvider, txConfig, &FilterConfig{timeout: config.FilterTimeout, maxLog: config.MaxLogNoBlock, maxBlock: config.MaxBlocksForLog}, ConnectionTypeHTTP, "eth"),
 		},
 		{
-			Namespace: "sei",
-			Service:   NewFilterAPI(tmClient, k, ctxProvider, txConfig, &FilterConfig{timeout: config.FilterTimeout, maxLog: config.MaxLogNoBlock, maxBlock: config.MaxBlocksForLog}, ConnectionTypeHTTP, "sei"),
+			Namespace: "eni",
+			Service:   NewFilterAPI(tmClient, k, ctxProvider, txConfig, &FilterConfig{timeout: config.FilterTimeout, maxLog: config.MaxLogNoBlock, maxBlock: config.MaxBlocksForLog}, ConnectionTypeHTTP, "eni"),
 		},
 		{
-			Namespace: "sei",
+			Namespace: "eni",
 			Service:   NewAssociationAPI(tmClient, k, ctxProvider, txConfig.TxDecoder(), sendAPI, ConnectionTypeHTTP),
 		},
 		{
@@ -124,8 +124,8 @@ func NewEVMHTTPServer(
 			Service:   debugAPI,
 		},
 		{
-			Namespace: "sei",
-			Service:   seiDebugAPI,
+			Namespace: "eni",
+			Service:   eniDebugAPI,
 		},
 	}
 	// Test API can only exist on non-live chain IDs.  These APIs instrument certain overrides.

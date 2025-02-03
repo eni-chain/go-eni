@@ -28,7 +28,7 @@ import (
 )
 
 const (
-	GetSeiAddressMethod = "getSeiAddr"
+	GetEniAddressMethod = "getEniAddr"
 	GetEvmAddressMethod = "getEvmAddr"
 	Associate           = "associate"
 	AssociatePubKey     = "associatePubKey"
@@ -48,7 +48,7 @@ type PrecompileExecutor struct {
 	bankKeeper    pcommon.BankKeeper
 	accountKeeper pcommon.AccountKeeper
 
-	GetSeiAddressID   []byte
+	GetEniAddressID   []byte
 	GetEvmAddressID   []byte
 	AssociateID       []byte
 	AssociatePubKeyID []byte
@@ -66,8 +66,8 @@ func NewPrecompile(evmKeeper pcommon.EVMKeeper, bankKeeper pcommon.BankKeeper, a
 
 	for name, m := range newAbi.Methods {
 		switch name {
-		case GetSeiAddressMethod:
-			p.GetSeiAddressID = m.ID
+		case GetEniAddressMethod:
+			p.GetEniAddressID = m.ID
 		case GetEvmAddressMethod:
 			p.GetEvmAddressID = m.ID
 		case Associate:
@@ -90,8 +90,8 @@ func (p PrecompileExecutor) RequiredGas(input []byte, method *abi.Method) uint64
 
 func (p PrecompileExecutor) Execute(ctx sdk.Context, method *abi.Method, _ common.Address, _ common.Address, args []interface{}, value *big.Int, readOnly bool, _ *vm.EVM, suppliedGas uint64) (ret []byte, remainingGas uint64, err error) {
 	switch method.Name {
-	case GetSeiAddressMethod:
-		return p.getSeiAddr(ctx, method, args, value)
+	case GetEniAddressMethod:
+		return p.getEniAddr(ctx, method, args, value)
 	case GetEvmAddressMethod:
 		return p.getEvmAddr(ctx, method, args, value)
 	case Associate:
@@ -108,7 +108,7 @@ func (p PrecompileExecutor) Execute(ctx sdk.Context, method *abi.Method, _ commo
 	return
 }
 
-func (p PrecompileExecutor) getSeiAddr(ctx sdk.Context, method *abi.Method, args []interface{}, value *big.Int) (ret []byte, remainingGas uint64, err error) {
+func (p PrecompileExecutor) getEniAddr(ctx sdk.Context, method *abi.Method, args []interface{}, value *big.Int) (ret []byte, remainingGas uint64, err error) {
 	if err := pcommon.ValidateNonPayable(value); err != nil {
 		return nil, 0, err
 	}
@@ -117,12 +117,12 @@ func (p PrecompileExecutor) getSeiAddr(ctx sdk.Context, method *abi.Method, args
 		return nil, 0, err
 	}
 
-	seiAddr, found := p.evmKeeper.GetSeiAddress(ctx, args[0].(common.Address))
+	eniAddr, found := p.evmKeeper.GetEniAddress(ctx, args[0].(common.Address))
 	if !found {
-		metrics.IncrementAssociationError("getSeiAddr", types.NewAssociationMissingErr(args[0].(common.Address).Hex()))
+		metrics.IncrementAssociationError("getEniAddr", types.NewAssociationMissingErr(args[0].(common.Address).Hex()))
 		return nil, 0, fmt.Errorf("EVM address %s is not associated", args[0].(common.Address).Hex())
 	}
-	ret, err = method.Outputs.Pack(seiAddr.String())
+	ret, err = method.Outputs.Pack(eniAddr.String())
 	return ret, pcommon.GetRemainingGas(ctx, p.evmKeeper), err
 }
 
@@ -135,15 +135,15 @@ func (p PrecompileExecutor) getEvmAddr(ctx sdk.Context, method *abi.Method, args
 		return nil, 0, err
 	}
 
-	seiAddr, err := sdk.AccAddressFromBech32(args[0].(string))
+	eniAddr, err := sdk.AccAddressFromBech32(args[0].(string))
 	if err != nil {
 		return nil, 0, err
 	}
 
-	evmAddr, found := p.evmKeeper.GetEVMAddress(ctx, seiAddr)
+	evmAddr, found := p.evmKeeper.GetEVMAddress(ctx, eniAddr)
 	if !found {
 		metrics.IncrementAssociationError("getEvmAddr", types.NewAssociationMissingErr(args[0].(string)))
-		return nil, 0, fmt.Errorf("sei address %s is not associated", args[0].(string))
+		return nil, 0, fmt.Errorf("eni address %s is not associated", args[0].(string))
 	}
 	ret, err = method.Outputs.Pack(evmAddr)
 	return ret, pcommon.GetRemainingGas(ctx, p.evmKeeper), err
@@ -186,12 +186,12 @@ func (p PrecompileExecutor) associate(ctx sdk.Context, method *abi.Method, args 
 	vBig = new(big.Int).Add(vBig, utils.Big27)
 
 	customMessageHash := crypto.Keccak256Hash([]byte(customMessage))
-	evmAddr, seiAddr, pubkey, err := helpers.GetAddresses(vBig, rBig, sBig, customMessageHash)
+	evmAddr, eniAddr, pubkey, err := helpers.GetAddresses(vBig, rBig, sBig, customMessageHash)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	return p.associateAddresses(ctx, method, evmAddr, seiAddr, pubkey)
+	return p.associateAddresses(ctx, method, evmAddr, eniAddr, pubkey)
 }
 
 func (p PrecompileExecutor) associatePublicKey(ctx sdk.Context, method *abi.Method, args []interface{}, value *big.Int) (ret []byte, remainingGas uint64, err error) {
@@ -220,29 +220,29 @@ func (p PrecompileExecutor) associatePublicKey(ctx sdk.Context, method *abi.Meth
 	// Convert to uncompressed public key
 	uncompressedPubKey := pubKey.SerializeUncompressed()
 
-	evmAddr, seiAddr, pubkey, err := helpers.GetAddressesFromPubkeyBytes(uncompressedPubKey)
+	evmAddr, eniAddr, pubkey, err := helpers.GetAddressesFromPubkeyBytes(uncompressedPubKey)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	return p.associateAddresses(ctx, method, evmAddr, seiAddr, pubkey)
+	return p.associateAddresses(ctx, method, evmAddr, eniAddr, pubkey)
 }
 
-func (p PrecompileExecutor) associateAddresses(ctx sdk.Context, method *abi.Method, evmAddr common.Address, seiAddr sdk.AccAddress, pubkey cryptotypes.PubKey) (ret []byte, remainingGas uint64, err error) {
+func (p PrecompileExecutor) associateAddresses(ctx sdk.Context, method *abi.Method, evmAddr common.Address, eniAddr sdk.AccAddress, pubkey cryptotypes.PubKey) (ret []byte, remainingGas uint64, err error) {
 	// Check that address is not already associated
-	_, found := p.evmKeeper.GetEVMAddress(ctx, seiAddr)
+	_, found := p.evmKeeper.GetEVMAddress(ctx, eniAddr)
 	if found {
-		return nil, 0, fmt.Errorf("address %s is already associated with evm address %s", seiAddr, evmAddr)
+		return nil, 0, fmt.Errorf("address %s is already associated with evm address %s", eniAddr, evmAddr)
 	}
 
 	// Associate Addresses:
 	associationHelper := helpers.NewAssociationHelper(p.evmKeeper, p.bankKeeper, p.accountKeeper)
-	err = associationHelper.AssociateAddresses(ctx, seiAddr, evmAddr, pubkey)
+	err = associationHelper.AssociateAddresses(ctx, eniAddr, evmAddr, pubkey)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	ret, err = method.Outputs.Pack(seiAddr.String(), evmAddr)
+	ret, err = method.Outputs.Pack(eniAddr.String(), evmAddr)
 	return ret, pcommon.GetRemainingGas(ctx, p.evmKeeper), err
 }
 

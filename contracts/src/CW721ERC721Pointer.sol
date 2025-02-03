@@ -55,7 +55,7 @@ contract CW721ERC721Pointer is ERC721,ERC2981 {
         uint256 numTokens = 0;
         string memory startAfter;
         string memory qb = string.concat(
-            string.concat("\"limit\":1000,\"owner\":\"", AddrPrecompile.getSeiAddr(owner_)),
+            string.concat("\"limit\":1000,\"owner\":\"", AddrPrecompile.getEniAddr(owner_)),
             "\""
         );
         bytes32 terminator = keccak256("{\"tokens\":[]}");
@@ -99,7 +99,7 @@ contract CW721ERC721Pointer is ERC721,ERC2981 {
     }
 
     function isApprovedForAll(address owner_, address operator) public view override returns (bool) {
-        string memory o = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner_)));
+        string memory o = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getEniAddr(owner_)));
         string memory req = _curlyBrace(_formatPayload("all_operators", _curlyBrace(o)));
         bytes memory response = WasmdPrecompile.query(Cw721Address, bytes(req));
         bytes[] memory approvals = JsonPrecompile.extractAsBytesList(response, "operators");
@@ -162,21 +162,21 @@ contract CW721ERC721Pointer is ERC721,ERC2981 {
             revert ERC721InvalidReceiver(address(0));
         }
         require(from == ownerOf(tokenId), "`from` must be the owner");
-        string memory recipient = _formatPayload("recipient", _doubleQuotes(AddrPrecompile.getSeiAddr(to)));
+        string memory recipient = _formatPayload("recipient", _doubleQuotes(AddrPrecompile.getEniAddr(to)));
         string memory tId = _formatPayload("token_id", _doubleQuotes(Strings.toString(tokenId)));
         string memory req = _curlyBrace(_formatPayload("transfer_nft", _curlyBrace(_join(recipient, tId, ","))));
         _execute(bytes(req));
     }
 
     function approve(address approved, uint256 tokenId) public override {
-        string memory spender = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getSeiAddr(approved)));
+        string memory spender = _formatPayload("spender", _doubleQuotes(AddrPrecompile.getEniAddr(approved)));
         string memory tId = _formatPayload("token_id", _doubleQuotes(Strings.toString(tokenId)));
         string memory req = _curlyBrace(_formatPayload("approve", _curlyBrace(_join(spender, tId, ","))));
         _execute(bytes(req));
     }
 
     function setApprovalForAll(address operator, bool approved) public override {
-        string memory op = _curlyBrace(_formatPayload("operator", _doubleQuotes(AddrPrecompile.getSeiAddr(operator))));
+        string memory op = _curlyBrace(_formatPayload("operator", _doubleQuotes(AddrPrecompile.getEniAddr(operator))));
         if (approved) {
             _execute(bytes(_curlyBrace(_formatPayload("approve_all", op))));
         } else {

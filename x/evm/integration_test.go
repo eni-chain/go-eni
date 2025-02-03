@@ -42,39 +42,39 @@ var f embed.FS
 func TestERC721RoyaltiesPointerToCW721Royalties(t *testing.T) {
 	k := testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
-	adminSeiAddr, adminEvmAddr := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, adminSeiAddr, adminEvmAddr)
+	adminEniAddr, adminEvmAddr := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, adminEniAddr, adminEvmAddr)
 	// deploy cw2981
 	bz, err := os.ReadFile("../../contracts/wasm/cw721_royalties.wasm")
 	if err != nil {
 		panic(err)
 	}
-	codeID, err := k.WasmKeeper().Create(ctx, adminSeiAddr, bz, nil)
+	codeID, err := k.WasmKeeper().Create(ctx, adminEniAddr, bz, nil)
 	require.Nil(t, err)
-	instantiateMsg, err := json.Marshal(map[string]interface{}{"name": "test", "symbol": "TEST", "minter": adminSeiAddr.String()})
+	instantiateMsg, err := json.Marshal(map[string]interface{}{"name": "test", "symbol": "TEST", "minter": adminEniAddr.String()})
 	require.Nil(t, err)
-	cw2981Addr, _, err := k.WasmKeeper().Instantiate(ctx, codeID, adminSeiAddr, adminSeiAddr, instantiateMsg, "cw2981", sdk.NewCoins())
+	cw2981Addr, _, err := k.WasmKeeper().Instantiate(ctx, codeID, adminEniAddr, adminEniAddr, instantiateMsg, "cw2981", sdk.NewCoins())
 	require.Nil(t, err)
 	require.NotEmpty(t, cw2981Addr)
 	// mint a NFT and set royalty info to 1%
 	executeMsg, err := json.Marshal(map[string]interface{}{
 		"mint": map[string]interface{}{
 			"token_id": "1",
-			"owner":    adminSeiAddr.String(),
+			"owner":    adminEniAddr.String(),
 			"extension": map[string]interface{}{
 				"royalty_percentage":      1,
-				"royalty_payment_address": adminSeiAddr.String(),
+				"royalty_payment_address": adminEniAddr.String(),
 			},
 		},
 	})
 	require.Nil(t, err)
-	_, err = k.WasmKeeper().Execute(ctx, cw2981Addr, adminSeiAddr, executeMsg, sdk.NewCoins())
+	_, err = k.WasmKeeper().Execute(ctx, cw2981Addr, adminEniAddr, executeMsg, sdk.NewCoins())
 	require.Nil(t, err)
 	// deploy pointer to cw2981
 	privKey := testkeeper.MockPrivateKey()
-	seiAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
-	require.Nil(t, k.BankKeeper().AddCoins(ctx, seiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10000000))), true))
+	eniAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
+	require.Nil(t, k.BankKeeper().AddCoins(ctx, eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10000000))), true))
 	testPrivHex := hex.EncodeToString(privKey.Bytes())
 	key, _ := crypto.HexToECDSA(testPrivHex)
 	to := common.HexToAddress(pointer.PointerAddress)
@@ -149,9 +149,9 @@ func TestCW721RoyaltiesPointerToERC721Royalties(t *testing.T) {
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
 	// deploy erc2981
 	privKey := testkeeper.MockPrivateKey()
-	seiAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
-	require.Nil(t, k.BankKeeper().AddCoins(ctx, seiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10000000))), true))
+	eniAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
+	require.Nil(t, k.BankKeeper().AddCoins(ctx, eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10000000))), true))
 	testPrivHex := hex.EncodeToString(privKey.Bytes())
 	key, _ := crypto.HexToECDSA(testPrivHex)
 	abiBz, err := os.ReadFile("../../example/contracts/erc2981/ERC2981Example.abi")
@@ -221,7 +221,7 @@ func TestCW721RoyaltiesPointerToERC721Royalties(t *testing.T) {
 	require.Equal(t, uint32(0), res.Code)
 	// deploy CW->ERC pointer
 	res2, err := keeper.NewMsgServerImpl(&k).RegisterPointer(sdk.WrapSDKContext(ctx), &types.MsgRegisterPointer{
-		Sender:      seiAddr.String(),
+		Sender:      eniAddr.String(),
 		PointerType: types.PointerType_ERC721,
 		ErcAddress:  receipt.ContractAddress,
 	})
@@ -252,50 +252,50 @@ func TestCW721RoyaltiesPointerToERC721Royalties(t *testing.T) {
 	require.Nil(t, err)
 	ret, err = testkeeper.EVMTestApp.WasmKeeper.QuerySmart(ctx, sdk.MustAccAddressFromBech32(res2.PointerAddress), query)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("{\"address\":\"%s\",\"royalty_amount\":\"1000\"}", seiAddr.String()), string(ret))
+	require.Equal(t, fmt.Sprintf("{\"address\":\"%s\",\"royalty_amount\":\"1000\"}", eniAddr.String()), string(ret))
 }
 
 func TestERC1155RoyaltiesPointerToCW1155Royalties(t *testing.T) {
 	k := testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
-	adminSeiAddr, adminEvmAddr := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, adminSeiAddr, adminEvmAddr)
+	adminEniAddr, adminEvmAddr := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, adminEniAddr, adminEvmAddr)
 	// deploy cw2981
 	bz, err := os.ReadFile("../../contracts/wasm/cw1155_royalties.wasm")
 	if err != nil {
 		panic(err)
 	}
-	codeID, err := k.WasmKeeper().Create(ctx, adminSeiAddr, bz, nil)
+	codeID, err := k.WasmKeeper().Create(ctx, adminEniAddr, bz, nil)
 	require.Nil(t, err)
-	instantiateMsg, err := json.Marshal(map[string]interface{}{"name": "test", "symbol": "TEST", "minter": adminSeiAddr.String()})
+	instantiateMsg, err := json.Marshal(map[string]interface{}{"name": "test", "symbol": "TEST", "minter": adminEniAddr.String()})
 	require.Nil(t, err)
-	cw2981Addr, _, err := k.WasmKeeper().Instantiate(ctx, codeID, adminSeiAddr, adminSeiAddr, instantiateMsg, "cw2981", sdk.NewCoins())
+	cw2981Addr, _, err := k.WasmKeeper().Instantiate(ctx, codeID, adminEniAddr, adminEniAddr, instantiateMsg, "cw2981", sdk.NewCoins())
 	require.Nil(t, err)
 	require.NotEmpty(t, cw2981Addr)
 	// mint a NFT and set royalty info to 1%
 	executeMsg, err := json.Marshal(map[string]interface{}{
 		"mint": map[string]interface{}{
-			"recipient": adminSeiAddr.String(),
+			"recipient": adminEniAddr.String(),
 			"msg": map[string]interface{}{
 				"token_id":  "1",
 				"amount":    "10",
 				"token_uri": "testuri1",
 				"extension": map[string]interface{}{
 					"royalty_percentage":      1,
-					"royalty_payment_address": adminSeiAddr.String(),
+					"royalty_payment_address": adminEniAddr.String(),
 				},
 			},
 		},
 	})
 	require.Nil(t, err)
-	_, err = k.WasmKeeper().Execute(ctx, cw2981Addr, adminSeiAddr, executeMsg, sdk.NewCoins())
+	_, err = k.WasmKeeper().Execute(ctx, cw2981Addr, adminEniAddr, executeMsg, sdk.NewCoins())
 	require.Nil(t, err)
 
 	// deploy pointer to cw2981
 	privKey := testkeeper.MockPrivateKey()
-	seiAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
-	require.Nil(t, k.BankKeeper().AddCoins(ctx, seiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10000000))), true))
+	eniAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
+	require.Nil(t, k.BankKeeper().AddCoins(ctx, eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10000000))), true))
 	testPrivHex := hex.EncodeToString(privKey.Bytes())
 	key, _ := crypto.HexToECDSA(testPrivHex)
 	to := common.HexToAddress(pointer.PointerAddress)
@@ -370,9 +370,9 @@ func TestCW1155RoyaltiesPointerToERC1155Royalties(t *testing.T) {
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
 	// deploy erc2981
 	privKey := testkeeper.MockPrivateKey()
-	seiAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
-	require.Nil(t, k.BankKeeper().AddCoins(ctx, seiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10000000))), true))
+	eniAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
+	require.Nil(t, k.BankKeeper().AddCoins(ctx, eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10000000))), true))
 	testPrivHex := hex.EncodeToString(privKey.Bytes())
 	key, _ := crypto.HexToECDSA(testPrivHex)
 	abiBz, err := os.ReadFile("../../example/contracts/erc1155/ERC1155Example.abi")
@@ -442,7 +442,7 @@ func TestCW1155RoyaltiesPointerToERC1155Royalties(t *testing.T) {
 	require.Equal(t, uint32(0), res.Code)
 	// deploy CW->ERC pointer
 	res2, err := keeper.NewMsgServerImpl(&k).RegisterPointer(sdk.WrapSDKContext(ctx), &types.MsgRegisterPointer{
-		Sender:      seiAddr.String(),
+		Sender:      eniAddr.String(),
 		PointerType: types.PointerType_ERC1155,
 		ErcAddress:  receipt.ContractAddress,
 	})
@@ -473,15 +473,15 @@ func TestCW1155RoyaltiesPointerToERC1155Royalties(t *testing.T) {
 	require.Nil(t, err)
 	ret, err = testkeeper.EVMTestApp.WasmKeeper.QuerySmart(ctx, sdk.MustAccAddressFromBech32(res2.PointerAddress), query)
 	require.Nil(t, err)
-	require.Equal(t, fmt.Sprintf("{\"address\":\"%s\",\"royalty_amount\":\"50\"}", seiAddr.String()), string(ret))
+	require.Equal(t, fmt.Sprintf("{\"address\":\"%s\",\"royalty_amount\":\"50\"}", eniAddr.String()), string(ret))
 }
 
 func TestNonceIncrementsForInsufficientFunds(t *testing.T) {
 	k := testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
 	privKey := testkeeper.MockPrivateKey()
-	seiAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
+	eniAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
 	testPrivHex := hex.EncodeToString(privKey.Bytes())
 	key, _ := crypto.HexToECDSA(testPrivHex)
 	txData := ethtypes.LegacyTx{
@@ -520,12 +520,12 @@ func TestNonceIncrementsForInsufficientFunds(t *testing.T) {
 func TestInvalidAssociateMsg(t *testing.T) {
 	// EVM associate tx
 	k := testkeeper.EVMTestApp.EvmKeeper
-	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now()).WithChainID("sei-test").WithBlockHeight(1)
+	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now()).WithChainID("eni-test").WithBlockHeight(1)
 	privKey := testkeeper.MockPrivateKey()
-	seiAddr, _ := testkeeper.PrivateKeyToAddresses(privKey)
-	amt := sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(1000000)))
+	eniAddr, _ := testkeeper.PrivateKeyToAddresses(privKey)
+	amt := sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(1000000)))
 	k.BankKeeper().MintCoins(ctx, "evm", amt)
-	k.BankKeeper().SendCoinsFromModuleToAccount(ctx, "evm", seiAddr, amt)
+	k.BankKeeper().SendCoinsFromModuleToAccount(ctx, "evm", eniAddr, amt)
 	testPrivHex := hex.EncodeToString(privKey.Bytes())
 	key, _ := crypto.HexToECDSA(testPrivHex)
 	customMsg := strings.Repeat("a", 65)
@@ -551,11 +551,11 @@ func TestInvalidAssociateMsg(t *testing.T) {
 
 	// cosmos associate tx
 	amsg := &types.MsgAssociate{
-		Sender: seiAddr.String(), CustomMessage: customMsg,
+		Sender: eniAddr.String(), CustomMessage: customMsg,
 	}
 	txBuilder = testkeeper.EVMTestApp.GetTxConfig().NewTxBuilder()
 	txBuilder.SetMsgs(amsg)
-	signedTx := signTx(txBuilder, privKey, k.AccountKeeper().GetAccount(ctx, seiAddr))
+	signedTx := signTx(txBuilder, privKey, k.AccountKeeper().GetAccount(ctx, eniAddr))
 	txbz, err = testkeeper.EVMTestApp.GetTxConfig().TxEncoder()(signedTx)
 	require.Nil(t, err)
 	res = testkeeper.EVMTestApp.DeliverTx(ctx, abci.RequestDeliverTx{Tx: txbz}, signedTx, sha256.Sum256(txbz))
@@ -563,7 +563,7 @@ func TestInvalidAssociateMsg(t *testing.T) {
 
 	// multiple associate msgs should charge gas (and run out of gas in this test case)
 	amsg = &types.MsgAssociate{
-		Sender: seiAddr.String(), CustomMessage: "",
+		Sender: eniAddr.String(), CustomMessage: "",
 	}
 	txBuilder = testkeeper.EVMTestApp.GetTxConfig().NewTxBuilder()
 	msgs := []sdk.Msg{}
@@ -571,7 +571,7 @@ func TestInvalidAssociateMsg(t *testing.T) {
 		msgs = append(msgs, amsg)
 	}
 	txBuilder.SetMsgs(msgs...)
-	signedTx = signTx(txBuilder, privKey, k.AccountKeeper().GetAccount(ctx, seiAddr))
+	signedTx = signTx(txBuilder, privKey, k.AccountKeeper().GetAccount(ctx, eniAddr))
 	txbz, err = testkeeper.EVMTestApp.GetTxConfig().TxEncoder()(signedTx)
 	require.Nil(t, err)
 	res = testkeeper.EVMTestApp.DeliverTx(ctx, abci.RequestDeliverTx{Tx: txbz}, signedTx, sha256.Sum256(txbz))
@@ -592,7 +592,7 @@ func signTx(txBuilder client.TxBuilder, privKey cryptotypes.PrivKey, acc authtyp
 	_ = txBuilder.SetSignatures(sigsV2...)
 	sigsV2 = []signing.SignatureV2{}
 	signerData := xauthsigning.SignerData{
-		ChainID:       "sei-test",
+		ChainID:       "eni-test",
 		AccountNumber: acc.GetAccountNumber(),
 		Sequence:      acc.GetSequence(),
 	}

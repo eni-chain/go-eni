@@ -3,18 +3,18 @@
 # Set up GO PATH
 echo "Configure and initialize environment"
 
-# Testing whether seid works or not
-seid version # Uncomment the below line if there are any dependency issues
-# ldd build/seid
+# Testing whether enid works or not
+enid version # Uncomment the below line if there are any dependency issues
+# ldd build/enid
 
 # Initialize validator node
-MONIKER="sei-rpc-node"
-seid init --chain-id sei "$MONIKER"
+MONIKER="eni-rpc-node"
+enid init --chain-id eni "$MONIKER"
 
 # Copy configs
-cp docker/rpcnode/config/app.toml ~/.sei/config/app.toml
-cp docker/rpcnode/config/config.toml ~/.sei/config/config.toml
-cp build/generated/genesis.json ~/.sei/config/genesis.json
+cp docker/rpcnode/config/app.toml ~/.eni/config/app.toml
+cp docker/rpcnode/config/config.toml ~/.eni/config/config.toml
+cp build/generated/genesis.json ~/.eni/config/genesis.json
 
 # Override state sync configs
 STATE_SYNC_RPC="192.168.10.10:26657"
@@ -24,8 +24,8 @@ STATE_SYNC_PEER=$(paste -s -d ',' build/generated/PEERS)
 LATEST_HEIGHT=$(curl -s $STATE_SYNC_RPC/block | jq -r .block.header.height)
 SYNC_BLOCK_HEIGHT=$LATEST_HEIGHT
 SYNC_BLOCK_HASH=$(curl -s "$STATE_SYNC_RPC/block?height=$SYNC_BLOCK_HEIGHT" | jq -r .block_id.hash)
-sed -i.bak -e "s|^enable *=.*|enable = true|" ~/.sei/config/config.toml
-sed -i.bak -e "s|^rpc-servers *=.*|rpc-servers = \"$STATE_SYNC_RPC,$STATE_SYNC_RPC\"|" ~/.sei/config/config.toml
-sed -i.bak -e "s|^trust-height *=.*|trust-height = $SYNC_BLOCK_HEIGHT|" ~/.sei/config/config.toml
-sed -i.bak -e "s|^trust-hash *=.*|trust-hash = \"$SYNC_BLOCK_HASH\"|" ~/.sei/config/config.toml
-sed -i.bak -e "s|^persistent-peers *=.*|persistent-peers = \"$STATE_SYNC_PEER\"|" ~/.sei/config/config.toml
+sed -i.bak -e "s|^enable *=.*|enable = true|" ~/.eni/config/config.toml
+sed -i.bak -e "s|^rpc-servers *=.*|rpc-servers = \"$STATE_SYNC_RPC,$STATE_SYNC_RPC\"|" ~/.eni/config/config.toml
+sed -i.bak -e "s|^trust-height *=.*|trust-height = $SYNC_BLOCK_HEIGHT|" ~/.eni/config/config.toml
+sed -i.bak -e "s|^trust-hash *=.*|trust-hash = \"$SYNC_BLOCK_HASH\"|" ~/.eni/config/config.toml
+sed -i.bak -e "s|^persistent-peers *=.*|persistent-peers = \"$STATE_SYNC_PEER\"|" ~/.eni/config/config.toml

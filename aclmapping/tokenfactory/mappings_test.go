@@ -46,7 +46,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 // Explicitly only run once during setup
 func (suite *KeeperTestSuite) PrepareTest() {
-	suite.defaultDenom = "usei"
+	suite.defaultDenom = "ueni"
 	suite.testDenom = "foocoins"
 
 	suite.initalBalance = sdk.Coins{sdk.NewInt64Coin(suite.defaultDenom, 100000000000)}
@@ -200,7 +200,7 @@ func TestGeneratorInvalidMessageTypes(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	oracleVote := oracletypes.MsgAggregateExchangeRateVote{
-		ExchangeRates: "1usei",
+		ExchangeRates: "1ueni",
 		Feeder:        "test",
 		Validator:     "validator",
 	}
@@ -224,7 +224,7 @@ func TestMsgBeginBurnDepedencyGenerator(t *testing.T) {
 
 	sendMsg := tokenfactorytypes.MsgBurn{
 		Sender: addr1.String(),
-		Amount: sdk.NewInt64Coin("usei", 10),
+		Amount: sdk.NewInt64Coin("ueni", 10),
 	}
 
 	accessOps, err := tkfactory.TokenFactoryBurnDependencyGenerator(app.AccessControlKeeper, ctx, &sendMsg)

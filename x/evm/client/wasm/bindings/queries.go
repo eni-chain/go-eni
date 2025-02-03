@@ -40,11 +40,11 @@ const (
 	ERC1155UriType         EVMQueryType = "evm_query_erc1155_uri"
 	ERC1155RoyaltyInfoType EVMQueryType = "evm_query_erc1155_royalty_info"
 	GetEvmAddressType      EVMQueryType = "evm_query_get_evm_address"
-	GetSeiAddressType      EVMQueryType = "evm_query_get_sei_address"
+	GetEniAddressType      EVMQueryType = "evm_query_get_eni_address"
 	SupportsInterfaceType  EVMQueryType = "evm_query_supports_interface"
 )
 
-func (q *SeiEVMQuery) GetQueryType() EVMQueryType {
+func (q *EniEVMQuery) GetQueryType() EVMQueryType {
 	if q.StaticCall != nil {
 		return StaticCallType
 	}
@@ -135,8 +135,8 @@ func (q *SeiEVMQuery) GetQueryType() EVMQueryType {
 	if q.GetEvmAddress != nil {
 		return GetEvmAddressType
 	}
-	if q.GetSeiAddress != nil {
-		return GetSeiAddressType
+	if q.GetEniAddress != nil {
+		return GetEniAddressType
 	}
 	if q.SupportsInterface != nil {
 		return SupportsInterfaceType
@@ -144,7 +144,7 @@ func (q *SeiEVMQuery) GetQueryType() EVMQueryType {
 	return ""
 }
 
-type SeiEVMQuery struct {
+type EniEVMQuery struct {
 	StaticCall                   *StaticCallRequest                   `json:"static_call,omitempty"`
 	ERC20TransferPayload         *ERC20TransferPayloadRequest         `json:"erc20_transfer_payload,omitempty"`
 	ERC20TransferFromPayload     *ERC20TransferFromPayloadRequest     `json:"erc20_transfer_from_payload,omitempty"`
@@ -175,7 +175,7 @@ type SeiEVMQuery struct {
 	ERC1155Uri                   *ERC1155UriRequest                   `json:"erc1155_uri,omitempty"`
 	ERC1155RoyaltyInfo           *ERC1155RoyaltyInfoRequest           `json:"erc1155_royalty_info,omitempty"`
 	GetEvmAddress                *GetEvmAddressRequest                `json:"get_evm_address,omitempty"`
-	GetSeiAddress                *GetSeiAddressRequest                `json:"get_sei_address,omitempty"`
+	GetEniAddress                *GetEniAddressRequest                `json:"get_eni_address,omitempty"`
 	SupportsInterface            *SupportsInterfaceRequest            `json:"supports_interface,omitempty"`
 }
 
@@ -351,10 +351,10 @@ type ERC1155RoyaltyInfoRequest struct {
 }
 
 type GetEvmAddressRequest struct {
-	SeiAddress string `json:"sei_address"`
+	EniAddress string `json:"eni_address"`
 }
 
-type GetSeiAddressRequest struct {
+type GetEniAddressRequest struct {
 	EvmAddress string `json:"evm_address"`
 }
 
@@ -460,8 +460,8 @@ type GetEvmAddressResponse struct {
 	Associated bool   `json:"associated"`
 }
 
-type GetSeiAddressResponse struct {
-	SeiAddress string `json:"sei_address"`
+type GetEniAddressResponse struct {
+	EniAddress string `json:"eni_address"`
 	Associated bool   `json:"associated"`
 }
 

@@ -1,7 +1,7 @@
 {
-  "name": "sei-chain",
+  "name": "go-eni",
   "version": "1.0.0",
-  "description": "\"Contracts for Sei Chain\"",
+  "description": "\"Contracts for Go Eni\"",
   "main": "index.js",
   "directories": {
     "lib": "lib",

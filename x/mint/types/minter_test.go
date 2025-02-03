@@ -13,12 +13,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestParamsUsei(t *testing.T) {
+func TestParamsUeni(t *testing.T) {
 	params := types.DefaultParams()
 	err := params.Validate()
 	require.Nil(t, err)
 
-	params.MintDenom = "sei"
+	params.MintDenom = "eni"
 	err = params.Validate()
 	require.NotNil(t, err)
 }

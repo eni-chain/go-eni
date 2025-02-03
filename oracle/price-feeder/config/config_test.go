@@ -29,7 +29,7 @@ func TestValidate(t *testing.T) {
 			},
 			Keyring: config.Keyring{
 				Backend: "test",
-				Dir:     "/Users/username/.sei",
+				Dir:     "/Users/username/.eni",
 			},
 			RPC: config.RPC{
 				TMRPCEndpoint: "http://localhost:26657",
@@ -46,7 +46,7 @@ func TestValidate(t *testing.T) {
 				PrometheusRetentionTime: 120,
 			},
 			GasAdjustment: 1.5,
-			GasPrices:     "0.00125usei",
+			GasPrices:     "0.00125ueni",
 			Healthchecks: []config.Healthchecks{
 				{URL: "https://hc-ping.com/HEALTHCHECK-UUID", Timeout: "200ms"},
 			},
@@ -142,7 +142,7 @@ func TestParseConfig_Valid(t *testing.T) {
 
 	content := []byte(`
 gas_adjustment = 1.5
-gas_prices = "0.00125usei"
+gas_prices = "0.00125ueni"
 
 [server]
 listen_addr = "0.0.0.0:99999"
@@ -161,8 +161,8 @@ providers = [
 ]
 
 [[currency_pairs]]
-base = "SEI"
-chain_denom = "usei"
+base = "ENI"
+chain_denom = "ueni"
 quote = "USDT"
 providers = [
 	"kraken",
@@ -181,14 +181,14 @@ providers = [
 ]
 
 [account]
-address = "sei15nejfgcaanqpw25ru4arvfd0fwy6j8clccvwx4"
-validator = "seivalcons14rjlkfzp56733j5l5nfk6fphjxymgf8mj04d5p"
-chain_id = "sei-local-testnet"
-prefix = "sei"
+address = "eni15nejfgcaanqpw25ru4arvfd0fwy6j8clccvwx4"
+validator = "enivalcons14rjlkfzp56733j5l5nfk6fphjxymgf8mj04d5p"
+chain_id = "eni-local-testnet"
+prefix = "eni"
 
 [keyring]
 backend = "test"
-dir = "/Users/username/.sei"
+dir = "/Users/username/.eni"
 pass = "keyringPassword"
 
 [rpc]
@@ -203,7 +203,7 @@ enable_hostname = true
 enable_hostname_label = true
 enable_service_label = true
 prometheus_retention = 120
-global_labels = [["chain-id", "sei-local-testnet"]]
+global_labels = [["chain-id", "eni-local-testnet"]]
 
 [[healthchecks]]
 url = "https://hc-ping.com/HEALTHCHECK-UUID"
@@ -234,7 +234,7 @@ func TestParseConfig_Valid_NoTelemetry(t *testing.T) {
 
 	content := []byte(`
 gas_adjustment = 1.5
-gas_prices = "0.00125usei"
+gas_prices = "0.00125ueni"
 
 [server]
 listen_addr = "0.0.0.0:99999"
@@ -253,8 +253,8 @@ providers = [
 ]
 
 [[currency_pairs]]
-base = "SEI"
-chain_denom = "usei"
+base = "ENI"
+chain_denom = "ueni"
 quote = "USDT"
 providers = [
 	"kraken",
@@ -273,14 +273,14 @@ providers = [
 ]
 
 [account]
-address = "sei15nejfgcaanqpw25ru4arvfd0fwy6j8clccvwx4"
-validator = "seivalcons14rjlkfzp56733j5l5nfk6fphjxymgf8mj04d5p"
-chain_id = "sei-local-testnet"
-prefix = "sei"
+address = "eni15nejfgcaanqpw25ru4arvfd0fwy6j8clccvwx4"
+validator = "enivalcons14rjlkfzp56733j5l5nfk6fphjxymgf8mj04d5p"
+chain_id = "eni-local-testnet"
+prefix = "eni"
 
 [keyring]
 backend = "test"
-dir = "/Users/username/.sei"
+dir = "/Users/username/.eni"
 pass = "keyringPassword"
 
 [rpc]
@@ -381,7 +381,7 @@ func TestParseConfig_Valid_Deviations(t *testing.T) {
 
 	content := []byte(`
 gas_adjustment = 1.5
-gas_prices = "0.00125usei"
+gas_prices = "0.00125ueni"
 
 [server]
 listen_addr = "0.0.0.0:99999"
@@ -408,8 +408,8 @@ providers = [
 ]
 
 [[currency_pairs]]
-base = "sei"
-chain_denom = "usei"
+base = "eni"
+chain_denom = "ueni"
 quote = "USDT"
 providers = [
 	"kraken",
@@ -428,14 +428,14 @@ providers = [
 ]
 
 [account]
-address = "sei15nejfgcaanqpw25ru4arvfd0fwy6j8clccvwx4"
-validator = "seivalcons14rjlkfzp56733j5l5nfk6fphjxymgf8mj04d5p"
-chain_id = "sei-local-testnet"
-prefix = "sei"
+address = "eni15nejfgcaanqpw25ru4arvfd0fwy6j8clccvwx4"
+validator = "enivalcons14rjlkfzp56733j5l5nfk6fphjxymgf8mj04d5p"
+chain_id = "eni-local-testnet"
+prefix = "eni"
 
 [keyring]
 backend = "test"
-dir = "/Users/username/.sei"
+dir = "/Users/username/.eni"
 pass = "keyringPassword"
 
 [rpc]
@@ -450,7 +450,7 @@ enable_hostname = true
 enable_hostname_label = true
 enable_service_label = true
 prometheus_retention = 120
-global_labels = [["chain-id", "sei-local-testnet"]]
+global_labels = [["chain-id", "eni-local-testnet"]]
 `)
 	_, err = tmpFile.Write(content)
 	require.NoError(t, err)

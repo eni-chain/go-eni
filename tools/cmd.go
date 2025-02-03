@@ -10,7 +10,7 @@ import (
 func ToolCmd() *cobra.Command {
 	toolsCmd := &cobra.Command{
 		Use:   "tools",
-		Short: "A set of useful tools for sei chain",
+		Short: "A set of useful tools for eni chain",
 	}
 	toolsCmd.AddCommand(scanner.ScanCmd())
 	toolsCmd.AddCommand(migration.MigrateCmd())

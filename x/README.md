@@ -1,6 +1,6 @@
-# Sei modules
+# Eni modules
 
-Sei implements the following custom modules:
+Eni implements the following custom modules:
 * `dex` -
 * `epoch` -
 * `oracle` -

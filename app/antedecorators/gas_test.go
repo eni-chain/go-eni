@@ -16,13 +16,13 @@ import (
 
 func TestMultiplierGasSetter(t *testing.T) {
 	testApp := app.Setup(false, false)
-	contractAddr, err := sdk.AccAddressFromBech32("sei1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw")
+	contractAddr, err := sdk.AccAddressFromBech32("eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw")
 	require.NoError(t, err)
 	ctx := testApp.NewContext(false, types.Header{}).WithBlockHeight(2)
 	testApp.ParamsKeeper.SetCosmosGasParams(ctx, *paramtypes.DefaultCosmosGasParams())
 	testApp.ParamsKeeper.SetFeesParams(ctx, paramtypes.DefaultGenesis().GetFeesParams())
 	testMsg := wasmtypes.MsgExecuteContract{
-		Contract: "sei1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw",
+		Contract: "eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw",
 		Msg:      []byte("{\"xyz\":{}}"),
 	}
 	testTx := app.NewTestTx([]sdk.Msg{&testMsg})

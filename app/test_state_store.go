@@ -5,11 +5,11 @@ import (
 	"sort"
 	"sync"
 
-	seidbproto "github.com/eni-chain/eni-db/proto"
+	enidbproto "github.com/eni-chain/eni-db/proto"
 	"github.com/eni-chain/eni-db/ss/types"
 )
 
-// InMemoryStateStore this implements seidb state store with an inmemory store
+// InMemoryStateStore this implements enidb state store with an inmemory store
 type InMemoryStateStore struct {
 	mu              sync.RWMutex
 	data            map[string]map[int64]map[string][]byte
@@ -151,7 +151,7 @@ func (s *InMemoryStateStore) SetEarliestVersion(version int64, ignoreVersion boo
 	return nil
 }
 
-func (s *InMemoryStateStore) ApplyChangeset(version int64, cs *seidbproto.NamedChangeSet) error {
+func (s *InMemoryStateStore) ApplyChangeset(version int64, cs *enidbproto.NamedChangeSet) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -179,7 +179,7 @@ func (s *InMemoryStateStore) ApplyChangeset(version int64, cs *seidbproto.NamedC
 	return nil
 }
 
-func (s *InMemoryStateStore) ApplyChangesetAsync(version int64, changesets []*seidbproto.NamedChangeSet) error {
+func (s *InMemoryStateStore) ApplyChangesetAsync(version int64, changesets []*enidbproto.NamedChangeSet) error {
 	// Implementation for async write, currently just calls ApplyChangeset
 	for _, cs := range changesets {
 		if err := s.ApplyChangeset(version, cs); err != nil {

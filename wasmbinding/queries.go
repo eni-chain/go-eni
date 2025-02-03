@@ -43,7 +43,7 @@ func NewQueryPlugin(oh *oraclewasm.OracleWasmQueryHandler, eh *epochwasm.EpochWa
 }
 
 func (qp QueryPlugin) HandleOracleQuery(ctx sdk.Context, queryData json.RawMessage) ([]byte, error) {
-	var parsedQuery oraclebindings.SeiOracleQuery
+	var parsedQuery oraclebindings.EniOracleQuery
 	if err := json.Unmarshal(queryData, &parsedQuery); err != nil {
 		return nil, oracletypes.ErrParsingOracleQuery
 	}
@@ -71,14 +71,14 @@ func (qp QueryPlugin) HandleOracleQuery(ctx sdk.Context, queryData json.RawMessa
 
 		return bz, nil
 	default:
-		return nil, oracletypes.ErrUnknownSeiOracleQuery
+		return nil, oracletypes.ErrUnknownEniOracleQuery
 	}
 }
 
 func (qp QueryPlugin) HandleEpochQuery(ctx sdk.Context, queryData json.RawMessage) ([]byte, error) {
-	var parsedQuery epochbindings.SeiEpochQuery
+	var parsedQuery epochbindings.EniEpochQuery
 	if err := json.Unmarshal(queryData, &parsedQuery); err != nil {
-		return nil, epochtypes.ErrParsingSeiEpochQuery
+		return nil, epochtypes.ErrParsingEniEpochQuery
 	}
 	switch {
 	case parsedQuery.Epoch != nil:
@@ -93,14 +93,14 @@ func (qp QueryPlugin) HandleEpochQuery(ctx sdk.Context, queryData json.RawMessag
 
 		return bz, nil
 	default:
-		return nil, epochtypes.ErrUnknownSeiEpochQuery
+		return nil, epochtypes.ErrUnknownEniEpochQuery
 	}
 }
 
 func (qp QueryPlugin) HandleTokenFactoryQuery(ctx sdk.Context, queryData json.RawMessage) ([]byte, error) {
-	var parsedQuery tokenfactorybindings.SeiTokenFactoryQuery
+	var parsedQuery tokenfactorybindings.EniTokenFactoryQuery
 	if err := json.Unmarshal(queryData, &parsedQuery); err != nil {
-		return nil, tokenfactorytypes.ErrParsingSeiTokenFactoryQuery
+		return nil, tokenfactorytypes.ErrParsingEniTokenFactoryQuery
 	}
 	switch {
 	case parsedQuery.DenomAuthorityMetadata != nil:
@@ -126,13 +126,13 @@ func (qp QueryPlugin) HandleTokenFactoryQuery(ctx sdk.Context, queryData json.Ra
 
 		return bz, nil
 	default:
-		return nil, tokenfactorytypes.ErrUnknownSeiTokenFactoryQuery
+		return nil, tokenfactorytypes.ErrUnknownEniTokenFactoryQuery
 	}
 }
 
 func (qp QueryPlugin) HandleEVMQuery(ctx sdk.Context, queryData json.RawMessage) (res []byte, err error) {
 	var queryType evmbindings.EVMQueryType
-	var parsedQuery evmbindings.SeiEVMQuery
+	var parsedQuery evmbindings.EniEVMQuery
 	if err := json.Unmarshal(queryData, &parsedQuery); err != nil {
 		return nil, errors.New("invalid EVM query")
 	}
@@ -232,10 +232,10 @@ func (qp QueryPlugin) HandleEVMQuery(ctx sdk.Context, queryData json.RawMessage)
 		return qp.evmHandler.HandleERC1155RoyaltyInfo(ctx, c.Caller, c.ContractAddress, c.TokenID, c.SalePrice)
 	case evmbindings.GetEvmAddressType:
 		c := parsedQuery.GetEvmAddress
-		return qp.evmHandler.HandleGetEvmAddress(ctx, c.SeiAddress)
-	case evmbindings.GetSeiAddressType:
-		c := parsedQuery.GetSeiAddress
-		return qp.evmHandler.HandleGetSeiAddress(ctx, c.EvmAddress)
+		return qp.evmHandler.HandleGetEvmAddress(ctx, c.EniAddress)
+	case evmbindings.GetEniAddressType:
+		c := parsedQuery.GetEniAddress
+		return qp.evmHandler.HandleGetEniAddress(ctx, c.EvmAddress)
 	case evmbindings.SupportsInterfaceType:
 		c := parsedQuery.SupportsInterface
 		return qp.evmHandler.HandleSupportsInterface(ctx, c.Caller, c.InterfaceID, c.ContractAddress)

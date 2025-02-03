@@ -29,20 +29,20 @@ func TestGetBlockByHash(t *testing.T) {
 	verifyBlockResult(t, resObj)
 }
 
-func TestGetSeiBlockByHash(t *testing.T) {
-	resObj := sendSeiRequestGood(t, "getBlockByHash", "0x0000000000000000000000000000000000000000000000000000000000000001", true)
+func TestGetEniBlockByHash(t *testing.T) {
+	resObj := sendEniRequestGood(t, "getBlockByHash", "0x0000000000000000000000000000000000000000000000000000000000000001", true)
 	verifyBlockResult(t, resObj)
 }
 
-func TestGetSeiBlockByNumberExcludeTraceFail(t *testing.T) {
-	resObj := sendSeiRequestGood(t, "getBlockByNumberExcludeTraceFail", "0x67", true)
+func TestGetEniBlockByNumberExcludeTraceFail(t *testing.T) {
+	resObj := sendEniRequestGood(t, "getBlockByNumberExcludeTraceFail", "0x67", true)
 	// first tx is not a panic tx, second tx is a panic tx
 	expectedNumTxs := 1
 	require.Equal(t, expectedNumTxs, len(resObj["result"].(map[string]interface{})["transactions"].([]interface{})))
 }
 
 func TestGetBlockByNumber(t *testing.T) {
-	resObjEarliest := sendSeiRequestGood(t, "getBlockByNumber", "earliest", true)
+	resObjEarliest := sendEniRequestGood(t, "getBlockByNumber", "earliest", true)
 	verifyGenesisBlockResult(t, resObjEarliest)
 	for _, num := range []string{"0x8", "latest", "pending", "finalized", "safe"} {
 		resObj := sendRequestGood(t, "getBlockByNumber", num, true)
@@ -53,15 +53,15 @@ func TestGetBlockByNumber(t *testing.T) {
 	require.Equal(t, "invalid argument 0: hex string without 0x prefix", resObj["error"].(map[string]interface{})["message"])
 }
 
-func TestGetSeiBlockByNumber(t *testing.T) {
-	resObjEarliest := sendSeiRequestGood(t, "getBlockByNumber", "earliest", true)
+func TestGetEniBlockByNumber(t *testing.T) {
+	resObjEarliest := sendEniRequestGood(t, "getBlockByNumber", "earliest", true)
 	verifyGenesisBlockResult(t, resObjEarliest)
 	for _, num := range []string{"0x8", "latest", "pending", "finalized", "safe"} {
-		resObj := sendSeiRequestGood(t, "getBlockByNumber", num, true)
+		resObj := sendEniRequestGood(t, "getBlockByNumber", num, true)
 		verifyBlockResult(t, resObj)
 	}
 
-	resObj := sendSeiRequestBad(t, "getBlockByNumber", "bad_num", true)
+	resObj := sendEniRequestBad(t, "getBlockByNumber", "bad_num", true)
 	require.Equal(t, "invalid argument 0: hex string without 0x prefix", resObj["error"].(map[string]interface{})["message"])
 }
 
@@ -98,8 +98,8 @@ func TestGetBlockReceipts(t *testing.T) {
 	require.Equal(t, "0x2", receipt3["blockNumber"])
 	require.Equal(t, multiTxBlockTx3.Hash().Hex(), receipt3["transactionHash"])
 
-	resObjSei := sendSeiRequestGood(t, "getBlockReceipts", "0x2")
-	result = resObjSei["result"].([]interface{})
+	resObjEni := sendEniRequestGood(t, "getBlockReceipts", "0x2")
+	result = resObjEni["result"].([]interface{})
 	require.Equal(t, 5, len(result))
 
 	// Query by block hash
@@ -215,10 +215,10 @@ func TestEncodeTmBlock_EmptyTransactions(t *testing.T) {
 func TestEncodeBankMsg(t *testing.T) {
 	k := &testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
-	fromSeiAddr, _ := testkeeper.MockAddressPair()
-	toSeiAddr, _ := testkeeper.MockAddressPair()
+	fromEniAddr, _ := testkeeper.MockAddressPair()
+	toEniAddr, _ := testkeeper.MockAddressPair()
 	b := TxConfig.NewTxBuilder()
-	b.SetMsgs(banktypes.NewMsgSend(fromSeiAddr, toSeiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10)))))
+	b.SetMsgs(banktypes.NewMsgSend(fromEniAddr, toEniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10)))))
 	tx := b.GetTx()
 	resBlock := coretypes.ResultBlock{
 		BlockID: MockBlockID,
@@ -260,12 +260,12 @@ func TestEncodeBankMsg(t *testing.T) {
 func TestEncodeWasmExecuteMsg(t *testing.T) {
 	k := &testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx(nil)
-	fromSeiAddr, fromEvmAddr := testkeeper.MockAddressPair()
-	toSeiAddr, _ := testkeeper.MockAddressPair()
+	fromEniAddr, fromEvmAddr := testkeeper.MockAddressPair()
+	toEniAddr, _ := testkeeper.MockAddressPair()
 	b := TxConfig.NewTxBuilder()
 	b.SetMsgs(&wasmtypes.MsgExecuteContract{
-		Sender:   fromSeiAddr.String(),
-		Contract: toSeiAddr.String(),
+		Sender:   fromEniAddr.String(),
+		Contract: toEniAddr.String(),
 		Msg:      []byte{1, 2, 3},
 	})
 	tx := b.GetTx()
@@ -305,7 +305,7 @@ func TestEncodeWasmExecuteMsg(t *testing.T) {
 	require.Equal(t, 1, len(txs))
 	ti := uint64(1)
 	bh := common.HexToHash(MockBlockID.Hash.String())
-	to := common.Address(toSeiAddr)
+	to := common.Address(toEniAddr)
 	require.Equal(t, &ethapi.RPCTransaction{
 		BlockHash:        &bh,
 		BlockNumber:      (*hexutil.Big)(big.NewInt(MockHeight8)),

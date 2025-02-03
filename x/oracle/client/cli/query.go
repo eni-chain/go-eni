@@ -43,16 +43,16 @@ func GetCmdQueryExchangeRates() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "exchange-rates [denom]",
 		Args:  cobra.RangeArgs(0, 1),
-		Short: "Query the current Sei exchange rate w.r.t an asset",
+		Short: "Query the current Eni exchange rate w.r.t an asset",
 		Long: strings.TrimSpace(`
-Query the current exchange rate of Sei with an asset.
+Query the current exchange rate of Eni with an asset.
 You can find the current list of active denoms by running
 
-$ seid query oracle exchange-rates
+$ enid query oracle exchange-rates
 
 Or, can filter with denom
 
-$ seid query oracle exchange-rates ukrw
+$ enid query oracle exchange-rates ukrw
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -96,7 +96,7 @@ func GetCmdQueryPriceSnapshotHistory() *cobra.Command {
 Query the history for oracle price snapshots.
 Example:
 
-$ seid query oracle price-snapshot-history
+$ enid query oracle price-snapshot-history
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -127,7 +127,7 @@ func GetCmdQueryTwaps() *cobra.Command {
 Query the time weighted average prices for denoms with price snapshot data
 Example:
 
-$ seid query oracle twaps
+$ enid query oracle twaps
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -162,11 +162,11 @@ func GetCmdQueryActives() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "actives",
 		Args:  cobra.NoArgs,
-		Short: "Query the active list of Sei assets recognized by the oracle",
+		Short: "Query the active list of Eni assets recognized by the oracle",
 		Long: strings.TrimSpace(`
-Query the active list of Sei assets recognized by the types.
+Query the active list of Eni assets recognized by the types.
 
-$ seid query oracle actives
+$ enid query oracle actives
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -223,7 +223,7 @@ func GetCmdQueryFeederDelegation() *cobra.Command {
 		Long: strings.TrimSpace(`
 Query the account the validator's oracle voting right is delegated to.
 
-$ seid query oracle feeder terravaloper...
+$ enid query oracle feeder terravaloper...
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -263,7 +263,7 @@ func GetCmdQueryVotePenaltyCounter() *cobra.Command {
 		Long: strings.TrimSpace(`
 Query the # of vote periods missed and abstained in this oracle slash window.
 
-$ seid query oracle miss seivaloper...
+$ enid query oracle miss enivaloper...
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

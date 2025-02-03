@@ -31,7 +31,7 @@ func TestGenesis(t *testing.T) {
 		Minter: types.Minter{
 			StartDate:           now.Format(types.TokenReleaseDateFormat),
 			EndDate:             now.Format(types.TokenReleaseDateFormat),
-			Denom:               "usei",
+			Denom:               "ueni",
 			TotalMintAmount:     100,
 			RemainingMintAmount: 0,
 			LastMintAmount:      100,

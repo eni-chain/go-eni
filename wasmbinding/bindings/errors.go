@@ -8,5 +8,5 @@ import (
 var (
 	DefaultCodespace = "wasmbinding"
 
-	ErrParsingSeiWasmMsg = sdkErrors.Register(DefaultCodespace, 2, "Error parsing Sei Wasm Message")
+	ErrParsingEniWasmMsg = sdkErrors.Register(DefaultCodespace, 2, "Error parsing Eni Wasm Message")
 )

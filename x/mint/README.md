@@ -26,7 +26,7 @@ Every day, at a configured time (typically the start of the day), the daily mint
 
 The minting schedule, including the start date, end date, and `total_mint_amount`, can be updated through a governance proposal. This feature allows network participants to adjust the minting parameters as necessary in response to the network's needs and conditions.
 
-This flexibility ensures that the minting process can be adjusted and managed effectively over time, supporting the growth and sustainability of the Sei-chain network.
+This flexibility ensures that the minting process can be adjusted and managed effectively over time, supporting the growth and sustainability of the Go-Eni network.
 
 Note: Changes to the `total_mint_amount` or `remaining_mint_amont` after the start date will not impact tokens already minted.
 
@@ -42,7 +42,7 @@ type Minter struct {
     StartDate           string `protobuf:"bytes,1,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
     // The day where the mint ends
     EndDate             string `protobuf:"bytes,2,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
-    // Denom for the coins minted, defaults to usei
+    // Denom for the coins minted, defaults to ueni
     Denom               string `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
     // Total amount to be minted
     TotalMintAmount     uint64 `protobuf:"varint,4,opt,name=total_mint_amount,json=totalMintAmount,proto3" json:"total_mint_amount,omitempty"`
@@ -94,7 +94,7 @@ First, prepare a proposal in JSON format, like the minter_prop.json file below:
   "minter": {
     "start_date": "2023-10-05",
     "end_date": "2023-11-22",
-    "denom": "usei",
+    "denom": "ueni",
     "total_mint_amount": 100000
   }
 }
@@ -103,7 +103,7 @@ First, prepare a proposal in JSON format, like the minter_prop.json file below:
 Then, submit the proposal with the following command:
 
 ```bash
-seid tx gov submit-proposal update-minter ./minter_prop.json --deposit 20sei --from admin -b block -y --gas 200000 --fees 2000usei
+enid tx gov submit-proposal update-minter ./minter_prop.json --deposit 20eni --from admin -b block -y --gas 200000 --fees 2000ueni
 ```
 
 This command submits a proposal to update the minter. The --deposit flag is used to provide the initial deposit. The proposal is submitted by the address provided with the --from flag.
@@ -111,8 +111,8 @@ This command submits a proposal to update the minter. The --deposit flag is used
 Before the proposal, the Minter parameters might look like this:
 
 ```**bash**
-> seid q mint minter
-denom: usei
+> enid q mint minter
+denom: ueni
 end_date: "2023-04-30"
 last_mint_amount: "333333333333"
 last_mint_date: "2023-04-27"
@@ -125,8 +125,8 @@ total_mint_amount: "999999999999"
 After the proposal is passed, the Minter parameters would be updated as per the proposal:
 
 ```bash
-> seid q mint minter
-denom: usei
+> enid q mint minter
+denom: ueni
 end_date: "2023-11-22"
 last_mint_amount: "0"
 last_mint_date: ""
@@ -150,7 +150,7 @@ Here is an example for updating the params for the mint module
     {
       "subspace": "mint",
       "key": "MintDenom",
-      "value": "usei"
+      "value": "ueni"
     },
     {
       "subspace": "mint",
@@ -175,7 +175,7 @@ Here is an example for updating the params for the mint module
 Submit the proposal
 
 ```bash
-seid tx gov submit-proposal param-change ./param_change_prop.json --from admin -b block -y --gas 200000 --fees 200000usei
+enid tx gov submit-proposal param-change ./param_change_prop.json --from admin -b block -y --gas 200000 --fees 200000ueni
 ```
 
 ## Begin-Block
@@ -193,4 +193,4 @@ At the end of each epoch (defaults to 60s), the chain checks if it's the minting
 
 ### Metrics
 
-The minting module emits a `sei_mint_coins{denom}` each time there's a successful minting event.
+The minting module emits a `eni_mint_coins{denom}` each time there's a successful minting event.

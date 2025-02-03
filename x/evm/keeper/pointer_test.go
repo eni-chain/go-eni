@@ -26,7 +26,7 @@ type handlers struct {
 	cwDeleter  func(ctx types.Context, erc20Address common.Address, version uint16)
 }
 
-type seiPointerTest struct {
+type eniPointerTest struct {
 	name        string
 	getHandlers func(k *evmkeeper.Keeper) *handlers
 	version     uint16
@@ -35,7 +35,7 @@ type seiPointerTest struct {
 func TestEVMtoCWPointers(t *testing.T) {
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{})
 
-	tests := []seiPointerTest{
+	tests := []eniPointerTest{
 		{
 			name: "ERC20NativePointer prevents pointer to cw20 pointer",
 			getHandlers: func(k *evmkeeper.Keeper) *handlers {
@@ -230,7 +230,7 @@ func TestEVMtoCWPointers(t *testing.T) {
 }
 
 func TestCWtoEVMPointers(t *testing.T) {
-	tests := []seiPointerTest{
+	tests := []eniPointerTest{
 		{
 			name: "CW20ERC20Pointer prevents pointer to native pointer",
 			getHandlers: func(k *evmkeeper.Keeper) *handlers {

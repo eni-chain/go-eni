@@ -10,10 +10,10 @@ import (
 )
 
 func TestMessageSendValidate(t *testing.T) {
-	fromAddr, err := sdk.AccAddressFromBech32("sei1yezq49upxhunjjhudql2fnj5dgvcwjj87pn2wx")
+	fromAddr, err := sdk.AccAddressFromBech32("eni1yezq49upxhunjjhudql2fnj5dgvcwjj87pn2wx")
 	require.Nil(t, err)
 	msg := types.NewMsgSend(fromAddr, common.HexToAddress("to"), sdk.Coins{sdk.Coin{
-		Denom:  "sei",
+		Denom:  "eni",
 		Amount: sdk.NewInt(1),
 	}})
 	require.Nil(t, msg.ValidateBasic())
@@ -24,7 +24,7 @@ func TestMessageSendValidate(t *testing.T) {
 
 	// Negative coins
 	msg = types.NewMsgSend(fromAddr, common.HexToAddress("to"), sdk.Coins{sdk.Coin{
-		Denom:  "sei",
+		Denom:  "eni",
 		Amount: sdk.NewInt(-1),
 	}})
 	require.Error(t, msg.ValidateBasic())

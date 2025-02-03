@@ -164,7 +164,7 @@ func oracleVoteIsGasless(msg *oracletypes.MsgAggregateExchangeRateVote, ctx sdk.
 
 func evmAssociateIsGasless(msg *evmtypes.MsgAssociate, ctx sdk.Context, keeper *evmkeeper.Keeper) bool {
 	// not gasless if already associated
-	seiAddr := sdk.MustAccAddressFromBech32(msg.Sender)
-	_, associated := keeper.GetEVMAddress(ctx, seiAddr)
+	eniAddr := sdk.MustAccAddressFromBech32(msg.Sender)
+	_, associated := keeper.GetEVMAddress(ctx, eniAddr)
 	return !associated
 }

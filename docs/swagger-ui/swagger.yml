@@ -34469,10 +34469,10 @@ paths:
           format: uint64
       tags:
         - Query
-  /sei-protocol/seichain/epoch/epoch:
+  /eni-chain/goeni/epoch/epoch:
     get:
       summary: Query the epoch in the chain
-      operationId: SeiprotocolSeichainEpochEpoch
+      operationId: EniprotocolEnichainEpochEpoch
       responses:
         '200':
           description: A successful response.
@@ -34516,10 +34516,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sei-protocol/seichain/epoch/params:
+  /eni-chain/goeni/epoch/params:
     get:
       summary: Parameters queries the parameters of the module.
-      operationId: SeiprotocolSeichainEpochParams
+      operationId: EniprotocolEnichainEpochParams
       responses:
         '200':
           description: A successful response.
@@ -34552,9 +34552,9 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sei-protocol/seichain/evm/evm_address:
+  /eni-chain/goeni/evm/evm_address:
     get:
-      operationId: SeiprotocolSeichainEvmEVMAddressBySeiAddress
+      operationId: EniprotocolEnichainEvmEVMAddressByEniAddress
       responses:
         '200':
           description: A successful response.
@@ -34751,15 +34751,15 @@ paths:
                           "value": "1.212s"
                         }
       parameters:
-        - name: sei_address
+        - name: eni_address
           in: query
           required: false
           type: string
       tags:
         - Query
-  /sei-protocol/seichain/evm/pointer:
+  /eni-chain/goeni/evm/pointer:
     get:
-      operationId: SeiprotocolSeichainEvmPointer
+      operationId: EniprotocolEnichainEvmPointer
       responses:
         '200':
           description: A successful response.
@@ -34978,9 +34978,9 @@ paths:
           type: string
       tags:
         - Query
-  /sei-protocol/seichain/evm/pointer_version:
+  /eni-chain/goeni/evm/pointer_version:
     get:
-      operationId: SeiprotocolSeichainEvmPointerVersion
+      operationId: EniprotocolEnichainEvmPointerVersion
       responses:
         '200':
           description: A successful response.
@@ -35194,16 +35194,16 @@ paths:
           default: ERC20
       tags:
         - Query
-  /sei-protocol/seichain/evm/sei_address:
+  /eni-chain/goeni/evm/eni_address:
     get:
-      operationId: SeiprotocolSeichainEvmSeiAddressByEVMAddress
+      operationId: EniprotocolEnichainEvmEniAddressByEVMAddress
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              sei_address:
+              eni_address:
                 type: string
               associated:
                 type: boolean
@@ -35399,9 +35399,9 @@ paths:
           type: string
       tags:
         - Query
-  /sei-protocol/seichain/evm/static_call:
+  /eni-chain/goeni/evm/static_call:
     get:
-      operationId: SeiprotocolSeichainEvmStaticCall
+      operationId: EniprotocolEnichainEvmStaticCall
       responses:
         '200':
           description: A successful response.
@@ -35608,10 +35608,10 @@ paths:
           type: string
       tags:
         - Query
-  /seichain/mint/v1beta1/minter:
+  /goeni/mint/v1beta1/minter:
     get:
       summary: EpochProvisions current minting epoch provisions value.
-      operationId: SeiprotocolSeichainMintMinter
+      operationId: EniprotocolEnichainMintMinter
       responses:
         '200':
           description: A successful response.
@@ -35661,10 +35661,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /seichain/mint/v1beta1/params:
+  /goeni/mint/v1beta1/params:
     get:
       summary: Params returns the total set of minting parameters.
-      operationId: SeiprotocolSeichainMintParams
+      operationId: EniprotocolEnichainMintParams
       responses:
         '200':
           description: A successful response.
@@ -35716,10 +35716,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sei-protocol/sei-chain/oracle/denoms/actives:
+  /eni-chain/go-eni/oracle/denoms/actives:
     get:
       summary: Actives returns all active denoms
-      operationId: SeiprotocolSeichainOracleActives
+      operationId: EniprotocolEnichainOracleActives
       responses:
         '200':
           description: A successful response.
@@ -35756,10 +35756,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sei-protocol/sei-chain/oracle/denoms/exchange_rates:
+  /eni-chain/go-eni/oracle/denoms/exchange_rates:
     get:
       summary: ExchangeRates returns exchange rates of all denoms
-      operationId: SeiprotocolSeichainOracleExchangeRates
+      operationId: EniprotocolEnichainOracleExchangeRates
       responses:
         '200':
           description: A successful response.
@@ -35809,12 +35809,12 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sei-protocol/sei-chain/oracle/denoms/price_snapshot_history:
+  /eni-chain/go-eni/oracle/denoms/price_snapshot_history:
     get:
       summary: >-
         PriceSnapshotHistory returns the history of price snapshots for all
         assets
-      operationId: SeiprotocolSeichainOraclePriceSnapshotHistory
+      operationId: EniprotocolEnichainOraclePriceSnapshotHistory
       responses:
         '200':
           description: A successful response.
@@ -35866,9 +35866,9 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  '/sei-protocol/sei-chain/oracle/denoms/twaps/{lookback_seconds}':
+  '/eni-chain/go-eni/oracle/denoms/twaps/{lookback_seconds}':
     get:
-      operationId: SeiprotocolSeichainOracleTwaps
+      operationId: EniprotocolEnichainOracleTwaps
       responses:
         '200':
           description: A successful response.
@@ -35913,10 +35913,10 @@ paths:
           format: uint64
       tags:
         - Query
-  /sei-protocol/sei-chain/oracle/denoms/vote_targets:
+  /eni-chain/go-eni/oracle/denoms/vote_targets:
     get:
       summary: VoteTargets returns all vote target denoms
-      operationId: SeiprotocolSeichainOracleVoteTargets
+      operationId: EniprotocolEnichainOracleVoteTargets
       responses:
         '200':
           description: A successful response.
@@ -35955,10 +35955,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  '/sei-protocol/sei-chain/oracle/denoms/{denom}/exchange_rate':
+  '/eni-chain/go-eni/oracle/denoms/{denom}/exchange_rate':
     get:
       summary: ExchangeRate returns exchange rate of a denom
-      operationId: SeiprotocolSeichainOracleExchangeRate
+      operationId: EniprotocolEnichainOracleExchangeRate
       responses:
         '200':
           description: A successful response.
@@ -35976,8 +35976,8 @@ paths:
                     type: string
                     format: int64
                 title: >-
-                  exchange_rate defines the exchange rate of Sei denominated in
-                  various Sei
+                  exchange_rate defines the exchange rate of Eni denominated in
+                  various Eni
             description: |-
               QueryExchangeRateResponse is response type for the
               Query/ExchangeRate RPC method.
@@ -36007,10 +36007,10 @@ paths:
           type: string
       tags:
         - Query
-  /sei-protocol/sei-chain/oracle/params:
+  /eni-chain/go-eni/oracle/params:
     get:
       summary: Params queries all parameters.
-      operationId: SeiprotocolSeichainOracleParams
+      operationId: EniprotocolEnichainOracleParams
       responses:
         '200':
           description: A successful response.
@@ -36082,10 +36082,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sei-protocol/sei-chain/oracle/slash_window:
+  /eni-chain/go-eni/oracle/slash_window:
     get:
       summary: SlashWindow returns slash window information
-      operationId: SeiprotocolSeichainOracleSlashWindow
+      operationId: EniprotocolEnichainOracleSlashWindow
       responses:
         '200':
           description: A successful response.
@@ -36121,10 +36121,10 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  '/sei-protocol/sei-chain/oracle/validators/{validator_addr}/feeder':
+  '/eni-chain/go-eni/oracle/validators/{validator_addr}/feeder':
     get:
       summary: FeederDelegation returns feeder delegation of a validator
-      operationId: SeiprotocolSeichainOracleFeederDelegation
+      operationId: EniprotocolEnichainOracleFeederDelegation
       responses:
         '200':
           description: A successful response.
@@ -36163,10 +36163,10 @@ paths:
           type: string
       tags:
         - Query
-  '/sei-protocol/sei-chain/oracle/validators/{validator_addr}/vote_penalty_counter':
+  '/eni-chain/go-eni/oracle/validators/{validator_addr}/vote_penalty_counter':
     get:
       summary: MissCounter returns oracle miss counter of a validator
-      operationId: SeiprotocolSeichainOracleVotePenaltyCounter
+      operationId: EniprotocolEnichainOracleVotePenaltyCounter
       responses:
         '200':
           description: A successful response.
@@ -36214,9 +36214,9 @@ paths:
           type: string
       tags:
         - Query
-  /sei-protocol/seichain/tokenfactory/denoms/allow_list:
+  /eni-chain/goeni/tokenfactory/denoms/allow_list:
     get:
-      operationId: SeiprotocolSeichainTokenfactoryDenomAllowList
+      operationId: EniprotocolEnichainTokenfactoryDenomAllowList
       responses:
         '200':
           description: A successful response.
@@ -36233,7 +36233,7 @@ paths:
                     type: array
                     items:
                       type: string
-                    title: 'Can be empty for no admin, or a valid sei address'
+                    title: 'Can be empty for no admin, or a valid eni address'
             description: >-
               QueryDenomMetadataResponse is the response type for the
               Query/DenomMetadata gRPC
@@ -36265,12 +36265,12 @@ paths:
           type: string
       tags:
         - Query
-  /sei-protocol/seichain/tokenfactory/denoms/metadata:
+  /eni-chain/goeni/tokenfactory/denoms/metadata:
     get:
       summary: |-
         DenomsMetadata defines a gRPC query method for fetching
          DenomMetadata for a particular denom.
-      operationId: SeiprotocolSeichainTokenfactoryDenomMetadata
+      operationId: EniprotocolEnichainTokenfactoryDenomMetadata
       responses:
         '200':
           description: A successful response.
@@ -36379,12 +36379,12 @@ paths:
           type: string
       tags:
         - Query
-  '/sei-protocol/seichain/tokenfactory/denoms/{denom}/authority_metadata':
+  '/eni-chain/goeni/tokenfactory/denoms/{denom}/authority_metadata':
     get:
       summary: |-
         DenomAuthorityMetadata defines a gRPC query method for fetching
         DenomAuthorityMetadata for a particular denom.
-      operationId: SeiprotocolSeichainTokenfactoryDenomAuthorityMetadata
+      operationId: EniprotocolEnichainTokenfactoryDenomAuthorityMetadata
       responses:
         '200':
           description: A successful response.
@@ -36396,7 +36396,7 @@ paths:
                 properties:
                   admin:
                     type: string
-                    title: 'Can be empty for no admin, or a valid sei address'
+                    title: 'Can be empty for no admin, or a valid eni address'
                 description: >-
                   DenomAuthorityMetadata specifies metadata for addresses that
                   have specific
@@ -36435,12 +36435,12 @@ paths:
           type: string
       tags:
         - Query
-  '/sei-protocol/seichain/tokenfactory/denoms_from_creator/{creator}':
+  '/eni-chain/goeni/tokenfactory/denoms_from_creator/{creator}':
     get:
       summary: |-
         DenomsFromCreator defines a gRPC query method for fetching all
         denominations created by a specific admin/creator.
-      operationId: SeiprotocolSeichainTokenfactoryDenomsFromCreator
+      operationId: EniprotocolEnichainTokenfactoryDenomsFromCreator
       responses:
         '200':
           description: A successful response.
@@ -36481,14 +36481,14 @@ paths:
           type: string
       tags:
         - Query
-  /sei-protocol/seichain/tokenfactory/params:
+  /eni-chain/goeni/tokenfactory/params:
     get:
       summary: >-
         Params defines a gRPC query method that returns the tokenfactory
         module's
 
         parameters.
-      operationId: SeiprotocolSeichainTokenfactoryParams
+      operationId: EniprotocolEnichainTokenfactoryParams
       responses:
         '200':
           description: A successful response.
@@ -61293,7 +61293,7 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
-  seiprotocol.seichain.epoch.Epoch:
+  enichain.goeni.epoch.Epoch:
     type: object
     properties:
       genesis_time:
@@ -61310,10 +61310,10 @@ definitions:
       current_epoch_height:
         type: string
         format: int64
-  seiprotocol.seichain.epoch.Params:
+  enichain.goeni.epoch.Params:
     type: object
     description: Params defines the parameters for the module.
-  seiprotocol.seichain.epoch.QueryEpochResponse:
+  enichain.goeni.epoch.QueryEpochResponse:
     type: object
     properties:
       epoch:
@@ -61333,14 +61333,14 @@ definitions:
           current_epoch_height:
             type: string
             format: int64
-  seiprotocol.seichain.epoch.QueryParamsResponse:
+  enichain.goeni.epoch.QueryParamsResponse:
     type: object
     properties:
       params:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  seiprotocol.seichain.evm.Log:
+  enichain.goeni.evm.Log:
     type: object
     properties:
       address:
@@ -61357,11 +61357,11 @@ definitions:
         format: int64
       synthetic:
         type: boolean
-  seiprotocol.seichain.evm.MsgAssociateContractAddressResponse:
+  enichain.goeni.evm.MsgAssociateContractAddressResponse:
     type: object
-  seiprotocol.seichain.evm.MsgAssociateResponse:
+  enichain.goeni.evm.MsgAssociateResponse:
     type: object
-  seiprotocol.seichain.evm.MsgEVMTransactionResponse:
+  enichain.goeni.evm.MsgEVMTransactionResponse:
     type: object
     properties:
       gas_used:
@@ -61393,14 +61393,14 @@ definitions:
               format: int64
             synthetic:
               type: boolean
-  seiprotocol.seichain.evm.MsgRegisterPointerResponse:
+  enichain.goeni.evm.MsgRegisterPointerResponse:
     type: object
     properties:
       pointer_address:
         type: string
-  seiprotocol.seichain.evm.MsgSendResponse:
+  enichain.goeni.evm.MsgSendResponse:
     type: object
-  seiprotocol.seichain.evm.PointerType:
+  enichain.goeni.evm.PointerType:
     type: string
     enum:
       - ERC20
@@ -61411,14 +61411,14 @@ definitions:
       - CW721
       - CW1155
     default: ERC20
-  seiprotocol.seichain.evm.QueryEVMAddressBySeiAddressResponse:
+  enichain.goeni.evm.QueryEVMAddressByEniAddressResponse:
     type: object
     properties:
       evm_address:
         type: string
       associated:
         type: boolean
-  seiprotocol.seichain.evm.QueryPointerResponse:
+  enichain.goeni.evm.QueryPointerResponse:
     type: object
     properties:
       pointer:
@@ -61428,7 +61428,7 @@ definitions:
         format: int64
       exists:
         type: boolean
-  seiprotocol.seichain.evm.QueryPointerVersionResponse:
+  enichain.goeni.evm.QueryPointerVersionResponse:
     type: object
     properties:
       version:
@@ -61437,20 +61437,20 @@ definitions:
       cw_code_id:
         type: string
         format: uint64
-  seiprotocol.seichain.evm.QuerySeiAddressByEVMAddressResponse:
+  enichain.goeni.evm.QueryEniAddressByEVMAddressResponse:
     type: object
     properties:
-      sei_address:
+      eni_address:
         type: string
       associated:
         type: boolean
-  seiprotocol.seichain.evm.QueryStaticCallResponse:
+  enichain.goeni.evm.QueryStaticCallResponse:
     type: object
     properties:
       data:
         type: string
         format: byte
-  seiprotocol.seichain.mint.Params:
+  enichain.goeni.mint.Params:
     type: object
     properties:
       mint_denom:
@@ -61472,7 +61472,7 @@ definitions:
               format: uint64
         title: List of token release schedules
     description: Params holds parameters for the mint module.
-  seiprotocol.seichain.mint.QueryMinterResponse:
+  enichain.goeni.mint.QueryMinterResponse:
     type: object
     properties:
       start_date:
@@ -61498,7 +61498,7 @@ definitions:
     description: |-
       QueryMinterResponse is the response type for the
       Query/Minter RPC method.
-  seiprotocol.seichain.mint.QueryParamsResponse:
+  enichain.goeni.mint.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -61524,7 +61524,7 @@ definitions:
                   format: uint64
             title: List of token release schedules
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  seiprotocol.seichain.mint.ScheduledTokenRelease:
+  enichain.goeni.mint.ScheduledTokenRelease:
     type: object
     properties:
       start_date:
@@ -61536,12 +61536,12 @@ definitions:
       token_release_amount:
         type: string
         format: uint64
-  seiprotocol.seichain.oracle.Denom:
+  enichain.goeni.oracle.Denom:
     type: object
     properties:
       name:
         type: string
-  seiprotocol.seichain.oracle.DenomOracleExchangeRatePair:
+  enichain.goeni.oracle.DenomOracleExchangeRatePair:
     type: object
     properties:
       denom:
@@ -61556,17 +61556,17 @@ definitions:
           last_update_timestamp:
             type: string
             format: int64
-  seiprotocol.seichain.oracle.MsgAggregateExchangeRateVoteResponse:
+  enichain.goeni.oracle.MsgAggregateExchangeRateVoteResponse:
     type: object
     description: >-
       MsgAggregateExchangeRateVoteResponse defines the
       Msg/AggregateExchangeRateVote response type.
-  seiprotocol.seichain.oracle.MsgDelegateFeedConsentResponse:
+  enichain.goeni.oracle.MsgDelegateFeedConsentResponse:
     type: object
     description: >-
       MsgDelegateFeedConsentResponse defines the Msg/DelegateFeedConsent
       response type.
-  seiprotocol.seichain.oracle.OracleExchangeRate:
+  enichain.goeni.oracle.OracleExchangeRate:
     type: object
     properties:
       exchange_rate:
@@ -61576,7 +61576,7 @@ definitions:
       last_update_timestamp:
         type: string
         format: int64
-  seiprotocol.seichain.oracle.OracleTwap:
+  enichain.goeni.oracle.OracleTwap:
     type: object
     properties:
       denom:
@@ -61586,7 +61586,7 @@ definitions:
       lookback_seconds:
         type: string
         format: int64
-  seiprotocol.seichain.oracle.Params:
+  enichain.goeni.oracle.Params:
     type: object
     properties:
       vote_period:
@@ -61626,7 +61626,7 @@ definitions:
       lookback_duration:
         type: string
         format: uint64
-  seiprotocol.seichain.oracle.PriceSnapshot:
+  enichain.goeni.oracle.PriceSnapshot:
     type: object
     properties:
       snapshot_timestamp:
@@ -61649,7 +61649,7 @@ definitions:
                 last_update_timestamp:
                   type: string
                   format: int64
-  seiprotocol.seichain.oracle.PriceSnapshotItem:
+  enichain.goeni.oracle.PriceSnapshotItem:
     type: object
     properties:
       denom:
@@ -61664,7 +61664,7 @@ definitions:
           last_update_timestamp:
             type: string
             format: int64
-  seiprotocol.seichain.oracle.QueryActivesResponse:
+  enichain.goeni.oracle.QueryActivesResponse:
     type: object
     properties:
       actives:
@@ -61677,7 +61677,7 @@ definitions:
     description: |-
       QueryActivesResponse is response type for the
       Query/Actives RPC method.
-  seiprotocol.seichain.oracle.QueryExchangeRateResponse:
+  enichain.goeni.oracle.QueryExchangeRateResponse:
     type: object
     properties:
       oracle_exchange_rate:
@@ -61691,12 +61691,12 @@ definitions:
             type: string
             format: int64
         title: >-
-          exchange_rate defines the exchange rate of Sei denominated in various
-          Sei
+          exchange_rate defines the exchange rate of Eni denominated in various
+          Eni
     description: |-
       QueryExchangeRateResponse is response type for the
       Query/ExchangeRate RPC method.
-  seiprotocol.seichain.oracle.QueryExchangeRatesResponse:
+  enichain.goeni.oracle.QueryExchangeRatesResponse:
     type: object
     properties:
       denom_oracle_exchange_rate_pairs:
@@ -61722,7 +61722,7 @@ definitions:
     description: |-
       QueryExchangeRatesResponse is response type for the
       Query/ExchangeRates RPC method.
-  seiprotocol.seichain.oracle.QueryFeederDelegationResponse:
+  enichain.goeni.oracle.QueryFeederDelegationResponse:
     type: object
     properties:
       feeder_addr:
@@ -61731,7 +61731,7 @@ definitions:
     description: |-
       QueryFeederDelegationResponse is response type for the
       Query/FeederDelegation RPC method.
-  seiprotocol.seichain.oracle.QueryParamsResponse:
+  enichain.goeni.oracle.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -61776,7 +61776,7 @@ definitions:
             type: string
             format: uint64
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  seiprotocol.seichain.oracle.QueryPriceSnapshotHistoryResponse:
+  enichain.goeni.oracle.QueryPriceSnapshotHistoryResponse:
     type: object
     properties:
       price_snapshots:
@@ -61804,7 +61804,7 @@ definitions:
                       last_update_timestamp:
                         type: string
                         format: int64
-  seiprotocol.seichain.oracle.QuerySlashWindowResponse:
+  enichain.goeni.oracle.QuerySlashWindowResponse:
     type: object
     properties:
       window_progress:
@@ -61816,7 +61816,7 @@ definitions:
     description: |-
       QuerySlashWindowResponse is response type for the
       Query/SlashWindow RPC method.
-  seiprotocol.seichain.oracle.QueryTwapsResponse:
+  enichain.goeni.oracle.QueryTwapsResponse:
     type: object
     properties:
       oracle_twaps:
@@ -61831,7 +61831,7 @@ definitions:
             lookback_seconds:
               type: string
               format: int64
-  seiprotocol.seichain.oracle.QueryVotePenaltyCounterResponse:
+  enichain.goeni.oracle.QueryVotePenaltyCounterResponse:
     type: object
     properties:
       vote_penalty_counter:
@@ -61849,7 +61849,7 @@ definitions:
     description: |-
       QueryVotePenaltyCounterResponse is response type for the
       Query/VotePenaltyCounter RPC method.
-  seiprotocol.seichain.oracle.QueryVoteTargetsResponse:
+  enichain.goeni.oracle.QueryVoteTargetsResponse:
     type: object
     properties:
       vote_targets:
@@ -61862,7 +61862,7 @@ definitions:
     description: |-
       QueryVoteTargetsResponse is response type for the
       Query/VoteTargets RPC method.
-  seiprotocol.seichain.oracle.VotePenaltyCounter:
+  enichain.goeni.oracle.VotePenaltyCounter:
     type: object
     properties:
       miss_count:
@@ -61874,35 +61874,35 @@ definitions:
       success_count:
         type: string
         format: uint64
-  seiprotocol.seichain.tokenfactory.AllowList:
+  enichain.goeni.tokenfactory.AllowList:
     type: object
     properties:
       addresses:
         type: array
         items:
           type: string
-        title: 'Can be empty for no admin, or a valid sei address'
+        title: 'Can be empty for no admin, or a valid eni address'
     description: >-
       AllowList specifies metadata for addresses that can be used to transfer
       tokens of a specific denom.
-  seiprotocol.seichain.tokenfactory.DenomAuthorityMetadata:
+  enichain.goeni.tokenfactory.DenomAuthorityMetadata:
     type: object
     properties:
       admin:
         type: string
-        title: 'Can be empty for no admin, or a valid sei address'
+        title: 'Can be empty for no admin, or a valid eni address'
     description: |-
       DenomAuthorityMetadata specifies metadata for addresses that have specific
       capabilities over a token factory denom. Right now there is only one Admin
       permission, but is planned to be extended to the future.
-  seiprotocol.seichain.tokenfactory.MsgBurnResponse:
+  enichain.goeni.tokenfactory.MsgBurnResponse:
     type: object
-  seiprotocol.seichain.tokenfactory.MsgChangeAdminResponse:
+  enichain.goeni.tokenfactory.MsgChangeAdminResponse:
     type: object
     description: |-
       MsgChangeAdminResponse defines the response structure for an executed
       MsgChangeAdmin message.
-  seiprotocol.seichain.tokenfactory.MsgCreateDenomResponse:
+  enichain.goeni.tokenfactory.MsgCreateDenomResponse:
     type: object
     properties:
       new_token_denom:
@@ -61910,17 +61910,17 @@ definitions:
     title: |-
       MsgCreateDenomResponse is the return value of MsgCreateDenom
       It returns the full string of the newly created denom
-  seiprotocol.seichain.tokenfactory.MsgMintResponse:
+  enichain.goeni.tokenfactory.MsgMintResponse:
     type: object
-  seiprotocol.seichain.tokenfactory.MsgSetDenomMetadataResponse:
+  enichain.goeni.tokenfactory.MsgSetDenomMetadataResponse:
     type: object
     description: |-
       MsgSetDenomMetadataResponse defines the response structure for an executed
       MsgSetDenomMetadata message.
-  seiprotocol.seichain.tokenfactory.Params:
+  enichain.goeni.tokenfactory.Params:
     type: object
     description: Params defines the parameters for the tokenfactory module.
-  seiprotocol.seichain.tokenfactory.QueryDenomAllowListResponse:
+  enichain.goeni.tokenfactory.QueryDenomAllowListResponse:
     type: object
     properties:
       allow_list:
@@ -61933,13 +61933,13 @@ definitions:
             type: array
             items:
               type: string
-            title: 'Can be empty for no admin, or a valid sei address'
+            title: 'Can be empty for no admin, or a valid eni address'
     description: >-
       QueryDenomMetadataResponse is the response type for the
       Query/DenomMetadata gRPC
 
       method.
-  seiprotocol.seichain.tokenfactory.QueryDenomAuthorityMetadataResponse:
+  enichain.goeni.tokenfactory.QueryDenomAuthorityMetadataResponse:
     type: object
     properties:
       authority_metadata:
@@ -61947,7 +61947,7 @@ definitions:
         properties:
           admin:
             type: string
-            title: 'Can be empty for no admin, or a valid sei address'
+            title: 'Can be empty for no admin, or a valid eni address'
         description: >-
           DenomAuthorityMetadata specifies metadata for addresses that have
           specific
@@ -61959,7 +61959,7 @@ definitions:
     description: |-
       QueryDenomAuthorityMetadataResponse defines the response structure for the
       DenomAuthorityMetadata gRPC query.
-  seiprotocol.seichain.tokenfactory.QueryDenomMetadataResponse:
+  enichain.goeni.tokenfactory.QueryDenomMetadataResponse:
     type: object
     properties:
       metadata:
@@ -62033,7 +62033,7 @@ definitions:
       Query/DenomMetadata gRPC
 
       method.
-  seiprotocol.seichain.tokenfactory.QueryDenomsFromCreatorResponse:
+  enichain.goeni.tokenfactory.QueryDenomsFromCreatorResponse:
     type: object
     properties:
       denoms:
@@ -62043,7 +62043,7 @@ definitions:
     description: |-
       QueryDenomsFromCreatorRequest defines the response structure for the
       DenomsFromCreator gRPC query.
-  seiprotocol.seichain.tokenfactory.QueryParamsResponse:
+  enichain.goeni.tokenfactory.QueryParamsResponse:
     type: object
     properties:
       params:

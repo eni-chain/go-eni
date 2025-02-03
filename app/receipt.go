@@ -236,12 +236,12 @@ func (app *App) translateCW721Event(ctx sdk.Context, wasmEvent abci.Event, point
 		cw721TransferCounterMap[ownerEventKey] = currentCounter + 1
 		if ownerEvents, ok := ownerEventsMap[ownerEventKey]; ok {
 			if len(ownerEvents) > currentCounter {
-				ownerSeiAddrStr := string(ownerEvents[currentCounter].Attributes[2].Value)
-				if ownerSeiAddr, err := sdk.AccAddressFromBech32(ownerSeiAddrStr); err == nil {
-					ownerEvmAddr := app.EvmKeeper.GetEVMAddressOrDefault(ctx, ownerSeiAddr)
+				ownerEniAddrStr := string(ownerEvents[currentCounter].Attributes[2].Value)
+				if ownerEniAddr, err := sdk.AccAddressFromBech32(ownerEniAddrStr); err == nil {
+					ownerEvmAddr := app.EvmKeeper.GetEVMAddressOrDefault(ctx, ownerEniAddr)
 					sender = common.BytesToHash(ownerEvmAddr[:])
 				} else {
-					ctx.Logger().Error("Translate CW721 error: invalid bech32 owner", "error", err, "address", ownerSeiAddrStr)
+					ctx.Logger().Error("Translate CW721 error: invalid bech32 owner", "error", err, "address", ownerEniAddrStr)
 				}
 			} else {
 				ctx.Logger().Error("Translate CW721 error: insufficient owner events", "key", ownerEventKey, "counter", currentCounter, "events", len(ownerEvents))
@@ -430,9 +430,9 @@ func (app *App) translateCW1155Event(ctx sdk.Context, wasmEvent abci.Event, poin
 func (app *App) GetEvmAddressAttribute(ctx sdk.Context, event abci.Event, attribute string) common.Hash {
 	addrStr, found := GetAttributeValue(event, attribute)
 	if found {
-		seiAddr, err := sdk.AccAddressFromBech32(addrStr)
+		eniAddr, err := sdk.AccAddressFromBech32(addrStr)
 		if err == nil {
-			evmAddr := app.EvmKeeper.GetEVMAddressOrDefault(ctx, seiAddr)
+			evmAddr := app.EvmKeeper.GetEVMAddressOrDefault(ctx, eniAddr)
 			return common.BytesToHash(evmAddr[:])
 		}
 	}

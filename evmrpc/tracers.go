@@ -32,7 +32,7 @@ type DebugAPI struct {
 	isPanicCache   *expirable.LRU[common.Hash, bool] // hash to isPanic
 }
 
-type SeiDebugAPI struct {
+type EniDebugAPI struct {
 	*DebugAPI
 }
 
@@ -52,17 +52,17 @@ func NewDebugAPI(tmClient rpcclient.Client, k *keeper.Keeper, ctxProvider func(i
 	}
 }
 
-func NewSeiDebugAPI(
+func NewEniDebugAPI(
 	tmClient rpcclient.Client,
 	k *keeper.Keeper,
 	ctxProvider func(int64) sdk.Context,
 	txDecoder sdk.TxDecoder,
 	config *SimulateConfig,
 	connectionType ConnectionType,
-) *SeiDebugAPI {
+) *EniDebugAPI {
 	backend := NewBackend(ctxProvider, k, txDecoder, tmClient, config)
 	tracersAPI := tracers.NewAPI(backend)
-	return &SeiDebugAPI{
+	return &EniDebugAPI{
 		DebugAPI: &DebugAPI{tracersAPI: tracersAPI, tmClient: tmClient, keeper: k, ctxProvider: ctxProvider, txDecoder: txDecoder, connectionType: connectionType},
 	}
 }
@@ -74,9 +74,9 @@ func (api *DebugAPI) TraceTransaction(ctx context.Context, hash common.Hash, con
 	return
 }
 
-func (api *SeiDebugAPI) TraceBlockByNumberExcludeTraceFail(ctx context.Context, number rpc.BlockNumber, config *tracers.TraceConfig) (result interface{}, returnErr error) {
+func (api *EniDebugAPI) TraceBlockByNumberExcludeTraceFail(ctx context.Context, number rpc.BlockNumber, config *tracers.TraceConfig) (result interface{}, returnErr error) {
 	startTime := time.Now()
-	defer recordMetrics("sei_traceBlockByNumberExcludeTraceFail", api.connectionType, startTime, returnErr == nil)
+	defer recordMetrics("eni_traceBlockByNumberExcludeTraceFail", api.connectionType, startTime, returnErr == nil)
 	result, returnErr = api.tracersAPI.TraceBlockByNumber(ctx, number, config)
 	traces, ok := result.([]*tracers.TxTraceResult)
 	if !ok {
@@ -92,9 +92,9 @@ func (api *SeiDebugAPI) TraceBlockByNumberExcludeTraceFail(ctx context.Context, 
 	return finalTraces, nil
 }
 
-func (api *SeiDebugAPI) TraceBlockByHashExcludeTraceFail(ctx context.Context, hash common.Hash, config *tracers.TraceConfig) (result interface{}, returnErr error) {
+func (api *EniDebugAPI) TraceBlockByHashExcludeTraceFail(ctx context.Context, hash common.Hash, config *tracers.TraceConfig) (result interface{}, returnErr error) {
 	startTime := time.Now()
-	defer recordMetrics("sei_traceBlockByHashExcludeTraceFail", api.connectionType, startTime, returnErr == nil)
+	defer recordMetrics("eni_traceBlockByHashExcludeTraceFail", api.connectionType, startTime, returnErr == nil)
 	result, returnErr = api.tracersAPI.TraceBlockByHash(ctx, hash, config)
 	traces, ok := result.([]*tracers.TxTraceResult)
 	if !ok {

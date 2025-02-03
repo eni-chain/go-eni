@@ -2,7 +2,7 @@ package bindings
 
 import "github.com/eni-chain/go-eni/x/oracle/types"
 
-type SeiOracleQuery struct {
+type EniOracleQuery struct {
 	// queries the oracle exchange rates
 	ExchangeRates *types.QueryExchangeRatesRequest `json:"exchange_rates,omitempty"`
 	// queries the oracle TWAPs

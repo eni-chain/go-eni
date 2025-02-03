@@ -93,7 +93,7 @@ func TestEVMTransaction(t *testing.T) {
 	require.Empty(t, res.VmError)
 	require.NotEmpty(t, res.ReturnData)
 	require.NotEmpty(t, res.Hash)
-	require.Equal(t, uint64(1000000)-res.GasUsed, k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "usei").Amount.Uint64())
+	require.Equal(t, uint64(1000000)-res.GasUsed, k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "ueni").Amount.Uint64())
 	require.Equal(t, res.GasUsed, k.BankKeeper().GetBalance(ctx, state.GetCoinbaseAddress(ctx.TxIndex()), k.GetBaseDenom(ctx)).Amount.Uint64())
 	require.NoError(t, k.FlushTransientReceipts(ctx))
 	receipt, err := k.GetReceipt(ctx, common.HexToHash(res.Hash))
@@ -182,7 +182,7 @@ func TestEVMTransactionError(t *testing.T) {
 	require.Nil(t, err) // there should only be VM error, no msg-level error
 	require.NotEmpty(t, res.VmError)
 	// gas should be charged and receipt should be created
-	require.Equal(t, uint64(800000), k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "usei").Amount.Uint64())
+	require.Equal(t, uint64(800000), k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "ueni").Amount.Uint64())
 	require.NoError(t, k.FlushTransientReceipts(ctx))
 	receipt, err := k.GetReceipt(ctx, common.HexToHash(res.Hash))
 	require.Nil(t, err)
@@ -288,7 +288,7 @@ func TestEVMDynamicFeeTransaction(t *testing.T) {
 	require.Empty(t, res.VmError)
 	require.NotEmpty(t, res.ReturnData)
 	require.NotEmpty(t, res.Hash)
-	require.LessOrEqual(t, k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "usei").Amount.Uint64(), uint64(1000000)-res.GasUsed)
+	require.LessOrEqual(t, k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "ueni").Amount.Uint64(), uint64(1000000)-res.GasUsed)
 	require.NoError(t, k.FlushTransientReceipts(ctx))
 	receipt, err := k.GetReceipt(ctx, common.HexToHash(res.Hash))
 	require.Nil(t, err)
@@ -340,7 +340,7 @@ func TestEVMPrecompiles(t *testing.T) {
 		return ctx, nil
 	})
 	require.Nil(t, err)
-	coinbaseBalanceBefore := k.BankKeeper().GetBalance(ctx, state.GetCoinbaseAddress(ctx.TxIndex()), "usei").Amount.Uint64()
+	coinbaseBalanceBefore := k.BankKeeper().GetBalance(ctx, state.GetCoinbaseAddress(ctx.TxIndex()), "ueni").Amount.Uint64()
 	res, err := msgServer.EVMTransaction(sdk.WrapSDKContext(ctx), req)
 	require.Nil(t, err)
 	require.LessOrEqual(t, res.GasUsed, uint64(500000))
@@ -466,11 +466,11 @@ func TestEVMBlockEnv(t *testing.T) {
 	require.Empty(t, res.VmError)
 	require.NotEmpty(t, res.ReturnData)
 	require.NotEmpty(t, res.Hash)
-	require.Equal(t, uint64(1000000)-res.GasUsed, k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "usei").Amount.Uint64())
+	require.Equal(t, uint64(1000000)-res.GasUsed, k.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), "ueni").Amount.Uint64())
 	fmt.Println("all balances sender = ", k.BankKeeper().GetAllBalances(ctx, sdk.AccAddress(evmAddr[:])))
 	fmt.Println("all balances coinbase = ", k.BankKeeper().GetAllBalances(ctx, state.GetCoinbaseAddress(ctx.TxIndex())))
 	fmt.Println("wei = ", k.BankKeeper().GetBalance(ctx, state.GetCoinbaseAddress(ctx.TxIndex()), "wei").Amount.Uint64())
-	require.Equal(t, res.GasUsed, k.BankKeeper().GetBalance(ctx, state.GetCoinbaseAddress(ctx.TxIndex()), "usei").Amount.Uint64())
+	require.Equal(t, res.GasUsed, k.BankKeeper().GetBalance(ctx, state.GetCoinbaseAddress(ctx.TxIndex()), "ueni").Amount.Uint64())
 
 	require.NoError(t, k.FlushTransientReceipts(ctx))
 	receipt, err := k.GetReceipt(ctx, common.HexToHash(res.Hash))
@@ -516,19 +516,19 @@ func TestEVMBlockEnv(t *testing.T) {
 
 func TestSend(t *testing.T) {
 	k, ctx := testkeeper.MockEVMKeeper()
-	seiFrom, evmFrom := testkeeper.MockAddressPair()
-	seiTo, evmTo := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, seiFrom, evmFrom)
-	k.SetAddressMapping(ctx, seiTo, evmTo)
-	k.BankKeeper().AddCoins(ctx, seiFrom, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(1000000))), true)
+	eniFrom, evmFrom := testkeeper.MockAddressPair()
+	eniTo, evmTo := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, eniFrom, evmFrom)
+	k.SetAddressMapping(ctx, eniTo, evmTo)
+	k.BankKeeper().AddCoins(ctx, eniFrom, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(1000000))), true)
 	_, err := keeper.NewMsgServerImpl(k).Send(sdk.WrapSDKContext(ctx), &types.MsgSend{
-		FromAddress: seiFrom.String(),
+		FromAddress: eniFrom.String(),
 		ToAddress:   evmTo.Hex(),
-		Amount:      sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(500000))),
+		Amount:      sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(500000))),
 	})
 	require.Nil(t, err)
-	require.Equal(t, sdk.NewInt(500000), k.BankKeeper().GetBalance(ctx, seiFrom, "usei").Amount)
-	require.Equal(t, sdk.NewInt(500000), k.BankKeeper().GetBalance(ctx, seiTo, "usei").Amount)
+	require.Equal(t, sdk.NewInt(500000), k.BankKeeper().GetBalance(ctx, eniFrom, "ueni").Amount)
+	require.Equal(t, sdk.NewInt(500000), k.BankKeeper().GetBalance(ctx, eniTo, "ueni").Amount)
 }
 
 func TestRegisterPointer(t *testing.T) {
@@ -787,47 +787,47 @@ func TestEvmError(t *testing.T) {
 func TestAssociateContractAddress(t *testing.T) {
 	k, ctx := testkeeper.MockEVMKeeper()
 	msgServer := keeper.NewMsgServerImpl(k)
-	dummySeiAddr, dummyEvmAddr := testkeeper.MockAddressPair()
+	dummyEniAddr, dummyEvmAddr := testkeeper.MockAddressPair()
 	res, err := msgServer.RegisterPointer(sdk.WrapSDKContext(ctx), &types.MsgRegisterPointer{
-		Sender:      dummySeiAddr.String(),
+		Sender:      dummyEniAddr.String(),
 		PointerType: types.PointerType_ERC20,
 		ErcAddress:  dummyEvmAddr.Hex(),
 	})
 	require.Nil(t, err)
 	_, err = msgServer.AssociateContractAddress(sdk.WrapSDKContext(ctx), &types.MsgAssociateContractAddress{
-		Sender:  dummySeiAddr.String(),
+		Sender:  dummyEniAddr.String(),
 		Address: res.PointerAddress,
 	})
 	require.Nil(t, err)
 	associatedEvmAddr, found := k.GetEVMAddress(ctx, sdk.MustAccAddressFromBech32(res.PointerAddress))
 	require.True(t, found)
 	require.Equal(t, common.BytesToAddress(sdk.MustAccAddressFromBech32(res.PointerAddress)), associatedEvmAddr)
-	associatedSeiAddr, found := k.GetSeiAddress(ctx, associatedEvmAddr)
+	associatedEniAddr, found := k.GetEniAddress(ctx, associatedEvmAddr)
 	require.True(t, found)
-	require.Equal(t, res.PointerAddress, associatedSeiAddr.String())
+	require.Equal(t, res.PointerAddress, associatedEniAddr.String())
 	// setting for an associated address would fail
 	_, err = msgServer.AssociateContractAddress(sdk.WrapSDKContext(ctx), &types.MsgAssociateContractAddress{
-		Sender:  dummySeiAddr.String(),
+		Sender:  dummyEniAddr.String(),
 		Address: res.PointerAddress,
 	})
 	require.NotNil(t, err)
 	require.Contains(t, err.Error(), "contract already has an associated address")
 	// setting for a non-contract would fail
 	_, err = msgServer.AssociateContractAddress(sdk.WrapSDKContext(ctx), &types.MsgAssociateContractAddress{
-		Sender:  dummySeiAddr.String(),
-		Address: dummySeiAddr.String(),
+		Sender:  dummyEniAddr.String(),
+		Address: dummyEniAddr.String(),
 	})
 	require.NotNil(t, err)
 	require.Contains(t, err.Error(), "no wasm contract found at the given address")
 }
 
 func TestAssociate(t *testing.T) {
-	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithChainID("sei-test").WithBlockHeight(1)
+	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithChainID("eni-test").WithBlockHeight(1)
 	privKey := testkeeper.MockPrivateKey()
-	seiAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
-	acc := testkeeper.EVMTestApp.AccountKeeper.NewAccountWithAddress(ctx, seiAddr)
+	eniAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
+	acc := testkeeper.EVMTestApp.AccountKeeper.NewAccountWithAddress(ctx, eniAddr)
 	testkeeper.EVMTestApp.AccountKeeper.SetAccount(ctx, acc)
-	msg := types.NewMsgAssociate(seiAddr, "test")
+	msg := types.NewMsgAssociate(eniAddr, "test")
 	tb := testkeeper.EVMTestApp.GetTxConfig().NewTxBuilder()
 	tb.SetMsgs(msg)
 	tb.SetSignatures(signing.SignatureV2{
@@ -839,7 +839,7 @@ func TestAssociate(t *testing.T) {
 		Sequence: acc.GetSequence(),
 	})
 	signerData := authsigning.SignerData{
-		ChainID:       "sei-test",
+		ChainID:       "eni-test",
 		AccountNumber: acc.GetAccountNumber(),
 		Sequence:      acc.GetSequence(),
 	}

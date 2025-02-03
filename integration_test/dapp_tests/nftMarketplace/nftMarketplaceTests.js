@@ -4,32 +4,32 @@ const hre = require("hardhat");
 const {sendFunds, deployEthersContract, estimateAndCall, deployCw721WithPointer, setupAccountWithMnemonic,
     mintCw721
 } = require("../utils");
-const { fundAddress, getSeiAddress, execute } = require("../../../contracts/test/lib.js");
+const { fundAddress, getEniAddress, execute } = require("../../../contracts/test/lib.js");
 const {evmRpcUrls, chainIds, rpcUrls} = require("../constants");
 
 const testChain = process.env.DAPP_TEST_ENV;
 console.log("testChain", testChain);
 describe("NFT Marketplace", function () {
 
-    let marketplace, deployer, erc721token, erc721PointerToken, cw721Address, originalSeidConfig;
+    let marketplace, deployer, erc721token, erc721PointerToken, cw721Address, originalEnidConfig;
 
     before(async function () {
         const accounts = hre.config.networks[testChain].accounts
         const deployerWallet = hre.ethers.Wallet.fromMnemonic(accounts.mnemonic, accounts.path);
         deployer = deployerWallet.connect(hre.ethers.provider);
 
-        const seidConfig = await execute('seid config');
-        originalSeidConfig = JSON.parse(seidConfig);
+        const enidConfig = await execute('enid config');
+        originalEnidConfig = JSON.parse(enidConfig);
 
-        if (testChain === 'seilocal') {
+        if (testChain === 'enilocal') {
             await fundAddress(deployer.address, amount="2000000000000000000000");
         }  else {
-            // Set default seid config to the specified rpc url.
-            await execute(`seid config chain-id ${chainIds[testChain]}`)
-            await execute(`seid config node ${rpcUrls[testChain]}`)
+            // Set default enid config to the specified rpc url.
+            await execute(`enid config chain-id ${chainIds[testChain]}`)
+            await execute(`enid config node ${rpcUrls[testChain]}`)
         }
 
-        await execute(`seid config keyring-backend test`)
+        await execute(`enid config keyring-backend test`)
 
         await sendFunds('0.01', deployer.address, deployer)
         await setupAccountWithMnemonic("dapptest", accounts.mnemonic, deployer);
@@ -43,14 +43,14 @@ describe("NFT Marketplace", function () {
 
         // Deploy CW721 token with ERC721 pointer
         const time = Date.now().toString();
-        const deployerSeiAddr = await getSeiAddress(deployer.address);
-        const cw721Details = await deployCw721WithPointer(deployerSeiAddr, deployer, time, evmRpcUrls[testChain])
+        const deployerEniAddr = await getEniAddress(deployer.address);
+        const cw721Details = await deployCw721WithPointer(deployerEniAddr, deployer, time, evmRpcUrls[testChain])
         erc721PointerToken = cw721Details.pointerContract;
         cw721Address = cw721Details.cw721Address;
         console.log("CW721 Address", cw721Address);
         const numCwNftsToMint = 2;
         for (let i = 1; i <= numCwNftsToMint; i++) {
-            await mintCw721(cw721Address, deployerSeiAddr, i)
+            await mintCw721(cw721Address, deployerEniAddr, i)
         }
         const cwbal = await erc721PointerToken.balanceOf(deployer.address);
         expect(cwbal).to.equal(numCwNftsToMint)
@@ -171,8 +171,8 @@ describe("NFT Marketplace", function () {
     after(async function () {
         // Set the chain back to regular state
         console.log("Resetting")
-        await execute(`seid config chain-id ${originalSeidConfig["chain-id"]}`)
-        await execute(`seid config node ${originalSeidConfig["node"]}`)
-        await execute(`seid config keyring-backend ${originalSeidConfig["keyring-backend"]}`)
+        await execute(`enid config chain-id ${originalEnidConfig["chain-id"]}`)
+        await execute(`enid config node ${originalEnidConfig["node"]}`)
+        await execute(`enid config keyring-backend ${originalEnidConfig["keyring-backend"]}`)
     })
 })

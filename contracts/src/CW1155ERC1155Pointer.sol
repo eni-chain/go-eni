@@ -52,8 +52,8 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
             "ERC1155: caller is not approved to transfer"
         );
     
-        string memory f = _formatPayload("from", _doubleQuotes(AddrPrecompile.getSeiAddr(from)));
-        string memory t = _formatPayload("to", _doubleQuotes(AddrPrecompile.getSeiAddr(to)));
+        string memory f = _formatPayload("from", _doubleQuotes(AddrPrecompile.getEniAddr(from)));
+        string memory t = _formatPayload("to", _doubleQuotes(AddrPrecompile.getEniAddr(to)));
         string memory tId = _formatPayload("token_id", _doubleQuotes(Strings.toString(id)));
         string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
 
@@ -97,9 +97,9 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
             require(balances[i] >= amounts[i], "ERC1155: insufficient balance for transfer");
         }
 
-        string memory payload = string.concat("{\"send_batch\":{\"from\":\"", AddrPrecompile.getSeiAddr(from));
+        string memory payload = string.concat("{\"send_batch\":{\"from\":\"", AddrPrecompile.getEniAddr(from));
         payload = string.concat(payload, "\",\"to\":\"");
-        payload = string.concat(payload, AddrPrecompile.getSeiAddr(to));
+        payload = string.concat(payload, AddrPrecompile.getEniAddr(to));
         payload = string.concat(payload, "\",\"batch\":[");
         for (uint256 i = 0; i < ids.length; i++) {
             string memory batch = string.concat("{\"token_id\":\"", Strings.toString(ids[i]));
@@ -129,7 +129,7 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
     }
 
     function setApprovalForAll(address operator, bool approved) public override {
-        string memory op = _curlyBrace(_formatPayload("operator", _doubleQuotes(AddrPrecompile.getSeiAddr(operator))));
+        string memory op = _curlyBrace(_formatPayload("operator", _doubleQuotes(AddrPrecompile.getEniAddr(operator))));
         if (approved) {
             _execute(bytes(_curlyBrace(_formatPayload("approve_all", op))));
         } else {
@@ -146,7 +146,7 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
             "ERC1155: caller is not approved to burn"
         );
 
-        string memory f = _formatPayload("from", _doubleQuotes(AddrPrecompile.getSeiAddr(account)));
+        string memory f = _formatPayload("from", _doubleQuotes(AddrPrecompile.getEniAddr(account)));
         string memory tId = _formatPayload("token_id", _doubleQuotes(Strings.toString(id)));
         string memory amt = _formatPayload("amount", _doubleQuotes(Strings.toString(amount)));
 
@@ -173,7 +173,7 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
             require(balances[i] >= amounts[i], "ERC1155: insufficient balance for burning");
         }
 
-        string memory payload = string.concat("{\"burn_batch\":{\"from\":\"", AddrPrecompile.getSeiAddr(account));
+        string memory payload = string.concat("{\"burn_batch\":{\"from\":\"", AddrPrecompile.getEniAddr(account));
         payload = string.concat(payload, "\",\"batch\":[");
         for (uint256 i = 0; i < ids.length; i++) {
             string memory batch = string.concat("{\"token_id\":\"", Strings.toString(ids[i]));
@@ -200,7 +200,7 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
 
     function balanceOf(address account, uint256 id) public view override returns (uint256) {
         require(account != address(0), "ERC1155: cannot query balance of zero address");
-        string memory own = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(account)));
+        string memory own = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getEniAddr(account)));
         string memory tId = _formatPayload("token_id", _doubleQuotes(Strings.toString(id)));
         string memory req = _curlyBrace(_formatPayload("balance_of", _curlyBrace(_join(own, ",", tId))));
         bytes memory response = WasmdPrecompile.query(Cw1155Address, bytes(req));
@@ -221,7 +221,7 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
             if (i > 0) {
                 ownerTokens = string.concat(ownerTokens, ",");
             }
-            string memory ownerToken = string.concat("{\"owner\":\"", AddrPrecompile.getSeiAddr(accounts[i]));
+            string memory ownerToken = string.concat("{\"owner\":\"", AddrPrecompile.getEniAddr(accounts[i]));
             ownerToken = string.concat(ownerToken, "\",\"token_id\":\"");
             ownerToken = string.concat(ownerToken, Strings.toString(ids[i]));
             ownerToken = string.concat(ownerToken, "\"}");
@@ -246,8 +246,8 @@ contract CW1155ERC1155Pointer is ERC1155, ERC2981 {
     }
 
     function isApprovedForAll(address owner_, address operator) public view override returns (bool) {
-        string memory own = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getSeiAddr(owner_)));
-        string memory op = _formatPayload("operator", _doubleQuotes(AddrPrecompile.getSeiAddr(operator)));
+        string memory own = _formatPayload("owner", _doubleQuotes(AddrPrecompile.getEniAddr(owner_)));
+        string memory op = _formatPayload("operator", _doubleQuotes(AddrPrecompile.getEniAddr(operator)));
         string memory req = _curlyBrace(_formatPayload("is_approved_for_all", _curlyBrace(_join(own, ",", op))));
         bytes32 response = keccak256(WasmdPrecompile.query(Cw1155Address, bytes(req)));
         bytes32 approvedMsg = keccak256("{\"approved\":true}");

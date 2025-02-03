@@ -9,7 +9,7 @@ import (
 	"github.com/eni-chain/go-eni/x/evm/types"
 )
 
-const BaseDenom = "usei"
+const BaseDenom = "ueni"
 
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.Paramstore.SetParamSet(ctx, &params)
@@ -73,8 +73,8 @@ func (k *Keeper) ChainID(ctx sdk.Context) *big.Int {
 
 /*
 *
-sei gas = evm gas * multiplier
-sei gas price = fee / sei gas = fee / (evm gas * multiplier) = evm gas / multiplier
+eni gas = evm gas * multiplier
+eni gas price = fee / eni gas = fee / (evm gas * multiplier) = evm gas / multiplier
 */
 func (k *Keeper) GetEVMGasLimitFromCtx(ctx sdk.Context) uint64 {
 	return k.getEvmGasLimitFromCtx(ctx)

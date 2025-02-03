@@ -14,17 +14,17 @@ describe("ERC1155 to CW1155 Pointer", function () {
         accounts = await setupSigners(await hre.ethers.getSigners())
         admin = await getAdmin()
 
-        cw1155Address = await deployWasm(WASM.CW1155, admin.seiAddress, "cw1155", {
+        cw1155Address = await deployWasm(WASM.CW1155, admin.eniAddress, "cw1155", {
             name: "Test",
             symbol: "TEST",
-            minter: admin.seiAddress
+            minter: admin.eniAddress
         })
 
-        await executeWasm(cw1155Address, {mint: {recipient: admin.seiAddress, msg: {token_id: "1", amount: "10", token_uri: "uri1"}}});
-        await executeWasm(cw1155Address, {mint: {recipient: accounts[0].seiAddress, msg: {token_id: "1", amount: "11"}}});
-        await executeWasm(cw1155Address, {mint: {recipient: accounts[1].seiAddress, msg: {token_id: "2", amount: "12", token_uri: "uri2"}}});
-        await executeWasm(cw1155Address, {mint: {recipient: admin.seiAddress, msg: {token_id: "2", amount: "13"}}});
-        await executeWasm(cw1155Address, {mint: {recipient: accounts[1].seiAddress, msg: {token_id: "3", amount: "14", token_uri: "uri3"}}});
+        await executeWasm(cw1155Address, {mint: {recipient: admin.eniAddress, msg: {token_id: "1", amount: "10", token_uri: "uri1"}}});
+        await executeWasm(cw1155Address, {mint: {recipient: accounts[0].eniAddress, msg: {token_id: "1", amount: "11"}}});
+        await executeWasm(cw1155Address, {mint: {recipient: accounts[1].eniAddress, msg: {token_id: "2", amount: "12", token_uri: "uri2"}}});
+        await executeWasm(cw1155Address, {mint: {recipient: admin.eniAddress, msg: {token_id: "2", amount: "13"}}});
+        await executeWasm(cw1155Address, {mint: {recipient: accounts[1].eniAddress, msg: {token_id: "3", amount: "14", token_uri: "uri3"}}});
 
         const pointerAddr = await deployErc1155PointerForCw1155(hre.ethers.provider, cw1155Address)
         const contract = new hre.ethers.Contract(pointerAddr, ABI.ERC1155, hre.ethers.provider);

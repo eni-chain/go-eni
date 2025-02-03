@@ -14,17 +14,17 @@ func TestFindAccount(t *testing.T) {
 	// Setup
 	var accs []simtypes.Account
 	accs = append(accs, simtypes.Account{
-		Address: sdk.AccAddress([]byte("sei1qzdrwc3806zfdl98608nqnsvhg8hn854xs365g")),
+		Address: sdk.AccAddress([]byte("eni1qzdrwc3806zfdl98608nqnsvhg8hn854xs365g")),
 	})
 	accs = append(accs, simtypes.Account{
-		Address: sdk.AccAddress([]byte("sei1jdppe6fnj2q7hjsepty5crxtrryzhuqsjrj95y")),
+		Address: sdk.AccAddress([]byte("eni1jdppe6fnj2q7hjsepty5crxtrryzhuqsjrj95y")),
 	})
 
 	// Test with account present
-	addr1 := sdk.AccAddress([]byte("sei1qzdrwc3806zfdl98608nqnsvhg8hn854xs365g")).String()
+	addr1 := sdk.AccAddress([]byte("eni1qzdrwc3806zfdl98608nqnsvhg8hn854xs365g")).String()
 	account, found := epochsimulation.FindAccount(accs, addr1)
 	require.True(t, found)
-	require.Equal(t, sdk.AccAddress([]byte("sei1qzdrwc3806zfdl98608nqnsvhg8hn854xs365g")), account.Address)
+	require.Equal(t, sdk.AccAddress([]byte("eni1qzdrwc3806zfdl98608nqnsvhg8hn854xs365g")), account.Address)
 
 	// Test with account not present
 	addr3 := sdk.AccAddress([]byte("address3")).String()

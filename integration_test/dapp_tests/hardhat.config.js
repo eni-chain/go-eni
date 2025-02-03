@@ -16,7 +16,7 @@ module.exports = {
     timeout: 100000000,
   },
   networks: {
-    seilocal: {
+    enilocal: {
       url: "http://127.0.0.1:8545",
       accounts: {
         mnemonic: "end luxury shell adapt notice garbage unhappy lend firm spike fog document",
@@ -26,7 +26,7 @@ module.exports = {
       },
     },
     testnet: {
-      url: "https://evm-rpc-testnet.sei-apis.com",
+      url: "https://evm-rpc-testnet.eni-apis.com",
       accounts: {
         mnemonic: "end luxury shell adapt notice garbage unhappy lend firm spike fog document",
         path: "m/44'/118'/0'/0/0",
@@ -35,7 +35,7 @@ module.exports = {
       },
     },
     devnet: {
-      url: "https://evm-rpc-arctic-1.sei-apis.com",
+      url: "https://evm-rpc-arctic-1.eni-apis.com",
       accounts: {
         mnemonic: "end luxury shell adapt notice garbage unhappy lend firm spike fog document",
         path: "m/44'/118'/0'/0/0",

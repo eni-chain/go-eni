@@ -43,10 +43,10 @@ func SetupWasmbindingTest(t *testing.T) (*app.TestWrapper, func(ctx sdk.Context,
 func TestWasmUnknownQuery(t *testing.T) {
 	testWrapper, customQuerier := SetupWasmbindingTest(t)
 
-	oracle_req := oraclebinding.SeiOracleQuery{}
+	oracle_req := oraclebinding.EniOracleQuery{}
 	queryData, err := json.Marshal(oracle_req)
 	require.NoError(t, err)
-	query := wasmbinding.SeiQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
+	query := wasmbinding.EniQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
 	rawQuery, err := json.Marshal(query)
 	require.NoError(t, err)
 
@@ -54,25 +54,25 @@ func TestWasmUnknownQuery(t *testing.T) {
 	require.Error(t, err)
 	require.Equal(t, err, oracletypes.ErrUnknownSeiOracleQuery)
 
-	epoch_req := epochbinding.SeiEpochQuery{}
+	epoch_req := epochbinding.EniEpochQuery{}
 	queryData, err = json.Marshal(epoch_req)
 	require.NoError(t, err)
-	query = wasmbinding.SeiQueryWrapper{Route: wasmbinding.EpochRoute, QueryData: queryData}
+	query = wasmbinding.EniQueryWrapper{Route: wasmbinding.EpochRoute, QueryData: queryData}
 	rawQuery, err = json.Marshal(query)
 	require.NoError(t, err)
 
 	_, err = customQuerier(testWrapper.Ctx, rawQuery)
 	require.Error(t, err)
-	require.Equal(t, err, epochtypes.ErrUnknownSeiEpochQuery)
+	require.Equal(t, err, epochtypes.ErrUnknownEniEpochQuery)
 }
 
 func TestWasmGetOracleExchangeRates(t *testing.T) {
 	testWrapper, customQuerier := SetupWasmbindingTest(t)
 
-	req := oraclebinding.SeiOracleQuery{ExchangeRates: &oracletypes.QueryExchangeRatesRequest{}}
+	req := oraclebinding.EniOracleQuery{ExchangeRates: &oracletypes.QueryExchangeRatesRequest{}}
 	queryData, err := json.Marshal(req)
 	require.NoError(t, err)
-	query := wasmbinding.SeiQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
+	query := wasmbinding.EniQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
 
 	rawQuery, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -100,10 +100,10 @@ func TestWasmGetOracleExchangeRates(t *testing.T) {
 func TestWasmGetOracleTwaps(t *testing.T) {
 	testWrapper, customQuerier := SetupWasmbindingTest(t)
 
-	req := oraclebinding.SeiOracleQuery{OracleTwaps: &oracletypes.QueryTwapsRequest{LookbackSeconds: 200}}
+	req := oraclebinding.EniOracleQuery{OracleTwaps: &oracletypes.QueryTwapsRequest{LookbackSeconds: 200}}
 	queryData, err := json.Marshal(req)
 	require.NoError(t, err)
-	query := wasmbinding.SeiQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
+	query := wasmbinding.EniQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
 
 	rawQuery, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -138,10 +138,10 @@ func TestWasmGetOracleTwaps(t *testing.T) {
 func TestWasmGetOracleTwapsErrorHandling(t *testing.T) {
 	testWrapper, customQuerier := SetupWasmbindingTest(t)
 
-	req := oraclebinding.SeiOracleQuery{OracleTwaps: &oracletypes.QueryTwapsRequest{LookbackSeconds: 200}}
+	req := oraclebinding.EniOracleQuery{OracleTwaps: &oracletypes.QueryTwapsRequest{LookbackSeconds: 200}}
 	queryData, err := json.Marshal(req)
 	require.NoError(t, err)
-	query := wasmbinding.SeiQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
+	query := wasmbinding.EniQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
 	rawQuery, err := json.Marshal(query)
 	require.NoError(t, err)
 
@@ -149,10 +149,10 @@ func TestWasmGetOracleTwapsErrorHandling(t *testing.T) {
 	require.Error(t, err)
 	require.Equal(t, err, oracletypes.ErrNoTwapData)
 
-	req = oraclebinding.SeiOracleQuery{OracleTwaps: &oracletypes.QueryTwapsRequest{LookbackSeconds: 3601}}
+	req = oraclebinding.EniOracleQuery{OracleTwaps: &oracletypes.QueryTwapsRequest{LookbackSeconds: 3601}}
 	queryData, err = json.Marshal(req)
 	require.NoError(t, err)
-	query = wasmbinding.SeiQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
+	query = wasmbinding.EniQueryWrapper{Route: wasmbinding.OracleRoute, QueryData: queryData}
 	rawQuery, err = json.Marshal(query)
 	require.NoError(t, err)
 
@@ -164,13 +164,13 @@ func TestWasmGetOracleTwapsErrorHandling(t *testing.T) {
 func TestWasmGetEpoch(t *testing.T) {
 	testWrapper, customQuerier := SetupWasmbindingTest(t)
 
-	req := epochbinding.SeiEpochQuery{
+	req := epochbinding.EniEpochQuery{
 		Epoch: &epochtypes.QueryEpochRequest{},
 	}
 
 	queryData, err := json.Marshal(req)
 	require.NoError(t, err)
-	query := wasmbinding.SeiQueryWrapper{Route: wasmbinding.EpochRoute, QueryData: queryData}
+	query := wasmbinding.EniQueryWrapper{Route: wasmbinding.EpochRoute, QueryData: queryData}
 
 	rawQuery, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -210,10 +210,10 @@ func TestWasmGetDenomAuthorityMetadata(t *testing.T) {
 	}
 
 	// Setup tfk query
-	req := tokenfactorybinding.SeiTokenFactoryQuery{DenomAuthorityMetadata: &tokenfactorytypes.QueryDenomAuthorityMetadataRequest{Denom: denom}}
+	req := tokenfactorybinding.EniTokenFactoryQuery{DenomAuthorityMetadata: &tokenfactorytypes.QueryDenomAuthorityMetadataRequest{Denom: denom}}
 	queryData, err := json.Marshal(req)
 	require.NoError(t, err)
-	query := wasmbinding.SeiQueryWrapper{Route: wasmbinding.TokenFactoryRoute, QueryData: queryData}
+	query := wasmbinding.EniQueryWrapper{Route: wasmbinding.TokenFactoryRoute, QueryData: queryData}
 
 	rawQuery, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -235,10 +235,10 @@ func TestWasmGetDenomsFromCreator(t *testing.T) {
 	testWrapper.Ctx = testWrapper.Ctx.WithBlockHeight(11).WithBlockTime(time.Unix(3600, 0))
 
 	// No denoms created initially
-	req := tokenfactorybinding.SeiTokenFactoryQuery{DenomsFromCreator: &tokenfactorytypes.QueryDenomsFromCreatorRequest{Creator: app.TestUser}}
+	req := tokenfactorybinding.EniTokenFactoryQuery{DenomsFromCreator: &tokenfactorytypes.QueryDenomsFromCreatorRequest{Creator: app.TestUser}}
 	queryData, err := json.Marshal(req)
 	require.NoError(t, err)
-	query := wasmbinding.SeiQueryWrapper{Route: wasmbinding.TokenFactoryRoute, QueryData: queryData}
+	query := wasmbinding.EniQueryWrapper{Route: wasmbinding.TokenFactoryRoute, QueryData: queryData}
 
 	rawQuery, err := json.Marshal(query)
 	require.NoError(t, err)

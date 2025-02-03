@@ -1,5 +1,5 @@
 syntax = "proto3";
-package seiprotocol.seichain.tokenfactory;
+package enichain.goeni.tokenfactory;
 
 option go_package = "github.com/eni-chain/go-eni/x/tokenfactory/types";
 

@@ -3,9 +3,9 @@
 # Input parameters
 ARCH=$(uname -m)
 
-# Build seid
-echo "Building seid from local branch"
-git config --global --add safe.directory /sei-protocol/sei-chain
+# Build enid
+echo "Building enid from local branch"
+git config --global --add safe.directory /eni-chain/go-eni
 LEDGER_ENABLED=false
 make install
 mkdir -p build/generated

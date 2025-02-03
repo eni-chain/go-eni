@@ -3,7 +3,7 @@ const {
   deployErc20PointerForCw20,
   ABI,
   getEvmAddress,
-  fundSeiAddress,
+  fundEniAddress,
   associateKey,
   execute,
   isDocker,
@@ -33,13 +33,13 @@ describe("Steak", async function () {
   let hubAddress;
   let tokenAddress;
   let tokenPointer;
-  let originalSeidConfig;
+  let originalEnidConfig;
 
-  async function setupAccount(baseName, associate = true, amount="100000000000", denom="usei", funder='admin') {
+  async function setupAccount(baseName, associate = true, amount="100000000000", denom="ueni", funder='admin') {
     const uniqueName = `${baseName}-${uuidv4()}`;
 
     const account = await addAccount(uniqueName);
-    await fundSeiAddress(account.address, amount, denom, funder);
+    await fundEniAddress(account.address, amount, denom, funder);
     if (associate) {
       await associateKey(account.address);
     }
@@ -118,16 +118,16 @@ describe("Steak", async function () {
 
   before(async function () {
 
-    const seidConfig = await execute('seid config');
-    originalSeidConfig = JSON.parse(seidConfig);
+    const enidConfig = await execute('enid config');
+    originalEnidConfig = JSON.parse(enidConfig);
 
     // Set up the owner account
-    if (testChain === 'seilocal') {
+    if (testChain === 'enilocal') {
       owner = await setupAccount("steak-owner");
     } else {
-      // Set default seid config to the specified rpc url.
-      await execute(`seid config chain-id ${chainIds[testChain]}`)
-      await execute(`seid config node ${rpcUrls[testChain]}`)
+      // Set default enid config to the specified rpc url.
+      await execute(`enid config chain-id ${chainIds[testChain]}`)
+      await execute(`enid config node ${rpcUrls[testChain]}`)
 
       const accounts = hre.config.networks[testChain].accounts
       const deployerWallet = hre.ethers.Wallet.fromMnemonic(accounts.mnemonic, accounts.path);
@@ -138,7 +138,7 @@ describe("Steak", async function () {
       owner = await setupAccountWithMnemonic("steak-owner", accounts.mnemonic, deployer)
     }
 
-    await execute(`seid config keyring-backend test`);
+    await execute(`enid config keyring-backend test`);
 
     // Store and deploy contracts
     ({ hubAddress, tokenAddress, tokenPointer } = await deployContracts(
@@ -163,7 +163,7 @@ describe("Steak", async function () {
     });
 
     it("Unassociated account should be able to bond", async function () {
-      const unassociatedAccount = await setupAccount("unassociated", false, '2000000', 'usei', owner.address);
+      const unassociatedAccount = await setupAccount("unassociated", false, '2000000', 'ueni', owner.address);
       // Verify that account is not associated yet
       const initialEvmAddress = await getEvmAddress(
         unassociatedAccount.address
@@ -177,7 +177,7 @@ describe("Steak", async function () {
       expect(evmAddress).to.not.be.empty;
 
       // Send tokens to a new unassociated account
-      const newUnassociatedAccount = await setupAccount("unassociated", false, '2000000', 'usei', owner.address);
+      const newUnassociatedAccount = await setupAccount("unassociated", false, '2000000', 'ueni', owner.address);
       const transferAmount = 500000;
       await transferTokens(
         tokenAddress,
@@ -198,9 +198,9 @@ describe("Steak", async function () {
 
   after(async function () {
     // Set the chain back to regular state
-    console.log(`Resetting to ${originalSeidConfig}`)
-    await execute(`seid config chain-id ${originalSeidConfig["chain-id"]}`)
-    await execute(`seid config node ${originalSeidConfig["node"]}`)
-    await execute(`seid config keyring-backend ${originalSeidConfig["keyring-backend"]}`)
+    console.log(`Resetting to ${originalEnidConfig}`)
+    await execute(`enid config chain-id ${originalEnidConfig["chain-id"]}`)
+    await execute(`enid config node ${originalEnidConfig["node"]}`)
+    await execute(`enid config keyring-backend ${originalEnidConfig["keyring-backend"]}`)
   })
 });

@@ -1,6 +1,6 @@
 ## Abstract
 
-Sei Network has an `oracle` module to support asset exchange rate pricing for use by other modules and contracts. When validating for the network, participation as an Oracle is expected and required in order to ensure the most reliable and accurate pricing for assets.
+Eni Network has an `oracle` module to support asset exchange rate pricing for use by other modules and contracts. When validating for the network, participation as an Oracle is expected and required in order to ensure the most reliable and accurate pricing for assets.
 
 In the vote step for window X, the validator provides their proposed exchange rates for the current window. At the end of the voting period, all of the exchange rate votes are accumulated and a weighted median is computed (weighted by validator voting power) to determine the true exchange rate for each asset.
 

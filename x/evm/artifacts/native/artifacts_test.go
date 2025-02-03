@@ -53,13 +53,13 @@ func TestSimple(t *testing.T) {
 	req, err := types.NewMsgEVMTransaction(txwrapper)
 	require.Nil(t, err)
 
-	seiAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
+	eniAddr, evmAddr := testkeeper.PrivateKeyToAddresses(privKey)
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
 	amt := sdk.NewCoins(sdk.NewCoin(k.GetBaseDenom(ctx), sdk.NewInt(200000000)))
 	require.Nil(t, k.BankKeeper().MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(k.GetBaseDenom(ctx), sdk.NewInt(200000000)))))
-	require.Nil(t, k.BankKeeper().SendCoinsFromModuleToAccount(ctx, types.ModuleName, seiAddr, amt))
+	require.Nil(t, k.BankKeeper().SendCoinsFromModuleToAccount(ctx, types.ModuleName, eniAddr, amt))
 	require.Nil(t, k.BankKeeper().MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin("test", sdk.NewInt(200000000)))))
-	require.Nil(t, k.BankKeeper().SendCoinsFromModuleToAccount(ctx, types.ModuleName, seiAddr, sdk.NewCoins(sdk.NewCoin("test", sdk.NewInt(200000000)))))
+	require.Nil(t, k.BankKeeper().SendCoinsFromModuleToAccount(ctx, types.ModuleName, eniAddr, sdk.NewCoins(sdk.NewCoin("test", sdk.NewInt(200000000)))))
 
 	msgServer := keeper.NewMsgServerImpl(k)
 
@@ -74,7 +74,7 @@ func TestSimple(t *testing.T) {
 	require.NotNil(t, receipt)
 	require.Equal(t, uint32(ethtypes.ReceiptStatusSuccessful), receipt.Status)
 	k.SetERC20NativePointer(ctx, "test", common.HexToAddress(receipt.ContractAddress))
-	_, found := k.GetSeiAddress(ctx, common.HexToAddress(receipt.ContractAddress))
+	_, found := k.GetEniAddress(ctx, common.HexToAddress(receipt.ContractAddress))
 	require.True(t, found)
 
 	// send transaction to the contract

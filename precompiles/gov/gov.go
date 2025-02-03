@@ -98,7 +98,7 @@ func (p PrecompileExecutor) vote(ctx sdk.Context, method *abi.Method, caller com
 	if err := pcommon.ValidateArgsLength(args, 2); err != nil {
 		return nil, err
 	}
-	voter, found := p.evmKeeper.GetSeiAddress(ctx, caller)
+	voter, found := p.evmKeeper.GetEniAddress(ctx, caller)
 	if !found {
 		return nil, types.NewAssociationMissingErr(caller.Hex())
 	}
@@ -115,7 +115,7 @@ func (p PrecompileExecutor) deposit(ctx sdk.Context, method *abi.Method, caller 
 	if err := pcommon.ValidateArgsLength(args, 1); err != nil {
 		return nil, err
 	}
-	depositor, found := p.evmKeeper.GetSeiAddress(ctx, caller)
+	depositor, found := p.evmKeeper.GetEniAddress(ctx, caller)
 	if !found {
 		return nil, types.NewAssociationMissingErr(caller.Hex())
 	}
@@ -123,7 +123,7 @@ func (p PrecompileExecutor) deposit(ctx sdk.Context, method *abi.Method, caller 
 	if value == nil || value.Sign() == 0 {
 		return nil, errors.New("set `value` field to non-zero to deposit fund")
 	}
-	coin, err := pcommon.HandlePaymentUsei(ctx, p.evmKeeper.GetSeiAddressOrDefault(ctx, p.address), depositor, value, p.bankKeeper)
+	coin, err := pcommon.HandlePaymentUeni(ctx, p.evmKeeper.GetEniAddressOrDefault(ctx, p.address), depositor, value, p.bankKeeper)
 	if err != nil {
 		return nil, err
 	}

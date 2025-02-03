@@ -14,7 +14,7 @@ func MintRelease(t *testing.T, app *processblock.App, f BlockRunnable, _ []signi
 	return func() []uint32 {
 		oldMinter := app.MintKeeper.GetMinter(app.Ctx())
 		oldEpoch := app.EpochKeeper.GetEpoch(app.Ctx())
-		oldSupply := app.BankKeeper.GetSupply(app.Ctx(), "usei")
+		oldSupply := app.BankKeeper.GetSupply(app.Ctx(), "ueni")
 		res := f()
 		// if minter minted, it must be a new epoch, but not the other way around
 		newMinter := app.MintKeeper.GetMinter(app.Ctx())
@@ -33,7 +33,7 @@ func MintRelease(t *testing.T, app *processblock.App, f BlockRunnable, _ []signi
 		}
 		expectedMintedAmount := oldMinter.TotalMintAmount / uint64(endDate.Sub(startDate)/(24*time.Hour))
 		require.Equal(t, expectedMintedAmount, oldMinter.RemainingMintAmount-newMinter.RemainingMintAmount)
-		newSupply := app.BankKeeper.GetSupply(app.Ctx(), "usei")
+		newSupply := app.BankKeeper.GetSupply(app.Ctx(), "ueni")
 		require.Equal(t, expectedMintedAmount, uint64(newSupply.Amount.Int64()-oldSupply.Amount.Int64()))
 		return res
 	}

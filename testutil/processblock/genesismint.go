@@ -12,7 +12,7 @@ func (a *App) NewMinter(amount uint64) {
 	a.MintKeeper.SetMinter(a.Ctx(), minttypes.Minter{
 		StartDate:           today.Format(minttypes.TokenReleaseDateFormat),
 		EndDate:             dayAfterTomorrow.Format(minttypes.TokenReleaseDateFormat),
-		Denom:               "usei",
+		Denom:               "ueni",
 		TotalMintAmount:     amount,
 		RemainingMintAmount: amount,
 	})

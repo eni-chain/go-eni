@@ -42,7 +42,7 @@ func TestKrakenProvider_GetTickerPrices(t *testing.T) {
 
 	t.Run("valid_request_multi_ticker", func(t *testing.T) {
 		lastPriceAtom := sdk.MustNewDecFromStr("34.69000000")
-		lastPriceSei := sdk.MustNewDecFromStr("41.35000000")
+		lastPriceEni := sdk.MustNewDecFromStr("41.35000000")
 		volume := sdk.MustNewDecFromStr("2396974.02000000")
 
 		tickerMap := map[string]TickerPrice{}
@@ -51,22 +51,22 @@ func TestKrakenProvider_GetTickerPrices(t *testing.T) {
 			Volume: volume,
 		}
 
-		tickerMap["SEIUSDT"] = TickerPrice{
-			Price:  lastPriceSei,
+		tickerMap["ENIUSDT"] = TickerPrice{
+			Price:  lastPriceEni,
 			Volume: volume,
 		}
 
 		p.tickers = tickerMap
 		prices, err := p.GetTickerPrices(
 			types.CurrencyPair{Base: "ATOM", Quote: "USDT"},
-			types.CurrencyPair{Base: "SEI", Quote: "USDT"},
+			types.CurrencyPair{Base: "ENI", Quote: "USDT"},
 		)
 		require.NoError(t, err)
 		require.Len(t, prices, 2)
 		require.Equal(t, lastPriceAtom, prices["ATOMUSDT"].Price)
 		require.Equal(t, volume, prices["ATOMUSDT"].Volume)
-		require.Equal(t, lastPriceSei, prices["SEIUSDT"].Price)
-		require.Equal(t, volume, prices["SEIUSDT"].Volume)
+		require.Equal(t, lastPriceEni, prices["ENIUSDT"].Price)
+		require.Equal(t, volume, prices["ENIUSDT"].Volume)
 	})
 
 	t.Run("invalid_request_invalid_ticker", func(t *testing.T) {

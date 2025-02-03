@@ -139,7 +139,7 @@ func TestPartitionPrioritizedTxs(t *testing.T) {
 	otherMsg := &stakingtypes.MsgDelegate{
 		DelegatorAddress: account,
 		ValidatorAddress: validator,
-		Amount:           sdk.NewCoin("usei", sdk.NewInt(1)),
+		Amount:           sdk.NewCoin("ueni", sdk.NewInt(1)),
 	}
 
 	txEncoder := app.MakeEncodingConfig().TxConfig.TxEncoder()
@@ -222,7 +222,7 @@ func TestProcessOracleAndOtherTxsSuccess(t *testing.T) {
 	otherMsg := &banktypes.MsgSend{
 		FromAddress: account,
 		ToAddress:   account2,
-		Amount:      sdk.NewCoins(sdk.NewInt64Coin("usei", 2)),
+		Amount:      sdk.NewCoins(sdk.NewInt64Coin("ueni", 2)),
 	}
 
 	oracleTxBuilder := app.MakeEncodingConfig().TxConfig.NewTxBuilder()
@@ -232,14 +232,14 @@ func TestProcessOracleAndOtherTxsSuccess(t *testing.T) {
 	err := oracleTxBuilder.SetMsgs(oracleMsg)
 	require.NoError(t, err)
 	oracleTxBuilder.SetGasLimit(200000)
-	oracleTxBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("usei", 20000)))
+	oracleTxBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("ueni", 20000)))
 	oracleTx, err := txEncoder(oracleTxBuilder.GetTx())
 	require.NoError(t, err)
 
 	err = otherTxBuilder.SetMsgs(otherMsg)
 	require.NoError(t, err)
 	otherTxBuilder.SetGasLimit(100000)
-	otherTxBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("usei", 10000)))
+	otherTxBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("ueni", 10000)))
 	otherTx, err := txEncoder(otherTxBuilder.GetTx())
 	require.NoError(t, err)
 
@@ -373,13 +373,13 @@ func TestDecodeTransactionsConcurrently(t *testing.T) {
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: "",
 		ToAddress:   "",
-		Amount:      sdk.NewCoins(sdk.NewInt64Coin("usei", 2)),
+		Amount:      sdk.NewCoins(sdk.NewInt64Coin("ueni", 2)),
 	}
 
 	bankTxBuilder := testWrapper.App.GetTxConfig().NewTxBuilder()
 	bankTxBuilder.SetMsgs(bankMsg)
 	bankTxBuilder.SetGasLimit(200000)
-	bankTxBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("usei", 20000)))
+	bankTxBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("ueni", 20000)))
 	banktxbz, _ := testWrapper.App.GetTxConfig().TxEncoder()(bankTxBuilder.GetTx())
 
 	invalidbz := []byte("abc")
@@ -437,8 +437,8 @@ func TestApp_RegisterAPIRoutes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			seiApp := &app.App{}
-			seiApp.RegisterAPIRoutes(tt.args.apiSvr, tt.args.apiConfig)
+			eniApp := &app.App{}
+			eniApp.RegisterAPIRoutes(tt.args.apiSvr, tt.args.apiConfig)
 			routes := tt.args.apiSvr.Router
 			gotSwagger := isSwaggerRouteAdded(routes)
 

@@ -2,16 +2,16 @@
 
 ## Introduction
 
-Security researchers are essential in identifying vulnerabilities that may impact the Sei ecosystem. If you have discovered a security vulnerability in the Sei chain or any repository managed by Sei, we encourage you to notify us using one of the methods outlined below.
+Security researchers are essential in identifying vulnerabilities that may impact the Eni ecosystem. If you have discovered a security vulnerability in the Eni chain or any repository managed by Eni, we encourage you to notify us using one of the methods outlined below.
 
 ### Guidelines for Responsible Vulnerability Testing and Reporting
 
 1. **Refrain from testing vulnerabilities on our publicly accessible environments**, including but not limited to:
 
-- Sei mainnet `pacific-1`
-- Sei frontend
-- Sei public testnets
-- Sei testnet frontend
+- Eni mainnet `pacific-1`
+- Eni frontend
+- Eni public testnets
+- Eni testnet frontend
 
 2. **Avoid reporting security vulnerabilities through public channels, including GitHub issues**
 
@@ -19,7 +19,7 @@ To privately report a security vulnerability, please choose one of the following
 
 ### 1. Email
 
-Send your detailed vulnerability report to `protocol-eng@seinetwork.io`.
+Send your detailed vulnerability report to `protocol-eng@eninetwork.io`.
 
 ### 2. GitHub Private Vulnerability Reporting
 
@@ -48,11 +48,11 @@ During the vulnerability disclosure process, we ask security researchers to keep
 During this time:
 
 - Avoid exploiting any vulnerabilities you discover.
-- Demonstrate good faith by not disrupting or degrading Sei's services.
+- Demonstrate good faith by not disrupting or degrading Eni's services.
 
 ## Feature request
 
-For a feature request, e.g. module inclusion, please make a GitHub issue. Clearly state your use case and what value it will bring to other users or developers on Sei.
+For a feature request, e.g. module inclusion, please make a GitHub issue. Clearly state your use case and what value it will bring to other users or developers on Eni.
 
 ## Severity Characterization
 
@@ -65,4 +65,4 @@ For a feature request, e.g. module inclusion, please make a GitHub issue. Clearl
 
 ## Feedback on this Policy
 
-For recommendations on how to improve this policy, either submit a pull request or email `protocol-eng@seinetwork.io`.
+For recommendations on how to improve this policy, either submit a pull request or email `protocol-eng@eninetwork.io`.

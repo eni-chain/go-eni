@@ -16,7 +16,7 @@ from io import BytesIO
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Advanced user configs
-moniker = "seinode"  # Custom moniker for the node
+moniker = "eninode"  # Custom moniker for the node
 trust_height_delta = 0  # Negative height offset for state sync
 version_override = False  # Override version fetching. if true, specify version(s) below
 p2p_port = 26656
@@ -61,9 +61,9 @@ def print_ascii_and_intro():
                   .-+###############*+:.
                      ..-+********+-.
 
-Welcome to the Sei node installer!
-For more information please visit docs.sei.io
-This tool will download the seid binary from sei-binaries and wipe any existing state.
+Welcome to the Eni node installer!
+For more information please visit docs.eni.io
+This tool will download the enid binary from eni-binaries and wipe any existing state.
 Please backup any important existing data before proceeding.
 """)
 
@@ -84,14 +84,14 @@ def take_manual_inputs():
 
     env = ["local", "devnet", "testnet", "mainnet"][int(env) - 1]
 
-    db_choice = input("Choose the database backend (1: sei-db [default], 2: legacy): ").strip() or "1"
+    db_choice = input("Choose the database backend (1: eni-db [default], 2: legacy): ").strip() or "1"
     if db_choice not in ["1", "2"]:
         db_choice = "1"  # Default to "1" if the input is invalid or empty
     return env, db_choice
 
 # Fetch chain data
 def get_rpc_server(chain_id):
-    chains_json_url = "https://raw.githubusercontent.com/sei-protocol/chain-registry/main/chains.json"
+    chains_json_url = "https://raw.githubusercontent.com/eni-chain/chain-registry/main/chains.json"
     response = requests.get(chains_json_url)
     if response.status_code != 200:
         logging.error("Failed to retrieve chain information.")
@@ -125,7 +125,7 @@ def get_rpc_server(chain_id):
 # Fetch latest version from GitHub for local environment
 def fetch_latest_version():
     try:
-        response = requests.get("https://api.github.com/repos/sei-protocol/sei-chain/releases/latest")
+        response = requests.get("https://api.github.com/repos/eni-chain/eni-chain/releases/latest")
         response.raise_for_status()
         latest_version = response.json()["tag_name"]
         logging.info(f"Fetched latest version {latest_version} from GitHub API")
@@ -164,14 +164,14 @@ def compile_and_install_release(version):
         logging.info(f"Extracted directory: {extracted_dir}")
 
         # Define the new directory name
-        new_dir_name = "sei-chain"
+        new_dir_name = "eni-chain"
 
         # Check if the new directory name already exists
         if os.path.exists(new_dir_name):
             logging.error(f"The directory '{new_dir_name}' already exists. It will be removed.")
             sys.exit(1)
 
-        # Rename the extracted directory to 'sei-chain'
+        # Rename the extracted directory to 'eni-chain'
         logging.info(f"Renaming '{extracted_dir}' to '{new_dir_name}'")
         os.rename(extracted_dir, new_dir_name)
         logging.info(f"Renaming completed.")
@@ -215,12 +215,12 @@ def compile_and_install_release(version):
 
 def install_release(version):
     try:
-        base_url = f"https://github.com/alexander-sei/sei-binaries/releases/download/{version}/"
-        tag = f"seid-{version}-linux-amd64"
+        base_url = f"https://github.com/alexander-eni/eni-binaries/releases/download/{version}/"
+        tag = f"enid-{version}-linux-amd64"
         binary_url = f"{base_url}{tag}"
         sha256_url = f"{base_url}{tag}.sha256"
         install_dir = "/usr/local/bin"
-        binary_path = os.path.join(install_dir, "seid")
+        binary_path = os.path.join(install_dir, "enid")
 
         logging.info(f"Downloading binary from {binary_url}")
         binary_response = requests.get(binary_url)
@@ -235,7 +235,7 @@ def install_release(version):
         logging.info(f"Expected SHA256 hash: {sha256_hash}")
 
         # Save the binary to a temporary file
-        temp_binary_path = "/tmp/seid-binary"
+        temp_binary_path = "/tmp/enid-binary"
         with open(temp_binary_path, "wb") as binary_file:
             binary_file.write(binary_response.content)
 
@@ -250,7 +250,7 @@ def install_release(version):
         else:
             logging.info("SHA256 hash verification passed.")
 
-        # Move the binary to the install directory and rename it to 'seid'
+        # Move the binary to the install directory and rename it to 'enid'
         logging.info(f"Moving binary to {binary_path}")
         subprocess.run(["sudo", "mv", temp_binary_path, binary_path], check=True)
 
@@ -258,7 +258,7 @@ def install_release(version):
         logging.info(f"Setting executable permissions for {binary_path}")
         subprocess.run(["sudo", "chmod", "+x", binary_path], check=True)
 
-        logging.info(f"Successfully installed 'seid' version: {version} to {binary_path}")
+        logging.info(f"Successfully installed 'enid' version: {version} to {binary_path}")
 
     except requests.HTTPError as http_err:
         logging.error(f"HTTP error occurred: {http_err}")
@@ -305,7 +305,7 @@ def get_state_sync_params(rpc_url, trust_height_delta, chain_id):
 
 # Fetch peers list
 def get_persistent_peers(rpc_url):
-    node_key_path = os.path.expanduser('~/.sei/config/node_key.json')
+    node_key_path = os.path.expanduser('~/.eni/config/node_key.json')
     with open(node_key_path, 'r') as f:
         self_id = json.load(f)['id']
         response = requests.get(f"{rpc_url}/net_info")
@@ -315,10 +315,10 @@ def get_persistent_peers(rpc_url):
 
 # Fetch and write genesis file directly from source
 def write_genesis_file(chain_id):
-    genesis_url = f"https://raw.githubusercontent.com/sei-protocol/testnet/main/{chain_id}/genesis.json"
+    genesis_url = f"https://raw.githubusercontent.com/eni-chain/testnet/main/{chain_id}/genesis.json"
     response = requests.get(genesis_url)
     if response.status_code == 200:
-        genesis_path = os.path.expanduser('~/.sei/config/genesis.json')
+        genesis_path = os.path.expanduser('~/.eni/config/genesis.json')
         with open(genesis_path, 'wb') as file:
             file.write(response.content)
         logging.info("Genesis file written successfully.")
@@ -364,17 +364,17 @@ def main():
             dynamic_version = fetch_node_version(rpc_url) if not version_override else None
             version = dynamic_version or version  # Use the fetched version if not overridden
 
-        home_dir = os.path.expanduser('~/.sei')
+        home_dir = os.path.expanduser('~/.eni')
 
         if env == "local":
-            # Clean up previous data, init seid with given chain ID and moniker
+            # Clean up previous data, init enid with given chain ID and moniker
             compile_and_install_release(version)
             
             subprocess.run(["rm", "-rf", home_dir])
-            subprocess.run(["seid", "init", moniker, "--chain-id", chain_id], check=True)
+            subprocess.run(["enid", "init", moniker, "--chain-id", chain_id], check=True)
 
             logging.info("Running local initialization script...")
-            local_script_path = os.path.expanduser('~/sei-chain/scripts/initialize_local_chain.sh')
+            local_script_path = os.path.expanduser('~/eni-chain/scripts/initialize_local_chain.sh')
             run_command(f"chmod +x {local_script_path}")
             run_command(local_script_path)
 
@@ -382,9 +382,9 @@ def main():
             # Install selected release
             install_release(version)
 
-            # Clean up previous data, init seid with given chain ID and moniker
+            # Clean up previous data, init enid with given chain ID and moniker
             subprocess.run(["rm", "-rf", home_dir])
-            subprocess.run(["seid", "init", moniker, "--chain-id", chain_id], check=True)
+            subprocess.run(["enid", "init", moniker, "--chain-id", chain_id], check=True)
             subprocess.run(["sudo", "mount", "-t", "tmpfs", "-o", "size=12G,mode=1777", "overflow", "/tmp"], check=True)
 
             # Fetch state-sync params and persistent peers
@@ -395,8 +395,8 @@ def main():
             write_genesis_file(chain_id)
 
             # Config changes
-            config_path = os.path.expanduser('~/.sei/config/config.toml')
-            app_config_path = os.path.expanduser('~/.sei/config/app.toml')
+            config_path = os.path.expanduser('~/.eni/config/config.toml')
+            app_config_path = os.path.expanduser('~/.eni/config/app.toml')
 
             # Confirm exists before modifying config files
             ensure_file_path(config_path)
@@ -435,9 +435,9 @@ def main():
                 with open(app_config_path, 'w') as file:
                     file.write(app_data)
 
-        # Start seid
-        logging.info("Starting seid...")
-        run_command("seid start")
+        # Start enid
+        logging.info("Starting enid...")
+        run_command("enid start")
     except KeyboardInterrupt:
         logging.info("Main process interrupted by user. Exiting gracefully...")
 

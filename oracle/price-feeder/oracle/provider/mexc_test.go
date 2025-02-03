@@ -44,7 +44,7 @@ func TestMexcProvider_GetTickerPrices(t *testing.T) {
 
 	t.Run("valid_request_multi_ticker", func(t *testing.T) {
 		lastPriceAtom := "34.69000000"
-		lastPriceSei := "41.35000000"
+		lastPriceEni := "41.35000000"
 		volume := "2396974.02000000"
 
 		tickerMap := map[string]MexcTicker{}
@@ -54,23 +54,23 @@ func TestMexcProvider_GetTickerPrices(t *testing.T) {
 			Volume:    volume,
 		}
 
-		tickerMap["SEIUSDT"] = MexcTicker{
-			Symbol:    "SEIUSDT",
-			LastPrice: lastPriceSei,
+		tickerMap["ENIUSDT"] = MexcTicker{
+			Symbol:    "ENIUSDT",
+			LastPrice: lastPriceEni,
 			Volume:    volume,
 		}
 
 		p.tickers = tickerMap
 		prices, err := p.GetTickerPrices(
 			types.CurrencyPair{Base: "ATOM", Quote: "USDT"},
-			types.CurrencyPair{Base: "SEI", Quote: "USDT"},
+			types.CurrencyPair{Base: "ENI", Quote: "USDT"},
 		)
 		require.NoError(t, err)
 		require.Len(t, prices, 2)
 		require.Equal(t, sdk.MustNewDecFromStr(lastPriceAtom), prices["ATOMUSDT"].Price)
 		require.Equal(t, sdk.MustNewDecFromStr(volume), prices["ATOMUSDT"].Volume)
-		require.Equal(t, sdk.MustNewDecFromStr(lastPriceSei), prices["SEIUSDT"].Price)
-		require.Equal(t, sdk.MustNewDecFromStr(volume), prices["SEIUSDT"].Volume)
+		require.Equal(t, sdk.MustNewDecFromStr(lastPriceEni), prices["ENIUSDT"].Price)
+		require.Equal(t, sdk.MustNewDecFromStr(volume), prices["ENIUSDT"].Volume)
 	})
 
 	t.Run("invalid_request_invalid_ticker", func(t *testing.T) {

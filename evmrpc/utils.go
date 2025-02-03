@@ -201,10 +201,10 @@ func evmExists(ctx sdk.Context, k *keeper.Keeper) bool {
 }
 
 func shouldIncludeSynthetic(namespace string) bool {
-	if namespace != "eth" && namespace != "sei" {
+	if namespace != "eth" && namespace != "eni" {
 		panic(fmt.Sprintf("unknown namespace %s", namespace))
 	}
-	return namespace == "sei"
+	return namespace == "eni"
 }
 
 func getTxHashesFromBlock(block *coretypes.ResultBlock, txConfig client.TxConfig, shouldIncludeSynthetic bool) []common.Hash {

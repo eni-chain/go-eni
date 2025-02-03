@@ -23,7 +23,7 @@ Your OS:                darwin
 Your arch:              arm64
 Your go version:        go version go1.22.0 darwin/arm64
 Your uname -a:          Darwin 23.1.0 Darwin Kernel Version 23.1.0: Mon Oct  9 21:32:11 PDT 2023; root:xnu-10002.41.9~7/RELEASE_ARM64_T6030 arm64
-Your cwd:               /repos/sei-chain
+Your cwd:               /repos/go-eni
 Is on Gitpod:           false
 
 ```

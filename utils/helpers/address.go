@@ -27,9 +27,9 @@ func GetAddressesFromPubkeyBytes(pubkey []byte) (common.Address, sdk.AccAddress,
 	if err != nil {
 		return common.Address{}, sdk.AccAddress{}, nil, err
 	}
-	seiPubkey := PubkeyBytesToSeiPubKey(pubkey)
-	seiAddr := sdk.AccAddress(seiPubkey.Address())
-	return evmAddr, seiAddr, &seiPubkey, nil
+	eniPubkey := PubkeyBytesToEniPubKey(pubkey)
+	eniAddr := sdk.AccAddress(eniPubkey.Address())
+	return evmAddr, eniAddr, &eniPubkey, nil
 }
 
 // first half of go-ethereum/core/types/transaction_signing.go:recoverPlain
@@ -62,7 +62,7 @@ func PubkeyToEVMAddress(pub []byte) (common.Address, error) {
 	return addr, nil
 }
 
-func PubkeyBytesToSeiPubKey(pub []byte) secp256k1.PubKey {
+func PubkeyBytesToEniPubKey(pub []byte) secp256k1.PubKey {
 	pubKey, _ := crypto.UnmarshalPubkey(pub)
 	pubkeyObj := (*btcec.PublicKey)(pubKey)
 	return secp256k1.PubKey{Key: pubkeyObj.SerializeCompressed()}

@@ -18,7 +18,7 @@ def failure_restarts(validators, ssh_key, num_concurrent):
         while j < num_concurrent:
             print(f"Restarting validator {validators[i + j]}")
             subprocess.check_output(
-                f"ssh -i {ssh_key} ubuntu@{validators[i + j]} 'sudo -S -p \"\" systemctl restart seid'")
+                f"ssh -i {ssh_key} ubuntu@{validators[i + j]} 'sudo -S -p \"\" systemctl restart enid'")
             j += 1
         i += num_concurrent
 
@@ -33,9 +33,9 @@ def delegation_change(chain_id):
     """
     # First get total voting power
     admin_acc = _get_admin_acc()
-    seid_query_cmd = f"seid q staking delegations {admin_acc} --chain-id {chain_id} --output json"
+    enid_query_cmd = f"enid q staking delegations {admin_acc} --chain-id {chain_id} --output json"
     staking_output = json.loads(
-        subprocess.check_output([seid_query_cmd], stderr=subprocess.STDOUT,
+        subprocess.check_output([enid_query_cmd], stderr=subprocess.STDOUT,
                                 shell=True))
     total_delegation = 0
     validator_addrs = []
@@ -47,14 +47,14 @@ def delegation_change(chain_id):
     for i in range(len(validator_addrs // 4)):
         delegations[validator_addrs[i]] = 10 * total_delegation
         print(f"Delegating {10 * total_delegation} to {validator_addrs[i]}")
-        seid_staking_cmd = f"seid tx staking delegate {validator_addrs[i]} {10 * total_delegation}usei --from admin --chain-id {chain_id} -b block -y"
-        _run_seid_cmd(seid_staking_cmd)
+        enid_staking_cmd = f"enid tx staking delegate {validator_addrs[i]} {10 * total_delegation}ueni --from admin --chain-id {chain_id} -b block -y"
+        _run_enid_cmd(enid_staking_cmd)
     time.sleep(random.randint(600, 3600))
     # Unbond
     for validator in delegations:
         print(f"Unbonding {10 * total_delegation} from {validator}")
-        seid_unbond_cmd = f"seid tx staking unbond {validator} {delegations[validator]}usei --from admin -b block -y --chain-id {chain_id}"
-        _run_seid_cmd(seid_unbond_cmd)
+        enid_unbond_cmd = f"enid tx staking unbond {validator} {delegations[validator]}ueni --from admin -b block -y --chain-id {chain_id}"
+        _run_enid_cmd(enid_unbond_cmd)
 
 
 def slow_network(validators, ssh_key, num_concurrent):
@@ -85,14 +85,14 @@ def slow_network(validators, ssh_key, num_concurrent):
 
 
 def _get_admin_acc():
-    seid_query_cmd = "seid keys list --output json"
-    accs_output = _run_seid_cmd(seid_query_cmd)
+    enid_query_cmd = "enid keys list --output json"
+    accs_output = _run_enid_cmd(enid_query_cmd)
     return filter(lambda x: x['name'] == 'admin', accs_output)['address']
 
-def _run_seid_cmd(cmd)
-    seid_cmd = "printf '12345678\n' " + cmd
+def _run_enid_cmd(cmd)
+    enid_cmd = "printf '12345678\n' " + cmd
     output = json.loads(
-        subprocess.check_output([seid_cmd], stderr=subprocess.STDOUT,
+        subprocess.check_output([enid_cmd], stderr=subprocess.STDOUT,
                                 shell=True))
     return output
 

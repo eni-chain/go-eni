@@ -6,7 +6,7 @@ CLUSTER_SIZE=${CLUSTER_SIZE:-1}
 # Clean up and env set up
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
-export BUILD_PATH=/sei-protocol/sei-chain/build
+export BUILD_PATH=/eni-chain/go-eni/build
 export PATH=$GOBIN:$PATH:/usr/local/go/bin:$BUILD_PATH
 echo "export GOPATH=$HOME/go" >> "$HOME/.bashrc"
 echo "GOBIN=$GOPATH/bin" >> "$HOME/.bashrc"
@@ -56,7 +56,7 @@ done
 /usr/bin/config_override.sh
 
 # Step 5: Start the chain
-/usr/bin/start_sei.sh
+/usr/bin/start_eni.sh
 
 # Wait until the chain started
 while [ $(cat build/generated/launch.complete |wc -l) -lt "$CLUSTER_SIZE" ]

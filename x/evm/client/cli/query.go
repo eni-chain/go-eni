@@ -38,7 +38,7 @@ func GetQueryCmd(_ string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdQuerySeiAddress())
+	cmd.AddCommand(CmdQueryEniAddress())
 	cmd.AddCommand(CmdQueryEVMAddress())
 	cmd.AddCommand(CmdQueryERC20Payload())
 	cmd.AddCommand(CmdQueryERC721Payload())
@@ -52,10 +52,10 @@ func GetQueryCmd(_ string) *cobra.Command {
 	return cmd
 }
 
-func CmdQuerySeiAddress() *cobra.Command {
+func CmdQueryEniAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sei-addr",
-		Short: "gets sei address (sei...) by EVM address (0x...) if account has association set",
+		Use:   "eni-addr",
+		Short: "gets eni address (eni...) by EVM address (0x...) if account has association set",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -65,7 +65,7 @@ func CmdQuerySeiAddress() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.SeiAddressByEVMAddress(context.Background(), &types.QuerySeiAddressByEVMAddressRequest{EvmAddress: args[0]})
+			res, err := queryClient.EniAddressByEVMAddress(context.Background(), &types.QueryEniAddressByEVMAddressRequest{EvmAddress: args[0]})
 			if err != nil {
 				return err
 			}
@@ -82,7 +82,7 @@ func CmdQuerySeiAddress() *cobra.Command {
 func CmdQueryEVMAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "evm-addr",
-		Short: "gets evm address (0x...) by Sei address (sei...) if account has association set",
+		Short: "gets evm address (0x...) by Eni address (eni...) if account has association set",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -91,7 +91,7 @@ func CmdQueryEVMAddress() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.EVMAddressBySeiAddress(context.Background(), &types.QueryEVMAddressBySeiAddressRequest{SeiAddress: args[0]})
+			res, err := queryClient.EVMAddressByEniAddress(context.Background(), &types.QueryEVMAddressByEniAddressRequest{EniAddress: args[0]})
 			if err != nil {
 				return err
 			}
@@ -218,21 +218,21 @@ func CmdQueryERC20Payload() *cobra.Command {
 			switch args[0] {
 			case "transfer":
 				if len(args) != 3 {
-					return errors.New("expected usage: `seid tx evm erc20-payload transfer [to] [amount]`")
+					return errors.New("expected usage: `enid tx evm erc20-payload transfer [to] [amount]`")
 				}
 				to := common.HexToAddress(args[1])
 				amt, _ := sdk.NewIntFromString(args[2])
 				bz, err = abi.Pack(args[0], to, amt.BigInt())
 			case "approve":
 				if len(args) != 3 {
-					return errors.New("expected usage: `seid tx evm erc20-payload approve [spender] [amount]`")
+					return errors.New("expected usage: `enid tx evm erc20-payload approve [spender] [amount]`")
 				}
 				spender := common.HexToAddress(args[1])
 				amt, _ := sdk.NewIntFromString(args[2])
 				bz, err = abi.Pack(args[0], spender, amt.BigInt())
 			case "transferFrom":
 				if len(args) != 4 {
-					return errors.New("expected usage: `seid tx evm erc20-payload transferFrom [from] [to] [amount]`")
+					return errors.New("expected usage: `enid tx evm erc20-payload transferFrom [from] [to] [amount]`")
 				}
 				from := common.HexToAddress(args[1])
 				to := common.HexToAddress(args[2])
@@ -270,14 +270,14 @@ func CmdQueryERC721Payload() *cobra.Command {
 			switch args[0] {
 			case "approve":
 				if len(args) != 3 {
-					return errors.New("expected usage: `seid tx evm erc721-payload approve [spender] [tokenId]`")
+					return errors.New("expected usage: `enid tx evm erc721-payload approve [spender] [tokenId]`")
 				}
 				spender := common.HexToAddress(args[1])
 				id, _ := sdk.NewIntFromString(args[2])
 				bz, err = abi.Pack(args[0], spender, id.BigInt())
 			case "transferFrom":
 				if len(args) != 4 {
-					return errors.New("expected usage: `seid tx evm erc721-payload transferFrom [from] [to] [tokenId]`")
+					return errors.New("expected usage: `enid tx evm erc721-payload transferFrom [from] [to] [tokenId]`")
 				}
 				from := common.HexToAddress(args[1])
 				to := common.HexToAddress(args[2])
@@ -285,7 +285,7 @@ func CmdQueryERC721Payload() *cobra.Command {
 				bz, err = abi.Pack(args[0], from, to, id.BigInt())
 			case "setApprovalForAll":
 				if len(args) != 3 {
-					return errors.New("expected usage: `seid tx evm erc721-payload setApprovalForAll [spender] [ture|false]`")
+					return errors.New("expected usage: `enid tx evm erc721-payload setApprovalForAll [spender] [ture|false]`")
 				}
 				op := common.HexToAddress(args[1])
 				approved := args[2] == "true"
@@ -322,7 +322,7 @@ func CmdQueryERC1155Payload() *cobra.Command {
 			switch args[0] {
 			case "safeTransferFrom":
 				if len(args) != 6 {
-					return errors.New("expected usage: `seid tx evm erc1155-payload safeTransferFrom [from] [to] [tokenId] [amount] [data]`")
+					return errors.New("expected usage: `enid tx evm erc1155-payload safeTransferFrom [from] [to] [tokenId] [amount] [data]`")
 				}
 				from := common.HexToAddress(args[1])
 				to := common.HexToAddress(args[2])
@@ -331,7 +331,7 @@ func CmdQueryERC1155Payload() *cobra.Command {
 				bz, err = abi.Pack(args[0], from, to, id.BigInt(), amt.BigInt(), []byte(args[5]))
 			case "safeBatchTransferFrom":
 				if len(args) != 6 {
-					return errors.New("expected usage: `seid tx evm erc1155-payload safeBatchTransferFrom [from] [to] [tokenIds] [amounts] [data]`")
+					return errors.New("expected usage: `enid tx evm erc1155-payload safeBatchTransferFrom [from] [to] [tokenIds] [amounts] [data]`")
 				}
 				from := common.HexToAddress(args[1])
 				to := common.HexToAddress(args[2])
@@ -356,7 +356,7 @@ func CmdQueryERC1155Payload() *cobra.Command {
 				bz, err = abi.Pack(args[0], from, to, ids, amts, []byte(args[5]))
 			case "setApprovalForAll":
 				if len(args) != 3 {
-					return errors.New("expected usage: `seid tx evm erc1155-payload setApprovalForAll [spender] [ture|false]`")
+					return errors.New("expected usage: `enid tx evm erc1155-payload setApprovalForAll [spender] [ture|false]`")
 				}
 				op := common.HexToAddress(args[1])
 				approved := args[2] == "true"

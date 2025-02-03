@@ -78,7 +78,7 @@ pub fn process_bulk_order_placements(
         let order_placement = Order {
             price: Decimal::from_atomics(120u128, 0).unwrap(),
             quantity: Decimal::one(),
-            price_denom: "SEI".to_string(),
+            price_denom: "ENI".to_string(),
             asset_denom: "ATOM".to_string(),
             position_direction: PositionDirection::Long,
             order_type: OrderType::Limit,

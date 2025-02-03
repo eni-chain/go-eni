@@ -39,7 +39,7 @@ type TransactionAPI struct {
 	connectionType ConnectionType
 }
 
-type SeiTransactionAPI struct {
+type EniTransactionAPI struct {
 	*TransactionAPI
 	isPanicTx func(ctx context.Context, hash common.Hash) (bool, error)
 }
@@ -48,18 +48,18 @@ func NewTransactionAPI(tmClient rpcclient.Client, k *keeper.Keeper, ctxProvider 
 	return &TransactionAPI{tmClient: tmClient, keeper: k, ctxProvider: ctxProvider, txConfig: txConfig, homeDir: homeDir, connectionType: connectionType}
 }
 
-func NewSeiTransactionAPI(
+func NewEniTransactionAPI(
 	tmClient rpcclient.Client,
 	k *keeper.Keeper,
 	ctxProvider func(int64) sdk.Context, txConfig client.TxConfig,
 	homeDir string,
 	connectionType ConnectionType,
 	isPanicTx func(ctx context.Context, hash common.Hash) (bool, error),
-) *SeiTransactionAPI {
-	return &SeiTransactionAPI{TransactionAPI: NewTransactionAPI(tmClient, k, ctxProvider, txConfig, homeDir, connectionType), isPanicTx: isPanicTx}
+) *EniTransactionAPI {
+	return &EniTransactionAPI{TransactionAPI: NewTransactionAPI(tmClient, k, ctxProvider, txConfig, homeDir, connectionType), isPanicTx: isPanicTx}
 }
 
-func (t *SeiTransactionAPI) GetTransactionReceiptExcludeTraceFail(ctx context.Context, hash common.Hash) (result map[string]interface{}, returnErr error) {
+func (t *EniTransactionAPI) GetTransactionReceiptExcludeTraceFail(ctx context.Context, hash common.Hash) (result map[string]interface{}, returnErr error) {
 	return getTransactionReceipt(ctx, t.TransactionAPI, hash, true, t.isPanicTx)
 }
 

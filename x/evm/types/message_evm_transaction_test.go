@@ -82,7 +82,7 @@ func TestMustGetEVMTransactionMessageWrongType(t *testing.T) {
 
 	// Non-EVM tx
 	testMsg := wasmtypes.MsgExecuteContract{
-		Contract: "sei1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw",
+		Contract: "eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw",
 		Msg:      []byte("{\"xyz\":{}}"),
 	}
 	testTx := app.NewTestTx([]sdk.Msg{&testMsg})
