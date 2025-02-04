@@ -20,7 +20,7 @@ env:
 
 jobs:
   runner-indexes:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     name: Generate runner indexes
     outputs:
       json: ${{ steps.generate-index-list.outputs.json }}
@@ -34,7 +34,7 @@ jobs:
 
   eth-blocktests:
     name: "Run ETH Blocktests ${{ matrix.runner-index }}"
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: runner-indexes
     strategy:
       fail-fast: false
