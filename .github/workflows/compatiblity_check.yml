@@ -12,19 +12,21 @@ on:
 jobs:
   forward-compatibility:
     name: forward-compatibility
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
           go-version: 1.21
-
+      - name: Configure git to use PAT
+        run: |
+          git config --global url."https://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@github.com".insteadOf "https://github.com"
       - name: Check Latest Dependencies
         run: |
-          git clone https://github.com/eni-chain/eni-cosmos.git
-          git clone https://github.com/eni-chain/eni-tendermint.git
-          git clone https://github.com/eni-chain/eni-iavl.git
-          git clone https://github.com/eni-chain/go-ethereum.git
+          git clone -b base https://github.com/eni-chain/eni-cosmos.git
+          git clone -b base https://github.com/eni-chain/eni-tendermint.git
+          git clone -b base https://github.com/eni-chain/eni-iavl.git
+          git clone -b base https://github.com/eni-chain/go-ethereum.git
           go mod edit -replace github.com/cosmos/iavl=./eni-iavl
           go mod edit -replace github.com/tendermint/tendermint=./eni-tendermint
           go mod edit -replace github.com/cosmos/cosmos-sdk=./eni-cosmos

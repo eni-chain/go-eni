@@ -22,7 +22,7 @@ defaults:
 jobs:
   integration-tests:
     name: Integration Test (${{ matrix.test.name }})
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 30
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -150,7 +150,9 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.21
-
+      - name: Configure git to use PAT
+        run: |
+          git config --global url."https://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@github.com".insteadOf "https://github.com"
       - name: Start 4 node docker cluster
         run: make clean && INVARIANT_CHECK_INTERVAL=10 ${{matrix.test.env}} make docker-cluster-start &
 
@@ -181,7 +183,7 @@ jobs:
 
   integration-test-check:
     name: Integration Test Check
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: integration-tests
     if: always()
     steps:

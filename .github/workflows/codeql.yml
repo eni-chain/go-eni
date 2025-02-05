@@ -16,7 +16,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       actions: read
       contents: read
@@ -28,6 +28,9 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.21
+      - name: Configure git to use PAT
+        run: |
+          git config --global url."https://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@github.com".insteadOf "https://github.com"
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2

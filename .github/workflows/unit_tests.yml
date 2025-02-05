@@ -12,7 +12,7 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -30,6 +30,9 @@ jobs:
             go.mod
             go.sum
             Makefile
+      - name: Configure git to use PAT
+        run: |
+          git config --global url."https://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@github.com".insteadOf "https://github.com"
       - name: Get data from Go build cache
         uses: actions/cache@v3
         with:
@@ -50,7 +53,7 @@ jobs:
 
   upload-coverage-report:
     needs: tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
@@ -91,7 +94,7 @@ jobs:
 
   unit-test-check:
     name: Unit Test Check
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: tests
     if: always()
     steps:
