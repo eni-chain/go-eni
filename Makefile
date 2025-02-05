@@ -154,7 +154,7 @@ run-local-node: kill-eni-node build-docker-node
 .PHONY: run-local-node
 
 # Run a single rpc state sync node docker container
-run-rpc-node: build-rpc-node
+run-rpc-node: kill-rpc-node build-rpc-node
 	docker run --rm \
 	--name eni-rpc-node \
 	--network docker_localnet \
@@ -170,7 +170,7 @@ run-rpc-node: build-rpc-node
 	go-eni/rpcnode
 .PHONY: run-rpc-node
 
-run-rpc-node-skipbuild: build-rpc-node
+run-rpc-node-skipbuild: kill-rpc-node build-rpc-node
 	docker run --rm \
 	--name eni-rpc-node \
 	--network docker_localnet \
