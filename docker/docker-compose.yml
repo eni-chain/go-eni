@@ -95,7 +95,7 @@ services:
       - UPGRADE_VERSION_LIST
     ports:
       - "26665-26667:26656-26658"
-      - "9096-9097:9090-9091"
+      - "9098-9099:9090-9091"
     volumes:
       - "${PROJECT_HOME}:/eni-chain/go-eni:Z"
       - "${PROJECT_HOME}/../eni-tendermint:/eni-chain/eni-tendermint:Z"
