@@ -5,12 +5,10 @@ import (
 	"encoding/hex"
 	"math/big"
 	"math/rand"
-	"os"
 	"testing"
 	"time"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	wasmxtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	clienttx "github.com/cosmos/cosmos-sdk/client/tx"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -118,7 +116,7 @@ func addressToValAddress(addr sdk.AccAddress) sdk.ValAddress {
 
 // NewTestContext initializes a new TestContext with a new app and a new contract
 func NewTestContext(t *testing.T, testAccts []TestAcct, blockTime time.Time, workers int, occEnabled bool) *TestContext {
-	contractFile := "../integration_test/contracts/mars.wasm"
+	//contractFile := "../integration_test/contracts/mars.wasm"
 	wrapper := app.NewTestWrapper(t, blockTime, testAccts[0].PublicKey, false, func(ba *baseapp.BaseApp) {
 		ba.SetOccEnabled(occEnabled)
 		ba.SetConcurrencyWorkers(workers)
@@ -132,11 +130,11 @@ func NewTestContext(t *testing.T, testAccts []TestAcct, blockTime time.Time, wor
 	contractKeeper := wasmkeeper.NewDefaultPermissionKeeper(&wasmKeeper)
 
 	// deploy a contract so we can use it
-	wasm, err := os.ReadFile(contractFile)
-	panicIfErr(err)
-	var perm *wasmxtypes.AccessConfig
-	codeID, err := contractKeeper.Create(ctx, testAccts[0].AccountAddress, wasm, perm)
-	panicIfErr(err)
+	//wasm, err := os.ReadFile(contractFile)
+	//panicIfErr(err)
+	//var perm *wasmxtypes.AccessConfig
+	//codeID, err := contractKeeper.Create(ctx, testAccts[0].AccountAddress, wasm, perm)
+	//panicIfErr(err)
 
 	for _, ta := range testAccts {
 		panicIfErr(bankkeeper.MintCoins(ctx, minttypes.ModuleName, amounts))
@@ -145,7 +143,6 @@ func NewTestContext(t *testing.T, testAccts []TestAcct, blockTime time.Time, wor
 
 	return &TestContext{
 		Ctx:            ctx,
-		CodeID:         codeID,
 		Validator:      testAccts[0],
 		TestAccounts:   testAccts,
 		ContractKeeper: contractKeeper,

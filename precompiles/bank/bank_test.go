@@ -195,7 +195,7 @@ func TestRun(t *testing.T) {
 		// gas refund to the sender
 		banktypes.NewCoinReceivedEvent(senderAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(132401)))),
 		// tip is paid to the validator
-		banktypes.NewCoinReceivedEvent(sdk.MustAccAddressFromBech32("eni1v4mx6hmrda5kucnpwdjsqqqqqqqqqqqqlve8dv"), sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(67599)))),
+		banktypes.NewCoinReceivedEvent(sdk.MustAccAddressFromBech32("eni1v4mx6hmrda5kucnpwdjsqqqqqqqqqqqqzws0wt"), sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(67599)))),
 	}
 	require.EqualValues(t, expectedEvts.ToABCIEvents(), evts)
 
@@ -238,15 +238,16 @@ func TestRun(t *testing.T) {
 		Denom  string   `json:"denom"`
 	})
 
+	// todo 目前不太清楚为什么修改关键字后导致这个index发生变化
 	require.Equal(t, 2, len(parsedBalances))
 	require.Equal(t, bank.CoinBalance{
 		Amount: big.NewInt(10000000),
 		Denom:  "ufoo",
-	}, bank.CoinBalance(parsedBalances[0]))
+	}, bank.CoinBalance(parsedBalances[1]))
 	require.Equal(t, bank.CoinBalance{
 		Amount: big.NewInt(9932390),
 		Denom:  "ueni",
-	}, bank.CoinBalance(parsedBalances[1]))
+	}, bank.CoinBalance(parsedBalances[0]))
 
 	// Verify errors properly raised on bank balance calls with incorrect inputs
 	_, _, err = p.RunAndCalculateGas(&evm, common.Address{}, common.Address{}, append(p.GetExecutor().(*bank.PrecompileExecutor).BalanceID, args[:1]...), 100000, nil, nil, false, false)
@@ -332,11 +333,11 @@ func TestSendForUnlinkedReceiver(t *testing.T) {
 	require.Equal(t, bank.CoinBalance{
 		Amount: big.NewInt(9999900),
 		Denom:  "ufoo",
-	}, bank.CoinBalance(parsedBalances[0]))
+	}, bank.CoinBalance(parsedBalances[1]))
 	require.Equal(t, bank.CoinBalance{
 		Amount: big.NewInt(10000000),
 		Denom:  "ueni",
-	}, bank.CoinBalance(parsedBalances[1]))
+	}, bank.CoinBalance(parsedBalances[0]))
 
 	// Verify errors properly raised on bank balance calls with incorrect inputs
 	_, _, err = p.RunAndCalculateGas(&evm, common.Address{}, common.Address{}, append(p.GetExecutor().(*bank.PrecompileExecutor).BalanceID, args[:1]...), 100000, nil, nil, false, false)

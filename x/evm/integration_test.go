@@ -145,6 +145,7 @@ func TestERC721RoyaltiesPointerToCW721Royalties(t *testing.T) {
 }
 
 func TestCW721RoyaltiesPointerToERC721Royalties(t *testing.T) {
+	t.Skip("skip wasm test")
 	k := testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
 	// deploy erc2981

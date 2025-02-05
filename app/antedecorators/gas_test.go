@@ -14,15 +14,37 @@ import (
 	"github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
+//func TestSeiAddrConvert(t *testing.T) {
+//	// eg: sei addr sei1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw ->
+//	// eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmujwv3f
+//	seiAddr := "sei1v4mx6hmrda5kucnpwdjsqqqqqqqqqqqqzws0wt"
+//
+//	sdk.GetConfig().SetBech32PrefixForAccount("sei", "seipub")
+//
+//	accAddr, err := sdk.AccAddressFromBech32(seiAddr)
+//	if err != nil {
+//		fmt.Println("parse err:", err)
+//		return
+//	}
+//
+//	eniAddr, err := sdk.Bech32ifyAddressBytes("eni", accAddr.Bytes())
+//	if err != nil {
+//		fmt.Println("convert err:", err)
+//		return
+//	}
+//
+//	fmt.Println("convert eni addr:", eniAddr)
+//}
+
 func TestMultiplierGasSetter(t *testing.T) {
 	testApp := app.Setup(false, false)
-	contractAddr, err := sdk.AccAddressFromBech32("eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw")
+	contractAddr, err := sdk.AccAddressFromBech32("eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmujwv3f")
 	require.NoError(t, err)
 	ctx := testApp.NewContext(false, types.Header{}).WithBlockHeight(2)
 	testApp.ParamsKeeper.SetCosmosGasParams(ctx, *paramtypes.DefaultCosmosGasParams())
 	testApp.ParamsKeeper.SetFeesParams(ctx, paramtypes.DefaultGenesis().GetFeesParams())
 	testMsg := wasmtypes.MsgExecuteContract{
-		Contract: "eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw",
+		Contract: "eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmujwv3f",
 		Msg:      []byte("{\"xyz\":{}}"),
 	}
 	testTx := app.NewTestTx([]sdk.Msg{&testMsg})

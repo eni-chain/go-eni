@@ -722,7 +722,7 @@ func generateTxData() {
 	)
 	EVMKeeper.SetAddressMapping(
 		Ctx,
-		sdk.MustAccAddressFromBech32("eni1mf0llhmqane5w2y8uynmghmk2w4mh0xll9seym"),
+		sdk.MustAccAddressFromBech32("eni1mf0llhmqane5w2y8uynmghmk2w4mh0xlz8e38u"),
 		common.HexToAddress("0x1df809C639027b465B931BD63Ce71c8E5834D9d6"),
 	)
 	EVMKeeper.SetNonce(Ctx, common.HexToAddress("0x1234567890123456789012345678901234567890"), 1)

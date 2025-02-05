@@ -10,7 +10,7 @@ import (
 
 func TestGetCoinbaseAddress(t *testing.T) {
 	coinbaseAddr := state.GetCoinbaseAddress(1).String()
-	require.Equal(t, coinbaseAddr, "eni1v4mx6hmrda5kucnpwdjsqqqqqqqqqqqpz6djs7")
+	require.Equal(t, coinbaseAddr, "eni1v4mx6hmrda5kucnpwdjsqqqqqqqqqqqplcy6ne")
 }
 
 func TestSplitUeniWeiAmount(t *testing.T) {
