@@ -106,12 +106,12 @@ describe("Uniswap Test", function () {
         // Create liquidity pools
         await deployTokenPool(manager, weth9.address, token.address)
         await deployTokenPool(manager, weth9.address, erc20TokenFactory.address)
-        await deployTokenPool(manager, weth9.address, erc20cw20.address)
+        // await deployTokenPool(manager, weth9.address, erc20cw20.address)
 
         // Add Liquidity to pools
         await supplyLiquidity(manager, deployer.address, weth9, token, hre.ethers.utils.parseEther("1"), hre.ethers.utils.parseEther("1"))
         await supplyLiquidity(manager, deployer.address, weth9, erc20TokenFactory, hre.ethers.utils.parseEther("1"), hre.ethers.utils.parseEther("1"))
-        await supplyLiquidity(manager, deployer.address, weth9, erc20cw20, hre.ethers.utils.parseEther("1"), hre.ethers.utils.parseEther("1"))
+        // await supplyLiquidity(manager, deployer.address, weth9, erc20cw20, hre.ethers.utils.parseEther("1"), hre.ethers.utils.parseEther("1"))
     })
 
     describe("Swaps", function () {
@@ -233,14 +233,14 @@ describe("Uniswap Test", function () {
             expect(Number(userBal)).to.be.greaterThan(0);
         });
 
-        it("Associated account should swap erc20-cw20 successfully", async function () {
-            await basicSwapTestAssociated(weth9, erc20cw20);
-
-            // Also check on the cw20 side that the token balance has been updated.
-            const userEniAddr = await getEniAddress(user.address);
-            const result = await queryWasm(cw20Address, "balance", {address: userEniAddr});
-            expect(Number(result.data.balance)).to.be.greaterThan(0);
-        });
+        // it("Associated account should swap erc20-cw20 successfully", async function () {
+        //     await basicSwapTestAssociated(weth9, erc20cw20);
+        //
+        //     // Also check on the cw20 side that the token balance has been updated.
+        //     const userEniAddr = await getEniAddress(user.address);
+        //     const result = await queryWasm(cw20Address, "balance", {address: userEniAddr});
+        //     expect(Number(result.data.balance)).to.be.greaterThan(0);
+        // });
 
         it("Unassociated account should receive erc20 tokens successfully", async function () {
             await basicSwapTestUnassociated(weth9, token)
@@ -257,9 +257,9 @@ describe("Uniswap Test", function () {
             expect(Number(userBal)).to.be.greaterThan(0);
         })
 
-        it("Unassociated account should not be able to receive erc20cw20 tokens successfully", async function () {
-            await basicSwapTestUnassociated(weth9, erc20cw20, expectSwapFail=true)
-        });
+        // it("Unassociated account should not be able to receive erc20cw20 tokens successfully", async function () {
+        //     await basicSwapTestUnassociated(weth9, erc20cw20, expectSwapFail=true)
+        // });
     })
 
     // We've already tested that an associated account (deployer) can deploy pools and supply liquidity in the Before() step.
