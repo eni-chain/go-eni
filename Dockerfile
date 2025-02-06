@@ -1,5 +1,5 @@
-# docker build . -t sei-protocol/sei:latest
-# docker run --rm -it sei-protocol/sei:latest /bin/sh
+# docker build . -t eni-chain/eni:latest
+# docker run --rm -it eni-chain/eni:latest /bin/sh
 FROM golang:1.21.4-alpine AS go-builder
 
 # this comes from standard alpine nightly file
@@ -29,20 +29,20 @@ RUN set -eux; \
 COPY . /code/
 
 # force it to use static lib (from above) not standard libgo_cosmwasm.so file
-# then log output of file /code/build/seid
+# then log output of file /code/build/enid
 # then ensure static linking
 RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build -B \
-  && file /code/build/seid \
+  && file /code/build/enid \
   && echo "Ensuring binary is statically linked ..." \
-  && (file /code/build/seid | grep "statically linked")
+  && (file /code/build/enid | grep "statically linked")
 
 # --------------------------------------------------------
 FROM alpine:3.18
 
-COPY --from=go-builder /code/build/seid /usr/bin/seid
+COPY --from=go-builder /code/build/enid /usr/bin/enid
 
 
 # rest server, tendermint p2p, tendermint rpc
 EXPOSE 1317 26656 26657
 
-CMD ["/usr/bin/seid", "version"]
+CMD ["/usr/bin/enid", "version"]

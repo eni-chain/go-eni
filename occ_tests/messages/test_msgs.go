@@ -16,21 +16,21 @@ import (
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 )
 
-const instantiateMsg = `{"whitelist": ["sei1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag"],
-    "use_whitelist":false,"admin":"sei1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag",
+const instantiateMsg = `{"whitelist": ["eni1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag"],
+    "use_whitelist":false,"admin":"eni1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag",
 	"limit_order_fee":{"decimal":"0.0001","negative":false},
 	"market_order_fee":{"decimal":"0.0001","negative":false},
 	"liquidation_order_fee":{"decimal":"0.0001","negative":false},
 	"margin_ratio":{"decimal":"0.0625","negative":false},
 	"max_leverage":{"decimal":"4","negative":false},
 	"default_base":"USDC",
-	"native_token":"USDC","denoms": ["SEI","ATOM","USDC","SOL","ETH","OSMO","AVAX","BTC"],
-	"full_denom_mapping": [["usei","SEI","0.000001"],["uatom","ATOM","0.000001"],["uusdc","USDC","0.000001"]],
-	"funding_payment_lookback":3600,"spot_market_contract":"sei1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag",
+	"native_token":"USDC","denoms": ["ENI","ATOM","USDC","SOL","ETH","OSMO","AVAX","BTC"],
+	"full_denom_mapping": [["ueni","ENI","0.000001"],["uatom","ATOM","0.000001"],["uusdc","USDC","0.000001"]],
+	"funding_payment_lookback":3600,"spot_market_contract":"eni1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag",
 	"supported_collateral_denoms": ["USDC"],
 	"supported_multicollateral_denoms": ["ATOM"],
-	"oracle_denom_mapping": [["usei","SEI","1"],["uatom","ATOM","1"],["uusdc","USDC","1"],["ueth","ETH","1"]],
-	"multicollateral_whitelist": ["sei1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag"],
+	"oracle_denom_mapping": [["ueni","ENI","1"],["uatom","ATOM","1"],["uusdc","USDC","1"],["ueth","ETH","1"]],
+	"multicollateral_whitelist": ["eni1h9yjz89tl0dl6zu65dpxcqnxfhq60wxx8s5kag"],
 	"multicollateral_whitelist_enable": true,
 	"funding_payment_pairs": [["USDC","ETH"]],
 	"default_margin_ratios":{

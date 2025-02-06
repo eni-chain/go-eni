@@ -99,15 +99,15 @@ func (m *Migrator) Verify(version int64) error {
 			}
 			count++
 			if count%1000000 == 0 {
-				fmt.Printf("SeiDB Archive Migration: Verified %d keys in for module %s\n", count, module)
+				fmt.Printf("EniDB Archive Migration: Verified %d keys in for module %s\n", count, module)
 			}
 			return false
 		})
 		if err != nil {
-			fmt.Printf("SeiDB Archive Migration: Failed to iterate the tree %s: %s\n", module, err.Error())
+			fmt.Printf("EniDB Archive Migration: Failed to iterate the tree %s: %s\n", module, err.Error())
 			return err
 		}
-		fmt.Printf("SeiDB Archive Migration:: Finished verifying module %s, total scanned: %d keys\n", module, count)
+		fmt.Printf("EniDB Archive Migration:: Finished verifying module %s, total scanned: %d keys\n", module, count)
 	}
 	return verifyErr
 }
@@ -115,7 +115,7 @@ func (m *Migrator) Verify(version int64) error {
 func ExportLeafNodesFromKey(db dbm.DB, ch chan<- types.RawSnapshotNode, startKey []byte, startModule string) error {
 	count := 0
 	leafNodeCount := 0
-	fmt.Println("SeiDB Archive Migration: Scanning database and exporting leaf nodes...")
+	fmt.Println("EniDB Archive Migration: Scanning database and exporting leaf nodes...")
 
 	startTimeTotal := time.Now() // Start measuring total time
 
@@ -131,7 +131,7 @@ func ExportLeafNodesFromKey(db dbm.DB, ch chan<- types.RawSnapshotNode, startKey
 			}
 		}
 		startTimeModule := time.Now() // Measure time for each module
-		fmt.Printf("SeiDB Archive Migration: Iterating through %s module...\n", module)
+		fmt.Printf("EniDB Archive Migration: Iterating through %s module...\n", module)
 
 		prefixDB := dbm.NewPrefixDB(db, []byte(utils.BuildRawPrefix(module)))
 		var itr dbm.Iterator
@@ -145,7 +145,7 @@ func ExportLeafNodesFromKey(db dbm.DB, ch chan<- types.RawSnapshotNode, startKey
 		}
 
 		if err != nil {
-			fmt.Printf("SeiDB Archive Migration: Error creating iterator: %+v\n", err)
+			fmt.Printf("EniDB Archive Migration: Error creating iterator: %+v\n", err)
 			return fmt.Errorf("failed to create iterator: %w", err)
 		}
 		defer itr.Close()
@@ -157,7 +157,7 @@ func ExportLeafNodesFromKey(db dbm.DB, ch chan<- types.RawSnapshotNode, startKey
 
 			node, err := iavl.MakeNode(value)
 			if err != nil {
-				fmt.Printf("SeiDB Archive Migration: Failed to make node: %+v\n", err)
+				fmt.Printf("EniDB Archive Migration: Failed to make node: %+v\n", err)
 				return fmt.Errorf("failed to make node: %w", err)
 			}
 
@@ -176,8 +176,8 @@ func ExportLeafNodesFromKey(db dbm.DB, ch chan<- types.RawSnapshotNode, startKey
 			count++
 			if count%1000000 == 0 {
 				batchDuration := time.Since(startTimeBatch)
-				fmt.Printf("SeiDB Archive Migration: Last 1,000,000 iterations took: %v. Total scanned: %d, leaf nodes exported: %d\n", batchDuration, count, leafNodeCount)
-				metrics.IncrCounterWithLabels([]string{"sei", "migration", "leaf_nodes_exported"}, float32(batchLeafNodeCount), []metrics.Label{
+				fmt.Printf("EniDB Archive Migration: Last 1,000,000 iterations took: %v. Total scanned: %d, leaf nodes exported: %d\n", batchDuration, count, leafNodeCount)
+				metrics.IncrCounterWithLabels([]string{"eni", "migration", "leaf_nodes_exported"}, float32(batchLeafNodeCount), []metrics.Label{
 					{Name: "module", Value: module},
 				})
 
@@ -192,11 +192,11 @@ func ExportLeafNodesFromKey(db dbm.DB, ch chan<- types.RawSnapshotNode, startKey
 		}
 
 		moduleDuration := time.Since(startTimeModule)
-		fmt.Printf("SeiDB Archive Migration: Finished scanning module %s. Time taken: %v. Total scanned: %d, leaf nodes exported: %d\n", module, moduleDuration, count, leafNodeCount)
+		fmt.Printf("EniDB Archive Migration: Finished scanning module %s. Time taken: %v. Total scanned: %d, leaf nodes exported: %d\n", module, moduleDuration, count, leafNodeCount)
 	}
 
 	totalDuration := time.Since(startTimeTotal)
-	fmt.Printf("SeiDB Archive Migration: DB scanning completed. Total time taken: %v. Total entries scanned: %d, leaf nodes exported: %d\n", totalDuration, count, leafNodeCount)
+	fmt.Printf("EniDB Archive Migration: DB scanning completed. Total time taken: %v. Total entries scanned: %d, leaf nodes exported: %d\n", totalDuration, count, leafNodeCount)
 
 	return nil
 }

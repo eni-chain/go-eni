@@ -6,7 +6,7 @@ on:
     - 'v[0-9]+.[0-9]+.[0-9]+' # ignore rc
 
 jobs:
-  sei-images:
+  eni-images:
     runs-on: self-hosted
     permissions:
       packages: write
@@ -49,7 +49,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/sei-protocol/sei:${{ env.MAJOR_VERSION }}
-            ghcr.io/sei-protocol/sei:${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}
-            ghcr.io/sei-protocol/sei:${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
-            ghcr.io/sei-protocol/sei:v${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
+            ghcr.io/eni-chain/eni:${{ env.MAJOR_VERSION }}
+            ghcr.io/eni-chain/eni:${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}
+            ghcr.io/eni-chain/eni:${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
+            ghcr.io/eni-chain/eni:v${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}

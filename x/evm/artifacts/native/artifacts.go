@@ -12,17 +12,17 @@ import (
 
 const CurrentVersion uint16 = 1
 
-//go:embed NativeSeiTokensERC20.abi
-//go:embed NativeSeiTokensERC20.bin
+//go:embed NativeEniTokensERC20.abi
+//go:embed NativeEniTokensERC20.bin
 var f embed.FS
 
 var cachedBin []byte
 var cachedABI *abi.ABI
 
 func GetABI() []byte {
-	bz, err := f.ReadFile("NativeSeiTokensERC20.abi")
+	bz, err := f.ReadFile("NativeEniTokensERC20.abi")
 	if err != nil {
-		panic("failed to read NativeSeiTokensERC20 contract ABI")
+		panic("failed to read NativeEniTokensERC20 contract ABI")
 	}
 	return bz
 }
@@ -43,13 +43,13 @@ func GetBin() []byte {
 	if cachedBin != nil {
 		return cachedBin
 	}
-	code, err := f.ReadFile("NativeSeiTokensERC20.bin")
+	code, err := f.ReadFile("NativeEniTokensERC20.bin")
 	if err != nil {
-		panic("failed to read NativeSeiTokensERC20 contract binary")
+		panic("failed to read NativeEniTokensERC20 contract binary")
 	}
 	bz, err := hex.DecodeString(string(code))
 	if err != nil {
-		panic("failed to decode NativeSeiTokensERC20 contract binary")
+		panic("failed to decode NativeEniTokensERC20 contract binary")
 	}
 	cachedBin = bz
 	return bz

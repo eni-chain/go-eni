@@ -40,7 +40,7 @@ type AssociateRequest struct {
 
 func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (returnErr error) {
 	startTime := time.Now()
-	defer recordMetrics("sei_associate", t.connectionType, startTime, returnErr == nil)
+	defer recordMetrics("eni_associate", t.connectionType, startTime, returnErr == nil)
 	rBytes, err := decodeHexString(req.R)
 	if err != nil {
 		return err
@@ -86,27 +86,27 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 	return err
 }
 
-func (t *AssociationAPI) GetSeiAddress(_ context.Context, ethAddress common.Address) (result string, returnErr error) {
+func (t *AssociationAPI) GetEniAddress(_ context.Context, ethAddress common.Address) (result string, returnErr error) {
 	startTime := time.Now()
-	defer recordMetrics("sei_getSeiAddress", t.connectionType, startTime, returnErr == nil)
-	seiAddress, found := t.keeper.GetSeiAddress(t.ctxProvider(LatestCtxHeight), ethAddress)
+	defer recordMetrics("eni_getEniAddress", t.connectionType, startTime, returnErr == nil)
+	eniAddress, found := t.keeper.GetEniAddress(t.ctxProvider(LatestCtxHeight), ethAddress)
 	if !found {
-		return "", fmt.Errorf("failed to find Sei address for %s", ethAddress.Hex())
+		return "", fmt.Errorf("failed to find Eni address for %s", ethAddress.Hex())
 	}
 
-	return seiAddress.String(), nil
+	return eniAddress.String(), nil
 }
 
-func (t *AssociationAPI) GetEVMAddress(_ context.Context, seiAddress string) (result string, returnErr error) {
+func (t *AssociationAPI) GetEVMAddress(_ context.Context, eniAddress string) (result string, returnErr error) {
 	startTime := time.Now()
-	defer recordMetrics("sei_getEVMAddress", t.connectionType, startTime, returnErr == nil)
-	seiAddr, err := sdk.AccAddressFromBech32(seiAddress)
+	defer recordMetrics("eni_getEVMAddress", t.connectionType, startTime, returnErr == nil)
+	eniAddr, err := sdk.AccAddressFromBech32(eniAddress)
 	if err != nil {
 		return "", err
 	}
-	ethAddress, found := t.keeper.GetEVMAddress(t.ctxProvider(LatestCtxHeight), seiAddr)
+	ethAddress, found := t.keeper.GetEVMAddress(t.ctxProvider(LatestCtxHeight), eniAddr)
 	if !found {
-		return "", fmt.Errorf("failed to find EVM address for %s", seiAddress)
+		return "", fmt.Errorf("failed to find EVM address for %s", eniAddress)
 	}
 
 	return ethAddress.Hex(), nil
@@ -122,7 +122,7 @@ func decodeHexString(hexString string) ([]byte, error) {
 
 func (t *AssociationAPI) GetCosmosTx(ctx context.Context, ethHash common.Hash) (result string, returnErr error) {
 	startTime := time.Now()
-	defer recordMetrics("sei_getCosmosTx", t.connectionType, startTime, returnErr == nil)
+	defer recordMetrics("eni_getCosmosTx", t.connectionType, startTime, returnErr == nil)
 	receipt, err := t.keeper.GetReceipt(t.ctxProvider(LatestCtxHeight), ethHash)
 	if err != nil {
 		return "", err
@@ -163,7 +163,7 @@ func (t *AssociationAPI) GetCosmosTx(ctx context.Context, ethHash common.Hash) (
 
 func (t *AssociationAPI) GetEvmTx(ctx context.Context, cosmosHash string) (result string, returnErr error) {
 	startTime := time.Now()
-	defer recordMetrics("sei_getEvmTx", t.connectionType, startTime, returnErr == nil)
+	defer recordMetrics("eni_getEvmTx", t.connectionType, startTime, returnErr == nil)
 	hashBytes, err := hex.DecodeString(cosmosHash)
 	if err != nil {
 		return "", fmt.Errorf("failed to decode cosmosHash: %w", err)

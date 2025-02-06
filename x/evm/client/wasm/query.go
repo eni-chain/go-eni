@@ -33,8 +33,8 @@ func (h *EVMQueryHandler) HandleStaticCall(ctx sdk.Context, from string, to stri
 	}
 	var toAddr *common.Address
 	if to != "" {
-		toSeiAddr := common.HexToAddress(to)
-		toAddr = &toSeiAddr
+		toEniAddr := common.HexToAddress(to)
+		toAddr = &toEniAddr
 	}
 	res, err := h.k.StaticCallEVM(ctx, fromAddr, toAddr, data)
 	if err != nil {
@@ -193,7 +193,7 @@ func (h *EVMQueryHandler) HandleERC721Owner(ctx sdk.Context, caller string, cont
 	typedOwner := typed[0].(common.Address)
 	owner := ""
 	if (typedOwner != common.Address{}) {
-		owner = h.k.GetSeiAddressOrDefault(ctx, typedOwner).String()
+		owner = h.k.GetEniAddressOrDefault(ctx, typedOwner).String()
 	}
 	response := bindings.ERC721OwnerResponse{Owner: owner}
 	return json.Marshal(response)
@@ -380,7 +380,7 @@ func (h *EVMQueryHandler) HandleERC721Approved(ctx sdk.Context, caller string, c
 	approved := typed[0].(common.Address)
 	a := ""
 	if (approved != common.Address{}) {
-		a = h.k.GetSeiAddressOrDefault(ctx, approved).String()
+		a = h.k.GetEniAddressOrDefault(ctx, approved).String()
 	}
 	response := bindings.ERC721ApprovedResponse{Approved: a}
 	return json.Marshal(response)
@@ -547,7 +547,7 @@ func (h *EVMQueryHandler) HandleERC721RoyaltyInfo(ctx sdk.Context, caller string
 	typedReceiver := typed[0].(common.Address)
 	receiver := ""
 	if (typedReceiver != common.Address{}) {
-		receiver = h.k.GetSeiAddressOrDefault(ctx, typedReceiver).String()
+		receiver = h.k.GetEniAddressOrDefault(ctx, typedReceiver).String()
 	}
 	royaltyAmount := sdk.NewIntFromBigInt(typed[1].(*big.Int))
 	response := bindings.ERC721RoyaltyInfoResponse{Receiver: receiver, RoyaltyAmount: &royaltyAmount}
@@ -950,7 +950,7 @@ func (h *EVMQueryHandler) HandleERC1155RoyaltyInfo(ctx sdk.Context, caller strin
 	typedReceiver := typed[0].(common.Address)
 	receiver := ""
 	if (typedReceiver != common.Address{}) {
-		receiver = h.k.GetSeiAddressOrDefault(ctx, typedReceiver).String()
+		receiver = h.k.GetEniAddressOrDefault(ctx, typedReceiver).String()
 	}
 	royaltyAmount := sdk.NewIntFromBigInt(typed[1].(*big.Int))
 	response := bindings.ERC1155RoyaltyInfoResponse{Receiver: receiver, RoyaltyAmount: &royaltyAmount}
@@ -988,8 +988,8 @@ func (h *EVMQueryHandler) HandleSupportsInterface(ctx sdk.Context, caller string
 	return json.Marshal(bindings.SupportsInterfaceResponse{Supported: typed[0].(bool)})
 }
 
-func (h *EVMQueryHandler) HandleGetEvmAddress(ctx sdk.Context, seiAddr string) ([]byte, error) {
-	addr, err := sdk.AccAddressFromBech32(seiAddr)
+func (h *EVMQueryHandler) HandleGetEvmAddress(ctx sdk.Context, eniAddr string) ([]byte, error) {
+	addr, err := sdk.AccAddressFromBech32(eniAddr)
 	if err != nil {
 		return nil, err
 	}
@@ -998,9 +998,9 @@ func (h *EVMQueryHandler) HandleGetEvmAddress(ctx sdk.Context, seiAddr string) (
 	return json.Marshal(response)
 }
 
-func (h *EVMQueryHandler) HandleGetSeiAddress(ctx sdk.Context, evmAddr string) ([]byte, error) {
+func (h *EVMQueryHandler) HandleGetEniAddress(ctx sdk.Context, evmAddr string) ([]byte, error) {
 	addr := common.HexToAddress(evmAddr)
-	seiAddr, associated := h.k.GetSeiAddress(ctx, addr)
-	response := bindings.GetSeiAddressResponse{SeiAddress: seiAddr.String(), Associated: associated}
+	eniAddr, associated := h.k.GetEniAddress(ctx, addr)
+	response := bindings.GetEniAddressResponse{EniAddress: eniAddr.String(), Associated: associated}
 	return json.Marshal(response)
 }

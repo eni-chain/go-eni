@@ -81,10 +81,10 @@ func TestEVMFeeCheckDecorator(t *testing.T) {
 	require.NotNil(t, err)
 
 	amt := typedTx.Cost()
-	coinsAmt := sdk.NewCoins(sdk.NewCoin(k.GetBaseDenom(ctx), sdk.NewIntFromBigInt(amt).Quo(sdk.NewIntFromBigInt(state.UseiToSweiMultiplier)).Add(sdk.OneInt())))
+	coinsAmt := sdk.NewCoins(sdk.NewCoin(k.GetBaseDenom(ctx), sdk.NewIntFromBigInt(amt).Quo(sdk.NewIntFromBigInt(state.UeniToSweiMultiplier)).Add(sdk.OneInt())))
 	k.BankKeeper().MintCoins(ctx, types.ModuleName, coinsAmt)
-	seiAddr := sdk.AccAddress(msg.Derived.SenderSeiAddr)
-	k.BankKeeper().SendCoinsFromModuleToAccount(ctx, types.ModuleName, seiAddr, coinsAmt)
+	eniAddr := sdk.AccAddress(msg.Derived.SenderEniAddr)
+	k.BankKeeper().SendCoinsFromModuleToAccount(ctx, types.ModuleName, eniAddr, coinsAmt)
 
 	// should succeed now that the sender has enough funds
 	ctx, err = preprocessor.AnteHandle(ctx, mockTx{msgs: []sdk.Msg{msg}}, false, func(ctx sdk.Context, _ sdk.Tx, _ bool) (sdk.Context, error) {

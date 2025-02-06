@@ -102,7 +102,7 @@ import (
 	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
 	"github.com/eni-chain/eni-db/ss"
-	seidb "github.com/eni-chain/eni-db/ss/types"
+	enidb "github.com/eni-chain/eni-db/ss/types"
 	"github.com/eni-chain/go-eni/aclmapping"
 	aclutils "github.com/eni-chain/go-eni/aclmapping/utils"
 	"github.com/eni-chain/go-eni/app/antedecorators"
@@ -247,8 +247,8 @@ var (
 	// EmptyWasmOpts defines a type alias for a list of wasm options.
 	EmptyWasmOpts []wasm.Option
 
-	// Boolean to only emit seid version and git commit metric once per chain initialization
-	EmittedSeidVersionMetric = false
+	// Boolean to only emit enid version and git commit metric once per chain initialization
+	EmittedEnidVersionMetric = false
 	// EmptyAclmOpts defines a type alias for a list of wasm options.
 	EmptyACLOpts []aclkeeper.Option
 	// EnableOCC allows tests to override default OCC enablement behavior
@@ -368,8 +368,8 @@ type App struct {
 
 	genesisImportConfig genesistypes.GenesisImportConfig
 
-	stateStore   seidb.StateStore
-	receiptStore seidb.StateStore
+	stateStore   enidb.StateStore
+	receiptStore enidb.StateStore
 }
 
 type AppOption func(*App)
@@ -397,7 +397,7 @@ func New(
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
-	bAppOptions, stateStore := SetupSeiDB(logger, homePath, appOpts, baseAppOptions)
+	bAppOptions, stateStore := SetupEniDB(logger, homePath, appOpts, baseAppOptions)
 
 	bApp := baseapp.NewBaseApp(AppName, logger, db, encodingConfig.TxConfig.TxDecoder(), tmConfig, appOpts, bAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -546,7 +546,7 @@ func New(
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
-	supportedFeatures := "iterator,staking,stargate,sei"
+	supportedFeatures := "iterator,staking,stargate,eni"
 	wasmOpts = append(
 		wasmbinding.RegisterCustomPlugins(
 			&app.OracleKeeper,
@@ -967,7 +967,7 @@ func New(
 	//
 	// example: app.HardForkManager.RegisterHandler(myHandler)
 	app.HardForkManager = upgrades.NewHardForkManager(app.ChainID)
-	app.HardForkManager.RegisterHandler(v0upgrade.NewHardForkUpgradeHandler(100_000, upgrades.ChainIDSeiHardForkTest, app.WasmKeeper))
+	app.HardForkManager.RegisterHandler(v0upgrade.NewHardForkUpgradeHandler(100_000, upgrades.ChainIDEniHardForkTest, app.WasmKeeper))
 
 	app.RegisterDeliverTxHook(app.AddCosmosEventsToEVMReceiptIfApplicable)
 
@@ -1064,11 +1064,11 @@ func (app *App) Name() string { return app.BaseApp.Name() }
 func (app App) GetBaseApp() *baseapp.BaseApp { return app.BaseApp }
 
 // GetStateStore returns the state store of the application
-func (app App) GetStateStore() seidb.StateStore { return app.stateStore }
+func (app App) GetStateStore() enidb.StateStore { return app.stateStore }
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	metrics.GaugeSeidVersionAndCommit(app.versionInfo.Version, app.versionInfo.GitCommit)
+	metrics.GaugeEnidVersionAndCommit(app.versionInfo.Version, app.versionInfo.GitCommit)
 	// check if we've reached a target height, if so, execute any applicable handlers
 	if app.HardForkManager.TargetHeightReached(ctx) {
 		app.HardForkManager.ExecuteForTargetHeight(ctx)
@@ -1257,7 +1257,7 @@ func (app *App) CacheContext(ctx sdk.Context) (sdk.Context, sdk.CacheMultiStore)
 
 // TODO: (occ) this is the roughly analogous to the execution + validation tasks for OCC, but this one performs validation in isolation
 // rather than comparing against a multi-version store
-// The validation happens immediately after execution all part of DeliverTx (which is a path that goes through sei-cosmos to runTx eventually)
+// The validation happens immediately after execution all part of DeliverTx (which is a path that goes through eni-cosmos to runTx eventually)
 func (app *App) ProcessTxConcurrent(
 	ctx sdk.Context,
 	txIndex int,

@@ -30,9 +30,9 @@ func (k *Keeper) SetCode(ctx sdk.Context, addr common.Address, code []byte) {
 	k.PrefixStore(ctx, types.CodeSizeKeyPrefix).Set(addr[:], length)
 	h := crypto.Keccak256Hash(code)
 	k.PrefixStore(ctx, types.CodeHashKeyPrefix).Set(addr[:], h[:])
-	// set association with direct cast Sei address for the contract address
-	if _, ok := k.GetSeiAddress(ctx, addr); !ok {
-		k.SetAddressMapping(ctx, k.GetSeiAddressOrDefault(ctx, addr), addr)
+	// set association with direct cast Eni address for the contract address
+	if _, ok := k.GetEniAddress(ctx, addr); !ok {
+		k.SetAddressMapping(ctx, k.GetEniAddressOrDefault(ctx, addr), addr)
 	}
 }
 
@@ -41,7 +41,7 @@ func (k *Keeper) GetCodeHash(ctx sdk.Context, addr common.Address) common.Hash {
 	bz := store.Get(addr[:])
 	if bz == nil {
 		// per Ethereum behavior, if an address has no code or balance, return Hash(0)
-		if k.GetBalance(ctx, k.GetSeiAddressOrDefault(ctx, addr)).Cmp(utils.Big0) == 0 {
+		if k.GetBalance(ctx, k.GetEniAddressOrDefault(ctx, addr)).Cmp(utils.Big0) == 0 {
 			return common.Hash{}
 		}
 		// if an address has no code but some balance, return EmptyCodeHash

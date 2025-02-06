@@ -25,8 +25,8 @@ const (
 )
 
 var (
-	EVMAddressToSeiAddressKeyPrefix            = []byte{0x01}
-	SeiAddressToEVMAddressKeyPrefix            = []byte{0x02}
+	EVMAddressToEniAddressKeyPrefix            = []byte{0x01}
+	EniAddressToEVMAddressKeyPrefix            = []byte{0x02}
 	StateKeyPrefix                             = []byte{0x03}
 	TransientStateKeyPrefix                    = []byte{0x04} // deprecated
 	AccountTransientStateKeyPrefix             = []byte{0x05} // deprecated
@@ -70,12 +70,12 @@ var (
 	PointerCW1155ERC1155Prefix = []byte{0x6}
 )
 
-func EVMAddressToSeiAddressKey(evmAddress common.Address) []byte {
-	return append(EVMAddressToSeiAddressKeyPrefix, evmAddress[:]...)
+func EVMAddressToEniAddressKey(evmAddress common.Address) []byte {
+	return append(EVMAddressToEniAddressKeyPrefix, evmAddress[:]...)
 }
 
-func SeiAddressToEVMAddressKey(seiAddress sdk.AccAddress) []byte {
-	return append(SeiAddressToEVMAddressKeyPrefix, seiAddress...)
+func EniAddressToEVMAddressKey(eniAddress sdk.AccAddress) []byte {
+	return append(EniAddressToEVMAddressKeyPrefix, eniAddress...)
 }
 
 func StateKey(evmAddress common.Address) []byte {

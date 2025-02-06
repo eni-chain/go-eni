@@ -26,9 +26,9 @@ func (s *DBImpl) SubBalance(evmAddr common.Address, amt *big.Int, reason tracing
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 	}
 
-	usei, wei := SplitUseiWeiAmount(amt)
-	addr := s.getSeiAddress(evmAddr)
-	err := s.k.BankKeeper().SubUnlockedCoins(ctx, addr, sdk.NewCoins(sdk.NewCoin(s.k.GetBaseDenom(s.ctx), usei)), true)
+	ueni, wei := SplitUeniWeiAmount(amt)
+	addr := s.getEniAddress(evmAddr)
+	err := s.k.BankKeeper().SubUnlockedCoins(ctx, addr, sdk.NewCoins(sdk.NewCoin(s.k.GetBaseDenom(s.ctx), ueni)), true)
 	if err != nil {
 		s.err = err
 		return
@@ -66,9 +66,9 @@ func (s *DBImpl) AddBalance(evmAddr common.Address, amt *big.Int, reason tracing
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 	}
 
-	usei, wei := SplitUseiWeiAmount(amt)
-	addr := s.getSeiAddress(evmAddr)
-	err := s.k.BankKeeper().AddCoins(ctx, addr, sdk.NewCoins(sdk.NewCoin(s.k.GetBaseDenom(s.ctx), usei)), true)
+	ueni, wei := SplitUeniWeiAmount(amt)
+	addr := s.getEniAddress(evmAddr)
+	err := s.k.BankKeeper().AddCoins(ctx, addr, sdk.NewCoins(sdk.NewCoin(s.k.GetBaseDenom(s.ctx), ueni)), true)
 	if err != nil {
 		s.err = err
 		return
@@ -92,8 +92,8 @@ func (s *DBImpl) AddBalance(evmAddr common.Address, amt *big.Int, reason tracing
 
 func (s *DBImpl) GetBalance(evmAddr common.Address) *big.Int {
 	s.k.PrepareReplayedAddr(s.ctx, evmAddr)
-	seiAddr := s.getSeiAddress(evmAddr)
-	return s.k.GetBalance(s.ctx, seiAddr)
+	eniAddr := s.getEniAddress(evmAddr)
+	return s.k.GetBalance(s.ctx, eniAddr)
 }
 
 // should only be called during simulation
@@ -101,33 +101,33 @@ func (s *DBImpl) SetBalance(evmAddr common.Address, amt *big.Int, reason tracing
 	if !s.simulation {
 		panic("should never call SetBalance in a non-simulation setting")
 	}
-	seiAddr := s.getSeiAddress(evmAddr)
+	eniAddr := s.getEniAddress(evmAddr)
 	moduleAddr := s.k.AccountKeeper().GetModuleAddress(types.ModuleName)
-	s.send(seiAddr, moduleAddr, s.GetBalance(evmAddr))
+	s.send(eniAddr, moduleAddr, s.GetBalance(evmAddr))
 	if s.err != nil {
 		panic(s.err)
 	}
-	usei, _ := SplitUseiWeiAmount(amt)
-	coinsAmt := sdk.NewCoins(sdk.NewCoin(s.k.GetBaseDenom(s.ctx), usei.Add(sdk.OneInt())))
+	ueni, _ := SplitUeniWeiAmount(amt)
+	coinsAmt := sdk.NewCoins(sdk.NewCoin(s.k.GetBaseDenom(s.ctx), ueni.Add(sdk.OneInt())))
 	if err := s.k.BankKeeper().MintCoins(s.ctx, types.ModuleName, coinsAmt); err != nil {
 		panic(err)
 	}
-	s.send(moduleAddr, seiAddr, amt)
+	s.send(moduleAddr, eniAddr, amt)
 	if s.err != nil {
 		panic(s.err)
 	}
 }
 
-func (s *DBImpl) getSeiAddress(evmAddr common.Address) sdk.AccAddress {
+func (s *DBImpl) getEniAddress(evmAddr common.Address) sdk.AccAddress {
 	if s.coinbaseEvmAddress.Cmp(evmAddr) == 0 {
 		return s.coinbaseAddress
 	}
-	return s.k.GetSeiAddressOrDefault(s.ctx, evmAddr)
+	return s.k.GetEniAddressOrDefault(s.ctx, evmAddr)
 }
 
 func (s *DBImpl) send(from sdk.AccAddress, to sdk.AccAddress, amt *big.Int) {
-	usei, wei := SplitUseiWeiAmount(amt)
-	err := s.k.BankKeeper().SendCoinsAndWei(s.ctx, from, to, usei, wei)
+	ueni, wei := SplitUeniWeiAmount(amt)
+	err := s.k.BankKeeper().SendCoinsAndWei(s.ctx, from, to, ueni, wei)
 	if err != nil {
 		s.err = err
 	}

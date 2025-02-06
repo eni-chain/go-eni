@@ -29,11 +29,11 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 
 	k.SetParams(ctx, genState.Params)
 
-	seiAddrFc := k.accountKeeper.GetModuleAddress(authtypes.FeeCollectorName) // feeCollector == coinbase
-	k.SetAddressMapping(ctx, seiAddrFc, GetCoinbaseAddress())
+	eniAddrFc := k.accountKeeper.GetModuleAddress(authtypes.FeeCollectorName) // feeCollector == coinbase
+	k.SetAddressMapping(ctx, eniAddrFc, GetCoinbaseAddress())
 
 	for _, addr := range genState.AddressAssociations {
-		k.SetAddressMapping(ctx, sdk.MustAccAddressFromBech32(addr.SeiAddress), common.HexToAddress(addr.EthAddress))
+		k.SetAddressMapping(ctx, sdk.MustAccAddressFromBech32(addr.EniAddress), common.HexToAddress(addr.EthAddress))
 	}
 
 	erc20CodeID, err := k.wasmKeeper.Create(ctx, k.accountKeeper.GetModuleAddress(types.ModuleName), erc20.GetBin(), nil)

@@ -19,9 +19,9 @@ logging.getLogger().setLevel(logging.INFO)
 
 HOME_PATH = os.path.expanduser('~')
 
-SEI_ROOT_DIR = f'{HOME_PATH}/.sei'
-SEI_CONFIG_DIR = f'{SEI_ROOT_DIR}/config'
-SEI_CONFIG_TOML_PATH = f'{SEI_CONFIG_DIR}/config.toml'
+ENI_ROOT_DIR = f'{HOME_PATH}/.eni'
+ENI_CONFIG_DIR = f'{ENI_ROOT_DIR}/config'
+ENI_CONFIG_TOML_PATH = f'{ENI_CONFIG_DIR}/config.toml'
 
 PREPARE_GENESIS = "prepare-genesis"
 SETUP_VALIDATOR = "setup-validator"
@@ -68,18 +68,18 @@ def set_git_root_as_current_working_dir():
 
 def validate_clean_state():
     """Validate that the current working directory is clean."""
-    if os.path.isfile(SEI_CONFIG_TOML_PATH):
-        raise RuntimeError(f'The file {SEI_CONFIG_TOML_PATH} already exists. Please reset your {SEI_ROOT_DIR} state.')
+    if os.path.isfile(ENI_CONFIG_TOML_PATH):
+        raise RuntimeError(f'The file {ENI_CONFIG_TOML_PATH} already exists. Please reset your {ENI_ROOT_DIR} state.')
     logging.info('Validated clean state.')
 
-    logging.info('Updating seid binary...')
+    logging.info('Updating enid binary...')
     run_command('make install')
     logging.info('make install successful.')
 
 
 def validate_version(version):
-    """Validate that the version of the SEI blockchain software is correct."""
-    version_json_output = json.loads(run_command('seid version --long --output json'))
+    """Validate that the version of the ENI blockchain software is correct."""
+    version_json_output = json.loads(run_command('enid version --long --output json'))
     if version_json_output['version'] != version:
         raise RuntimeError(f'Expected version {version} but got {version_json_output["version"]}')
 
@@ -93,22 +93,22 @@ def install_price_feeder():
 def set_price_feeder():
     """Set the price feeder."""
     logging.info('Setting price feeder...')
-    addr, _ = seid_add_key(ORACLE_PRICE_FEEDER_ACC_NAME)
+    addr, _ = enid_add_key(ORACLE_PRICE_FEEDER_ACC_NAME)
     run_with_password(
-        f'seid tx oracle set-feeder $(seid keys show {ORACLE_PRICE_FEEDER_ACC_NAME} -a) --from admin --yes --fees=2000usei',
+        f'enid tx oracle set-feeder $(enid keys show {ORACLE_PRICE_FEEDER_ACC_NAME} -a) --from admin --yes --fees=2000ueni',
         account_cache[ORACLE_PRICE_FEEDER_ACC_NAME].password
     )
-    logging.info("Please send sei tokens to the feeder account '%s' to fund it", addr)
+    logging.info("Please send eni tokens to the feeder account '%s' to fund it", addr)
 
 
 def output_price_feeder_config(chain_id):
-    config_path = f'{SEI_ROOT_DIR}/oracle-price-feeder.toml'
+    config_path = f'{ENI_ROOT_DIR}/oracle-price-feeder.toml'
 
     with open('./oracle/price-feeder/config.example.toml', 'r', encoding='utf8') as f:
         config = f.read()
 
     key_password = getpass('Please enter a password for the validator account key: \n')
-    val_addr = json.loads(run_with_password(f'seid keys show {DEFAULT_VALIDATOR_ACC_NAME} --bech=val --output json', key_password))['address']
+    val_addr = json.loads(run_with_password(f'enid keys show {DEFAULT_VALIDATOR_ACC_NAME} --bech=val --output json', key_password))['address']
 
     config = config.replace('<FEEDER_ADDR>', account_cache[ORACLE_PRICE_FEEDER_ACC_NAME].address)
     config = config.replace('<CHAIN_ID>', chain_id)
@@ -119,20 +119,20 @@ def output_price_feeder_config(chain_id):
 
     logging.info('Price feeder config file created at %s', config_path)
 
-def cleanup_sei():
-    """Cleanup the SEI state."""
-    if os.path.exists(SEI_ROOT_DIR):
-        backup_file = f'{SEI_ROOT_DIR}_backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
-        copytree(f'{SEI_ROOT_DIR}', backup_file)
-        logging.info('Backed up SEI state to %s', backup_file)
-    run_command(f'rm -rf {SEI_ROOT_DIR}')
-    logging.info('Removed %s directory.', SEI_ROOT_DIR)
+def cleanup_eni():
+    """Cleanup the ENI state."""
+    if os.path.exists(ENI_ROOT_DIR):
+        backup_file = f'{ENI_ROOT_DIR}_backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
+        copytree(f'{ENI_ROOT_DIR}', backup_file)
+        logging.info('Backed up ENI state to %s', backup_file)
+    run_command(f'rm -rf {ENI_ROOT_DIR}')
+    logging.info('Removed %s directory.', ENI_ROOT_DIR)
 
-def init_sei(chain_id, moniker):
-    """Initialize the SEI blockchain."""
-    logging.info('Initializing SEI blockchain...')
-    run_command(f'seid init {moniker} --chain-id {chain_id}')
-    logging.info('Initialized SEI blockchain.')
+def init_eni(chain_id, moniker):
+    """Initialize the ENI blockchain."""
+    logging.info('Initializing ENI blockchain...')
+    run_command(f'enid init {moniker} --chain-id {chain_id}')
+    logging.info('Initialized ENI blockchain.')
 
 
 def save_content_to_file(content, file_path):
@@ -141,21 +141,21 @@ def save_content_to_file(content, file_path):
         f.write(content)
 
 
-def try_seid_delete_key(account_name, key_password):
+def try_enid_delete_key(account_name, key_password):
     try:
-        run_with_password(f'seid keys delete {account_name} -y', key_password)
+        run_with_password(f'enid keys delete {account_name} -y', key_password)
         logging.info("Deleted existing key if it exists.")
     except Exception:
         logging.info("No existing key found.")
 
 
-def seid_add_key(account_name):
-    """Add a key to the SEI blockchain."""
+def enid_add_key(account_name):
+    """Add a key to the ENI blockchain."""
     key_password = getpass(f'Please enter a password for the account={account_name}: \n')
-    try_seid_delete_key(account_name, key_password)
+    try_enid_delete_key(account_name, key_password)
     logging.info("Deleted existing key if it exists.")
 
-    add_key_output = run_with_password(f'seid keys add {account_name} --output json', key_password)
+    add_key_output = run_with_password(f'enid keys add {account_name} --output json', key_password)
 
     json_output = json.loads(add_key_output)
     address = json_output['address']
@@ -165,15 +165,15 @@ def seid_add_key(account_name):
 
     # Cache the account info used to gentx later
     account_cache[account_name] = Account(account_name, address, mnemonic, key_password)
-    save_content_to_file(json.dumps(json_output, indent=4), f'{SEI_CONFIG_DIR}/{account_name}_key_info.txt')
-    logging.info('Saved key info to %s', f'{SEI_CONFIG_DIR}/{account_name}_key_info.txt')
+    save_content_to_file(json.dumps(json_output, indent=4), f'{ENI_CONFIG_DIR}/{account_name}_key_info.txt')
+    logging.info('Saved key info to %s', f'{ENI_CONFIG_DIR}/{account_name}_key_info.txt')
 
     return address, mnemonic
 
 def add_genesis_account(account_name, starting_balance):
-    """Add a genesis account to the SEI blockchain."""
+    """Add a genesis account to the ENI blockchain."""
     address = account_cache[account_name].address
-    run_command(f'seid add-genesis-account {address} {starting_balance}')
+    run_command(f'enid add-genesis-account {address} {starting_balance}')
     logging.info('Added genesis account %s with address %s', account_name, address)
     return address
 
@@ -181,7 +181,7 @@ def add_genesis_account(account_name, starting_balance):
 def gentx(chain_id, account_name, starting_delegation, gentx_args):
     """Generate a gentx for the validator node."""
     account = account_cache[account_name]
-    output = run_with_password(f'seid gentx {account.account_name} {starting_delegation} --chain-id={chain_id} {gentx_args}', account.password)
+    output = run_with_password(f'enid gentx {account.account_name} {starting_delegation} --chain-id={chain_id} {gentx_args}', account.password)
     logging.info(output)
 
 def setup_validator(args):
@@ -190,11 +190,11 @@ def setup_validator(args):
         raise RuntimeError('Please specify a chain ID')
     if not args.moniker:
         raise RuntimeError('Please specify a version')
-    cleanup_sei()
+    cleanup_eni()
     set_git_root_as_current_working_dir()
     validate_clean_state()
-    init_sei(args.chain_id, args.moniker)
-    seid_add_key(DEFAULT_VALIDATOR_ACC_NAME)
+    init_eni(args.chain_id, args.moniker)
+    enid_add_key(DEFAULT_VALIDATOR_ACC_NAME)
 
 def prepare_genesis(args):
     """Prepare the genesis file."""
@@ -203,8 +203,8 @@ def prepare_genesis(args):
     if not args.moniker:
         raise RuntimeError('Please specify a version')
 
-    add_genesis_account(DEFAULT_VALIDATOR_ACC_NAME, '12sei')
-    gentx(args.chain_id, DEFAULT_VALIDATOR_ACC_NAME, '10sei', args.gentx_args)
+    add_genesis_account(DEFAULT_VALIDATOR_ACC_NAME, '12eni')
+    gentx(args.chain_id, DEFAULT_VALIDATOR_ACC_NAME, '10eni', args.gentx_args)
 
 
 def setup_oracle(args):
@@ -225,7 +225,7 @@ def run():
     parser.add_argument('--chain-id', type=str, help='ID of the blockchain network', required=False)
     parser.add_argument('--moniker', type=str, help='Moniker of the validator node', required=False)
     parser.add_argument('--version', type=str, help='Version of the blockchain software')
-    parser.add_argument('--gentx-args', type=str, help="args to pass to the gentx call e.g '--ip seinetwork.io --port 123'", required=False, default='')
+    parser.add_argument('--gentx-args', type=str, help="args to pass to the gentx call e.g '--ip eninetwork.io --port 123'", required=False, default='')
 
     # setup-price-feeder
     parser.add_argument('--feeder-addr', type=str, help="Wallet address of the oracle feeder account", required=False)
@@ -238,7 +238,7 @@ def run():
     try:
         if args.action in {SETUP_VALIDATOR, PREPARE_GENESIS}:
             setup_validator(args)
-            run_command(f"sed -i -e 's/mode = \"full\"/mode = \"validator\"/' {SEI_CONFIG_DIR}/config.toml")
+            run_command(f"sed -i -e 's/mode = \"full\"/mode = \"validator\"/' {ENI_CONFIG_DIR}/config.toml")
 
         if args.action == PREPARE_GENESIS:
             prepare_genesis(args)

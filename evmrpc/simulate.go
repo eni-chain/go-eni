@@ -334,15 +334,15 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 		// set address association for the sender if not present. Note that here we take the shortcut
 		// of querying from the latest height with the assumption that if this tx has been processed
 		// at all then its association must be present in the latest height
-		_, associated := b.keeper.GetSeiAddress(statedb.Ctx(), msg.From)
+		_, associated := b.keeper.GetEniAddress(statedb.Ctx(), msg.From)
 		if !associated {
-			seiAddr, associatedNow := b.keeper.GetSeiAddress(b.ctxProvider(LatestCtxHeight), msg.From)
+			eniAddr, associatedNow := b.keeper.GetEniAddress(b.ctxProvider(LatestCtxHeight), msg.From)
 			if !associatedNow {
 				err := types.NewAssociationMissingErr(msg.From.Hex())
 				metrics.IncrementAssociationError("state_at_tx", err)
 				return nil, vm.BlockContext{}, nil, nil, err
 			}
-			if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), seiAddr, msg.From, nil); err != nil {
+			if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
 				return nil, vm.BlockContext{}, nil, nil, err
 			}
 		}
@@ -374,15 +374,15 @@ func (b *Backend) StateAtBlock(ctx context.Context, block *ethtypes.Block, reexe
 		// set address association for the sender if not present. Note that here we take the shortcut
 		// of querying from the latest height with the assumption that if this tx has been processed
 		// at all then its association must be present in the latest height
-		_, associated := b.keeper.GetSeiAddress(statedb.Ctx(), msg.From)
+		_, associated := b.keeper.GetEniAddress(statedb.Ctx(), msg.From)
 		if !associated {
-			seiAddr, associatedNow := b.keeper.GetSeiAddress(b.ctxProvider(LatestCtxHeight), msg.From)
+			eniAddr, associatedNow := b.keeper.GetEniAddress(b.ctxProvider(LatestCtxHeight), msg.From)
 			if !associatedNow {
 				err := types.NewAssociationMissingErr(msg.From.Hex())
 				metrics.IncrementAssociationError("state_at_block", err)
 				continue // don't return error, just continue bc we want to process the rest of the txs and return the statedb
 			}
-			if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), seiAddr, msg.From, nil); err != nil {
+			if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
 				return nil, emptyRelease, err
 			}
 		}

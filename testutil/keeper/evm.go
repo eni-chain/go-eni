@@ -32,16 +32,16 @@ func MockEVMKeeperWithPrecompiles() (*evmkeeper.Keeper, sdk.Context) {
 	k := EVMTestApp.EvmKeeper
 	k.InitGenesis(ctx, *evmtypes.DefaultGenesis())
 
-	// mint some coins to a sei address
-	seiAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("seiAddr")))
+	// mint some coins to a eni address
+	eniAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("eniAddr")))
 	if err != nil {
 		panic(err)
 	}
-	err = EVMTestApp.BankKeeper.MintCoins(ctx, "evm", sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10))))
+	err = EVMTestApp.BankKeeper.MintCoins(ctx, "evm", sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
-	err = EVMTestApp.BankKeeper.SendCoinsFromModuleToAccount(ctx, "evm", seiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10))))
+	err = EVMTestApp.BankKeeper.SendCoinsFromModuleToAccount(ctx, "evm", eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
@@ -56,16 +56,16 @@ func MockEVMKeeper() (*evmkeeper.Keeper, sdk.Context) {
 	k := testApp.EvmKeeper
 	k.InitGenesis(ctx, *evmtypes.DefaultGenesis())
 
-	// mint some coins to a sei address
-	seiAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("seiAddr")))
+	// mint some coins to a eni address
+	eniAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("eniAddr")))
 	if err != nil {
 		panic(err)
 	}
-	err = testApp.BankKeeper.MintCoins(ctx, "evm", sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10))))
+	err = testApp.BankKeeper.MintCoins(ctx, "evm", sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
-	err = testApp.BankKeeper.SendCoinsFromModuleToAccount(ctx, "evm", seiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10))))
+	err = testApp.BankKeeper.SendCoinsFromModuleToAccount(ctx, "evm", eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
@@ -77,7 +77,7 @@ func MockAddressPair() (sdk.AccAddress, common.Address) {
 }
 
 func MockPrivateKey() cryptotypes.PrivKey {
-	// Generate a new Sei private key
+	// Generate a new Eni private key
 	entropySeed, _ := bip39.NewEntropy(256)
 	mnemonic, _ := bip39.NewMnemonic(entropySeed)
 	algo := hd.Secp256k1
@@ -101,6 +101,6 @@ func PrivateKeyToAddresses(privKey cryptotypes.PrivKey) (sdk.AccAddress, common.
 	return sdk.AccAddress(privKey.PubKey().Address()), crypto.PubkeyToAddress(*pubKey)
 }
 
-func UseiCoins(amount int64) sdk.Coins {
+func UeniCoins(amount int64) sdk.Coins {
 	return sdk.NewCoins(sdk.NewCoin(sdk.MustGetBaseDenom(), sdk.NewInt(amount)))
 }

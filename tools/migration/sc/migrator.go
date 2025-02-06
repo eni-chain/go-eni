@@ -163,7 +163,7 @@ func CreateWasmSnapshotter(cms sdk.MultiStore, homeDir string) *keeper.WasmSnaps
 		nil,
 		filepath.Join(homeDir, "wasm"),
 		wasm.DefaultWasmConfig(),
-		"iterator,staking,stargate,sei",
+		"iterator,staking,stargate,eni",
 	)
 	return keeper.NewWasmSnapshotter(cms, &wasmKeeper)
 

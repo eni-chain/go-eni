@@ -1,5 +1,5 @@
 build:
-  main: './cmd/seid'
+  main: './cmd/enid'
 accounts:
   - name: alice
     coins: ['20000token', '200000000stake']

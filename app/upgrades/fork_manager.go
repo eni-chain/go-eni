@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sei-protocol/goutils"
+	"github.com/eni-chain/go-eni/utils/goutils"
 )
 
 // Chain-ID constants for use in hard fork handlers.
 const (
-	ChainIDSeiHardForkTest = "sei-hard-fork-test"
+	ChainIDEniHardForkTest = "eni-hard-fork-test"
 )
 
 type HardForkHandler interface {

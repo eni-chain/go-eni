@@ -80,7 +80,7 @@ func (t FakeTx) GetGas() uint64 {
 	return t.Gas
 }
 func (t FakeTx) GetFee() sdk.Coins {
-	return sdk.NewCoins(sdk.NewCoin("usei", sdk.ZeroInt()))
+	return sdk.NewCoins(sdk.NewCoin("ueni", sdk.ZeroInt()))
 }
 func (t FakeTx) FeePayer() sdk.AccAddress {
 	return nil

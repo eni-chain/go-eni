@@ -9,7 +9,7 @@
 This document discusses a proposal to enable parallel processing of transaction messages in a block safely and deterministically. ABCI++ support is a prerequisite. Cosmos-SDK/wasmd forking is also necessary.
 
 ## Background
-As shown by recent load tests, after the optimizations of `EndBlock` are in place, the biggest bottleneck Sei has when processing thousands of transactions per block is the sequential processing of transactions. Each transaction takes 0.5ms on an `m5.12xlarge` EC2 machine, which translates to 0.5s for a 1000-tx block and 1s for a 2000-tx block, respectively. Since there is no obvious bottleneck within each transaction's processing logic (even signature verification is pretty fast, when transaction data size is reasonable), the best way we can improve performance is through parallelization of transaction processing.
+As shown by recent load tests, after the optimizations of `EndBlock` are in place, the biggest bottleneck Eni has when processing thousands of transactions per block is the sequential processing of transactions. Each transaction takes 0.5ms on an `m5.12xlarge` EC2 machine, which translates to 0.5s for a 1000-tx block and 1s for a 2000-tx block, respectively. Since there is no obvious bottleneck within each transaction's processing logic (even signature verification is pretty fast, when transaction data size is reasonable), the best way we can improve performance is through parallelization of transaction processing.
 
 ## Discussion
 
@@ -35,7 +35,7 @@ An example of such DAG over 3 sequential messages and the resulting parallel mes
 ![DAG Example](./access_control.drawio.png)
 
 ### Implementation
-Sei will introduce a new custom module `accesscontrol` which maintains a mapping between every message type and its predetermined resource read/write sequence (we will discuss how such mappings are maintained in later sections).
+Eni will introduce a new custom module `accesscontrol` which maintains a mapping between every message type and its predetermined resource read/write sequence (we will discuss how such mappings are maintained in later sections).
 
 All message handlers, including ante handlers, will be enhanced such that each resource access is blocked by a list of channels set in its `Context` object, where each channel corresponds to an incoming dependency (edge) to the respective resource access (node) in the access DAG. At the end of each message handler, it will send completion signal for all resources *potentially* written by it. Note that there can be resource access that's part of conditional statements which may not take place in every transaction of the type. In those cases, we would only block if the access is needed, but still signal completion at the end of the message handler. To prevent deadlocks, we should ensure that those signals are set at the end even if the case of panics, with the help of `defer` syntax. In addition, after the *last* read of every resource in a message handler's logic, the message handler would send a completion signal designated for that resource. For example, `Context` for Tx2 in the graph in the previous section will have the following values set:
 ```

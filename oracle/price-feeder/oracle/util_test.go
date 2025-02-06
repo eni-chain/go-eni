@@ -34,7 +34,7 @@ func TestComputeVWAP(t *testing.T) {
 						Price:  sdk.MustNewDecFromStr("1.13000000"),
 						Volume: sdk.MustNewDecFromStr("249102.38000000"),
 					},
-					"SEI": provider.TickerPrice{
+					"ENI": provider.TickerPrice{
 						Price:  sdk.MustNewDecFromStr("64.87000000"),
 						Volume: sdk.MustNewDecFromStr("7854934.69000000"),
 					},
@@ -44,7 +44,7 @@ func TestComputeVWAP(t *testing.T) {
 						Price:  sdk.MustNewDecFromStr("28.268700"),
 						Volume: sdk.MustNewDecFromStr("178277.53314385"),
 					},
-					"SEI": provider.TickerPrice{
+					"ENI": provider.TickerPrice{
 						Price:  sdk.MustNewDecFromStr("64.87853000"),
 						Volume: sdk.MustNewDecFromStr("458917.46353577"),
 					},
@@ -59,7 +59,7 @@ func TestComputeVWAP(t *testing.T) {
 			expected: map[string]sdk.Dec{
 				"ATOM": sdk.MustNewDecFromStr("28.185812745610043621"),
 				"UMEE": sdk.MustNewDecFromStr("1.13000000"),
-				"SEI":  sdk.MustNewDecFromStr("64.870470848638112395"),
+				"ENI":  sdk.MustNewDecFromStr("64.870470848638112395"),
 			},
 		},
 	}
@@ -193,12 +193,12 @@ func TestStandardDeviation(t *testing.T) {
 				config.ProviderBinance: {
 					"ATOM": sdk.MustNewDecFromStr("28.21000000"),
 					"UMEE": sdk.MustNewDecFromStr("1.13000000"),
-					"SEI":  sdk.MustNewDecFromStr("64.87000000"),
+					"ENI":  sdk.MustNewDecFromStr("64.87000000"),
 				},
 				config.ProviderKraken: {
 					"ATOM": sdk.MustNewDecFromStr("28.23000000"),
 					"UMEE": sdk.MustNewDecFromStr("1.13050000"),
-					"SEI":  sdk.MustNewDecFromStr("64.85000000"),
+					"ENI":  sdk.MustNewDecFromStr("64.85000000"),
 				},
 			},
 			expected: map[string]deviation{},
@@ -208,7 +208,7 @@ func TestStandardDeviation(t *testing.T) {
 				config.ProviderBinance: {
 					"ATOM": sdk.MustNewDecFromStr("28.21000000"),
 					"UMEE": sdk.MustNewDecFromStr("1.13000000"),
-					"SEI":  sdk.MustNewDecFromStr("64.87000000"),
+					"ENI":  sdk.MustNewDecFromStr("64.87000000"),
 				},
 				config.ProviderKraken: {
 					"ATOM": sdk.MustNewDecFromStr("28.23000000"),
@@ -217,7 +217,7 @@ func TestStandardDeviation(t *testing.T) {
 				config.ProviderCoinbase: {
 					"ATOM": sdk.MustNewDecFromStr("28.40000000"),
 					"UMEE": sdk.MustNewDecFromStr("1.14000000"),
-					"SEI":  sdk.MustNewDecFromStr("64.10000000"),
+					"ENI":  sdk.MustNewDecFromStr("64.10000000"),
 				},
 			},
 			expected: map[string]deviation{
@@ -238,17 +238,17 @@ func TestStandardDeviation(t *testing.T) {
 					"ATOM": sdk.MustNewDecFromStr("28.21000000"),
 
 					"UMEE": sdk.MustNewDecFromStr("1.13000000"),
-					"SEI":  sdk.MustNewDecFromStr("64.87000000"),
+					"ENI":  sdk.MustNewDecFromStr("64.87000000"),
 				},
 				config.ProviderKraken: {
 					"ATOM": sdk.MustNewDecFromStr("28.23000000"),
 					"UMEE": sdk.MustNewDecFromStr("1.13050000"),
-					"SEI":  sdk.MustNewDecFromStr("64.85000000"),
+					"ENI":  sdk.MustNewDecFromStr("64.85000000"),
 				},
 				config.ProviderCoinbase: {
 					"ATOM": sdk.MustNewDecFromStr("28.40000000"),
 					"UMEE": sdk.MustNewDecFromStr("1.14000000"),
-					"SEI":  sdk.MustNewDecFromStr("64.10000000"),
+					"ENI":  sdk.MustNewDecFromStr("64.10000000"),
 				},
 			},
 			expected: map[string]deviation{
@@ -260,7 +260,7 @@ func TestStandardDeviation(t *testing.T) {
 					mean:      sdk.MustNewDecFromStr("1.1335"),
 					deviation: sdk.MustNewDecFromStr("0.004600724580614015"),
 				},
-				"SEI": {
+				"ENI": {
 					mean:      sdk.MustNewDecFromStr("64.606666666666666666"),
 					deviation: sdk.MustNewDecFromStr("0.358360464089193609"),
 				},

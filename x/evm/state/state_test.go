@@ -91,8 +91,8 @@ func TestCreate(t *testing.T) {
 func TestSelfDestructAssociated(t *testing.T) {
 	k := &testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
-	seiAddr, evmAddr := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
+	eniAddr, evmAddr := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
 	statedb := state.NewDBImpl(ctx, k, false)
 	statedb.CreateAccount(evmAddr)
 	key := common.BytesToHash([]byte("abc"))
@@ -103,7 +103,7 @@ func TestSelfDestructAssociated(t *testing.T) {
 	statedb.SetTransientState(evmAddr, tkey, tval)
 	amt := sdk.NewCoins(sdk.NewCoin(k.GetBaseDenom(ctx), sdk.NewInt(10)))
 	k.BankKeeper().MintCoins(statedb.Ctx(), types.ModuleName, amt)
-	k.BankKeeper().SendCoinsFromModuleToAccount(statedb.Ctx(), types.ModuleName, seiAddr, amt)
+	k.BankKeeper().SendCoinsFromModuleToAccount(statedb.Ctx(), types.ModuleName, eniAddr, amt)
 
 	// Selfdestruct6780 should only act if the account is created in the same block
 	statedb.MarkAccount(evmAddr, nil)
@@ -117,7 +117,7 @@ func TestSelfDestructAssociated(t *testing.T) {
 	require.Equal(t, tval, statedb.GetTransientState(evmAddr, tkey))
 	require.NotEqual(t, common.Hash{}, statedb.GetState(evmAddr, key))
 	require.Equal(t, big.NewInt(0), statedb.GetBalance(evmAddr))
-	require.Equal(t, big.NewInt(0), k.BankKeeper().GetBalance(ctx, seiAddr, k.GetBaseDenom(ctx)).Amount.BigInt())
+	require.Equal(t, big.NewInt(0), k.BankKeeper().GetBalance(ctx, eniAddr, k.GetBaseDenom(ctx)).Amount.BigInt())
 	require.True(t, statedb.HasSelfDestructed(evmAddr))
 	require.False(t, statedb.Created(evmAddr))
 	statedb.AddBalance(evmAddr, big.NewInt(1), tracing.BalanceChangeUnspecified)
@@ -125,7 +125,7 @@ func TestSelfDestructAssociated(t *testing.T) {
 	statedb.Finalize()
 	require.Equal(t, common.Hash{}, statedb.GetState(evmAddr, key))
 	// association should also be removed
-	_, ok := k.GetSeiAddress(statedb.Ctx(), evmAddr)
+	_, ok := k.GetEniAddress(statedb.Ctx(), evmAddr)
 	require.False(t, ok)
 	// balance in destructed account should be cleared and transferred to coinbase
 	require.Equal(t, big.NewInt(0), statedb.GetBalance(evmAddr))
@@ -136,8 +136,8 @@ func TestSelfDestructAssociated(t *testing.T) {
 func TestSnapshot(t *testing.T) {
 	k := &testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx([]byte{}).WithBlockTime(time.Now())
-	seiAddr, evmAddr := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, seiAddr, evmAddr)
+	eniAddr, evmAddr := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, eniAddr, evmAddr)
 	eventCount := len(ctx.EventManager().Events())
 	statedb := state.NewDBImpl(ctx, k, false)
 	statedb.CreateAccount(evmAddr)

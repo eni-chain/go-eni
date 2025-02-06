@@ -25,7 +25,7 @@ type MockAccountMigrationKeeper struct {
 }
 
 func (m MockAccountMigrationKeeper) GetModuleAddress(name string) sdk.AccAddress {
-	address, _ := sdk.AccAddressFromBech32("sei1t4xhq2pnhnf223zr4z5lw02vsrxwf74z604kja")
+	address, _ := sdk.AccAddressFromBech32("eni1t4xhq2pnhnf223zr4z5lw02vsrxwf74z8du736")
 	return address
 }
 

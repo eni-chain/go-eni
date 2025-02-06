@@ -20,7 +20,7 @@ const (
 	defaultSrvReadTimeout  = 15 * time.Second
 	defaultProviderTimeout = 100 * time.Millisecond
 
-	// API sources for Sei native oracle price feed - examples include price of BTC, ETH - that applications on Sei can
+	// API sources for Eni native oracle price feed - examples include price of BTC, ETH - that applications on Eni can
 	// use
 	ProviderKraken   = "kraken"
 	ProviderBinance  = "binance"
@@ -39,8 +39,8 @@ var (
 	// ErrEmptyConfigPath defines a sentinel error for an empty config path.
 	ErrEmptyConfigPath = errors.New("empty configuration file path")
 
-	// SupportedProviders is a mapping of all API sources for Sei native oracle price feed - examples include price of
-	// BTC, ETH - that applications on Sei can use
+	// SupportedProviders is a mapping of all API sources for Eni native oracle price feed - examples include price of
+	// BTC, ETH - that applications on Eni can use
 	SupportedProviders = map[string]struct{}{
 		ProviderKraken:   {},
 		ProviderBinance:  {},

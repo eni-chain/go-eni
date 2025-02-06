@@ -7,8 +7,8 @@ assignees: 'dunand0nuts'
 
 ---
 
-**Seid version**
-Show us output of `seid version --long | head`
+**Enid version**
+Show us output of `enid version --long | head`
 
 **Chain ID**
 Which chain are you running into issues with?

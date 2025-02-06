@@ -45,7 +45,7 @@ func (tk *MockFailedTransferTransferKeeper) Transfer(goCtx context.Context, msg 
 }
 
 func TestPrecompile_Run(t *testing.T) {
-	senderSeiAddress, senderEvmAddress := testkeeper.MockAddressPair()
+	senderEniAddress, senderEvmAddress := testkeeper.MockAddressPair()
 	receiverAddress := "cosmos1yykwxjzr2tv4mhx5tsf8090sdg96f2ax8fydk2"
 
 	pre, _ := ibc.NewPrecompile(nil, nil, nil, nil, nil)
@@ -228,7 +228,7 @@ func TestPrecompile_Run(t *testing.T) {
 					receiverAddr:  receiverAddress,
 					sourcePort:    "transfer",
 					sourceChannel: "channel-0",
-					denom:         "usei",
+					denom:         "ueni",
 					amount:        big.NewInt(100),
 					memo:          "test memo",
 				},
@@ -249,7 +249,7 @@ func TestPrecompile_Run(t *testing.T) {
 					receiverAddr:  receiverAddress,
 					sourcePort:    "transfer",
 					sourceChannel: "channel-0",
-					denom:         "usei",
+					denom:         "ueni",
 					amount:        big.NewInt(100),
 				},
 				suppliedGas: uint64(1000000),
@@ -265,7 +265,7 @@ func TestPrecompile_Run(t *testing.T) {
 			testApp := testkeeper.EVMTestApp
 			ctx := testApp.NewContext(false, tmtypes.Header{}).WithBlockHeight(2)
 			k := &testApp.EvmKeeper
-			k.SetAddressMapping(ctx, senderSeiAddress, senderEvmAddress)
+			k.SetAddressMapping(ctx, senderEniAddress, senderEvmAddress)
 			stateDb := state.NewDBImpl(ctx, k, true)
 			evm := vm.EVM{
 				StateDB:   stateDb,
@@ -299,7 +299,7 @@ func TestPrecompile_Run(t *testing.T) {
 }
 
 func TestTransferWithDefaultTimeoutPrecompile_Run(t *testing.T) {
-	senderSeiAddress, senderEvmAddress := testkeeper.MockAddressPair()
+	senderEniAddress, senderEvmAddress := testkeeper.MockAddressPair()
 	receiverAddress := "cosmos1yykwxjzr2tv4mhx5tsf8090sdg96f2ax8fydk2"
 
 	type fields struct {
@@ -443,7 +443,7 @@ func TestTransferWithDefaultTimeoutPrecompile_Run(t *testing.T) {
 			testApp := testkeeper.EVMTestApp
 			ctx := testApp.NewContext(false, tmtypes.Header{}).WithBlockHeight(2)
 			k := &testApp.EvmKeeper
-			k.SetAddressMapping(ctx, senderSeiAddress, senderEvmAddress)
+			k.SetAddressMapping(ctx, senderEniAddress, senderEvmAddress)
 			stateDb := state.NewDBImpl(ctx, k, true)
 			evm := vm.EVM{
 				StateDB:   stateDb,

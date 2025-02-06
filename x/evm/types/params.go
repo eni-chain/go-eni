@@ -24,7 +24,7 @@ var (
 
 var DefaultPriorityNormalizer = sdk.NewDec(1)
 
-// DefaultBaseFeePerGas determines how much usei per gas spent is
+// DefaultBaseFeePerGas determines how much ueni per gas spent is
 // burnt rather than go to validators (similar to base fee on
 // Ethereum).
 var DefaultBaseFeePerGas = sdk.NewDec(0)         // used for static base fee, deprecated in favor of dynamic base fee

@@ -1,10 +1,10 @@
-# Sei Network Setup Script
+# Eni Network Setup Script
 
-Setup script for decentralized launches of Sei networks.
+Setup script for decentralized launches of Eni networks.
 
 ## setup-validator
 
-run this if you're trying to join an existing network and just need to provision the validator node. Once provisioned, you'll need to request/get Sei tokens in order to stake as a validator
+run this if you're trying to join an existing network and just need to provision the validator node. Once provisioned, you'll need to request/get Eni tokens in order to stake as a validator
 
 ## prepare-genesis
 
@@ -12,23 +12,23 @@ run this if you're trying to launch a new network. This will generate the genesi
 
 ## setup-price-feeder
 
-run this if you're trying to setup a price feeder service on a validator node post genesis. Then you'll need to transfer sei tokens to the feeder address wallet in order for oracle to work properly
+run this if you're trying to setup a price feeder service on a validator node post genesis. Then you'll need to transfer eni tokens to the feeder address wallet in order for oracle to work properly
 
 ## Running Services
 
-For seid and price-feeder processes, it's reccomended to run as a systemd service.
+For enid and price-feeder processes, it's reccomended to run as a systemd service.
 
-seid
+enid
 
 ```
 [Unit]
-Description=Sei Node
+Description=Eni Node
 After=network.target
 
 [Service]
 User=root
 Type=simple
-ExecStart=/root/go/bin/seid start --chain-id ${CHAIN_ID}
+ExecStart=/root/go/bin/enid start --chain-id ${CHAIN_ID}
 Restart=always
 LimitNOFILE=6553500
 

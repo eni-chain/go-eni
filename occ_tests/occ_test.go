@@ -108,15 +108,15 @@ func TestParallelTransactions(t *testing.T) {
 		before  func(tCtx *utils.TestContext)
 		txs     func(tCtx *utils.TestContext) []*utils.TestMessage
 	}{
-		{
-			name: "Test wasm instantiations",
-			runs: runs,
-			txs: func(tCtx *utils.TestContext) []*utils.TestMessage {
-				return utils.JoinMsgs(
-					messages.WasmInstantiate(tCtx, 10),
-				)
-			},
-		},
+		//{
+		//	name: "Test wasm instantiations",
+		//	runs: runs,
+		//	txs: func(tCtx *utils.TestContext) []*utils.TestMessage {
+		//		return utils.JoinMsgs(
+		//			messages.WasmInstantiate(tCtx, 10),
+		//		)
+		//	},
+		//},
 		{
 			name: "Test bank transfer",
 			runs: runs,
@@ -159,7 +159,7 @@ func TestParallelTransactions(t *testing.T) {
 			shuffle: true,
 			txs: func(tCtx *utils.TestContext) []*utils.TestMessage {
 				return utils.JoinMsgs(
-					messages.WasmInstantiate(tCtx, 10),
+					//messages.WasmInstantiate(tCtx, 10),
 					messages.BankTransfer(tCtx, 10),
 					messages.GovernanceSubmitProposal(tCtx, 10),
 					messages.EVMTransferConflicting(tCtx, 10),

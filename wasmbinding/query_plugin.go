@@ -16,7 +16,7 @@ const (
 	StakingExtRoute   = "stakingext"
 )
 
-type SeiQueryWrapper struct {
+type EniQueryWrapper struct {
 	// specifies which module handler should handle the query
 	Route string `json:"route,omitempty"`
 	// The query data that should be parsed into the module query
@@ -25,7 +25,7 @@ type SeiQueryWrapper struct {
 
 func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
 	return func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
-		var contractQuery SeiQueryWrapper
+		var contractQuery EniQueryWrapper
 		if err := json.Unmarshal(request, &contractQuery); err != nil {
 			return nil, sdkerrors.Wrap(err, "Error parsing request data")
 		}
@@ -41,7 +41,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 		case StakingExtRoute:
 			return qp.HandleStakingExtQuery(ctx, contractQuery.QueryData)
 		default:
-			return nil, wasmvmtypes.UnsupportedRequest{Kind: "Unknown Sei Query Route"}
+			return nil, wasmvmtypes.UnsupportedRequest{Kind: "Unknown Eni Query Route"}
 		}
 	}
 }

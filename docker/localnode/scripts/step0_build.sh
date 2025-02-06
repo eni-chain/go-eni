@@ -4,9 +4,9 @@
 NODE_ID=${ID:-0}
 ARCH=$(uname -m)
 
-# Build seid
-echo "Building seid from local branch"
-git config --global --add safe.directory /sei-protocol/sei-chain
+# Build enid
+echo "Building enid from local branch"
+git config --global --add safe.directory /eni-chain/go-eni
 export LEDGER_ENABLED=false
 make clean
 make build-linux

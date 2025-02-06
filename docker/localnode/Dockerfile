@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-ENV HOME="/root" PATH="/root/go/bin:/sei-protocol/sei-chain/integration_test/upgrade_module/scripts/:$PATH"
+ENV HOME="/root" PATH="/root/go/bin:/eni-chain/go-eni/integration_test/upgrade_module/scripts/:$PATH"
 RUN apt-get update && apt-get install -y make build-essential git jq python3 curl vim uuid-runtime
 RUN curl -L https://go.dev/dl/go1.22.4.linux-amd64.tar.gz | tar xvzf - -C /usr/local/
 RUN curl -L https://foundry.paradigm.xyz | bash
@@ -10,7 +10,7 @@ RUN mkdir -p /root/go/pkg/mod && \
     chmod -R a+rwX /root
 SHELL ["/bin/bash", "-c"]
 
-WORKDIR /sei-protocol/sei-chain
+WORKDIR /eni-chain/go-eni
 
 EXPOSE 26656 26657 26658 9090 9091 7171
 
@@ -24,6 +24,6 @@ COPY scripts/step1_configure_init.sh /usr/bin/configure_init.sh
 COPY scripts/step2_genesis.sh /usr/bin/genesis.sh
 COPY scripts/step3_add_validator_to_genesis.sh /usr/bin/add_validator_to_gensis.sh
 COPY scripts/step4_config_override.sh /usr/bin/config_override.sh
-COPY scripts/step5_start_sei.sh /usr/bin/start_sei.sh
+COPY scripts/step5_start_eni.sh /usr/bin/start_eni.sh
 COPY scripts/step6_start_price_feeder.sh /usr/bin/start_price_feeder.sh
 

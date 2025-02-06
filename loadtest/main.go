@@ -334,14 +334,14 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 		// TODO: Potentially just hard code the Funds amount here
 		price := config.PriceDistr.Sample()
 		quantity := config.QuantityDistr.Sample()
-		amount, err := sdk.ParseCoinsNormalized(fmt.Sprintf("%d%s", price.Mul(quantity).Ceil().RoundInt64(), "usei"))
+		amount, err := sdk.ParseCoinsNormalized(fmt.Sprintf("%d%s", price.Mul(quantity).Ceil().RoundInt64(), "ueni"))
 		if err != nil {
 			panic(err)
 		}
 		msgs = []sdk.Msg{&wasmtypes.MsgExecuteContract{
 			Sender:   sdk.AccAddress(key.PubKey().Address()).String(),
 			Contract: contract,
-			Msg:      wasmtypes.RawContractMessage([]byte("{\"mint\":{\"owner\": \"sei1a27kj2j27c6uz58rn9zmhcjee9s3h3nhyhtvjj\"}}")),
+			Msg:      wasmtypes.RawContractMessage([]byte("{\"mint\":{\"owner\": \"eni1a27kj2j27c6uz58rn9zmhcjee9s3h3nhyhtvjj\"}}")),
 			Funds:    amount,
 		}}
 	case WasmInstantiate:
@@ -351,7 +351,7 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 			Label:  "test",
 			Msg:    wasmtypes.RawContractMessage([]byte(config.WasmMsgTypes.Instantiate.Payload)),
 			Funds: sdk.NewCoins(sdk.Coin{
-				Denom:  "usei",
+				Denom:  "ueni",
 				Amount: sdk.NewInt(1),
 			}), // maybe make this configurable as well in the future
 		}}
@@ -363,7 +363,7 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 				FromAddress: sdk.AccAddress(key.PubKey().Address()).String(),
 				ToAddress:   sdk.AccAddress(key.PubKey().Address()).String(),
 				Amount: sdk.NewCoins(sdk.Coin{
-					Denom:  "usei",
+					Denom:  "ueni",
 					Amount: sdk.NewInt(1),
 				}),
 			})
@@ -374,7 +374,7 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 			FromAddress: sdk.AccAddress(adminKey.PubKey().Address()).String(),
 			ToAddress:   sdk.AccAddress(key.PubKey().Address()).String(),
 			Amount: sdk.NewCoins(sdk.Coin{
-				Denom:  "usei",
+				Denom:  "ueni",
 				Amount: sdk.NewInt(10000000),
 			}),
 		}}
@@ -454,14 +454,14 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 			}),
 		}}
 	case FailureBankInvalid:
-		var amountUsei int64
-		amountUsei = 1000000000000000000
+		var amountueni int64
+		amountueni = 1000000000000000000
 		msgs = []sdk.Msg{&banktypes.MsgSend{
 			FromAddress: sdk.AccAddress(key.PubKey().Address()).String(),
 			ToAddress:   sdk.AccAddress(key.PubKey().Address()).String(),
 			Amount: sdk.NewCoins(sdk.Coin{
-				Denom:  "usei",
-				Amount: sdk.NewInt(amountUsei),
+				Denom:  "ueni",
+				Amount: sdk.NewInt(amountueni),
 			}),
 		}}
 	case WasmOccIteratorWrite:
@@ -478,7 +478,7 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 		for x := 0; x < num_values; x++ {
 			values = append(values, []uint64{uint64(indices[x]), rand.Uint64() % 12345})
 		}
-		contract := config.SeiTesterAddress
+		contract := config.EniTesterAddress
 		msgData := WasmIteratorWriteMsg{
 			Values: values,
 		}
@@ -492,7 +492,7 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 			Msg:      wasmtypes.RawContractMessage([]byte(fmt.Sprintf("{\"test_occ_iterator_write\":%s}", jsonData))),
 		}}
 	case WasmOccIteratorRange:
-		contract := config.SeiTesterAddress
+		contract := config.EniTesterAddress
 		start := rand.Uint32() % 100
 		end := rand.Uint32() % 100
 		if start > end {
@@ -504,7 +504,7 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 			Msg:      wasmtypes.RawContractMessage([]byte(fmt.Sprintf("{\"test_occ_iterator_range\":{\"start\": %d, \"end\": %d}}", start, end))),
 		}}
 	case WasmOccParallelWrite:
-		contract := config.SeiTesterAddress
+		contract := config.EniTesterAddress
 		// generate random value
 		value := rand.Uint64()
 		msgs = []sdk.Msg{&wasmtypes.MsgExecuteContract{
@@ -533,7 +533,7 @@ func (c *LoadTestClient) generateStakingMsg(delegatorAddr string, chosenValidato
 		msg = &stakingtypes.MsgDelegate{
 			DelegatorAddress: delegatorAddr,
 			ValidatorAddress: chosenValidator,
-			Amount:           sdk.Coin{Denom: "usei", Amount: sdk.NewInt(1)},
+			Amount:           sdk.Coin{Denom: "ueni", Amount: sdk.NewInt(1)},
 		}
 		c.DelegationMap[delegatorAddr] = map[string]int{}
 		c.DelegationMap[delegatorAddr][chosenValidator] = 1
@@ -543,14 +543,14 @@ func (c *LoadTestClient) generateStakingMsg(delegatorAddr string, chosenValidato
 				DelegatorAddress:    delegatorAddr,
 				ValidatorSrcAddress: srcAddr,
 				ValidatorDstAddress: chosenValidator,
-				Amount:              sdk.Coin{Denom: "usei", Amount: sdk.NewInt(1)},
+				Amount:              sdk.Coin{Denom: "ueni", Amount: sdk.NewInt(1)},
 			}
 			c.DelegationMap[delegatorAddr][chosenValidator]++
 		} else {
 			msg = &stakingtypes.MsgUndelegate{
 				DelegatorAddress: delegatorAddr,
 				ValidatorAddress: srcAddr,
-				Amount:           sdk.Coin{Denom: "usei", Amount: sdk.NewInt(1)},
+				Amount:           sdk.Coin{Denom: "ueni", Amount: sdk.NewInt(1)},
 			}
 		}
 		// Update delegation map

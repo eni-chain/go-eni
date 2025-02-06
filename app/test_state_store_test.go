@@ -4,14 +4,14 @@ import (
 	"testing"
 
 	"github.com/cosmos/iavl"
-	seidbproto "github.com/eni-chain/eni-db/proto"
+	enidbproto "github.com/eni-chain/eni-db/proto"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestApplyChangesetAndGet(t *testing.T) {
 	store := NewInMemoryStateStore()
 
-	err := store.ApplyChangeset(1, &seidbproto.NamedChangeSet{
+	err := store.ApplyChangeset(1, &enidbproto.NamedChangeSet{
 		Changeset: iavl.ChangeSet{
 			Pairs: []*iavl.KVPair{
 				{Key: []byte("key1"), Value: []byte("value1")},
@@ -29,7 +29,7 @@ func TestApplyChangesetAndGet(t *testing.T) {
 func TestHas(t *testing.T) {
 	store := NewInMemoryStateStore()
 
-	err := store.ApplyChangeset(1, &seidbproto.NamedChangeSet{
+	err := store.ApplyChangeset(1, &enidbproto.NamedChangeSet{
 		Changeset: iavl.ChangeSet{
 			Pairs: []*iavl.KVPair{
 				{Key: []byte("key1"), Value: []byte("value1")},
@@ -51,7 +51,7 @@ func TestHas(t *testing.T) {
 func TestIterator(t *testing.T) {
 	store := NewInMemoryStateStore()
 
-	err := store.ApplyChangeset(1, &seidbproto.NamedChangeSet{
+	err := store.ApplyChangeset(1, &enidbproto.NamedChangeSet{
 		Changeset: iavl.ChangeSet{
 			Pairs: []*iavl.KVPair{
 				{Key: []byte("key1"), Value: []byte("value1")},
@@ -83,7 +83,7 @@ func TestIterator(t *testing.T) {
 func TestReverseIterator(t *testing.T) {
 	store := NewInMemoryStateStore()
 
-	err := store.ApplyChangeset(1, &seidbproto.NamedChangeSet{
+	err := store.ApplyChangeset(1, &enidbproto.NamedChangeSet{
 		Changeset: iavl.ChangeSet{
 			Pairs: []*iavl.KVPair{
 				{Key: []byte("key1"), Value: []byte("value1")},
@@ -137,7 +137,7 @@ func TestGetEarliestVersionAndSetEarliestVersion(t *testing.T) {
 func TestPrune(t *testing.T) {
 	store := NewInMemoryStateStore()
 
-	err := store.ApplyChangeset(1, &seidbproto.NamedChangeSet{
+	err := store.ApplyChangeset(1, &enidbproto.NamedChangeSet{
 		Changeset: iavl.ChangeSet{
 			Pairs: []*iavl.KVPair{
 				{Key: []byte("key1"), Value: []byte("value1")},

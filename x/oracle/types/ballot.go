@@ -63,7 +63,7 @@ func (pb ExchangeRateBallot) ToCrossRate(bases map[string]sdk.Dec) (cb ExchangeR
 				vote.ExchangeRate = exchangeRateRT.Quo(vote.ExchangeRate)
 			}()
 		} else {
-			// If we can't get reference Sei exchange rate, we just convert the vote as abstain vote
+			// If we can't get reference Eni exchange rate, we just convert the vote as abstain vote
 			vote.ExchangeRate = sdk.ZeroDec()
 			vote.Power = 0
 		}

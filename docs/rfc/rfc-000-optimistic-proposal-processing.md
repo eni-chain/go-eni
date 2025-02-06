@@ -39,7 +39,7 @@ finishes and `FinalizeBlock` is called, the application handler can simply wait 
 previously started goroutine to finish, and flush the resulting cache store if the block
 hash matches. Assuming average voting period takes P ms and average block processing takes
 Q ms, this would theoretically reduce average block time by `P + Q - max(P, Q)` ms. During
-a recent load test on Sei, P was ~600ms and Q was ~300ms, so optimistic processing would
+a recent load test on Eni, P was ~600ms and Q was ~300ms, so optimistic processing would
 cut the block time by ~300ms in that case.
 
 The following diagram illustrates the intended flow:
@@ -47,13 +47,13 @@ The following diagram illustrates the intended flow:
 
 In the case where the proposal is rejected during voting, the optimistic processing outcome
 obviously needs to be thrown away, which is trivial with states managed by Cosmos thanks to
-cache stores, but demands special treatment for Sei's in-memory state in its `dex` module. A
+cache stores, but demands special treatment for Eni's in-memory state in its `dex` module. A
 deep copy utility already exists for `dex` in-memory state to make such branching easier. To
 prevent a bad actor from exploiting the optimistic processing to overwhelm nodes in the net,
 we will only perform optimistic processing for the first round of a height.
 
 Finally, since ABCI++ isn't in any stable release of Tendermint yet and consequently Cosmos
-hasn't integrated with ABCI++, Sei would need to directly integrate with ABCI++ based off
+hasn't integrated with ABCI++, Eni would need to directly integrate with ABCI++ based off
 development branches of Tendermint if we want this feature out soon.
 
 ### Implementation

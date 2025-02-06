@@ -46,7 +46,7 @@ func (app *App) LightInvarianceChecks(cms sdk.CommitMultiStore, config LightInva
 
 func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 	defer metrics.MeasureSince(
-		[]string{"sei", "lightinvariance_supply", "milliseconds"},
+		[]string{"eni", "lightinvariance_supply", "milliseconds"},
 		time.Now().UTC(),
 	)
 	ckv, ok := cms.GetStore(app.BankKeeper.GetStoreKey()).(*commitment.Store)
@@ -55,30 +55,30 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 		return
 	}
 	balanceChangePairs := ckv.GetChangedPairs(banktypes.BalancesPrefix)
-	useiPostTotal := sdk.ZeroInt()
-	useiChangedAddr := []sdk.AccAddress{}
+	ueniPostTotal := sdk.ZeroInt()
+	ueniChangedAddr := []sdk.AccAddress{}
 	for _, p := range balanceChangePairs {
 		if len(p.Key) < 2 {
 			// invalid key; ignore
-			metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "invalid_changed_key"}, 1, []metrics.Label{
+			metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "invalid_changed_key"}, 1, []metrics.Label{
 				{
 					Name:  "type",
-					Value: "sei",
+					Value: "eni",
 				},
 			})
-			app.Logger().Error(fmt.Sprintf("invalid changed pair key for usei: %X", p.Key))
+			app.Logger().Error(fmt.Sprintf("invalid changed pair key for ueni: %X", p.Key))
 			continue
 		}
 		addrLen := int(p.Key[1])
 		if len(p.Key) < addrLen+2 {
 			// invalid key length; ignore
-			metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "invalid_changed_key"}, 1, []metrics.Label{
+			metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "invalid_changed_key"}, 1, []metrics.Label{
 				{
 					Name:  "type",
-					Value: "sei",
+					Value: "eni",
 				},
 			})
-			app.Logger().Error(fmt.Sprintf("invalid changed pair key for usei: %X", p.Key))
+			app.Logger().Error(fmt.Sprintf("invalid changed pair key for ueni: %X", p.Key))
 			continue
 		}
 		addr := p.Key[2 : addrLen+2]
@@ -89,10 +89,10 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 		if !p.Delete {
 			var balance sdk.Coin
 			if err := balance.Unmarshal(p.Value); err != nil {
-				metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
+				metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
 					{
 						Name:  "type",
-						Value: "usei",
+						Value: "ueni",
 					}, {
 						Name:  "step",
 						Value: "post_block",
@@ -104,12 +104,12 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 			if balance.Amount.IsNegative() {
 				panic(fmt.Sprintf("negative balance found for addr %s: %s", sdk.AccAddress(addr).String(), balance.String()))
 			}
-			useiPostTotal = useiPostTotal.Add(balance.Amount)
+			ueniPostTotal = ueniPostTotal.Add(balance.Amount)
 		}
-		useiChangedAddr = append(useiChangedAddr, addr)
+		ueniChangedAddr = append(ueniChangedAddr, addr)
 	}
-	useiPreTotal := sdk.ZeroInt()
-	for _, a := range useiChangedAddr {
+	ueniPreTotal := sdk.ZeroInt()
+	for _, a := range ueniChangedAddr {
 		key := append(banktypes.CreateAccountBalancesPrefix(a), []byte(sdk.MustGetBaseDenom())...)
 		val := ckv.Get(key)
 		if val == nil {
@@ -117,10 +117,10 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 		}
 		var balance sdk.Coin
 		if err := balance.Unmarshal(val); err != nil {
-			metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
+			metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
 				{
 					Name:  "type",
-					Value: "usei",
+					Value: "ueni",
 				}, {
 					Name:  "step",
 					Value: "pre_block",
@@ -129,7 +129,7 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 			app.Logger().Error(fmt.Sprintf("failed to unmarshal preblock balance: %s", err))
 			continue
 		}
-		useiPreTotal = useiPreTotal.Add(balance.Amount)
+		ueniPreTotal = ueniPreTotal.Add(balance.Amount)
 	}
 	weiChangePairs := ckv.GetChangedPairs(banktypes.WeiBalancesPrefix)
 	weiPostTotal := sdk.ZeroInt()
@@ -137,7 +137,7 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 	for _, p := range weiChangePairs {
 		var amt sdk.Int
 		if len(p.Key) < 1 {
-			metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "invalid_changed_key"}, 1, []metrics.Label{
+			metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "invalid_changed_key"}, 1, []metrics.Label{
 				{
 					Name:  "type",
 					Value: "wei",
@@ -148,7 +148,7 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 		}
 		if !p.Delete {
 			if err := amt.Unmarshal(p.Value); err != nil {
-				metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
+				metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
 					{
 						Name:  "type",
 						Value: "wei",
@@ -176,7 +176,7 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 		}
 		var amt sdk.Int
 		if err := amt.Unmarshal(val); err != nil {
-			metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
+			metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
 				{
 					Name:  "type",
 					Value: "wei",
@@ -196,7 +196,7 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 	if bz := ckv.Get(append(banktypes.SupplyKey, []byte(sdk.MustGetBaseDenom())...)); bz != nil {
 		var amt sdk.Int
 		if err := amt.Unmarshal(bz); err != nil {
-			metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
+			metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
 				{
 					Name:  "type",
 					Value: "total_supply",
@@ -217,7 +217,7 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 			} else {
 				var amt sdk.Int
 				if err := amt.Unmarshal(p.Value); err != nil {
-					metrics.IncrCounterWithLabels([]string{"sei", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
+					metrics.IncrCounterWithLabels([]string{"eni", "lightinvariance_supply", "unmarshal_failure"}, 1, []metrics.Label{
 						{
 							Name:  "type",
 							Value: "total_supply",
@@ -235,13 +235,13 @@ func (app *App) LightInvarianceTotalSupply(cms sdk.CommitMultiStore) {
 		}
 	}
 	weiDiff := weiPostTotal.Sub(weiPreTotal)
-	weiDiffInUsei, weiDiffRemainder := bankkeeper.SplitUseiWeiAmount(weiDiff)
+	weiDiffInUeni, weiDiffRemainder := bankkeeper.SplitUeniWeiAmount(weiDiff)
 	if !weiDiffRemainder.IsZero() {
 		panic(fmt.Sprintf("non-zero wei diff found! Pre-block wei total %s, post-block wei total %s", weiPreTotal, weiPostTotal))
 	}
-	useiDiff := useiPreTotal.Sub(useiPostTotal).Sub(weiDiffInUsei).Add(supplyChanged)
-	if !useiDiff.IsZero() {
-		panic(fmt.Sprintf("unexpected usei balance total found! Pre-block usei total %s wei total %s total supply %s, post-block usei total %s wei total %s total supply %s", useiPreTotal, weiPreTotal, preTotalSupply, useiPostTotal, weiPostTotal, preTotalSupply.Add(supplyChanged)))
+	ueniDiff := ueniPreTotal.Sub(ueniPostTotal).Sub(weiDiffInUeni).Add(supplyChanged)
+	if !ueniDiff.IsZero() {
+		panic(fmt.Sprintf("unexpected ueni balance total found! Pre-block ueni total %s wei total %s total supply %s, post-block ueni total %s wei total %s total supply %s", ueniPreTotal, weiPreTotal, preTotalSupply, ueniPostTotal, weiPostTotal, preTotalSupply.Add(supplyChanged)))
 	}
 	app.Logger().Info("successfully verified supply light invariance")
 }

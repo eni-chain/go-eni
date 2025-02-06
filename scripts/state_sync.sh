@@ -14,25 +14,25 @@ echo
 mkdir -p $HOME/key_backup
 
 # Backup the validator key and state files
-cp $HOME/.sei/config/priv_validator_key.json $HOME/key_backup
-cp $HOME/.sei/data/priv_validator_state.json $HOME/key_backup
+cp $HOME/.eni/config/priv_validator_key.json $HOME/key_backup
+cp $HOME/.eni/data/priv_validator_state.json $HOME/key_backup
 
-# Create a backup directory for the entire .sei configuration
-mkdir -p $HOME/.sei_backup
+# Create a backup directory for the entire .eni configuration
+mkdir -p $HOME/.eni_backup
 
 # Move existing config, data, and wasm directories to the backup directory
-mv $HOME/.sei/config $HOME/.sei_backup
-mv $HOME/.sei/data $HOME/.sei_backup
-mv $HOME/.sei/wasm $HOME/.sei_backup
+mv $HOME/.eni/config $HOME/.eni_backup
+mv $HOME/.eni/data $HOME/.eni_backup
+mv $HOME/.eni/wasm $HOME/.eni_backup
 
 # Remove the data and wasm folder
-cd $HOME/.sei && ls | grep -xv "cosmovisor" | xargs rm -rf
+cd $HOME/.eni && ls | grep -xv "cosmovisor" | xargs rm -rf
 
 # Restore the validator key and state files from the backup
-mkdir -p $HOME/.sei/config
-mkdir -p $HOME/.sei/data
-cp $HOME/key_backup/priv_validator_key.json $HOME/.sei/config/
-cp $HOME/key_backup/priv_validator_state.json $HOME/.sei/data/
+mkdir -p $HOME/.eni/config
+mkdir -p $HOME/.eni/data
+cp $HOME/key_backup/priv_validator_key.json $HOME/.eni/config/
+cp $HOME/key_backup/priv_validator_state.json $HOME/.eni/data/
 
 # Set up /tmp as a 12G RAM disk to allow for more than 400 state sync chunks
 sudo umount -l /tmp && sudo mount -t tmpfs -o size=12G,mode=1777 overflow /tmp
@@ -48,8 +48,8 @@ TRUST_HASH=$(curl -s "$STATE_SYNC_RPC/block?height=$BLOCK_HEIGHT" | jq -r .resul
 sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1true| ; \
 s|^(rpc_servers[[:space:]]+=[[:space:]]+).*$|\1\"$STATE_SYNC_RPC,$STATE_SYNC_RPC\"| ; \
 s|^(trust_height[[:space:]]+=[[:space:]]+).*$|\1$BLOCK_HEIGHT| ; \
-s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"|" $HOME/.sei/config/config.toml
+s|^(trust_hash[[:space:]]+=[[:space:]]+).*$|\1\"$TRUST_HASH\"|" $HOME/.eni/config/config.toml
 
 # Set the persistent peers in the config.toml file to the specified State Sync Peer
 sed -i.bak -e "s|^persistent_peers *=.*|persistent_peers = \"$STATE_SYNC_PEER\"|" \
-  $HOME/.sei/config/config.toml
+  $HOME/.eni/config/config.toml

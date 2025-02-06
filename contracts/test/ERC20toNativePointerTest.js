@@ -1,5 +1,5 @@
 const {setupSigners, deployErc20PointerNative, getAdmin, createTokenFactoryTokenAndMint, ABI, generateWallet,
-    fundAddress, getSeiAddress,
+    fundAddress, getEniAddress,
     delay
 } = require("./lib");
 const {expect} = require("chai");
@@ -17,7 +17,7 @@ describe("ERC20 to Native Pointer", function () {
         accounts = await setupSigners(await hre.ethers.getSigners())
         admin = await getAdmin()
         const random_num = Math.floor(Math.random() * 10000)
-        denom = await createTokenFactoryTokenAndMint(`native-pointer-test-${random_num}`, 1000, accounts[0].seiAddress)
+        denom = await createTokenFactoryTokenAndMint(`native-pointer-test-${random_num}`, 1000, accounts[0].eniAddress)
 
         // deploy TestToken
         const pointerAddr = await deployErc20PointerNative(hre.ethers.provider, denom)
@@ -101,8 +101,8 @@ describe("ERC20 to Native Pointer", function () {
             expect(await pointer.balanceOf(sender.evmAddress)).to.equal(startBal);
 
             // confirm association actually happened
-            const seiAddress = await getSeiAddress(recipient)
-            expect(seiAddress.indexOf("sei")).to.equal(0)
+            const eniAddress = await getEniAddress(recipient)
+            expect(eniAddress.indexOf("eni")).to.equal(0)
         });
 
         it("should fail transfer() if sender has insufficient balance", async function () {

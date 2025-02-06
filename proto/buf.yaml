@@ -1,5 +1,5 @@
 version: v1
-name: buf.build/sei-protocol/sei-chain
+name: buf.build/eni-chain/go-eni
 deps:
   - buf.build/sei-protocol/cosmos-sdk
 breaking:

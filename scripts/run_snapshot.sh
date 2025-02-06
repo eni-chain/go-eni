@@ -11,23 +11,23 @@ SNAPSHOT_INTERVAL=$2
 CHAIN_ID=$3
 
 # Define variables for paths based on the home directory
-SEI_DIR="$HOME/.sei"
-CONFIG_FILE="$SEI_DIR/config/app.toml"
+ENI_DIR="$HOME/.eni"
+CONFIG_FILE="$ENI_DIR/config/app.toml"
 SNAPSHOT_DIR="$HOME/snapshots"
-SEID_BIN="$HOME/go/bin/seid"
+ENID_BIN="$HOME/go/bin/enid"
 
-# Ensure the seid binary exists
-if [ ! -x "$SEID_BIN" ]; then
-    echo "Error: seid binary not found at $SEID_BIN"
+# Ensure the enid binary exists
+if [ ! -x "$ENID_BIN" ]; then
+    echo "Error: enid binary not found at $ENID_BIN"
     exit 1
 fi
 
-# Stop the seid service if it's managed by systemd
-if systemctl is-active --quiet seid; then
-    systemctl stop seid
-    echo "Stopped seid service."
+# Stop the enid service if it's managed by systemd
+if systemctl is-active --quiet enid; then
+    systemctl stop enid
+    echo "Stopped enid service."
 else
-    echo "seid service is not running."
+    echo "enid service is not running."
 fi
 
 # Update pruning settings in the configuration file
@@ -56,17 +56,17 @@ do
     sed -i -e "s/halt-height = .*/halt-height = $HALT_HEIGHT/" "$CONFIG_FILE"
     echo "Set halt-height to $HALT_HEIGHT in $CONFIG_FILE."
 
-    # Start the seid node with tracing
-    echo "Starting seid node with chain ID $CHAIN_ID and halt height $HALT_HEIGHT."
-    "$SEID_BIN" start --trace --chain-id "$CHAIN_ID" &
-    SEID_PID=$!
+    # Start the enid node with tracing
+    echo "Starting enid node with chain ID $CHAIN_ID and halt height $HALT_HEIGHT."
+    "$ENID_BIN" start --trace --chain-id "$CHAIN_ID" &
+    ENID_PID=$!
 
     # Wait for the node to initialize (you might need to adjust the sleep duration)
     sleep 10
 
     # Take a snapshot at the current halt height
     start_time=$(date +%s)
-    "$SEID_BIN" tendermint snapshot "$HALT_HEIGHT"
+    "$ENID_BIN" tendermint snapshot "$HALT_HEIGHT"
     end_time=$(date +%s)
     elapsed=$(( end_time - start_time ))
     echo "Backed up snapshot for height $HALT_HEIGHT which took $elapsed seconds."

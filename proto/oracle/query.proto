@@ -1,5 +1,5 @@
 syntax = "proto3";
-package seiprotocol.seichain.oracle;
+package enichain.goeni.oracle;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -11,52 +11,52 @@ option go_package = "github.com/eni-chain/go-eni/x/oracle/types";
 service Query {
   // ExchangeRate returns exchange rate of a denom
   rpc ExchangeRate(QueryExchangeRateRequest) returns (QueryExchangeRateResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/denoms/{denom}/exchange_rate";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/denoms/{denom}/exchange_rate";
   }
 
   // ExchangeRates returns exchange rates of all denoms
   rpc ExchangeRates(QueryExchangeRatesRequest) returns (QueryExchangeRatesResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/denoms/exchange_rates";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/denoms/exchange_rates";
   }
 
   // Actives returns all active denoms
   rpc Actives(QueryActivesRequest) returns (QueryActivesResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/denoms/actives";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/denoms/actives";
   }
 
   // VoteTargets returns all vote target denoms
   rpc VoteTargets(QueryVoteTargetsRequest) returns (QueryVoteTargetsResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/denoms/vote_targets";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/denoms/vote_targets";
   }
 
   // PriceSnapshotHistory returns the history of price snapshots for all assets
   rpc PriceSnapshotHistory(QueryPriceSnapshotHistoryRequest) returns (QueryPriceSnapshotHistoryResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/denoms/price_snapshot_history";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/denoms/price_snapshot_history";
   }
 
   rpc Twaps(QueryTwapsRequest) returns (QueryTwapsResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/denoms/twaps/{lookback_seconds}";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/denoms/twaps/{lookback_seconds}";
   }
 
   // FeederDelegation returns feeder delegation of a validator
   rpc FeederDelegation(QueryFeederDelegationRequest) returns (QueryFeederDelegationResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/validators/{validator_addr}/feeder";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/validators/{validator_addr}/feeder";
   }
 
   // MissCounter returns oracle miss counter of a validator
   rpc VotePenaltyCounter(QueryVotePenaltyCounterRequest) returns (QueryVotePenaltyCounterResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/validators/{validator_addr}/vote_penalty_counter";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/validators/{validator_addr}/vote_penalty_counter";
   }
 
   // SlashWindow returns slash window information
   rpc SlashWindow(QuerySlashWindowRequest) returns (QuerySlashWindowResponse) {
     option (google.api.http).get =
-        "/sei-protocol/sei-chain/oracle/slash_window";
+        "/eni-chain/go-eni/oracle/slash_window";
   }
 
   // Params queries all parameters.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sei-protocol/sei-chain/oracle/params";
+    option (google.api.http).get = "/eni-chain/go-eni/oracle/params";
   }
 }
 
@@ -72,7 +72,7 @@ message QueryExchangeRateRequest {
 // QueryExchangeRateResponse is response type for the
 // Query/ExchangeRate RPC method.
 message QueryExchangeRateResponse {
-  // exchange_rate defines the exchange rate of Sei denominated in various Sei
+  // exchange_rate defines the exchange rate of Eni denominated in various Eni
   OracleExchangeRate oracle_exchange_rate = 1 [(gogoproto.nullable) = false];
 }
 

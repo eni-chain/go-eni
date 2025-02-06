@@ -668,14 +668,14 @@ describe("EVM Test", function () {
         expect(receipt.logsBloom).to.not.be.undefined;
         expect(receipt.gasUsed).to.be.greaterThan(0);
         expect(receipt.gasPrice).to.be.greaterThan(0);
-        expect(receipt.type).to.equal(2); // sei is failing this
+        expect(receipt.type).to.equal(2); // eni is failing this
         expect(receipt.status).to.equal(1);
         expect(receipt.to).to.equal(await evmTester.getAddress());
         expect(receipt.from).to.equal(owner.address);
-        expect(receipt.cumulativeGasUsed).to.be.greaterThanOrEqual(0); // on seilocal, this is 0
+        expect(receipt.cumulativeGasUsed).to.be.greaterThanOrEqual(0); // on enilocal, this is 0
 
         // undefined / null on anvil and goerli
-        // expect(receipt.contractAddress).to.be.equal(null); // seeing this be null (sei devnet) and not null (anvil, goerli)
+        // expect(receipt.contractAddress).to.be.equal(null); // seeing this be null (eni devnet) and not null (anvil, goerli)
         expect(receipt.effectiveGasPrice).to.be.undefined;
         expect(receipt.transactionHash).to.be.undefined;
         expect(receipt.transactionIndex).to.be.undefined;
@@ -1085,9 +1085,9 @@ describe("EVM Test", function () {
       });
     });
 
-    describe("Usei/Wei testing", function() {
-      it("Send 1 usei to contract", async function() {
-        const usei = ethers.parseUnits("1", 12);
+    describe("Ueni/Wei testing", function() {
+      it("Send 1 ueni to contract", async function() {
+        const ueni = ethers.parseUnits("1", 12);
         const wei = ethers.parseUnits("1", 0);
         const twoWei = ethers.parseUnits("2", 0);
 
@@ -1095,13 +1095,13 @@ describe("EVM Test", function () {
         const initialBalance = await ethers.provider.getBalance(evmAddr);
 
         const txResponse = await evmTester.depositEther({
-          value: usei,
+          value: ueni,
         });
         await txResponse.wait();  // Wait for the transaction to be mined
 
         // Check that the contract received the ETH
         const contractBalance = await ethers.provider.getBalance(evmAddr);
-        expect(contractBalance - initialBalance).to.equal(usei);
+        expect(contractBalance - initialBalance).to.equal(ueni);
 
         // send 1 wei out of contract
         const txResponse2 = await evmTester.sendEther(owner.address, wei);

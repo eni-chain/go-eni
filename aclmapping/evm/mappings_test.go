@@ -53,8 +53,8 @@ func (suite *KeeperTestSuite) PrepareTest() {
 	}
 	suite.sender = key
 	_, suite.unassociatedAcc = testkeeper.MockAddressPair()
-	seiAddr, associatedAcc := testkeeper.MockAddressPair()
-	suite.App.EvmKeeper.SetAddressMapping(suite.Ctx, seiAddr, associatedAcc)
+	eniAddr, associatedAcc := testkeeper.MockAddressPair()
+	suite.App.EvmKeeper.SetAddressMapping(suite.Ctx, eniAddr, associatedAcc)
 	suite.associatedAcc = associatedAcc
 	suite.msgServer = keeper.NewMsgServerImpl(&suite.App.EvmKeeper)
 	suite.preprocessor = ante.NewEVMPreprocessDecorator(&suite.App.EvmKeeper, &suite.App.AccountKeeper)

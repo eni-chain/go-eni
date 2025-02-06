@@ -14,17 +14,17 @@ describe("ERC20 to CW20 Pointer", function () {
         accounts = await setupSigners(await hre.ethers.getSigners())
         admin = await getAdmin()
 
-        cw20Address = await deployWasm(WASM.CW20, accounts[0].seiAddress, "cw20", {
+        cw20Address = await deployWasm(WASM.CW20, accounts[0].eniAddress, "cw20", {
             name: "Test",
             symbol: "TEST",
             decimals: 6,
             initial_balances: [
-                { address: admin.seiAddress, amount: "1000000" },
-                { address: accounts[0].seiAddress, amount: "2000000"},
-                { address: accounts[1].seiAddress, amount: "3000000"}
+                { address: admin.eniAddress, amount: "1000000" },
+                { address: accounts[0].eniAddress, amount: "2000000"},
+                { address: accounts[1].eniAddress, amount: "3000000"}
             ],
             mint: {
-                "minter": admin.seiAddress, "cap": "99900000000"
+                "minter": admin.eniAddress, "cap": "99900000000"
             }
         })
 

@@ -510,15 +510,15 @@ func init() {
 	MultiTxCtx, _ = Ctx.CacheContext()
 	EVMKeeper = &testApp.EvmKeeper
 	EVMKeeper.InitGenesis(Ctx, *evmtypes.DefaultGenesis())
-	seiAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("seiAddr")))
+	eniAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("eniAddr")))
 	if err != nil {
 		panic(err)
 	}
-	err = testApp.BankKeeper.MintCoins(Ctx, "evm", sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10))))
+	err = testApp.BankKeeper.MintCoins(Ctx, "evm", sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
-	err = testApp.BankKeeper.SendCoinsFromModuleToAccount(Ctx, "evm", seiAddr, sdk.NewCoins(sdk.NewCoin("usei", sdk.NewInt(10))))
+	err = testApp.BankKeeper.SendCoinsFromModuleToAccount(Ctx, "evm", eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
@@ -698,12 +698,12 @@ func generateTxData() {
 	}); err != nil {
 		panic(err)
 	}
-	seiAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("seiAddr")))
+	eniAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("eniAddr")))
 	if err != nil {
 		panic(err)
 	}
 	evmAddr := common.HexToAddress(common.Bytes2Hex([]byte("evmAddr")))
-	EVMKeeper.SetAddressMapping(Ctx, seiAddr, evmAddr)
+	EVMKeeper.SetAddressMapping(Ctx, eniAddr, evmAddr)
 	unassociatedAddr := common.HexToAddress("0x1234567890123456789023456789012345678901")
 	debugTraceAddr := common.HexToAddress("0x5B4eba929F3811980f5AE0c5D04fa200f837DF4E")
 	amts := sdk.NewCoins(sdk.NewCoin(EVMKeeper.GetBaseDenom(Ctx), sdk.NewInt(1000000)))
@@ -722,7 +722,7 @@ func generateTxData() {
 	)
 	EVMKeeper.SetAddressMapping(
 		Ctx,
-		sdk.MustAccAddressFromBech32("sei1mf0llhmqane5w2y8uynmghmk2w4mh0xll9seym"),
+		sdk.MustAccAddressFromBech32("eni1mf0llhmqane5w2y8uynmghmk2w4mh0xlz8e38u"),
 		common.HexToAddress("0x1df809C639027b465B931BD63Ce71c8E5834D9d6"),
 	)
 	EVMKeeper.SetNonce(Ctx, common.HexToAddress("0x1234567890123456789012345678901234567890"), 1)
@@ -926,8 +926,8 @@ func sendRequestGood(t *testing.T, method string, params ...interface{}) map[str
 }
 
 //nolint:deadcode
-func sendSeiRequestGood(t *testing.T, method string, params ...interface{}) map[string]interface{} {
-	return sendSeiRequest(t, TestPort, method, params...)
+func sendEniRequestGood(t *testing.T, method string, params ...interface{}) map[string]interface{} {
+	return sendEniRequest(t, TestPort, method, params...)
 }
 
 //nolint:deadcode
@@ -936,8 +936,8 @@ func sendRequestBad(t *testing.T, method string, params ...interface{}) map[stri
 }
 
 //nolint:deadcode
-func sendSeiRequestBad(t *testing.T, method string, params ...interface{}) map[string]interface{} {
-	return sendSeiRequest(t, TestBadPort, method, params...)
+func sendEniRequestBad(t *testing.T, method string, params ...interface{}) map[string]interface{} {
+	return sendEniRequest(t, TestBadPort, method, params...)
 }
 
 // nolint:deadcode
@@ -949,8 +949,8 @@ func sendRequest(t *testing.T, port int, method string, params ...interface{}) m
 	return sendRequestWithNamespace(t, "eth", port, method, params...)
 }
 
-func sendSeiRequest(t *testing.T, port int, method string, params ...interface{}) map[string]interface{} {
-	return sendRequestWithNamespace(t, "sei", port, method, params...)
+func sendEniRequest(t *testing.T, port int, method string, params ...interface{}) map[string]interface{} {
+	return sendRequestWithNamespace(t, "eni", port, method, params...)
 }
 
 func sendRequestWithNamespace(t *testing.T, namespace string, port int, method string, params ...interface{}) map[string]interface{} {

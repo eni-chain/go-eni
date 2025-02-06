@@ -9,9 +9,9 @@ import (
 
 func (k *Keeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress) *big.Int {
 	denom := k.GetBaseDenom(ctx)
-	allUsei := k.BankKeeper().GetBalance(ctx, addr, denom).Amount
-	lockedUsei := k.BankKeeper().LockedCoins(ctx, addr).AmountOf(denom) // LockedCoins doesn't use iterators
-	usei := allUsei.Sub(lockedUsei)
+	allUeni := k.BankKeeper().GetBalance(ctx, addr, denom).Amount
+	lockedUeni := k.BankKeeper().LockedCoins(ctx, addr).AmountOf(denom) // LockedCoins doesn't use iterators
+	ueni := allUeni.Sub(lockedUeni)
 	wei := k.BankKeeper().GetWeiBalance(ctx, addr)
-	return usei.Mul(state.SdkUseiToSweiMultiplier).Add(wei).BigInt()
+	return ueni.Mul(state.SdkUeniToSweiMultiplier).Add(wei).BigInt()
 }

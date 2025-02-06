@@ -270,7 +270,7 @@ func TestHandleERC721RoyaltyInfo(t *testing.T) {
 	res2, err := h.HandleERC721RoyaltyInfo(ctx, addr1.String(), contractAddr.String(), "1", &value)
 	require.Nil(t, err)
 	require.NotEmpty(t, res2)
-	match, _ := regexp.MatchString(`{"receiver":"sei\w{39}","royalty_amount":"5"}`, string(res2))
+	match, _ := regexp.MatchString(`{"receiver":"eni\w{39}","royalty_amount":"5"}`, string(res2))
 	require.True(t, match)
 }
 
@@ -473,40 +473,40 @@ func TestHandleERC1155RoyaltyInfo(t *testing.T) {
 	res2, err := h.HandleERC1155RoyaltyInfo(ctx, addr1.String(), contractAddr.String(), "1", &value)
 	require.Nil(t, err)
 	require.NotEmpty(t, res2)
-	match, _ := regexp.MatchString(`{"receiver":"sei\w{39}","royalty_amount":"5"}`, string(res2))
+	match, _ := regexp.MatchString(`{"receiver":"eni\w{39}","royalty_amount":"5"}`, string(res2))
 	require.True(t, match)
 }
 
 func TestGetAddress(t *testing.T) {
 	k := &testkeeper.EVMTestApp.EvmKeeper
 	ctx := testkeeper.EVMTestApp.GetContextForDeliverTx(nil)
-	seiAddr1, evmAddr1 := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, seiAddr1, evmAddr1)
-	seiAddr2, evmAddr2 := testkeeper.MockAddressPair()
-	k.SetAddressMapping(ctx, seiAddr2, evmAddr2)
+	eniAddr1, evmAddr1 := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, eniAddr1, evmAddr1)
+	eniAddr2, evmAddr2 := testkeeper.MockAddressPair()
+	k.SetAddressMapping(ctx, eniAddr2, evmAddr2)
 	h := wasm.NewEVMQueryHandler(k)
 	getEvmAddrResp := &bindings.GetEvmAddressResponse{}
-	res, err := h.HandleGetEvmAddress(ctx, seiAddr1.String())
+	res, err := h.HandleGetEvmAddress(ctx, eniAddr1.String())
 	require.Nil(t, err)
 	require.Nil(t, json.Unmarshal(res, getEvmAddrResp))
 	require.True(t, getEvmAddrResp.Associated)
 	require.Equal(t, evmAddr1.Hex(), getEvmAddrResp.EvmAddress)
 	getEvmAddrResp = &bindings.GetEvmAddressResponse{}
-	res, err = h.HandleGetEvmAddress(ctx, seiAddr2.String())
+	res, err = h.HandleGetEvmAddress(ctx, eniAddr2.String())
 	require.Nil(t, err)
 	require.Nil(t, json.Unmarshal(res, getEvmAddrResp))
 	require.True(t, getEvmAddrResp.Associated)
-	getSeiAddrResp := &bindings.GetSeiAddressResponse{}
-	res, err = h.HandleGetSeiAddress(ctx, evmAddr1.Hex())
+	getEniAddrResp := &bindings.GetEniAddressResponse{}
+	res, err = h.HandleGetEniAddress(ctx, evmAddr1.Hex())
 	require.Nil(t, err)
-	require.Nil(t, json.Unmarshal(res, getSeiAddrResp))
-	require.True(t, getSeiAddrResp.Associated)
-	require.Equal(t, seiAddr1.String(), getSeiAddrResp.SeiAddress)
-	getSeiAddrResp = &bindings.GetSeiAddressResponse{}
-	res, err = h.HandleGetSeiAddress(ctx, evmAddr2.Hex())
+	require.Nil(t, json.Unmarshal(res, getEniAddrResp))
+	require.True(t, getEniAddrResp.Associated)
+	require.Equal(t, eniAddr1.String(), getEniAddrResp.EniAddress)
+	getEniAddrResp = &bindings.GetEniAddressResponse{}
+	res, err = h.HandleGetEniAddress(ctx, evmAddr2.Hex())
 	require.Nil(t, err)
-	require.Nil(t, json.Unmarshal(res, getSeiAddrResp))
-	require.True(t, getSeiAddrResp.Associated)
+	require.Nil(t, json.Unmarshal(res, getEniAddrResp))
+	require.True(t, getEniAddrResp.Associated)
 }
 
 type mockTx struct {

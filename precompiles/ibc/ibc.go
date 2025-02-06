@@ -151,7 +151,7 @@ func (p PrecompileExecutor) transfer(ctx sdk.Context, method *abi.Method, args [
 		SourcePort:       validatedArgs.port,
 		SourceChannel:    validatedArgs.channelID,
 		Token:            coin,
-		Sender:           validatedArgs.senderSeiAddr.String(),
+		Sender:           validatedArgs.senderEniAddr.String(),
 		Receiver:         validatedArgs.receiverAddressString,
 		TimeoutHeight:    height,
 		TimeoutTimestamp: timeoutTimestamp,
@@ -237,7 +237,7 @@ func (p PrecompileExecutor) transferWithDefaultTimeout(ctx sdk.Context, method *
 		SourcePort:       validatedArgs.port,
 		SourceChannel:    validatedArgs.channelID,
 		Token:            coin,
-		Sender:           validatedArgs.senderSeiAddr.String(),
+		Sender:           validatedArgs.senderEniAddr.String(),
 		Receiver:         validatedArgs.receiverAddressString,
 		TimeoutHeight:    height,
 		TimeoutTimestamp: timeoutTimestamp,
@@ -267,11 +267,11 @@ func (p PrecompileExecutor) accAddressFromArg(ctx sdk.Context, arg interface{}) 
 	if addr == (common.Address{}) {
 		return nil, errors.New("invalid addr")
 	}
-	seiAddr, found := p.evmKeeper.GetSeiAddress(ctx, addr)
+	eniAddr, found := p.evmKeeper.GetEniAddress(ctx, addr)
 	if !found {
 		return nil, evmtypes.NewAssociationMissingErr(addr.Hex())
 	}
-	return seiAddr, nil
+	return eniAddr, nil
 }
 
 func (p PrecompileExecutor) getChannelConnection(ctx sdk.Context, port string, channelID string) (*connectiontypes.ConnectionEnd, error) {
@@ -336,7 +336,7 @@ func (p PrecompileExecutor) GetAdjustedTimestamp(ctx sdk.Context, clientId strin
 }
 
 type ValidatedArgs struct {
-	senderSeiAddr         sdk.AccAddress
+	senderEniAddr         sdk.AccAddress
 	receiverAddressString string
 	port                  string
 	channelID             string
@@ -345,9 +345,9 @@ type ValidatedArgs struct {
 }
 
 func (p PrecompileExecutor) validateCommonArgs(ctx sdk.Context, args []interface{}, caller common.Address) (*ValidatedArgs, error) {
-	senderSeiAddr, ok := p.evmKeeper.GetSeiAddress(ctx, caller)
+	senderEniAddr, ok := p.evmKeeper.GetEniAddress(ctx, caller)
 	if !ok {
-		return nil, errors.New("caller is not a valid SEI address")
+		return nil, errors.New("caller is not a valid ENI address")
 	}
 
 	receiverAddressString, ok := args[0].(string)
@@ -381,7 +381,7 @@ func (p PrecompileExecutor) validateCommonArgs(ctx sdk.Context, args []interface
 		return nil, errors.New("amount is not a big.Int")
 	}
 	return &ValidatedArgs{
-		senderSeiAddr:         senderSeiAddr,
+		senderEniAddr:         senderEniAddr,
 		receiverAddressString: receiverAddressString,
 		port:                  port,
 		channelID:             channelID,

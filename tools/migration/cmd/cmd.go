@@ -21,10 +21,10 @@ import (
 func MigrateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "migrate-iavl",
-		Short: "A tool to migrate full IAVL data store to SeiDB. Use this tool to migrate IAVL to SeiDB SC and SS database.",
+		Short: "A tool to migrate full IAVL data store to EniDB. Use this tool to migrate IAVL to EniDB SC and SS database.",
 		Run:   execute,
 	}
-	cmd.PersistentFlags().String("home-dir", "/root/.sei", "Sei home directory")
+	cmd.PersistentFlags().String("home-dir", "/root/.eni", "Eni home directory")
 	return cmd
 }
 
@@ -51,12 +51,12 @@ func migrateSC(version int64, homeDir string, db dbm.DB) error {
 func VerifyMigrationCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "verify-migration",
-		Short: "A tool to verify migration of a IAVL data store to SeiDB at a particular height.",
+		Short: "A tool to verify migration of a IAVL data store to EniDB at a particular height.",
 		Run:   verify,
 	}
 
 	cmd.PersistentFlags().Int64("version", -1, "Version to run migration verification on")
-	cmd.PersistentFlags().String("home-dir", "/root/.sei", "Sei home directory")
+	cmd.PersistentFlags().String("home-dir", "/root/.eni", "Eni home directory")
 
 	return cmd
 }
@@ -105,7 +105,7 @@ func GenerateStats() *cobra.Command {
 		Short: "A tool to generate archive node iavl stats like number of keys and size per module.",
 		Run:   generateIavlStats,
 	}
-	cmd.PersistentFlags().String("home-dir", "/root/.sei", "Sei home directory")
+	cmd.PersistentFlags().String("home-dir", "/root/.eni", "Eni home directory")
 	return cmd
 }
 
@@ -166,5 +166,5 @@ func generateIavlStats(cmd *cobra.Command, _ []string) {
 			module, totalKeys, totalKeySize, totalValueSize, moduleDuration)
 	}
 
-	fmt.Println("SeiDB Archive Migration: Aggregation completed.")
+	fmt.Println("EniDB Archive Migration: Aggregation completed.")
 }

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package seiprotocol.seichain.evm;
+package enichain.goeni.evm;
 
 option go_package = "github.com/eni-chain/go-eni/x/evm/types";
 

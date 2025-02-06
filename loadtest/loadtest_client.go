@@ -229,7 +229,7 @@ func (c *LoadTestClient) generateSignedCosmosTxs(keyIndex int, msgType string, m
 	_ = txBuilder.SetMsgs(msgs...)
 	txBuilder.SetGasLimit(gas)
 	txBuilder.SetFeeAmount([]types.Coin{
-		types.NewCoin("usei", types.NewInt(fee)),
+		types.NewCoin("ueni", types.NewInt(fee)),
 	})
 	// Use random seqno to get around txs that might already be seen in mempool
 	c.SignerClient.SignTx(c.ChainID, &txBuilder, key, uint64(msgTypeCount))

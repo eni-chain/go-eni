@@ -117,7 +117,7 @@ func (p PrecompileExecutor) setWithdrawAddress(ctx sdk.Context, method *abi.Meth
 		rerr = err
 		return
 	}
-	delegator, found := p.evmKeeper.GetSeiAddress(ctx, caller)
+	delegator, found := p.evmKeeper.GetEniAddress(ctx, caller)
 	if !found {
 		rerr = types.NewAssociationMissingErr(caller.Hex())
 		return
@@ -188,7 +188,7 @@ func (p PrecompileExecutor) withdraw(ctx sdk.Context, delegator sdk.AccAddress, 
 }
 
 func (p PrecompileExecutor) getDelegator(ctx sdk.Context, caller common.Address) (sdk.AccAddress, error) {
-	delegator, found := p.evmKeeper.GetSeiAddress(ctx, caller)
+	delegator, found := p.evmKeeper.GetEniAddress(ctx, caller)
 	if !found {
 		return nil, types.NewAssociationMissingErr(caller.Hex())
 	}
@@ -235,11 +235,11 @@ func (p PrecompileExecutor) accAddressFromArg(ctx sdk.Context, arg interface{}) 
 	if addr == (common.Address{}) {
 		return nil, errors.New("invalid addr")
 	}
-	seiAddr, associated := p.evmKeeper.GetSeiAddress(ctx, addr)
+	eniAddr, associated := p.evmKeeper.GetEniAddress(ctx, addr)
 	if !associated {
 		return nil, errors.New("cannot use an unassociated address as withdraw address")
 	}
-	return seiAddr, nil
+	return eniAddr, nil
 }
 
 type Coin struct {
@@ -273,14 +273,14 @@ func (p PrecompileExecutor) rewards(ctx sdk.Context, method *abi.Method, args []
 		return
 	}
 
-	seiDelegatorAddress, err := p.accAddressFromArg(ctx, args[0])
+	eniDelegatorAddress, err := p.accAddressFromArg(ctx, args[0])
 	if err != nil {
 		rerr = err
 		return
 	}
 
 	req := &distrtypes.QueryDelegationTotalRewardsRequest{
-		DelegatorAddress: seiDelegatorAddress.String(),
+		DelegatorAddress: eniDelegatorAddress.String(),
 	}
 
 	wrappedC := sdk.WrapSDKContext(ctx)

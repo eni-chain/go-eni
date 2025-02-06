@@ -39,7 +39,7 @@ type BlockAPI struct {
 	includeShellReceipts bool
 }
 
-type SeiBlockAPI struct {
+type EniBlockAPI struct {
 	*BlockAPI
 	isPanicTx func(ctx context.Context, hash common.Hash) (bool, error)
 }
@@ -56,14 +56,14 @@ func NewBlockAPI(tmClient rpcclient.Client, k *keeper.Keeper, ctxProvider func(i
 	}
 }
 
-func NewSeiBlockAPI(
+func NewEniBlockAPI(
 	tmClient rpcclient.Client,
 	k *keeper.Keeper,
 	ctxProvider func(int64) sdk.Context,
 	txConfig client.TxConfig,
 	connectionType ConnectionType,
 	isPanicTx func(ctx context.Context, hash common.Hash) (bool, error),
-) *SeiBlockAPI {
+) *EniBlockAPI {
 	blockAPI := &BlockAPI{
 		tmClient:             tmClient,
 		keeper:               k,
@@ -71,15 +71,15 @@ func NewSeiBlockAPI(
 		txConfig:             txConfig,
 		connectionType:       connectionType,
 		includeShellReceipts: true,
-		namespace:            "sei",
+		namespace:            "eni",
 	}
-	return &SeiBlockAPI{
+	return &EniBlockAPI{
 		BlockAPI:  blockAPI,
 		isPanicTx: isPanicTx,
 	}
 }
 
-func (a *SeiBlockAPI) GetBlockByNumberExcludeTraceFail(ctx context.Context, number rpc.BlockNumber, fullTx bool) (result map[string]interface{}, returnErr error) {
+func (a *EniBlockAPI) GetBlockByNumberExcludeTraceFail(ctx context.Context, number rpc.BlockNumber, fullTx bool) (result map[string]interface{}, returnErr error) {
 	return a.getBlockByNumber(ctx, number, fullTx, a.isPanicTx)
 }
 
@@ -111,11 +111,11 @@ func (a *BlockAPI) GetBlockByHash(ctx context.Context, blockHash common.Hash, fu
 	return a.getBlockByHash(ctx, blockHash, fullTx, nil)
 }
 
-func (a *SeiBlockAPI) GetBlockByHash(ctx context.Context, blockHash common.Hash, fullTx bool) (result map[string]interface{}, returnErr error) {
+func (a *EniBlockAPI) GetBlockByHash(ctx context.Context, blockHash common.Hash, fullTx bool) (result map[string]interface{}, returnErr error) {
 	return a.getBlockByHash(ctx, blockHash, fullTx, nil)
 }
 
-func (a *SeiBlockAPI) GetBlockByHashExcludeTraceFail(ctx context.Context, blockHash common.Hash, fullTx bool) (result map[string]interface{}, returnErr error) {
+func (a *EniBlockAPI) GetBlockByHashExcludeTraceFail(ctx context.Context, blockHash common.Hash, fullTx bool) (result map[string]interface{}, returnErr error) {
 	return a.getBlockByHash(ctx, blockHash, fullTx, a.isPanicTx)
 }
 
@@ -143,21 +143,21 @@ func (a *BlockAPI) GetBlockByNumber(ctx context.Context, number rpc.BlockNumber,
 			"number":           (*hexutil.Big)(big.NewInt(0)),
 			"hash":             "0xF9D3845DF25B43B1C6926F3CEDA6845C17F5624E12212FD8847D0BA01DA1AB9E",
 			"parentHash":       common.Hash{},
-			"nonce":            ethtypes.BlockNonce{},   // inapplicable to Sei
-			"mixHash":          common.Hash{},           // inapplicable to Sei
-			"sha3Uncles":       ethtypes.EmptyUncleHash, // inapplicable to Sei
+			"nonce":            ethtypes.BlockNonce{},   // inapplicable to Eni
+			"mixHash":          common.Hash{},           // inapplicable to Eni
+			"sha3Uncles":       ethtypes.EmptyUncleHash, // inapplicable to Eni
 			"logsBloom":        ethtypes.Bloom{},
 			"stateRoot":        common.Hash{},
 			"miner":            common.Address{},
-			"difficulty":       (*hexutil.Big)(big.NewInt(0)), // inapplicable to Sei
-			"extraData":        hexutil.Bytes{},               // inapplicable to Sei
+			"difficulty":       (*hexutil.Big)(big.NewInt(0)), // inapplicable to Eni
+			"extraData":        hexutil.Bytes{},               // inapplicable to Eni
 			"gasLimit":         hexutil.Uint64(0),
 			"gasUsed":          hexutil.Uint64(0),
 			"timestamp":        hexutil.Uint64(0),
 			"transactionsRoot": common.Hash{},
 			"receiptsRoot":     common.Hash{},
 			"size":             hexutil.Uint64(0),
-			"uncles":           []common.Hash{}, // inapplicable to Sei
+			"uncles":           []common.Hash{}, // inapplicable to Eni
 			"transactions":     []interface{}{},
 			"baseFeePerGas":    (*hexutil.Big)(big.NewInt(0)),
 		}, nil
@@ -354,26 +354,26 @@ func EncodeTmBlock(
 		"number":           (*hexutil.Big)(number),
 		"hash":             blockhash,
 		"parentHash":       lastHash,
-		"nonce":            ethtypes.BlockNonce{},   // inapplicable to Sei
-		"mixHash":          common.Hash{},           // inapplicable to Sei
-		"sha3Uncles":       ethtypes.EmptyUncleHash, // inapplicable to Sei
+		"nonce":            ethtypes.BlockNonce{},   // inapplicable to Eni
+		"mixHash":          common.Hash{},           // inapplicable to Eni
+		"sha3Uncles":       ethtypes.EmptyUncleHash, // inapplicable to Eni
 		"logsBloom":        blockBloom,
 		"stateRoot":        appHash,
 		"miner":            miner,
-		"difficulty":       (*hexutil.Big)(big.NewInt(0)), // inapplicable to Sei
-		"extraData":        hexutil.Bytes{},               // inapplicable to Sei
+		"difficulty":       (*hexutil.Big)(big.NewInt(0)), // inapplicable to Eni
+		"extraData":        hexutil.Bytes{},               // inapplicable to Eni
 		"gasLimit":         hexutil.Uint64(gasLimit),
 		"gasUsed":          hexutil.Uint64(blockGasUsed),
 		"timestamp":        hexutil.Uint64(block.Block.Time.Unix()),
 		"transactionsRoot": txHash,
 		"receiptsRoot":     resultHash,
 		"size":             hexutil.Uint64(block.Block.Size()),
-		"uncles":           []common.Hash{}, // inapplicable to Sei
+		"uncles":           []common.Hash{}, // inapplicable to Eni
 		"transactions":     transactions,
 		"baseFeePerGas":    (*hexutil.Big)(baseFeePerGas),
 	}
 	if fullTx {
-		result["totalDifficulty"] = (*hexutil.Big)(big.NewInt(0)) // inapplicable to Sei
+		result["totalDifficulty"] = (*hexutil.Big)(big.NewInt(0)) // inapplicable to Eni
 	}
 	return result, nil
 }

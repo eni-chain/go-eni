@@ -36,7 +36,7 @@ var (
 	DefaultWhitelist     = DenomList{
 		{Name: utils.MicroAtomDenom},
 		// 		{Name: utils.MicroUsdcDenom},
-		// 		{Name: utils.MicroSeiDenom},
+		// 		{Name: utils.MicroEniDenom},
 		{Name: utils.MicroEthDenom},
 	}
 	DefaultSlashFraction     = sdk.NewDecWithPrec(0, 4) // 0.00%

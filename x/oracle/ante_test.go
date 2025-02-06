@@ -74,13 +74,13 @@ func TestSpammingPreventionAnteHandler(t *testing.T) {
 
 	// malform feeder
 	malformedVote := voteMsg
-	malformedVote.Feeder = "seifoobar"
+	malformedVote.Feeder = "enifoobar"
 	_, err = anteHandler(ctx, app.NewTestTx([]sdk.Msg{malformedVote}), false)
 	require.Error(t, err)
 
 	// malform val
 	malformedVote = voteMsg
-	malformedVote.Validator = "seivaloperfoobar"
+	malformedVote.Validator = "enivaloperfoobar"
 	_, err = anteHandler(ctx, app.NewTestTx([]sdk.Msg{malformedVote}), false)
 	require.Error(t, err)
 

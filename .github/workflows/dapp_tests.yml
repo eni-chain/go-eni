@@ -15,9 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install seid
+      - name: Install enid
         run: |
-          # Install seid using go install
+          # Install enid using go install
           make install
           
           # Add the Go bin directory to the PATH
@@ -38,9 +38,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install seid
+      - name: Install enid
         run: |
-          # Install seid using go install
+          # Install enid using go install
           make install
           
           # Add the Go bin directory to the PATH

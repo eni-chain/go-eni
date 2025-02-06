@@ -19,7 +19,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
-	seidbtypes "github.com/eni-chain/eni-db/ss/types"
+	enidbtypes "github.com/eni-chain/eni-db/ss/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/consensus"
 	"github.com/ethereum/go-ethereum/consensus/misc/eip4844"
@@ -79,7 +79,7 @@ type Keeper struct {
 	Root        common.Hash
 	ReplayBlock *ethtypes.Block
 
-	receiptStore seidbtypes.StateStore
+	receiptStore enidbtypes.StateStore
 }
 
 type AddressNoncePair struct {
@@ -111,7 +111,7 @@ func (ctx *ReplayChainContext) GetHeader(hash common.Hash, number uint64) *ethty
 }
 
 func NewKeeper(
-	storeKey sdk.StoreKey, transientStoreKey sdk.StoreKey, paramstore paramtypes.Subspace, receiptStateStore seidbtypes.StateStore,
+	storeKey sdk.StoreKey, transientStoreKey sdk.StoreKey, paramstore paramtypes.Subspace, receiptStateStore enidbtypes.StateStore,
 	bankKeeper bankkeeper.Keeper, accountKeeper *authkeeper.AccountKeeper, stakingKeeper *stakingkeeper.Keeper,
 	transferKeeper ibctransferkeeper.Keeper, wasmKeeper *wasmkeeper.PermissionedKeeper, wasmViewKeeper *wasmkeeper.Keeper) *Keeper {
 	if !paramstore.HasKeyTable() {
@@ -220,7 +220,7 @@ func (k *Keeper) GetVMBlockContext(ctx sdk.Context, gp core.GasPool) (*vm.BlockC
 func (k *Keeper) GetHashFn(ctx sdk.Context) vm.GetHashFunc {
 	return func(height uint64) common.Hash {
 		if height > math.MaxInt64 {
-			ctx.Logger().Error("Sei block height is bounded by int64 range")
+			ctx.Logger().Error("Eni block height is bounded by int64 range")
 			return common.Hash{}
 		}
 		h := int64(height)
@@ -387,12 +387,12 @@ func (k *Keeper) PrepareReplayedAddr(ctx sdk.Context, addr common.Address) {
 	}
 	store.Set(addr[:], a.Root[:])
 	if a.Balance != nil && a.Balance.Cmp(utils.Big0) != 0 {
-		usei, wei := state.SplitUseiWeiAmount(a.Balance)
-		err = k.BankKeeper().AddCoins(ctx, k.GetSeiAddressOrDefault(ctx, addr), sdk.NewCoins(sdk.NewCoin("usei", usei)), true)
+		ueni, wei := state.SplitUeniWeiAmount(a.Balance)
+		err = k.BankKeeper().AddCoins(ctx, k.GetEniAddressOrDefault(ctx, addr), sdk.NewCoins(sdk.NewCoin("ueni", ueni)), true)
 		if err != nil {
 			panic(err)
 		}
-		err = k.BankKeeper().AddWei(ctx, k.GetSeiAddressOrDefault(ctx, addr), wei)
+		err = k.BankKeeper().AddWei(ctx, k.GetEniAddressOrDefault(ctx, addr), wei)
 		if err != nil {
 			panic(err)
 		}

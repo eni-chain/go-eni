@@ -36,27 +36,27 @@ describe("CW1155 to ERC1155 Pointer", function () {
 
     describe("query", function(){
         it("should query the balance of an owner's token", async function () {
-            const result = await queryWasm(pointer, "balance_of", { "owner": admin.seiAddress, token_id: "4" });
+            const result = await queryWasm(pointer, "balance_of", { "owner": admin.eniAddress, token_id: "4" });
             expect(result).to.deep.equal({data:{balance:11}});
         });
 
         it("should batch query the balance of several owners' tokens", async function () {
-            const result = await queryWasm(pointer, "balance_of_batch", [{"owner": admin.seiAddress, token_id: "4"}, {"owner": accounts[0].seiAddress, token_id: "14"}]);
+            const result = await queryWasm(pointer, "balance_of_batch", [{"owner": admin.eniAddress, token_id: "4"}, {"owner": accounts[0].eniAddress, token_id: "14"}]);
             expect(result).to.deep.equal({data:{
                 balances: [
-                    { token_id: "4", owner: admin.seiAddress, amount: "11" },
-                    { token_id: "14", owner: accounts[0].seiAddress, amount: "0" },
+                    { token_id: "4", owner: admin.eniAddress, amount: "11" },
+                    { token_id: "14", owner: accounts[0].eniAddress, amount: "0" },
                 ]
             }});
         });
 
         it("should show a specific spender is approved", async function () {
-            const result = await queryWasm(pointer, "is_approved_for_all", { "owner": accounts[1].seiAddress, operator: admin.seiAddress });
+            const result = await queryWasm(pointer, "is_approved_for_all", { "owner": accounts[1].eniAddress, operator: admin.eniAddress });
             expect(result).to.deep.equal({data:{approved:true}});
         });
 
         it("should show a specific spender is not approved", async function () {
-            const result = await queryWasm(pointer, "is_approved_for_all", { "owner": admin.seiAddress, operator: accounts[0].seiAddress });
+            const result = await queryWasm(pointer, "is_approved_for_all", { "owner": admin.eniAddress, operator: accounts[0].eniAddress });
             expect(result).to.deep.equal({data:{approved:false}});
         });
 
@@ -79,105 +79,105 @@ describe("CW1155 to ERC1155 Pointer", function () {
             const result = await queryWasm(pointer, "token_info", { token_id: "1" });
             expect(result.data.token_uri).to.equal('https://example.com/{id}');
             expect(result.data.extension.royalty_percentage).to.equal(5);
-            expect(result.data.extension.royalty_payment_address).to.equal(admin.seiAddress);
+            expect(result.data.extension.royalty_payment_address).to.equal(admin.eniAddress);
         });
     })
 
     describe("execute operations", function () {
         it("should transfer an NFT to another address", async function () {
             let ownerResult = await queryWasm(pointer, "balance_of_batch", [
-                { owner: admin.seiAddress, token_id: "3" },
-                { owner: accounts[1].seiAddress, token_id: "3" },
+                { owner: admin.eniAddress, token_id: "3" },
+                { owner: accounts[1].eniAddress, token_id: "3" },
             ]);
             expect(ownerResult).to.deep.equal({ data: {
                 balances: [
-                    { token_id: "3", owner: admin.seiAddress, amount: "10" },
-                    { token_id: "3", owner: accounts[1].seiAddress, amount: "11" },
+                    { token_id: "3", owner: admin.eniAddress, amount: "10" },
+                    { token_id: "3", owner: accounts[1].eniAddress, amount: "11" },
                 ]
             }});
             const res = await executeWasm(pointer, {
                 send: {
-                    from: admin.seiAddress,
-                    to: accounts[1].seiAddress,
+                    from: admin.eniAddress,
+                    to: accounts[1].eniAddress,
                     token_id: "3",
                     amount: "5",
                 }
             });
             expect(res.code).to.equal(0);
             ownerResult = await queryWasm(pointer, "balance_of_batch", [
-                { owner: admin.seiAddress, token_id: "3" },
-                { owner: accounts[1].seiAddress, token_id: "3" },
+                { owner: admin.eniAddress, token_id: "3" },
+                { owner: accounts[1].eniAddress, token_id: "3" },
             ]);
             expect(ownerResult).to.deep.equal({ data: {
                 balances: [
-                    { token_id: "3", owner: admin.seiAddress, amount: "5" },
-                    { token_id: "3", owner: accounts[1].seiAddress, amount: "16" },
+                    { token_id: "3", owner: admin.eniAddress, amount: "5" },
+                    { token_id: "3", owner: accounts[1].eniAddress, amount: "16" },
                 ]
             }});
             await (await erc1155.connect(accounts[1].signer).safeTransferFrom(accounts[1].evmAddress, admin.evmAddress, 3, 5, '0x')).wait();
             ownerResult = await queryWasm(pointer, "balance_of_batch", [
-                { owner: admin.seiAddress, token_id: "3" },
-                { owner: accounts[1].seiAddress, token_id: "3" },
+                { owner: admin.eniAddress, token_id: "3" },
+                { owner: accounts[1].eniAddress, token_id: "3" },
             ]);
             expect(ownerResult).to.deep.equal({ data: {
                 balances: [
-                    { token_id: "3", owner: admin.seiAddress, amount: "10" },
-                    { token_id: "3", owner: accounts[1].seiAddress, amount: "11" },
+                    { token_id: "3", owner: admin.eniAddress, amount: "10" },
+                    { token_id: "3", owner: accounts[1].eniAddress, amount: "11" },
                 ]
             }});
         });
 
         it("should not transfer an NFT if not owned", async function () {
             let ownerResult = await queryWasm(pointer, "balance_of_batch", [
-                { owner: admin.seiAddress, token_id: "0" },
-                { owner: accounts[1].seiAddress, token_id: "0" },
+                { owner: admin.eniAddress, token_id: "0" },
+                { owner: accounts[1].eniAddress, token_id: "0" },
             ]);
             expect(ownerResult).to.deep.equal({ data: {
                 balances: [
-                    { token_id: "0", owner: admin.seiAddress, amount: "0" },
-                    { token_id: "0", owner: accounts[1].seiAddress, amount: "0" },
+                    { token_id: "0", owner: admin.eniAddress, amount: "0" },
+                    { token_id: "0", owner: accounts[1].eniAddress, amount: "0" },
                 ]
             }});
             const res = await executeWasm(pointer, {
                 send: {
-                    from: accounts[1].seiAddress,
-                    to: admin.seiAddress,
+                    from: accounts[1].eniAddress,
+                    to: admin.eniAddress,
                     token_id: "0",
                     amount: "5",
                 }
             });
             expect(res.code).to.not.equal(0);
             ownerResult = await queryWasm(pointer, "balance_of_batch", [
-                { owner: admin.seiAddress, token_id: "0" },
-                { owner: accounts[1].seiAddress, token_id: "0" },
+                { owner: admin.eniAddress, token_id: "0" },
+                { owner: accounts[1].eniAddress, token_id: "0" },
             ]);
             expect(ownerResult).to.deep.equal({ data: {
                 balances: [
-                    { token_id: "0", owner: admin.seiAddress, amount: "0" },
-                    { token_id: "0", owner: accounts[1].seiAddress, amount: "0" },
+                    { token_id: "0", owner: admin.eniAddress, amount: "0" },
+                    { token_id: "0", owner: accounts[1].eniAddress, amount: "0" },
                 ]
             }});
         });
 
         it("should transfer multiple NFT token ids to another address", async function () {
             let ownerResult = await queryWasm(pointer, "balance_of_batch", [
-                { owner: admin.seiAddress, token_id: "3" },
-                { owner: accounts[1].seiAddress, token_id: "3" },
-                { owner: admin.seiAddress, token_id: "4" },
-                { owner: accounts[1].seiAddress, token_id: "4" },
+                { owner: admin.eniAddress, token_id: "3" },
+                { owner: accounts[1].eniAddress, token_id: "3" },
+                { owner: admin.eniAddress, token_id: "4" },
+                { owner: accounts[1].eniAddress, token_id: "4" },
             ]);
             expect(ownerResult).to.deep.equal({ data: {
                 balances: [
-                    { token_id: "3", owner: admin.seiAddress, amount: "10" },
-                    { token_id: "3", owner: accounts[1].seiAddress, amount: "11" },
-                    { token_id: "4", owner: admin.seiAddress, amount: "11" },
-                    { token_id: "4", owner: accounts[1].seiAddress, amount: "12" },
+                    { token_id: "3", owner: admin.eniAddress, amount: "10" },
+                    { token_id: "3", owner: accounts[1].eniAddress, amount: "11" },
+                    { token_id: "4", owner: admin.eniAddress, amount: "11" },
+                    { token_id: "4", owner: accounts[1].eniAddress, amount: "12" },
                 ]
             }});
             const res = await executeWasm(pointer, {
                 send_batch: {
-                    from: admin.seiAddress,
-                    to: accounts[1].seiAddress,
+                    from: admin.eniAddress,
+                    to: accounts[1].eniAddress,
                     batch: [
                         { token_id: "3", amount: "5" },
                         { token_id: "4", amount: "1" },
@@ -186,26 +186,26 @@ describe("CW1155 to ERC1155 Pointer", function () {
             });
             expect(res.code).to.equal(0);
             ownerResult = await queryWasm(pointer, "balance_of_batch", [
-                { owner: admin.seiAddress, token_id: "3" },
-                { owner: accounts[1].seiAddress, token_id: "3" },
-                { owner: admin.seiAddress, token_id: "4" },
-                { owner: accounts[1].seiAddress, token_id: "4" },
+                { owner: admin.eniAddress, token_id: "3" },
+                { owner: accounts[1].eniAddress, token_id: "3" },
+                { owner: admin.eniAddress, token_id: "4" },
+                { owner: accounts[1].eniAddress, token_id: "4" },
             ]);
             expect(ownerResult).to.deep.equal({ data: {
                 balances: [
-                    { token_id: "3", owner: admin.seiAddress, amount: "5" },
-                    { token_id: "3", owner: accounts[1].seiAddress, amount: "16" },
-                    { token_id: "4", owner: admin.seiAddress, amount: "10" },
-                    { token_id: "4", owner: accounts[1].seiAddress, amount: "13" },
+                    { token_id: "3", owner: admin.eniAddress, amount: "5" },
+                    { token_id: "3", owner: accounts[1].eniAddress, amount: "16" },
+                    { token_id: "4", owner: admin.eniAddress, amount: "10" },
+                    { token_id: "4", owner: accounts[1].eniAddress, amount: "13" },
                 ]
             }});
         });
 
         it("should set an operator for all tokens of an owner", async function () {
             expect(await erc1155.isApprovedForAll(admin.evmAddress, accounts[1].evmAddress)).to.be.false;
-            await executeWasm(pointer, { approve_all: { operator: accounts[1].seiAddress }});
+            await executeWasm(pointer, { approve_all: { operator: accounts[1].eniAddress }});
             expect(await erc1155.isApprovedForAll(admin.evmAddress, accounts[1].evmAddress)).to.be.true
-            await executeWasm(pointer, { revoke_all: { operator: accounts[1].seiAddress }});
+            await executeWasm(pointer, { revoke_all: { operator: accounts[1].eniAddress }});
             expect(await erc1155.isApprovedForAll(admin.evmAddress, accounts[1].evmAddress)).to.be.false;
         });
 

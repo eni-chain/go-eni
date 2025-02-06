@@ -13,15 +13,15 @@ import (
 )
 
 func (k *Keeper) VerifyBalance(ctx sdk.Context, addr common.Address) {
-	useiBalance := k.BankKeeper().GetBalance(ctx, k.GetSeiAddressOrDefault(ctx, addr), "usei").Amount
-	weiBalance := k.bankKeeper.GetWeiBalance(ctx, k.GetSeiAddressOrDefault(ctx, addr))
-	totalSeiBalance := useiBalance.Mul(sdk.NewInt(1_000_000_000_000)).Add(weiBalance).BigInt()
+	ueniBalance := k.BankKeeper().GetBalance(ctx, k.GetEniAddressOrDefault(ctx, addr), "ueni").Amount
+	weiBalance := k.bankKeeper.GetWeiBalance(ctx, k.GetEniAddressOrDefault(ctx, addr))
+	totalEniBalance := ueniBalance.Mul(sdk.NewInt(1_000_000_000_000)).Add(weiBalance).BigInt()
 	ethBalance, err := k.EthClient.BalanceAt(ctx.Context(), addr, big.NewInt(k.GetReplayInitialHeight(ctx)+ctx.BlockHeight()))
 	if err != nil {
 		panic(err)
 	}
-	if totalSeiBalance.Cmp(ethBalance) != 0 {
-		panic(fmt.Sprintf("difference for addr %s: sei balance is %s, eth balance is %s", addr.Hex(), totalSeiBalance, ethBalance))
+	if totalEniBalance.Cmp(ethBalance) != 0 {
+		panic(fmt.Sprintf("difference for addr %s: eni balance is %s, eth balance is %s", addr.Hex(), totalEniBalance, ethBalance))
 	}
 }
 
@@ -66,7 +66,7 @@ func (k *Keeper) VerifyTxResult(ctx sdk.Context, hash common.Hash) {
 }
 
 func (k *Keeper) VerifyAccount(ctx sdk.Context, addr common.Address, accountData core.GenesisAccount) {
-	// we no longer check eth balance due to limiting EVM max refund to 150% of used gas (https://github.com/sei-protocol/go-ethereum/pull/32)
+	// we no longer check eth balance due to limiting EVM max refund to 150% of used gas (https://github.com/eni-protocol/go-ethereum/pull/32)
 	code := accountData.Code
 	for key, expectedState := range accountData.Storage {
 		actualState := k.GetState(ctx, addr, key)

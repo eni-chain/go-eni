@@ -25,7 +25,7 @@ func TestExportInitGenesis(t *testing.T) {
 	input.OracleKeeper.AddPriceSnapshot(input.Ctx, types.NewPriceSnapshot(
 		types.PriceSnapshotItems{
 			{
-				Denom: "usei",
+				Denom: "ueni",
 				OracleExchangeRate: types.OracleExchangeRate{
 					ExchangeRate: sdk.NewDec(12),
 					LastUpdate:   sdk.NewInt(3600),
@@ -44,7 +44,7 @@ func TestExportInitGenesis(t *testing.T) {
 	input.OracleKeeper.AddPriceSnapshot(input.Ctx, types.NewPriceSnapshot(
 		types.PriceSnapshotItems{
 			{
-				Denom: "usei",
+				Denom: "ueni",
 				OracleExchangeRate: types.OracleExchangeRate{
 					ExchangeRate: sdk.NewDec(15),
 					LastUpdate:   sdk.NewInt(3700),

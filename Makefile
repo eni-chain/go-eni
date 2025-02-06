@@ -46,8 +46,8 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=sei \
-			-X github.com/cosmos/cosmos-sdk/version.ServerName=seid \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=eni \
+			-X github.com/cosmos/cosmos-sdk/version.ServerName=enid \
 			-X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 			-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 			-X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
@@ -72,10 +72,10 @@ BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 all: lint install
 
 install: go.sum
-		go install $(BUILD_FLAGS) ./cmd/seid
+		go install $(BUILD_FLAGS) ./cmd/enid
 
 install-with-race-detector: go.sum
-		go install -race $(BUILD_FLAGS) ./cmd/seid
+		go install -race $(BUILD_FLAGS) ./cmd/enid
 
 install-price-feeder: go.sum
 		go install $(BUILD_FLAGS) ./oracle/price-feeder
@@ -96,7 +96,7 @@ lint:
 	go mod verify
 
 build:
-	go build $(BUILD_FLAGS) -o ./build/seid ./cmd/seid
+	go build $(BUILD_FLAGS) -o ./build/enid ./cmd/enid
 .PHONY: build
 
 build-price-feeder:
@@ -132,66 +132,66 @@ build-price-feeder-linux:
 
 # Build docker image
 build-docker-node:
-	@cd docker && docker build --tag sei-chain/localnode localnode --platform linux/x86_64
+	@cd docker && docker build --tag go-eni/localnode localnode --platform linux/x86_64
 .PHONY: build-docker-node
 
 build-rpc-node:
-	@cd docker && docker build --tag sei-chain/rpcnode rpcnode --platform linux/x86_64
+	@cd docker && docker build --tag go-eni/rpcnode rpcnode --platform linux/x86_64
 .PHONY: build-rpc-node
 
 # Run a single node docker container
-run-local-node: kill-sei-node build-docker-node
+run-local-node: kill-eni-node build-docker-node
 	@rm -rf $(PROJECT_HOME)/build/generated
 	docker run --rm \
-	--name sei-node \
+	--name eni-node \
 	--network host \
 	--user="$(shell id -u):$(shell id -g)" \
-	-v $(PROJECT_HOME):/sei-protocol/sei-chain:Z \
+	-v $(PROJECT_HOME):/eni-chain/go-eni:Z \
 	-v $(GO_PKG_PATH)/mod:/root/go/pkg/mod:Z \
 	-v $(shell go env GOCACHE):/root/.cache/go-build:Z \
 	--platform linux/x86_64 \
-	sei-chain/localnode
+	go-eni/localnode
 .PHONY: run-local-node
 
 # Run a single rpc state sync node docker container
 run-rpc-node: kill-rpc-node build-rpc-node
 	docker run --rm \
-	--name sei-rpc-node \
+	--name eni-rpc-node \
 	--network docker_localnet \
 	--user="$(shell id -u):$(shell id -g)" \
-	-v $(PROJECT_HOME):/sei-protocol/sei-chain:Z \
-	-v $(PROJECT_HOME)/../sei-tendermint:/sei-protocol/sei-tendermint:Z \
-    -v $(PROJECT_HOME)/../sei-cosmos:/sei-protocol/sei-cosmos:Z \
-    -v $(PROJECT_HOME)/../sei-db:/sei-protocol/sei-db:Z \
+	-v $(PROJECT_HOME):/eni-chain/go-eni:Z \
+	-v $(PROJECT_HOME)/../eni-tendermint:/eni-chain/eni-tendermint:Z \
+    -v $(PROJECT_HOME)/../eni-cosmos:/eni-chain/eni-cosmos:Z \
+    -v $(PROJECT_HOME)/../eni-db:/eni-chain/eni-db:Z \
 	-v $(GO_PKG_PATH)/mod:/root/go/pkg/mod:Z \
 	-v $(shell go env GOCACHE):/root/.cache/go-build:Z \
 	-p 26668-26670:26656-26658 \
 	--platform linux/x86_64 \
-	sei-chain/rpcnode
+	go-eni/rpcnode
 .PHONY: run-rpc-node
 
 run-rpc-node-skipbuild: kill-rpc-node build-rpc-node
 	docker run --rm \
-	--name sei-rpc-node \
+	--name eni-rpc-node \
 	--network docker_localnet \
 	--user="$(shell id -u):$(shell id -g)" \
-	-v $(PROJECT_HOME):/sei-protocol/sei-chain:Z \
-	-v $(PROJECT_HOME)/../sei-tendermint:/sei-protocol/sei-tendermint:Z \
-    -v $(PROJECT_HOME)/../sei-cosmos:/sei-protocol/sei-cosmos:Z \
-    -v $(PROJECT_HOME)/../sei-db:/sei-protocol/sei-db:Z \
+	-v $(PROJECT_HOME):/eni-chain/go-eni:Z \
+	-v $(PROJECT_HOME)/../eni-tendermint:/eni-chain/eni-tendermint:Z \
+    -v $(PROJECT_HOME)/../eni-cosmos:/eni-chain/eni-cosmos:Z \
+    -v $(PROJECT_HOME)/../eni-db:/eni-chain/eni-db:Z \
 	-v $(GO_PKG_PATH)/mod:/root/go/pkg/mod:Z \
 	-v $(shell go env GOCACHE):/root/.cache/go-build:Z \
 	-p 26668-26670:26656-26658 \
 	--platform linux/x86_64 \
 	--env SKIP_BUILD=true \
-	sei-chain/rpcnode
+	go-eni/rpcnode
 .PHONY: run-rpc-node
 
-kill-sei-node:
-	docker ps --filter name=sei-node --filter status=running -aq | xargs docker kill 2> /dev/null || true
+kill-eni-node:
+	docker ps --filter name=eni-node --filter status=running -aq | xargs docker kill 2> /dev/null || true
 
 kill-rpc-node:
-	docker ps --filter name=sei-rpc-node --filter status=running -aq | xargs docker kill 2> /dev/null || true
+	docker ps --filter name=eni-rpc-node --filter status=running -aq | xargs docker kill 2> /dev/null || true
 
 # Run a 4-node docker containers
 docker-cluster-start: docker-cluster-stop build-docker-node
@@ -202,7 +202,7 @@ docker-cluster-start: docker-cluster-stop build-docker-node
 
 .PHONY: localnet-start
 
-# Use this to skip the seid build process
+# Use this to skip the enid build process
 docker-cluster-start-skipbuild: docker-cluster-stop build-docker-node
 	@rm -rf $(PROJECT_HOME)/build/generated
 	@cd docker && USERID=$(shell id -u) GROUPID=$(shell id -g) GOCACHE=$(shell go env GOCACHE) NUM_ACCOUNTS=10 SKIP_BUILD=true docker compose up
@@ -235,3 +235,8 @@ split-test-packages:$(BUILDDIR)/packages.txt
 	split -d -n l/$(NUM_SPLIT) $< $<.
 test-group-%:split-test-packages
 	cat $(BUILDDIR)/packages.txt.$* | xargs go test -parallel 4 -mod=readonly -timeout=10m -race -coverprofile=$*.profile.out -covermode=atomic
+
+ut:
+	go test -coverprofile cover_full.out ./...
+	grep -v "mock\|pb.go" ./cover_full.out > ./cover.out
+	go tool cover -func=cover.out | tail -1 | grep -P "\\d+\\.\\d+(?=\\%)" -o

@@ -33,7 +33,7 @@ body:
     attributes:
       label: Are you willing to submit a PR?
       description: >
-        We look forward to the community of developers or users helping improve sei chain together. If you are willing to submit a PR to implement the enhancement, please check the box.
+        We look forward to the community of developers or users helping improve eni chain together. If you are willing to submit a PR to implement the enhancement, please check the box.
       options:
         - label: I'm willing to submit a PR!
   - type: markdown
