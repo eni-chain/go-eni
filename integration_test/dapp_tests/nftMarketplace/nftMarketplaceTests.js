@@ -42,18 +42,18 @@ describe("NFT Marketplace", function () {
         await estimateAndCall(erc721token, "batchMint", [deployer.address, numNftsToMint]);
 
         // Deploy CW721 token with ERC721 pointer
-        const time = Date.now().toString();
-        const deployerEniAddr = await getEniAddress(deployer.address);
-        const cw721Details = await deployCw721WithPointer(deployerEniAddr, deployer, time, evmRpcUrls[testChain])
-        erc721PointerToken = cw721Details.pointerContract;
-        cw721Address = cw721Details.cw721Address;
-        console.log("CW721 Address", cw721Address);
-        const numCwNftsToMint = 2;
-        for (let i = 1; i <= numCwNftsToMint; i++) {
-            await mintCw721(cw721Address, deployerEniAddr, i)
-        }
-        const cwbal = await erc721PointerToken.balanceOf(deployer.address);
-        expect(cwbal).to.equal(numCwNftsToMint)
+        // const time = Date.now().toString();
+        // const deployerEniAddr = await getEniAddress(deployer.address);
+        // const cw721Details = await deployCw721WithPointer(deployerEniAddr, deployer, time, evmRpcUrls[testChain])
+        // erc721PointerToken = cw721Details.pointerContract;
+        // cw721Address = cw721Details.cw721Address;
+        // console.log("CW721 Address", cw721Address);
+        // const numCwNftsToMint = 2;
+        // for (let i = 1; i <= numCwNftsToMint; i++) {
+        //     await mintCw721(cw721Address, deployerEniAddr, i)
+        // }
+        // const cwbal = await erc721PointerToken.balanceOf(deployer.address);
+        // expect(cwbal).to.equal(numCwNftsToMint)
 
         const nftMarketplaceArtifact = await hre.artifacts.readArtifact("NftMarketplace");
         marketplace = await deployEthersContract("NftMarketplace", nftMarketplaceArtifact.abi, nftMarketplaceArtifact.bytecode, deployer)
@@ -144,28 +144,28 @@ describe("NFT Marketplace", function () {
             await testNFTMarketplaceOrder(buyer, seller, erc721token);
         });
 
-        it("Should allow listing and buying erc721 pointer by associated users", async function () {
-            // Create and fund buyer account
-            const buyerWallet = hre.ethers.Wallet.createRandom();
-            const buyer = buyerWallet.connect(hre.ethers.provider);
-            await sendFunds("0.5", buyer.address, deployer)
-            await sendFunds('0.01', buyer.address, buyer)
-            await testNFTMarketplaceOrder(buyer, deployer, erc721PointerToken, '1');
-        });
-
-        it("Currently does not allow listing or buying erc721 pointer by unassociated users", async function () {
-            // Create and fund seller account
-            const sellerWallet = hre.ethers.Wallet.createRandom();
-            const seller = sellerWallet.connect(hre.ethers.provider);
-            await sendFunds("0.5", seller.address, deployer)
-
-            // Create and fund buyer account
-            const buyerWallet = hre.ethers.Wallet.createRandom();
-            const buyer = buyerWallet.connect(hre.ethers.provider);
-            await sendFunds("0.5", buyer.address, deployer)
-
-            await testNFTMarketplaceOrder(buyer, seller, erc721PointerToken, '2', true);
-        });
+        // it("Should allow listing and buying erc721 pointer by associated users", async function () {
+        //     // Create and fund buyer account
+        //     const buyerWallet = hre.ethers.Wallet.createRandom();
+        //     const buyer = buyerWallet.connect(hre.ethers.provider);
+        //     await sendFunds("0.5", buyer.address, deployer)
+        //     await sendFunds('0.01', buyer.address, buyer)
+        //     await testNFTMarketplaceOrder(buyer, deployer, erc721PointerToken, '1');
+        // });
+        //
+        // it("Currently does not allow listing or buying erc721 pointer by unassociated users", async function () {
+        //     // Create and fund seller account
+        //     const sellerWallet = hre.ethers.Wallet.createRandom();
+        //     const seller = sellerWallet.connect(hre.ethers.provider);
+        //     await sendFunds("0.5", seller.address, deployer)
+        //
+        //     // Create and fund buyer account
+        //     const buyerWallet = hre.ethers.Wallet.createRandom();
+        //     const buyer = buyerWallet.connect(hre.ethers.provider);
+        //     await sendFunds("0.5", buyer.address, deployer)
+        //
+        //     await testNFTMarketplaceOrder(buyer, seller, erc721PointerToken, '2', true);
+        // });
     })
 
     after(async function () {

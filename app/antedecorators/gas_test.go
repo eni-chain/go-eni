@@ -17,7 +17,7 @@ import (
 //func TestSeiAddrConvert(t *testing.T) {
 //	// eg: sei addr sei1y3pxq5dp900czh0mkudhjdqjq5m8cpmmps8yjw ->
 //	// eni1y3pxq5dp900czh0mkudhjdqjq5m8cpmmujwv3f
-//	seiAddr := "sei1v4mx6hmrda5kucnpwdjsqqqqqqqqqqqqzws0wt"
+//	seiAddr := "sei1nzdg7e6rvkrmvp5zzmp5tupuj0088nqsa4mze4"
 //
 //	sdk.GetConfig().SetBech32PrefixForAccount("sei", "seipub")
 //

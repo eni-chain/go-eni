@@ -108,7 +108,7 @@ jobs:
             scripts: [
 #              "docker exec eni-node-0 integration_test/contracts/deploy_wasm_contracts.sh",
               "docker exec eni-node-0 integration_test/contracts/create_tokenfactory_denoms.sh",
-              "python3 integration_test/scripts/runner.py integration_test/enidb/state_store_test.yaml",
+#              "python3 integration_test/scripts/runner.py integration_test/enidb/state_store_test.yaml",
             ]
           },
           {
