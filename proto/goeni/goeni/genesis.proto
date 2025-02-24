@@ -1,0 +1,17 @@
+syntax = "proto3";
+package goeni.goeni;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "goeni/goeni/params.proto";
+
+option go_package = "github.com/eni-chain/go-eni/x/goeni/types";
+
+// GenesisState defines the goeni module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
