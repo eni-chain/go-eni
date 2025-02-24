@@ -8,7 +8,7 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
 	"github.com/eni-chain/go-eni/app"
-	"github.com/eni-chain/go-eni/cmd/go-enid/cmd"
+	"github.com/eni-chain/go-eni/cmd/enid/cmd"
 )
 
 func main() {
