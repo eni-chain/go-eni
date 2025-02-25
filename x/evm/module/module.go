@@ -2,20 +2,28 @@ package evm
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
+	cosmossdk_io_math "cosmossdk.io/math"
+	"encoding/json"
+	"fmt"
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	"github.com/eni-chain/go-eni/utils"
+	"github.com/eni-chain/go-eni/x/evm/state"
+	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	// this line is used by starport scaffolding # 1
@@ -116,7 +124,7 @@ func NewAppModule(
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(&am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 }
 
@@ -146,12 +154,74 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(_ context.Context) error {
+	// clear tx/tx responses from last block
+	am.keeper.SetMsgs([]*types.MsgEVMTransaction{})
+	am.keeper.SetTxResults([]*abci.ExecTxResult{})
 	return nil
 }
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(_ context.Context) error {
+func (am AppModule) EndBlock(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	//newBaseFee := am.keeper.AdjustDynamicBaseFeePerGas(ctx, uint64(req.BlockGasUsed))
+	//if newBaseFee != nil {
+	//	metrics.GaugeEvmBlockBaseFee(newBaseFee.TruncateInt().BigInt(), req.Height)
+	//}
+	var _ sdk.AccAddress // to avoid unused error
+	if am.keeper.EthBlockTestConfig.Enabled {
+		blocks := am.keeper.BlockTest.Json.Blocks
+		block, err := blocks[ctx.BlockHeight()-1].Decode()
+		if err != nil {
+			panic(err)
+		}
+		_ = am.keeper.GetEniAddressOrDefault(ctx, block.Header().Coinbase)
+	} else {
+		_ = am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	}
+	evmTxDeferredInfoList := am.keeper.GetAllEVMTxDeferredInfo(ctx)
+	denom := am.keeper.GetBaseDenom(ctx)
+	surplus := am.keeper.GetAnteSurplusSum(ctx)
+	for _, deferredInfo := range evmTxDeferredInfoList {
+		txHash := common.BytesToHash(deferredInfo.TxHash)
+		if deferredInfo.Error != "" && txHash.Cmp(ethtypes.EmptyTxsHash) != 0 {
+			_ = am.keeper.SetTransientReceipt(ctx, txHash, &types.Receipt{
+				TxHashHex:        txHash.Hex(),
+				TransactionIndex: deferredInfo.TxIndex,
+				VmError:          deferredInfo.Error,
+				BlockNumber:      uint64(ctx.BlockHeight()),
+			})
+			continue
+		}
+		idx := int(deferredInfo.TxIndex)
+		coinbaseAddress := state.GetCoinbaseAddress(idx)
+		balance := am.keeper.BankKeeper().SpendableCoins(ctx, coinbaseAddress).AmountOf(denom)
+		//weiBalance := am.keeper.BankKeeper().GetWeiBalance(ctx, coinbaseAddress)
+		weiBalance := am.keeper.BankKeeper().GetBalance(ctx, coinbaseAddress, denom)
+		if !balance.IsZero() || !weiBalance.IsZero() {
+			// todo  check code correct
+			//if err := am.keeper.BankKeeper().SendCoinsAndWei(ctx, coinbaseAddress, coinbase, balance, weiBalance); err != nil {
+			//	ctx.Logger().Error(fmt.Sprintf("failed to send ueni surplus from %s to coinbase account due to %s", coinbaseAddress.String(), err))
+			//}
+		}
+		surplus = surplus.Add(deferredInfo.Surplus)
+	}
+	if surplus.IsPositive() {
+		surplusUeni, surplusWei := state.SplitUeniWeiAmount(surplus.BigInt())
+		if surplusUeni.GT(cosmossdk_io_math.ZeroInt()) {
+			// todo  check code correct
+			//if err := am.keeper.BankKeeper().AddCoins(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), sdk.NewCoins(sdk.NewCoin(am.keeper.GetBaseDenom(ctx), surplusUeni)), true); err != nil {
+			//	ctx.Logger().Error("failed to send ueni surplus of %s to EVM module account", surplusUeni)
+			//}
+		}
+		if surplusWei.GT(cosmossdk_io_math.ZeroInt()) {
+			// todo  check code correct
+			//if err := am.keeper.BankKeeper().AddWei(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), surplusWei); err != nil {
+			//	ctx.Logger().Error("failed to send wei surplus of %s to EVM module account", surplusWei)
+			//}
+		}
+	}
+	am.keeper.SetBlockBloom(ctx, utils.Map(evmTxDeferredInfoList, func(i *types.DeferredInfo) ethtypes.Bloom { return ethtypes.BytesToBloom(i.TxBloom) }))
 	return nil
 }
 
@@ -180,9 +250,10 @@ type ModuleInputs struct {
 	Config       *modulev1.Module
 	Logger       log.Logger
 
-	AccountKeeper types.AccountKeeper
-	BankKeeper    types.BankKeeper
-	StakingKeeper types.StakingKeeper
+	// todo  check code correct
+	AccountKeeper *authkeeper.AccountKeeper
+	BankKeeper    bankkeeper.Keeper
+	StakingKeeper *stakingkeeper.Keeper
 }
 
 type ModuleOutputs struct {
