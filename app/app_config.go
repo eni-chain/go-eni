@@ -53,7 +53,10 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	"google.golang.org/protobuf/types/known/durationpb"
 
+	evmmodulev1 "github.com/eni-chain/go-eni/api/goeni/evm/module"
 	goenimodulev1 "github.com/eni-chain/go-eni/api/goeni/goeni/module"
+	_ "github.com/eni-chain/go-eni/x/evm/module" // import for side-effects
+	evmmoduletypes "github.com/eni-chain/go-eni/x/evm/types"
 	_ "github.com/eni-chain/go-eni/x/goeni/module" // import for side-effects
 	goenimoduletypes "github.com/eni-chain/go-eni/x/goeni/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
@@ -94,6 +97,7 @@ var (
 		circuittypes.ModuleName,
 		// chain modules
 		goenimoduletypes.ModuleName,
+		evmmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -119,6 +123,7 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		goenimoduletypes.ModuleName,
+		evmmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -138,6 +143,7 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		goenimoduletypes.ModuleName,
+		evmmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -158,6 +164,7 @@ var (
 		{Account: ibctransfertypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: ibcfeetypes.ModuleName},
 		{Account: icatypes.ModuleName},
+		{Account: evmmoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner, authtypes.Staking}},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 
@@ -296,6 +303,10 @@ var (
 			{
 				Name:   goenimoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&goenimodulev1.Module{}),
+			},
+			{
+				Name:   evmmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&evmmodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
