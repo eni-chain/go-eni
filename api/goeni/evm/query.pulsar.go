@@ -3,38 +3,36 @@ package evm
 
 import (
 	fmt "fmt"
-	io "io"
-	reflect "reflect"
-	sync "sync"
-
-	_ "cosmossdk.io/api/amino"
-	_ "cosmossdk.io/api/cosmos/base/query/v1beta1"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
-	_ "github.com/cosmos/gogoproto/gogoproto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	io "io"
+	reflect "reflect"
+	sync "sync"
 )
 
 var (
-	md_QueryParamsRequest protoreflect.MessageDescriptor
+	md_QuerySeiAddressByEVMAddressRequest             protoreflect.MessageDescriptor
+	fd_QuerySeiAddressByEVMAddressRequest_evm_address protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_query_proto_init()
-	md_QueryParamsRequest = File_goeni_evm_query_proto.Messages().ByName("QueryParamsRequest")
+	md_QuerySeiAddressByEVMAddressRequest = File_goeni_evm_query_proto.Messages().ByName("QuerySeiAddressByEVMAddressRequest")
+	fd_QuerySeiAddressByEVMAddressRequest_evm_address = md_QuerySeiAddressByEVMAddressRequest.Fields().ByName("evm_address")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryParamsRequest)(nil)
+var _ protoreflect.Message = (*fastReflection_QuerySeiAddressByEVMAddressRequest)(nil)
 
-type fastReflection_QueryParamsRequest QueryParamsRequest
+type fastReflection_QuerySeiAddressByEVMAddressRequest QuerySeiAddressByEVMAddressRequest
 
-func (x *QueryParamsRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryParamsRequest)(x)
+func (x *QuerySeiAddressByEVMAddressRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QuerySeiAddressByEVMAddressRequest)(x)
 }
 
-func (x *QueryParamsRequest) slowProtoReflect() protoreflect.Message {
+func (x *QuerySeiAddressByEVMAddressRequest) slowProtoReflect() protoreflect.Message {
 	mi := &file_goeni_evm_query_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -46,43 +44,43 @@ func (x *QueryParamsRequest) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryParamsRequest_messageType fastReflection_QueryParamsRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryParamsRequest_messageType{}
+var _fastReflection_QuerySeiAddressByEVMAddressRequest_messageType fastReflection_QuerySeiAddressByEVMAddressRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QuerySeiAddressByEVMAddressRequest_messageType{}
 
-type fastReflection_QueryParamsRequest_messageType struct{}
+type fastReflection_QuerySeiAddressByEVMAddressRequest_messageType struct{}
 
-func (x fastReflection_QueryParamsRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryParamsRequest)(nil)
+func (x fastReflection_QuerySeiAddressByEVMAddressRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QuerySeiAddressByEVMAddressRequest)(nil)
 }
-func (x fastReflection_QueryParamsRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryParamsRequest)
+func (x fastReflection_QuerySeiAddressByEVMAddressRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QuerySeiAddressByEVMAddressRequest)
 }
-func (x fastReflection_QueryParamsRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryParamsRequest
+func (x fastReflection_QuerySeiAddressByEVMAddressRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySeiAddressByEVMAddressRequest
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryParamsRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryParamsRequest
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySeiAddressByEVMAddressRequest
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryParamsRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryParamsRequest_messageType
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QuerySeiAddressByEVMAddressRequest_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryParamsRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryParamsRequest)
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) New() protoreflect.Message {
+	return new(fastReflection_QuerySeiAddressByEVMAddressRequest)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryParamsRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryParamsRequest)(x)
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Interface() protoreflect.ProtoMessage {
+	return (*QuerySeiAddressByEVMAddressRequest)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -90,7 +88,13 @@ func (x *fastReflection_QueryParamsRequest) Interface() protoreflect.ProtoMessag
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryParamsRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.EvmAddress != "" {
+		value := protoreflect.ValueOfString(x.EvmAddress)
+		if !f(fd_QuerySeiAddressByEVMAddressRequest_evm_address, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -104,13 +108,15 @@ func (x *fastReflection_QueryParamsRequest) Range(f func(protoreflect.FieldDescr
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryParamsRequest) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+		return x.EvmAddress != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -120,13 +126,15 @@ func (x *fastReflection_QueryParamsRequest) Has(fd protoreflect.FieldDescriptor)
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsRequest) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+		x.EvmAddress = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -136,13 +144,16 @@ func (x *fastReflection_QueryParamsRequest) Clear(fd protoreflect.FieldDescripto
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryParamsRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+		value := x.EvmAddress
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsRequest does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -156,13 +167,15 @@ func (x *fastReflection_QueryParamsRequest) Get(descriptor protoreflect.FieldDes
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+		x.EvmAddress = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -176,36 +189,40 @@ func (x *fastReflection_QueryParamsRequest) Set(fd protoreflect.FieldDescriptor,
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+		panic(fmt.Errorf("field evm_address of message goeni.evm.QuerySeiAddressByEVMAddressRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryParamsRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryParamsRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryParamsRequest", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QuerySeiAddressByEVMAddressRequest", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -213,7 +230,7 @@ func (x *fastReflection_QueryParamsRequest) WhichOneof(d protoreflect.OneofDescr
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryParamsRequest) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -224,7 +241,7 @@ func (x *fastReflection_QueryParamsRequest) GetUnknown() protoreflect.RawFields 
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsRequest) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -236,7 +253,7 @@ func (x *fastReflection_QueryParamsRequest) SetUnknown(fields protoreflect.RawFi
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryParamsRequest) IsValid() bool {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) IsValid() bool {
 	return x != nil
 }
 
@@ -246,9 +263,9 @@ func (x *fastReflection_QueryParamsRequest) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryParamsRequest) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryParamsRequest)
+		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressRequest)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -260,6 +277,10 @@ func (x *fastReflection_QueryParamsRequest) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
+		l = len(x.EvmAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -270,7 +291,7 @@ func (x *fastReflection_QueryParamsRequest) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryParamsRequest)
+		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressRequest)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -289,6 +310,13 @@ func (x *fastReflection_QueryParamsRequest) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.EvmAddress) > 0 {
+			i -= len(x.EvmAddress)
+			copy(dAtA[i:], x.EvmAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EvmAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
 		} else {
@@ -300,7 +328,7 @@ func (x *fastReflection_QueryParamsRequest) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryParamsRequest)
+		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressRequest)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -332,12 +360,44 @@ func (x *fastReflection_QueryParamsRequest) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryParamsRequest: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressRequest: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryParamsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EvmAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.EvmAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -374,25 +434,27 @@ func (x *fastReflection_QueryParamsRequest) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_QueryParamsResponse        protoreflect.MessageDescriptor
-	fd_QueryParamsResponse_params protoreflect.FieldDescriptor
+	md_QuerySeiAddressByEVMAddressResponse             protoreflect.MessageDescriptor
+	fd_QuerySeiAddressByEVMAddressResponse_sei_address protoreflect.FieldDescriptor
+	fd_QuerySeiAddressByEVMAddressResponse_associated  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_query_proto_init()
-	md_QueryParamsResponse = File_goeni_evm_query_proto.Messages().ByName("QueryParamsResponse")
-	fd_QueryParamsResponse_params = md_QueryParamsResponse.Fields().ByName("params")
+	md_QuerySeiAddressByEVMAddressResponse = File_goeni_evm_query_proto.Messages().ByName("QuerySeiAddressByEVMAddressResponse")
+	fd_QuerySeiAddressByEVMAddressResponse_sei_address = md_QuerySeiAddressByEVMAddressResponse.Fields().ByName("sei_address")
+	fd_QuerySeiAddressByEVMAddressResponse_associated = md_QuerySeiAddressByEVMAddressResponse.Fields().ByName("associated")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryParamsResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_QuerySeiAddressByEVMAddressResponse)(nil)
 
-type fastReflection_QueryParamsResponse QueryParamsResponse
+type fastReflection_QuerySeiAddressByEVMAddressResponse QuerySeiAddressByEVMAddressResponse
 
-func (x *QueryParamsResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryParamsResponse)(x)
+func (x *QuerySeiAddressByEVMAddressResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QuerySeiAddressByEVMAddressResponse)(x)
 }
 
-func (x *QueryParamsResponse) slowProtoReflect() protoreflect.Message {
+func (x *QuerySeiAddressByEVMAddressResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_goeni_evm_query_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -404,43 +466,43 @@ func (x *QueryParamsResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryParamsResponse_messageType fastReflection_QueryParamsResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryParamsResponse_messageType{}
+var _fastReflection_QuerySeiAddressByEVMAddressResponse_messageType fastReflection_QuerySeiAddressByEVMAddressResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QuerySeiAddressByEVMAddressResponse_messageType{}
 
-type fastReflection_QueryParamsResponse_messageType struct{}
+type fastReflection_QuerySeiAddressByEVMAddressResponse_messageType struct{}
 
-func (x fastReflection_QueryParamsResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryParamsResponse)(nil)
+func (x fastReflection_QuerySeiAddressByEVMAddressResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QuerySeiAddressByEVMAddressResponse)(nil)
 }
-func (x fastReflection_QueryParamsResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryParamsResponse)
+func (x fastReflection_QuerySeiAddressByEVMAddressResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QuerySeiAddressByEVMAddressResponse)
 }
-func (x fastReflection_QueryParamsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryParamsResponse
+func (x fastReflection_QuerySeiAddressByEVMAddressResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySeiAddressByEVMAddressResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryParamsResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryParamsResponse
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySeiAddressByEVMAddressResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryParamsResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryParamsResponse_messageType
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QuerySeiAddressByEVMAddressResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryParamsResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryParamsResponse)
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) New() protoreflect.Message {
+	return new(fastReflection_QuerySeiAddressByEVMAddressResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryParamsResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryParamsResponse)(x)
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Interface() protoreflect.ProtoMessage {
+	return (*QuerySeiAddressByEVMAddressResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -448,10 +510,16 @@ func (x *fastReflection_QueryParamsResponse) Interface() protoreflect.ProtoMessa
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryParamsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Params != nil {
-		value := protoreflect.ValueOfMessage(x.Params.ProtoReflect())
-		if !f(fd_QueryParamsResponse_params, value) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.SeiAddress != "" {
+		value := protoreflect.ValueOfString(x.SeiAddress)
+		if !f(fd_QuerySeiAddressByEVMAddressResponse_sei_address, value) {
+			return
+		}
+	}
+	if x.Associated != false {
+		value := protoreflect.ValueOfBool(x.Associated)
+		if !f(fd_QuerySeiAddressByEVMAddressResponse_associated, value) {
 			return
 		}
 	}
@@ -468,15 +536,17 @@ func (x *fastReflection_QueryParamsResponse) Range(f func(protoreflect.FieldDesc
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryParamsResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "goeni.evm.QueryParamsResponse.params":
-		return x.Params != nil
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
+		return x.SeiAddress != ""
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+		return x.Associated != false
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -486,15 +556,17 @@ func (x *fastReflection_QueryParamsResponse) Has(fd protoreflect.FieldDescriptor
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "goeni.evm.QueryParamsResponse.params":
-		x.Params = nil
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
+		x.SeiAddress = ""
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+		x.Associated = false
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -504,16 +576,19 @@ func (x *fastReflection_QueryParamsResponse) Clear(fd protoreflect.FieldDescript
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryParamsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "goeni.evm.QueryParamsResponse.params":
-		value := x.Params
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
+		value := x.SeiAddress
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+		value := x.Associated
+		return protoreflect.ValueOfBool(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -527,15 +602,17 @@ func (x *fastReflection_QueryParamsResponse) Get(descriptor protoreflect.FieldDe
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "goeni.evm.QueryParamsResponse.params":
-		x.Params = value.Message().Interface().(*Params)
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
+		x.SeiAddress = value.Interface().(string)
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+		x.Associated = value.Bool()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -549,44 +626,44 @@ func (x *fastReflection_QueryParamsResponse) Set(fd protoreflect.FieldDescriptor
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QueryParamsResponse.params":
-		if x.Params == nil {
-			x.Params = new(Params)
-		}
-		return protoreflect.ValueOfMessage(x.Params.ProtoReflect())
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
+		panic(fmt.Errorf("field sei_address of message goeni.evm.QuerySeiAddressByEVMAddressResponse is not mutable"))
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+		panic(fmt.Errorf("field associated of message goeni.evm.QuerySeiAddressByEVMAddressResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryParamsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QueryParamsResponse.params":
-		m := new(Params)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+		return protoreflect.ValueOfBool(false)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryParamsResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryParamsResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryParamsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryParamsResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QuerySeiAddressByEVMAddressResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -594,7 +671,7 @@ func (x *fastReflection_QueryParamsResponse) WhichOneof(d protoreflect.OneofDesc
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryParamsResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -605,7 +682,7 @@ func (x *fastReflection_QueryParamsResponse) GetUnknown() protoreflect.RawFields
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryParamsResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -617,7 +694,7 @@ func (x *fastReflection_QueryParamsResponse) SetUnknown(fields protoreflect.RawF
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryParamsResponse) IsValid() bool {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -627,9 +704,9 @@ func (x *fastReflection_QueryParamsResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryParamsResponse)
+		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -641,9 +718,12 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 		var n int
 		var l int
 		_ = l
-		if x.Params != nil {
-			l = options.Size(x.Params)
+		l = len(x.SeiAddress)
+		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Associated {
+			n += 2
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -655,7 +735,7 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryParamsResponse)
+		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -674,17 +754,20 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.Params != nil {
-			encoded, err := options.Marshal(x.Params)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
+		if x.Associated {
+			i--
+			if x.Associated {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
 			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.SeiAddress) > 0 {
+			i -= len(x.SeiAddress)
+			copy(dAtA[i:], x.SeiAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SeiAddress)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -699,7 +782,7 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryParamsResponse)
+		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -731,17 +814,17 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryParamsResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
 				}
-				var msglen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -751,28 +834,4682 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					msglen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if msglen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + msglen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				if x.Params == nil {
-					x.Params = &Params{}
+				x.SeiAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Associated", wireType)
 				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Params); err != nil {
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Associated = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryEVMAddressBySeiAddressRequest             protoreflect.MessageDescriptor
+	fd_QueryEVMAddressBySeiAddressRequest_sei_address protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryEVMAddressBySeiAddressRequest = File_goeni_evm_query_proto.Messages().ByName("QueryEVMAddressBySeiAddressRequest")
+	fd_QueryEVMAddressBySeiAddressRequest_sei_address = md_QueryEVMAddressBySeiAddressRequest.Fields().ByName("sei_address")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryEVMAddressBySeiAddressRequest)(nil)
+
+type fastReflection_QueryEVMAddressBySeiAddressRequest QueryEVMAddressBySeiAddressRequest
+
+func (x *QueryEVMAddressBySeiAddressRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressBySeiAddressRequest)(x)
+}
+
+func (x *QueryEVMAddressBySeiAddressRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryEVMAddressBySeiAddressRequest_messageType fastReflection_QueryEVMAddressBySeiAddressRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEVMAddressBySeiAddressRequest_messageType{}
+
+type fastReflection_QueryEVMAddressBySeiAddressRequest_messageType struct{}
+
+func (x fastReflection_QueryEVMAddressBySeiAddressRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressBySeiAddressRequest)(nil)
+}
+func (x fastReflection_QueryEVMAddressBySeiAddressRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressBySeiAddressRequest)
+}
+func (x fastReflection_QueryEVMAddressBySeiAddressRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressBySeiAddressRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressBySeiAddressRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEVMAddressBySeiAddressRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressBySeiAddressRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryEVMAddressBySeiAddressRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.SeiAddress != "" {
+		value := protoreflect.ValueOfString(x.SeiAddress)
+		if !f(fd_QueryEVMAddressBySeiAddressRequest_sei_address, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
+		return x.SeiAddress != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
+		x.SeiAddress = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
+		value := x.SeiAddress
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
+		x.SeiAddress = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
+		panic(fmt.Errorf("field sei_address of message goeni.evm.QueryEVMAddressBySeiAddressRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEVMAddressBySeiAddressRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.SeiAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.SeiAddress) > 0 {
+			i -= len(x.SeiAddress)
+			copy(dAtA[i:], x.SeiAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SeiAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SeiAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryEVMAddressBySeiAddressResponse             protoreflect.MessageDescriptor
+	fd_QueryEVMAddressBySeiAddressResponse_evm_address protoreflect.FieldDescriptor
+	fd_QueryEVMAddressBySeiAddressResponse_associated  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryEVMAddressBySeiAddressResponse = File_goeni_evm_query_proto.Messages().ByName("QueryEVMAddressBySeiAddressResponse")
+	fd_QueryEVMAddressBySeiAddressResponse_evm_address = md_QueryEVMAddressBySeiAddressResponse.Fields().ByName("evm_address")
+	fd_QueryEVMAddressBySeiAddressResponse_associated = md_QueryEVMAddressBySeiAddressResponse.Fields().ByName("associated")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryEVMAddressBySeiAddressResponse)(nil)
+
+type fastReflection_QueryEVMAddressBySeiAddressResponse QueryEVMAddressBySeiAddressResponse
+
+func (x *QueryEVMAddressBySeiAddressResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressBySeiAddressResponse)(x)
+}
+
+func (x *QueryEVMAddressBySeiAddressResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryEVMAddressBySeiAddressResponse_messageType fastReflection_QueryEVMAddressBySeiAddressResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEVMAddressBySeiAddressResponse_messageType{}
+
+type fastReflection_QueryEVMAddressBySeiAddressResponse_messageType struct{}
+
+func (x fastReflection_QueryEVMAddressBySeiAddressResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressBySeiAddressResponse)(nil)
+}
+func (x fastReflection_QueryEVMAddressBySeiAddressResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressBySeiAddressResponse)
+}
+func (x fastReflection_QueryEVMAddressBySeiAddressResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressBySeiAddressResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressBySeiAddressResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEVMAddressBySeiAddressResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressBySeiAddressResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryEVMAddressBySeiAddressResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.EvmAddress != "" {
+		value := protoreflect.ValueOfString(x.EvmAddress)
+		if !f(fd_QueryEVMAddressBySeiAddressResponse_evm_address, value) {
+			return
+		}
+	}
+	if x.Associated != false {
+		value := protoreflect.ValueOfBool(x.Associated)
+		if !f(fd_QueryEVMAddressBySeiAddressResponse_associated, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+		return x.EvmAddress != ""
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+		return x.Associated != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+		x.EvmAddress = ""
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+		x.Associated = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+		value := x.EvmAddress
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+		value := x.Associated
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+		x.EvmAddress = value.Interface().(string)
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+		x.Associated = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+		panic(fmt.Errorf("field evm_address of message goeni.evm.QueryEVMAddressBySeiAddressResponse is not mutable"))
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+		panic(fmt.Errorf("field associated of message goeni.evm.QueryEVMAddressBySeiAddressResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEVMAddressBySeiAddressResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.EvmAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Associated {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Associated {
+			i--
+			if x.Associated {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.EvmAddress) > 0 {
+			i -= len(x.EvmAddress)
+			copy(dAtA[i:], x.EvmAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EvmAddress)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EvmAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.EvmAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Associated", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Associated = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryStaticCallRequest      protoreflect.MessageDescriptor
+	fd_QueryStaticCallRequest_data protoreflect.FieldDescriptor
+	fd_QueryStaticCallRequest_to   protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryStaticCallRequest = File_goeni_evm_query_proto.Messages().ByName("QueryStaticCallRequest")
+	fd_QueryStaticCallRequest_data = md_QueryStaticCallRequest.Fields().ByName("data")
+	fd_QueryStaticCallRequest_to = md_QueryStaticCallRequest.Fields().ByName("to")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryStaticCallRequest)(nil)
+
+type fastReflection_QueryStaticCallRequest QueryStaticCallRequest
+
+func (x *QueryStaticCallRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryStaticCallRequest)(x)
+}
+
+func (x *QueryStaticCallRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryStaticCallRequest_messageType fastReflection_QueryStaticCallRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryStaticCallRequest_messageType{}
+
+type fastReflection_QueryStaticCallRequest_messageType struct{}
+
+func (x fastReflection_QueryStaticCallRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryStaticCallRequest)(nil)
+}
+func (x fastReflection_QueryStaticCallRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryStaticCallRequest)
+}
+func (x fastReflection_QueryStaticCallRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStaticCallRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryStaticCallRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStaticCallRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryStaticCallRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryStaticCallRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryStaticCallRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryStaticCallRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryStaticCallRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryStaticCallRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryStaticCallRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.Data) != 0 {
+		value := protoreflect.ValueOfBytes(x.Data)
+		if !f(fd_QueryStaticCallRequest_data, value) {
+			return
+		}
+	}
+	if x.To != "" {
+		value := protoreflect.ValueOfString(x.To)
+		if !f(fd_QueryStaticCallRequest_to, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryStaticCallRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallRequest.data":
+		return len(x.Data) != 0
+	case "goeni.evm.QueryStaticCallRequest.to":
+		return x.To != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallRequest.data":
+		x.Data = nil
+	case "goeni.evm.QueryStaticCallRequest.to":
+		x.To = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryStaticCallRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryStaticCallRequest.data":
+		value := x.Data
+		return protoreflect.ValueOfBytes(value)
+	case "goeni.evm.QueryStaticCallRequest.to":
+		value := x.To
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallRequest.data":
+		x.Data = value.Bytes()
+	case "goeni.evm.QueryStaticCallRequest.to":
+		x.To = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallRequest.data":
+		panic(fmt.Errorf("field data of message goeni.evm.QueryStaticCallRequest is not mutable"))
+	case "goeni.evm.QueryStaticCallRequest.to":
+		panic(fmt.Errorf("field to of message goeni.evm.QueryStaticCallRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryStaticCallRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallRequest.data":
+		return protoreflect.ValueOfBytes(nil)
+	case "goeni.evm.QueryStaticCallRequest.to":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryStaticCallRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryStaticCallRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryStaticCallRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryStaticCallRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryStaticCallRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryStaticCallRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Data)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.To)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStaticCallRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.To) > 0 {
+			i -= len(x.To)
+			copy(dAtA[i:], x.To)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.To)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Data) > 0 {
+			i -= len(x.Data)
+			copy(dAtA[i:], x.Data)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Data)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStaticCallRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStaticCallRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStaticCallRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Data = append(x.Data[:0], dAtA[iNdEx:postIndex]...)
+				if x.Data == nil {
+					x.Data = []byte{}
+				}
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.To = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryStaticCallResponse      protoreflect.MessageDescriptor
+	fd_QueryStaticCallResponse_data protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryStaticCallResponse = File_goeni_evm_query_proto.Messages().ByName("QueryStaticCallResponse")
+	fd_QueryStaticCallResponse_data = md_QueryStaticCallResponse.Fields().ByName("data")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryStaticCallResponse)(nil)
+
+type fastReflection_QueryStaticCallResponse QueryStaticCallResponse
+
+func (x *QueryStaticCallResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryStaticCallResponse)(x)
+}
+
+func (x *QueryStaticCallResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryStaticCallResponse_messageType fastReflection_QueryStaticCallResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryStaticCallResponse_messageType{}
+
+type fastReflection_QueryStaticCallResponse_messageType struct{}
+
+func (x fastReflection_QueryStaticCallResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryStaticCallResponse)(nil)
+}
+func (x fastReflection_QueryStaticCallResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryStaticCallResponse)
+}
+func (x fastReflection_QueryStaticCallResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStaticCallResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryStaticCallResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryStaticCallResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryStaticCallResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryStaticCallResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryStaticCallResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryStaticCallResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryStaticCallResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryStaticCallResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryStaticCallResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.Data) != 0 {
+		value := protoreflect.ValueOfBytes(x.Data)
+		if !f(fd_QueryStaticCallResponse_data, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryStaticCallResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallResponse.data":
+		return len(x.Data) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallResponse.data":
+		x.Data = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryStaticCallResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryStaticCallResponse.data":
+		value := x.Data
+		return protoreflect.ValueOfBytes(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallResponse.data":
+		x.Data = value.Bytes()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallResponse.data":
+		panic(fmt.Errorf("field data of message goeni.evm.QueryStaticCallResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryStaticCallResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryStaticCallResponse.data":
+		return protoreflect.ValueOfBytes(nil)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryStaticCallResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryStaticCallResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryStaticCallResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryStaticCallResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryStaticCallResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryStaticCallResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryStaticCallResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryStaticCallResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryStaticCallResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Data)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStaticCallResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Data) > 0 {
+			i -= len(x.Data)
+			copy(dAtA[i:], x.Data)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Data)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryStaticCallResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStaticCallResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryStaticCallResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Data = append(x.Data[:0], dAtA[iNdEx:postIndex]...)
+				if x.Data == nil {
+					x.Data = []byte{}
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryPointerRequest              protoreflect.MessageDescriptor
+	fd_QueryPointerRequest_pointer_type protoreflect.FieldDescriptor
+	fd_QueryPointerRequest_pointee      protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryPointerRequest = File_goeni_evm_query_proto.Messages().ByName("QueryPointerRequest")
+	fd_QueryPointerRequest_pointer_type = md_QueryPointerRequest.Fields().ByName("pointer_type")
+	fd_QueryPointerRequest_pointee = md_QueryPointerRequest.Fields().ByName("pointee")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPointerRequest)(nil)
+
+type fastReflection_QueryPointerRequest QueryPointerRequest
+
+func (x *QueryPointerRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPointerRequest)(x)
+}
+
+func (x *QueryPointerRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPointerRequest_messageType fastReflection_QueryPointerRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPointerRequest_messageType{}
+
+type fastReflection_QueryPointerRequest_messageType struct{}
+
+func (x fastReflection_QueryPointerRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPointerRequest)(nil)
+}
+func (x fastReflection_QueryPointerRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerRequest)
+}
+func (x fastReflection_QueryPointerRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPointerRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPointerRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPointerRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPointerRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPointerRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryPointerRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPointerRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.PointerType != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.PointerType))
+		if !f(fd_QueryPointerRequest_pointer_type, value) {
+			return
+		}
+	}
+	if x.Pointee != "" {
+		value := protoreflect.ValueOfString(x.Pointee)
+		if !f(fd_QueryPointerRequest_pointee, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPointerRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerRequest.pointer_type":
+		return x.PointerType != 0
+	case "goeni.evm.QueryPointerRequest.pointee":
+		return x.Pointee != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerRequest.pointer_type":
+		x.PointerType = 0
+	case "goeni.evm.QueryPointerRequest.pointee":
+		x.Pointee = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPointerRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryPointerRequest.pointer_type":
+		value := x.PointerType
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "goeni.evm.QueryPointerRequest.pointee":
+		value := x.Pointee
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerRequest.pointer_type":
+		x.PointerType = (PointerType)(value.Enum())
+	case "goeni.evm.QueryPointerRequest.pointee":
+		x.Pointee = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerRequest.pointer_type":
+		panic(fmt.Errorf("field pointer_type of message goeni.evm.QueryPointerRequest is not mutable"))
+	case "goeni.evm.QueryPointerRequest.pointee":
+		panic(fmt.Errorf("field pointee of message goeni.evm.QueryPointerRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPointerRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerRequest.pointer_type":
+		return protoreflect.ValueOfEnum(0)
+	case "goeni.evm.QueryPointerRequest.pointee":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPointerRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryPointerRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPointerRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPointerRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPointerRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPointerRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.PointerType != 0 {
+			n += 1 + runtime.Sov(uint64(x.PointerType))
+		}
+		l = len(x.Pointee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Pointee) > 0 {
+			i -= len(x.Pointee)
+			copy(dAtA[i:], x.Pointee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Pointee)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.PointerType != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PointerType))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PointerType", wireType)
+				}
+				x.PointerType = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PointerType |= PointerType(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pointee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Pointee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryPointerResponse         protoreflect.MessageDescriptor
+	fd_QueryPointerResponse_pointer protoreflect.FieldDescriptor
+	fd_QueryPointerResponse_version protoreflect.FieldDescriptor
+	fd_QueryPointerResponse_exists  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryPointerResponse = File_goeni_evm_query_proto.Messages().ByName("QueryPointerResponse")
+	fd_QueryPointerResponse_pointer = md_QueryPointerResponse.Fields().ByName("pointer")
+	fd_QueryPointerResponse_version = md_QueryPointerResponse.Fields().ByName("version")
+	fd_QueryPointerResponse_exists = md_QueryPointerResponse.Fields().ByName("exists")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPointerResponse)(nil)
+
+type fastReflection_QueryPointerResponse QueryPointerResponse
+
+func (x *QueryPointerResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPointerResponse)(x)
+}
+
+func (x *QueryPointerResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPointerResponse_messageType fastReflection_QueryPointerResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPointerResponse_messageType{}
+
+type fastReflection_QueryPointerResponse_messageType struct{}
+
+func (x fastReflection_QueryPointerResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPointerResponse)(nil)
+}
+func (x fastReflection_QueryPointerResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerResponse)
+}
+func (x fastReflection_QueryPointerResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPointerResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPointerResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPointerResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPointerResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPointerResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryPointerResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPointerResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Pointer != "" {
+		value := protoreflect.ValueOfString(x.Pointer)
+		if !f(fd_QueryPointerResponse_pointer, value) {
+			return
+		}
+	}
+	if x.Version != uint32(0) {
+		value := protoreflect.ValueOfUint32(x.Version)
+		if !f(fd_QueryPointerResponse_version, value) {
+			return
+		}
+	}
+	if x.Exists != false {
+		value := protoreflect.ValueOfBool(x.Exists)
+		if !f(fd_QueryPointerResponse_exists, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPointerResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerResponse.pointer":
+		return x.Pointer != ""
+	case "goeni.evm.QueryPointerResponse.version":
+		return x.Version != uint32(0)
+	case "goeni.evm.QueryPointerResponse.exists":
+		return x.Exists != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerResponse.pointer":
+		x.Pointer = ""
+	case "goeni.evm.QueryPointerResponse.version":
+		x.Version = uint32(0)
+	case "goeni.evm.QueryPointerResponse.exists":
+		x.Exists = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPointerResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryPointerResponse.pointer":
+		value := x.Pointer
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.QueryPointerResponse.version":
+		value := x.Version
+		return protoreflect.ValueOfUint32(value)
+	case "goeni.evm.QueryPointerResponse.exists":
+		value := x.Exists
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerResponse.pointer":
+		x.Pointer = value.Interface().(string)
+	case "goeni.evm.QueryPointerResponse.version":
+		x.Version = uint32(value.Uint())
+	case "goeni.evm.QueryPointerResponse.exists":
+		x.Exists = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerResponse.pointer":
+		panic(fmt.Errorf("field pointer of message goeni.evm.QueryPointerResponse is not mutable"))
+	case "goeni.evm.QueryPointerResponse.version":
+		panic(fmt.Errorf("field version of message goeni.evm.QueryPointerResponse is not mutable"))
+	case "goeni.evm.QueryPointerResponse.exists":
+		panic(fmt.Errorf("field exists of message goeni.evm.QueryPointerResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPointerResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerResponse.pointer":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.QueryPointerResponse.version":
+		return protoreflect.ValueOfUint32(uint32(0))
+	case "goeni.evm.QueryPointerResponse.exists":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPointerResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryPointerResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPointerResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPointerResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPointerResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPointerResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Pointer)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Version != 0 {
+			n += 1 + runtime.Sov(uint64(x.Version))
+		}
+		if x.Exists {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Exists {
+			i--
+			if x.Exists {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.Version != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Version))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.Pointer) > 0 {
+			i -= len(x.Pointer)
+			copy(dAtA[i:], x.Pointer)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Pointer)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pointer", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Pointer = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+				}
+				x.Version = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Version |= uint32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Exists", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Exists = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryPointerVersionRequest              protoreflect.MessageDescriptor
+	fd_QueryPointerVersionRequest_pointer_type protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryPointerVersionRequest = File_goeni_evm_query_proto.Messages().ByName("QueryPointerVersionRequest")
+	fd_QueryPointerVersionRequest_pointer_type = md_QueryPointerVersionRequest.Fields().ByName("pointer_type")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPointerVersionRequest)(nil)
+
+type fastReflection_QueryPointerVersionRequest QueryPointerVersionRequest
+
+func (x *QueryPointerVersionRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPointerVersionRequest)(x)
+}
+
+func (x *QueryPointerVersionRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPointerVersionRequest_messageType fastReflection_QueryPointerVersionRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPointerVersionRequest_messageType{}
+
+type fastReflection_QueryPointerVersionRequest_messageType struct{}
+
+func (x fastReflection_QueryPointerVersionRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPointerVersionRequest)(nil)
+}
+func (x fastReflection_QueryPointerVersionRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerVersionRequest)
+}
+func (x fastReflection_QueryPointerVersionRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerVersionRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPointerVersionRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerVersionRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPointerVersionRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPointerVersionRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPointerVersionRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerVersionRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPointerVersionRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryPointerVersionRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPointerVersionRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.PointerType != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.PointerType))
+		if !f(fd_QueryPointerVersionRequest_pointer_type, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPointerVersionRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionRequest.pointer_type":
+		return x.PointerType != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionRequest.pointer_type":
+		x.PointerType = 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPointerVersionRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryPointerVersionRequest.pointer_type":
+		value := x.PointerType
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionRequest.pointer_type":
+		x.PointerType = (PointerType)(value.Enum())
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionRequest.pointer_type":
+		panic(fmt.Errorf("field pointer_type of message goeni.evm.QueryPointerVersionRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPointerVersionRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionRequest.pointer_type":
+		return protoreflect.ValueOfEnum(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPointerVersionRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryPointerVersionRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPointerVersionRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPointerVersionRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPointerVersionRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPointerVersionRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.PointerType != 0 {
+			n += 1 + runtime.Sov(uint64(x.PointerType))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerVersionRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.PointerType != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PointerType))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerVersionRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerVersionRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerVersionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PointerType", wireType)
+				}
+				x.PointerType = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PointerType |= PointerType(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryPointerVersionResponse            protoreflect.MessageDescriptor
+	fd_QueryPointerVersionResponse_version    protoreflect.FieldDescriptor
+	fd_QueryPointerVersionResponse_cw_code_id protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryPointerVersionResponse = File_goeni_evm_query_proto.Messages().ByName("QueryPointerVersionResponse")
+	fd_QueryPointerVersionResponse_version = md_QueryPointerVersionResponse.Fields().ByName("version")
+	fd_QueryPointerVersionResponse_cw_code_id = md_QueryPointerVersionResponse.Fields().ByName("cw_code_id")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPointerVersionResponse)(nil)
+
+type fastReflection_QueryPointerVersionResponse QueryPointerVersionResponse
+
+func (x *QueryPointerVersionResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPointerVersionResponse)(x)
+}
+
+func (x *QueryPointerVersionResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPointerVersionResponse_messageType fastReflection_QueryPointerVersionResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPointerVersionResponse_messageType{}
+
+type fastReflection_QueryPointerVersionResponse_messageType struct{}
+
+func (x fastReflection_QueryPointerVersionResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPointerVersionResponse)(nil)
+}
+func (x fastReflection_QueryPointerVersionResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerVersionResponse)
+}
+func (x fastReflection_QueryPointerVersionResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerVersionResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPointerVersionResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointerVersionResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPointerVersionResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPointerVersionResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPointerVersionResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryPointerVersionResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPointerVersionResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryPointerVersionResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPointerVersionResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Version != uint32(0) {
+		value := protoreflect.ValueOfUint32(x.Version)
+		if !f(fd_QueryPointerVersionResponse_version, value) {
+			return
+		}
+	}
+	if x.CwCodeId != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.CwCodeId)
+		if !f(fd_QueryPointerVersionResponse_cw_code_id, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPointerVersionResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionResponse.version":
+		return x.Version != uint32(0)
+	case "goeni.evm.QueryPointerVersionResponse.cw_code_id":
+		return x.CwCodeId != uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionResponse.version":
+		x.Version = uint32(0)
+	case "goeni.evm.QueryPointerVersionResponse.cw_code_id":
+		x.CwCodeId = uint64(0)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPointerVersionResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryPointerVersionResponse.version":
+		value := x.Version
+		return protoreflect.ValueOfUint32(value)
+	case "goeni.evm.QueryPointerVersionResponse.cw_code_id":
+		value := x.CwCodeId
+		return protoreflect.ValueOfUint64(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionResponse.version":
+		x.Version = uint32(value.Uint())
+	case "goeni.evm.QueryPointerVersionResponse.cw_code_id":
+		x.CwCodeId = value.Uint()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionResponse.version":
+		panic(fmt.Errorf("field version of message goeni.evm.QueryPointerVersionResponse is not mutable"))
+	case "goeni.evm.QueryPointerVersionResponse.cw_code_id":
+		panic(fmt.Errorf("field cw_code_id of message goeni.evm.QueryPointerVersionResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPointerVersionResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointerVersionResponse.version":
+		return protoreflect.ValueOfUint32(uint32(0))
+	case "goeni.evm.QueryPointerVersionResponse.cw_code_id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointerVersionResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointerVersionResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPointerVersionResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryPointerVersionResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPointerVersionResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointerVersionResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPointerVersionResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPointerVersionResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPointerVersionResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Version != 0 {
+			n += 1 + runtime.Sov(uint64(x.Version))
+		}
+		if x.CwCodeId != 0 {
+			n += 1 + runtime.Sov(uint64(x.CwCodeId))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerVersionResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.CwCodeId != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.CwCodeId))
+			i--
+			dAtA[i] = 0x10
+		}
+		if x.Version != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Version))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointerVersionResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerVersionResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointerVersionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+				}
+				x.Version = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Version |= uint32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CwCodeId", wireType)
+				}
+				x.CwCodeId = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.CwCodeId |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryPointeeRequest              protoreflect.MessageDescriptor
+	fd_QueryPointeeRequest_pointer_type protoreflect.FieldDescriptor
+	fd_QueryPointeeRequest_pointer      protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryPointeeRequest = File_goeni_evm_query_proto.Messages().ByName("QueryPointeeRequest")
+	fd_QueryPointeeRequest_pointer_type = md_QueryPointeeRequest.Fields().ByName("pointer_type")
+	fd_QueryPointeeRequest_pointer = md_QueryPointeeRequest.Fields().ByName("pointer")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPointeeRequest)(nil)
+
+type fastReflection_QueryPointeeRequest QueryPointeeRequest
+
+func (x *QueryPointeeRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPointeeRequest)(x)
+}
+
+func (x *QueryPointeeRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPointeeRequest_messageType fastReflection_QueryPointeeRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPointeeRequest_messageType{}
+
+type fastReflection_QueryPointeeRequest_messageType struct{}
+
+func (x fastReflection_QueryPointeeRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPointeeRequest)(nil)
+}
+func (x fastReflection_QueryPointeeRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPointeeRequest)
+}
+func (x fastReflection_QueryPointeeRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointeeRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPointeeRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointeeRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPointeeRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPointeeRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPointeeRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryPointeeRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPointeeRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryPointeeRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPointeeRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.PointerType != 0 {
+		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.PointerType))
+		if !f(fd_QueryPointeeRequest_pointer_type, value) {
+			return
+		}
+	}
+	if x.Pointer != "" {
+		value := protoreflect.ValueOfString(x.Pointer)
+		if !f(fd_QueryPointeeRequest_pointer, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPointeeRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeRequest.pointer_type":
+		return x.PointerType != 0
+	case "goeni.evm.QueryPointeeRequest.pointer":
+		return x.Pointer != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeRequest.pointer_type":
+		x.PointerType = 0
+	case "goeni.evm.QueryPointeeRequest.pointer":
+		x.Pointer = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPointeeRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryPointeeRequest.pointer_type":
+		value := x.PointerType
+		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "goeni.evm.QueryPointeeRequest.pointer":
+		value := x.Pointer
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeRequest.pointer_type":
+		x.PointerType = (PointerType)(value.Enum())
+	case "goeni.evm.QueryPointeeRequest.pointer":
+		x.Pointer = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeRequest.pointer_type":
+		panic(fmt.Errorf("field pointer_type of message goeni.evm.QueryPointeeRequest is not mutable"))
+	case "goeni.evm.QueryPointeeRequest.pointer":
+		panic(fmt.Errorf("field pointer of message goeni.evm.QueryPointeeRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPointeeRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeRequest.pointer_type":
+		return protoreflect.ValueOfEnum(0)
+	case "goeni.evm.QueryPointeeRequest.pointer":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeRequest"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPointeeRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryPointeeRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPointeeRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPointeeRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPointeeRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPointeeRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.PointerType != 0 {
+			n += 1 + runtime.Sov(uint64(x.PointerType))
+		}
+		l = len(x.Pointer)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointeeRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Pointer) > 0 {
+			i -= len(x.Pointer)
+			copy(dAtA[i:], x.Pointer)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Pointer)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.PointerType != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PointerType))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointeeRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointeeRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointeeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PointerType", wireType)
+				}
+				x.PointerType = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PointerType |= PointerType(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pointer", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Pointer = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryPointeeResponse         protoreflect.MessageDescriptor
+	fd_QueryPointeeResponse_pointee protoreflect.FieldDescriptor
+	fd_QueryPointeeResponse_version protoreflect.FieldDescriptor
+	fd_QueryPointeeResponse_exists  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_goeni_evm_query_proto_init()
+	md_QueryPointeeResponse = File_goeni_evm_query_proto.Messages().ByName("QueryPointeeResponse")
+	fd_QueryPointeeResponse_pointee = md_QueryPointeeResponse.Fields().ByName("pointee")
+	fd_QueryPointeeResponse_version = md_QueryPointeeResponse.Fields().ByName("version")
+	fd_QueryPointeeResponse_exists = md_QueryPointeeResponse.Fields().ByName("exists")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPointeeResponse)(nil)
+
+type fastReflection_QueryPointeeResponse QueryPointeeResponse
+
+func (x *QueryPointeeResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPointeeResponse)(x)
+}
+
+func (x *QueryPointeeResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_goeni_evm_query_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPointeeResponse_messageType fastReflection_QueryPointeeResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPointeeResponse_messageType{}
+
+type fastReflection_QueryPointeeResponse_messageType struct{}
+
+func (x fastReflection_QueryPointeeResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPointeeResponse)(nil)
+}
+func (x fastReflection_QueryPointeeResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPointeeResponse)
+}
+func (x fastReflection_QueryPointeeResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointeeResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPointeeResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPointeeResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPointeeResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPointeeResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPointeeResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryPointeeResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPointeeResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryPointeeResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPointeeResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Pointee != "" {
+		value := protoreflect.ValueOfString(x.Pointee)
+		if !f(fd_QueryPointeeResponse_pointee, value) {
+			return
+		}
+	}
+	if x.Version != uint32(0) {
+		value := protoreflect.ValueOfUint32(x.Version)
+		if !f(fd_QueryPointeeResponse_version, value) {
+			return
+		}
+	}
+	if x.Exists != false {
+		value := protoreflect.ValueOfBool(x.Exists)
+		if !f(fd_QueryPointeeResponse_exists, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPointeeResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeResponse.pointee":
+		return x.Pointee != ""
+	case "goeni.evm.QueryPointeeResponse.version":
+		return x.Version != uint32(0)
+	case "goeni.evm.QueryPointeeResponse.exists":
+		return x.Exists != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeResponse.pointee":
+		x.Pointee = ""
+	case "goeni.evm.QueryPointeeResponse.version":
+		x.Version = uint32(0)
+	case "goeni.evm.QueryPointeeResponse.exists":
+		x.Exists = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPointeeResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "goeni.evm.QueryPointeeResponse.pointee":
+		value := x.Pointee
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.QueryPointeeResponse.version":
+		value := x.Version
+		return protoreflect.ValueOfUint32(value)
+	case "goeni.evm.QueryPointeeResponse.exists":
+		value := x.Exists
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeResponse.pointee":
+		x.Pointee = value.Interface().(string)
+	case "goeni.evm.QueryPointeeResponse.version":
+		x.Version = uint32(value.Uint())
+	case "goeni.evm.QueryPointeeResponse.exists":
+		x.Exists = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeResponse.pointee":
+		panic(fmt.Errorf("field pointee of message goeni.evm.QueryPointeeResponse is not mutable"))
+	case "goeni.evm.QueryPointeeResponse.version":
+		panic(fmt.Errorf("field version of message goeni.evm.QueryPointeeResponse is not mutable"))
+	case "goeni.evm.QueryPointeeResponse.exists":
+		panic(fmt.Errorf("field exists of message goeni.evm.QueryPointeeResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPointeeResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "goeni.evm.QueryPointeeResponse.pointee":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.QueryPointeeResponse.version":
+		return protoreflect.ValueOfUint32(uint32(0))
+	case "goeni.evm.QueryPointeeResponse.exists":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryPointeeResponse"))
+		}
+		panic(fmt.Errorf("message goeni.evm.QueryPointeeResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPointeeResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryPointeeResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPointeeResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPointeeResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPointeeResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPointeeResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPointeeResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Pointee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Version != 0 {
+			n += 1 + runtime.Sov(uint64(x.Version))
+		}
+		if x.Exists {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointeeResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Exists {
+			i--
+			if x.Exists {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.Version != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Version))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.Pointee) > 0 {
+			i -= len(x.Pointee)
+			copy(dAtA[i:], x.Pointee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Pointee)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPointeeResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointeeResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPointeeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pointee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Pointee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+				}
+				x.Version = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Version |= uint32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Exists", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Exists = bool(v != 0)
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -821,15 +5558,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
-type QueryParamsRequest struct {
+type QuerySeiAddressByEVMAddressRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	EvmAddress string `protobuf:"bytes,1,opt,name=evm_address,json=evmAddress,proto3" json:"evm_address,omitempty"`
 }
 
-func (x *QueryParamsRequest) Reset() {
-	*x = QueryParamsRequest{}
+func (x *QuerySeiAddressByEVMAddressRequest) Reset() {
+	*x = QuerySeiAddressByEVMAddressRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_goeni_evm_query_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -837,29 +5575,35 @@ func (x *QueryParamsRequest) Reset() {
 	}
 }
 
-func (x *QueryParamsRequest) String() string {
+func (x *QuerySeiAddressByEVMAddressRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryParamsRequest) ProtoMessage() {}
+func (*QuerySeiAddressByEVMAddressRequest) ProtoMessage() {}
 
-// Deprecated: Use QueryParamsRequest.ProtoReflect.Descriptor instead.
-func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use QuerySeiAddressByEVMAddressRequest.ProtoReflect.Descriptor instead.
+func (*QuerySeiAddressByEVMAddressRequest) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_query_proto_rawDescGZIP(), []int{0}
 }
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
-type QueryParamsResponse struct {
+func (x *QuerySeiAddressByEVMAddressRequest) GetEvmAddress() string {
+	if x != nil {
+		return x.EvmAddress
+	}
+	return ""
+}
+
+type QuerySeiAddressByEVMAddressResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// params holds all the parameters of this module.
-	Params *Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"`
+	Associated bool   `protobuf:"varint,2,opt,name=associated,proto3" json:"associated,omitempty"`
 }
 
-func (x *QueryParamsResponse) Reset() {
-	*x = QueryParamsResponse{}
+func (x *QuerySeiAddressByEVMAddressResponse) Reset() {
+	*x = QuerySeiAddressByEVMAddressResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_goeni_evm_query_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -867,22 +5611,451 @@ func (x *QueryParamsResponse) Reset() {
 	}
 }
 
-func (x *QueryParamsResponse) String() string {
+func (x *QuerySeiAddressByEVMAddressResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryParamsResponse) ProtoMessage() {}
+func (*QuerySeiAddressByEVMAddressResponse) ProtoMessage() {}
 
-// Deprecated: Use QueryParamsResponse.ProtoReflect.Descriptor instead.
-func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use QuerySeiAddressByEVMAddressResponse.ProtoReflect.Descriptor instead.
+func (*QuerySeiAddressByEVMAddressResponse) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_query_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *QueryParamsResponse) GetParams() *Params {
+func (x *QuerySeiAddressByEVMAddressResponse) GetSeiAddress() string {
 	if x != nil {
-		return x.Params
+		return x.SeiAddress
+	}
+	return ""
+}
+
+func (x *QuerySeiAddressByEVMAddressResponse) GetAssociated() bool {
+	if x != nil {
+		return x.Associated
+	}
+	return false
+}
+
+type QueryEVMAddressBySeiAddressRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"`
+}
+
+func (x *QueryEVMAddressBySeiAddressRequest) Reset() {
+	*x = QueryEVMAddressBySeiAddressRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryEVMAddressBySeiAddressRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryEVMAddressBySeiAddressRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryEVMAddressBySeiAddressRequest.ProtoReflect.Descriptor instead.
+func (*QueryEVMAddressBySeiAddressRequest) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *QueryEVMAddressBySeiAddressRequest) GetSeiAddress() string {
+	if x != nil {
+		return x.SeiAddress
+	}
+	return ""
+}
+
+type QueryEVMAddressBySeiAddressResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	EvmAddress string `protobuf:"bytes,1,opt,name=evm_address,json=evmAddress,proto3" json:"evm_address,omitempty"`
+	Associated bool   `protobuf:"varint,2,opt,name=associated,proto3" json:"associated,omitempty"`
+}
+
+func (x *QueryEVMAddressBySeiAddressResponse) Reset() {
+	*x = QueryEVMAddressBySeiAddressResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryEVMAddressBySeiAddressResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryEVMAddressBySeiAddressResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryEVMAddressBySeiAddressResponse.ProtoReflect.Descriptor instead.
+func (*QueryEVMAddressBySeiAddressResponse) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *QueryEVMAddressBySeiAddressResponse) GetEvmAddress() string {
+	if x != nil {
+		return x.EvmAddress
+	}
+	return ""
+}
+
+func (x *QueryEVMAddressBySeiAddressResponse) GetAssociated() bool {
+	if x != nil {
+		return x.Associated
+	}
+	return false
+}
+
+type QueryStaticCallRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+}
+
+func (x *QueryStaticCallRequest) Reset() {
+	*x = QueryStaticCallRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryStaticCallRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryStaticCallRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryStaticCallRequest.ProtoReflect.Descriptor instead.
+func (*QueryStaticCallRequest) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *QueryStaticCallRequest) GetData() []byte {
+	if x != nil {
+		return x.Data
 	}
 	return nil
+}
+
+func (x *QueryStaticCallRequest) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
+type QueryStaticCallResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *QueryStaticCallResponse) Reset() {
+	*x = QueryStaticCallResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryStaticCallResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryStaticCallResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryStaticCallResponse.ProtoReflect.Descriptor instead.
+func (*QueryStaticCallResponse) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *QueryStaticCallResponse) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type QueryPointerRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PointerType PointerType `protobuf:"varint,1,opt,name=pointer_type,json=pointerType,proto3,enum=goeni.evm.PointerType" json:"pointer_type,omitempty"`
+	Pointee     string      `protobuf:"bytes,2,opt,name=pointee,proto3" json:"pointee,omitempty"`
+}
+
+func (x *QueryPointerRequest) Reset() {
+	*x = QueryPointerRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPointerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPointerRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryPointerRequest.ProtoReflect.Descriptor instead.
+func (*QueryPointerRequest) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *QueryPointerRequest) GetPointerType() PointerType {
+	if x != nil {
+		return x.PointerType
+	}
+	return PointerType_ERC20
+}
+
+func (x *QueryPointerRequest) GetPointee() string {
+	if x != nil {
+		return x.Pointee
+	}
+	return ""
+}
+
+type QueryPointerResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pointer string `protobuf:"bytes,1,opt,name=pointer,proto3" json:"pointer,omitempty"`
+	Version uint32 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
+	Exists  bool   `protobuf:"varint,3,opt,name=exists,proto3" json:"exists,omitempty"`
+}
+
+func (x *QueryPointerResponse) Reset() {
+	*x = QueryPointerResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPointerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPointerResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryPointerResponse.ProtoReflect.Descriptor instead.
+func (*QueryPointerResponse) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *QueryPointerResponse) GetPointer() string {
+	if x != nil {
+		return x.Pointer
+	}
+	return ""
+}
+
+func (x *QueryPointerResponse) GetVersion() uint32 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *QueryPointerResponse) GetExists() bool {
+	if x != nil {
+		return x.Exists
+	}
+	return false
+}
+
+type QueryPointerVersionRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PointerType PointerType `protobuf:"varint,1,opt,name=pointer_type,json=pointerType,proto3,enum=goeni.evm.PointerType" json:"pointer_type,omitempty"`
+}
+
+func (x *QueryPointerVersionRequest) Reset() {
+	*x = QueryPointerVersionRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPointerVersionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPointerVersionRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryPointerVersionRequest.ProtoReflect.Descriptor instead.
+func (*QueryPointerVersionRequest) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *QueryPointerVersionRequest) GetPointerType() PointerType {
+	if x != nil {
+		return x.PointerType
+	}
+	return PointerType_ERC20
+}
+
+type QueryPointerVersionResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Version  uint32 `protobuf:"varint,1,opt,name=version,proto3" json:"version,omitempty"`
+	CwCodeId uint64 `protobuf:"varint,2,opt,name=cw_code_id,json=cwCodeId,proto3" json:"cw_code_id,omitempty"`
+}
+
+func (x *QueryPointerVersionResponse) Reset() {
+	*x = QueryPointerVersionResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPointerVersionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPointerVersionResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryPointerVersionResponse.ProtoReflect.Descriptor instead.
+func (*QueryPointerVersionResponse) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *QueryPointerVersionResponse) GetVersion() uint32 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *QueryPointerVersionResponse) GetCwCodeId() uint64 {
+	if x != nil {
+		return x.CwCodeId
+	}
+	return 0
+}
+
+type QueryPointeeRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PointerType PointerType `protobuf:"varint,1,opt,name=pointer_type,json=pointerType,proto3,enum=goeni.evm.PointerType" json:"pointer_type,omitempty"`
+	Pointer     string      `protobuf:"bytes,2,opt,name=pointer,proto3" json:"pointer,omitempty"`
+}
+
+func (x *QueryPointeeRequest) Reset() {
+	*x = QueryPointeeRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPointeeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPointeeRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryPointeeRequest.ProtoReflect.Descriptor instead.
+func (*QueryPointeeRequest) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *QueryPointeeRequest) GetPointerType() PointerType {
+	if x != nil {
+		return x.PointerType
+	}
+	return PointerType_ERC20
+}
+
+func (x *QueryPointeeRequest) GetPointer() string {
+	if x != nil {
+		return x.Pointer
+	}
+	return ""
+}
+
+type QueryPointeeResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pointee string `protobuf:"bytes,1,opt,name=pointee,proto3" json:"pointee,omitempty"`
+	Version uint32 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
+	Exists  bool   `protobuf:"varint,3,opt,name=exists,proto3" json:"exists,omitempty"`
+}
+
+func (x *QueryPointeeResponse) Reset() {
+	*x = QueryPointeeResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_goeni_evm_query_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPointeeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPointeeResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryPointeeResponse.ProtoReflect.Descriptor instead.
+func (*QueryPointeeResponse) Descriptor() ([]byte, []int) {
+	return file_goeni_evm_query_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *QueryPointeeResponse) GetPointee() string {
+	if x != nil {
+		return x.Pointee
+	}
+	return ""
+}
+
+func (x *QueryPointeeResponse) GetVersion() uint32 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *QueryPointeeResponse) GetExists() bool {
+	if x != nil {
+		return x.Exists
+	}
+	return false
 }
 
 var File_goeni_evm_query_proto protoreflect.FileDescriptor
@@ -890,38 +6063,135 @@ var File_goeni_evm_query_proto protoreflect.FileDescriptor
 var file_goeni_evm_query_proto_rawDesc = []byte{
 	0x0a, 0x15, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x71, 0x75, 0x65, 0x72,
 	0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65,
-	0x76, 0x6d, 0x1a, 0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c, 0x67, 0x6f, 0x6f,
-	0x67, 0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x2a, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
-	0x73, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2f, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2f, 0x76, 0x31, 0x62,
-	0x65, 0x74, 0x61, 0x31, 0x2f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x16, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d,
-	0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x14, 0x0a,
-	0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x22, 0x4b, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x06, 0x70, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x67, 0x6f, 0x65,
-	0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8,
-	0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x32, 0x76, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x6d, 0x0a, 0x06, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x12, 0x1d, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x24, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1e, 0x12, 0x1c, 0x2f, 0x65, 0x6e, 0x69,
-	0x2d, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x67, 0x6f, 0x2d, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76,
-	0x6d, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x8b, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d,
-	0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6e, 0x69, 0x2d, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x67,
-	0x6f, 0x2d, 0x65, 0x6e, 0x69, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f,
-	0x65, 0x76, 0x6d, 0xa2, 0x02, 0x03, 0x47, 0x45, 0x58, 0xaa, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e,
-	0x69, 0x2e, 0x45, 0x76, 0x6d, 0xca, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76,
-	0x6d, 0xe2, 0x02, 0x15, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76, 0x6d, 0x5c, 0x47, 0x50,
-	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x47, 0x6f, 0x65, 0x6e,
-	0x69, 0x3a, 0x3a, 0x45, 0x76, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x76, 0x6d, 0x1a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61,
+	0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x1a, 0x15, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x65, 0x6e, 0x75, 0x6d,
+	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x45, 0x0a, 0x22, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a,
+	0x0b, 0x65, 0x76, 0x6d, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0a, 0x65, 0x76, 0x6d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x66,
+	0x0a, 0x23, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x65, 0x69, 0x5f, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x73, 0x65, 0x69, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x73, 0x73, 0x6f, 0x63, 0x69,
+	0x61, 0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x61, 0x73, 0x73, 0x6f,
+	0x63, 0x69, 0x61, 0x74, 0x65, 0x64, 0x22, 0x45, 0x0a, 0x22, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45,
+	0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b,
+	0x73, 0x65, 0x69, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0a, 0x73, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x66, 0x0a,
+	0x23, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x76, 0x6d, 0x5f, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x76, 0x6d, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x73, 0x73, 0x6f, 0x63, 0x69, 0x61,
+	0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x61, 0x73, 0x73, 0x6f, 0x63,
+	0x69, 0x61, 0x74, 0x65, 0x64, 0x22, 0x3c, 0x0a, 0x16, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74,
+	0x61, 0x74, 0x69, 0x63, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64,
+	0x61, 0x74, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x02, 0x74, 0x6f, 0x22, 0x2d, 0x0a, 0x17, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74,
+	0x69, 0x63, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12,
+	0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61,
+	0x74, 0x61, 0x22, 0x6a, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x39, 0x0a, 0x0c, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x16, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x50, 0x6f, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x0b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65, 0x22, 0x62,
+	0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72,
+	0x12, 0x18, 0x0a, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0d, 0x52, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x65, 0x78,
+	0x69, 0x73, 0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x65, 0x78, 0x69, 0x73,
+	0x74, 0x73, 0x22, 0x57, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x39, 0x0a, 0x0c, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x16, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65,
+	0x76, 0x6d, 0x2e, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x0b,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x22, 0x55, 0x0a, 0x1b, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x56, 0x65, 0x72, 0x73, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x76, 0x65,
+	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x07, 0x76, 0x65, 0x72,
+	0x73, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x0a, 0x63, 0x77, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x63, 0x77, 0x43, 0x6f, 0x64, 0x65,
+	0x49, 0x64, 0x22, 0x6a, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74,
+	0x65, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x39, 0x0a, 0x0c, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x65, 0x72, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x16, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x50, 0x6f, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x54, 0x79, 0x70, 0x65, 0x52, 0x0b, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x22, 0x62,
+	0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65,
+	0x12, 0x18, 0x0a, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0d, 0x52, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x65, 0x78,
+	0x69, 0x73, 0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x65, 0x78, 0x69, 0x73,
+	0x74, 0x73, 0x32, 0x98, 0x06, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x9a, 0x01, 0x0a,
+	0x16, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d,
+	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x2d, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e,
+	0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65,
+	0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19,
+	0x2f, 0x65, 0x6e, 0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x73, 0x65,
+	0x69, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x9a, 0x01, 0x0a, 0x16, 0x45, 0x56,
+	0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x12, 0x2d, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42,
+	0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19, 0x2f, 0x65, 0x6e,
+	0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x65, 0x76, 0x6d, 0x5f, 0x61,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x76, 0x0a, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x69, 0x63,
+	0x43, 0x61, 0x6c, 0x6c, 0x12, 0x21, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x69, 0x63, 0x43, 0x61, 0x6c, 0x6c,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e,
+	0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x74, 0x61, 0x74, 0x69, 0x63, 0x43,
+	0x61, 0x6c, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x1b, 0x12, 0x19, 0x2f, 0x65, 0x6e, 0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65,
+	0x76, 0x6d, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x69, 0x63, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x12, 0x69,
+	0x0a, 0x07, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x1e, 0x2e, 0x67, 0x6f, 0x65, 0x6e,
+	0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x67, 0x6f, 0x65, 0x6e,
+	0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x1d, 0x82, 0xd3, 0xe4, 0x93,
+	0x02, 0x17, 0x12, 0x15, 0x2f, 0x65, 0x6e, 0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65, 0x76,
+	0x6d, 0x2f, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x12, 0x86, 0x01, 0x0a, 0x0e, 0x50, 0x6f,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x25, 0x2e, 0x67,
+	0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x56, 0x65, 0x72, 0x73,
+	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x25, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x1f, 0x12, 0x1d, 0x2f, 0x65, 0x6e, 0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65,
+	0x76, 0x6d, 0x2f, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x5f, 0x76, 0x65, 0x72, 0x73, 0x69,
+	0x6f, 0x6e, 0x12, 0x69, 0x0a, 0x07, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65, 0x12, 0x1e, 0x2e,
+	0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e,
+	0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x1d,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x17, 0x12, 0x15, 0x2f, 0x65, 0x6e, 0x69, 0x63, 0x68, 0x61, 0x69,
+	0x6e, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x65, 0x65, 0x42, 0x8b, 0x01,
+	0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x42,
+	0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6e, 0x69, 0x2d, 0x63, 0x68,
+	0x61, 0x69, 0x6e, 0x2f, 0x67, 0x6f, 0x2d, 0x65, 0x6e, 0x69, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x67,
+	0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d, 0xa2, 0x02, 0x03, 0x47, 0x45, 0x58, 0xaa, 0x02,
+	0x09, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x45, 0x76, 0x6d, 0xca, 0x02, 0x09, 0x47, 0x6f, 0x65,
+	0x6e, 0x69, 0x5c, 0x45, 0x76, 0x6d, 0xe2, 0x02, 0x15, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45,
+	0x76, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
+	0x0a, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x3a, 0x3a, 0x45, 0x76, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -936,21 +6206,43 @@ func file_goeni_evm_query_proto_rawDescGZIP() []byte {
 	return file_goeni_evm_query_proto_rawDescData
 }
 
-var file_goeni_evm_query_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_goeni_evm_query_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_goeni_evm_query_proto_goTypes = []interface{}{
-	(*QueryParamsRequest)(nil),  // 0: goeni.evm.QueryParamsRequest
-	(*QueryParamsResponse)(nil), // 1: goeni.evm.QueryParamsResponse
-	(*Params)(nil),              // 2: goeni.evm.Params
+	(*QuerySeiAddressByEVMAddressRequest)(nil),  // 0: goeni.evm.QuerySeiAddressByEVMAddressRequest
+	(*QuerySeiAddressByEVMAddressResponse)(nil), // 1: goeni.evm.QuerySeiAddressByEVMAddressResponse
+	(*QueryEVMAddressBySeiAddressRequest)(nil),  // 2: goeni.evm.QueryEVMAddressBySeiAddressRequest
+	(*QueryEVMAddressBySeiAddressResponse)(nil), // 3: goeni.evm.QueryEVMAddressBySeiAddressResponse
+	(*QueryStaticCallRequest)(nil),              // 4: goeni.evm.QueryStaticCallRequest
+	(*QueryStaticCallResponse)(nil),             // 5: goeni.evm.QueryStaticCallResponse
+	(*QueryPointerRequest)(nil),                 // 6: goeni.evm.QueryPointerRequest
+	(*QueryPointerResponse)(nil),                // 7: goeni.evm.QueryPointerResponse
+	(*QueryPointerVersionRequest)(nil),          // 8: goeni.evm.QueryPointerVersionRequest
+	(*QueryPointerVersionResponse)(nil),         // 9: goeni.evm.QueryPointerVersionResponse
+	(*QueryPointeeRequest)(nil),                 // 10: goeni.evm.QueryPointeeRequest
+	(*QueryPointeeResponse)(nil),                // 11: goeni.evm.QueryPointeeResponse
+	(PointerType)(0),                            // 12: goeni.evm.PointerType
 }
 var file_goeni_evm_query_proto_depIdxs = []int32{
-	2, // 0: goeni.evm.QueryParamsResponse.params:type_name -> goeni.evm.Params
-	0, // 1: goeni.evm.Query.Params:input_type -> goeni.evm.QueryParamsRequest
-	1, // 2: goeni.evm.Query.Params:output_type -> goeni.evm.QueryParamsResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	12, // 0: goeni.evm.QueryPointerRequest.pointer_type:type_name -> goeni.evm.PointerType
+	12, // 1: goeni.evm.QueryPointerVersionRequest.pointer_type:type_name -> goeni.evm.PointerType
+	12, // 2: goeni.evm.QueryPointeeRequest.pointer_type:type_name -> goeni.evm.PointerType
+	0,  // 3: goeni.evm.Query.SeiAddressByEVMAddress:input_type -> goeni.evm.QuerySeiAddressByEVMAddressRequest
+	2,  // 4: goeni.evm.Query.EVMAddressBySeiAddress:input_type -> goeni.evm.QueryEVMAddressBySeiAddressRequest
+	4,  // 5: goeni.evm.Query.StaticCall:input_type -> goeni.evm.QueryStaticCallRequest
+	6,  // 6: goeni.evm.Query.Pointer:input_type -> goeni.evm.QueryPointerRequest
+	8,  // 7: goeni.evm.Query.PointerVersion:input_type -> goeni.evm.QueryPointerVersionRequest
+	10, // 8: goeni.evm.Query.Pointee:input_type -> goeni.evm.QueryPointeeRequest
+	1,  // 9: goeni.evm.Query.SeiAddressByEVMAddress:output_type -> goeni.evm.QuerySeiAddressByEVMAddressResponse
+	3,  // 10: goeni.evm.Query.EVMAddressBySeiAddress:output_type -> goeni.evm.QueryEVMAddressBySeiAddressResponse
+	5,  // 11: goeni.evm.Query.StaticCall:output_type -> goeni.evm.QueryStaticCallResponse
+	7,  // 12: goeni.evm.Query.Pointer:output_type -> goeni.evm.QueryPointerResponse
+	9,  // 13: goeni.evm.Query.PointerVersion:output_type -> goeni.evm.QueryPointerVersionResponse
+	11, // 14: goeni.evm.Query.Pointee:output_type -> goeni.evm.QueryPointeeResponse
+	9,  // [9:15] is the sub-list for method output_type
+	3,  // [3:9] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_goeni_evm_query_proto_init() }
@@ -958,10 +6250,10 @@ func file_goeni_evm_query_proto_init() {
 	if File_goeni_evm_query_proto != nil {
 		return
 	}
-	file_goeni_evm_params_proto_init()
+	file_goeni_evm_enums_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_goeni_evm_query_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsRequest); i {
+			switch v := v.(*QuerySeiAddressByEVMAddressRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -973,7 +6265,127 @@ func file_goeni_evm_query_proto_init() {
 			}
 		}
 		file_goeni_evm_query_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsResponse); i {
+			switch v := v.(*QuerySeiAddressByEVMAddressResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryEVMAddressBySeiAddressRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryEVMAddressBySeiAddressResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryStaticCallRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryStaticCallResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPointerRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPointerResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPointerVersionRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPointerVersionResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPointeeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_goeni_evm_query_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPointeeResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -991,7 +6403,7 @@ func file_goeni_evm_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_goeni_evm_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

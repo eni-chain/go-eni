@@ -6,19 +6,15 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
-	_ "github.com/cosmos/cosmos-sdk/types/query"
-	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
-	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -32,22 +28,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
-type QueryParamsRequest struct {
+type QuerySeiAddressByEVMAddressRequest struct {
+	EvmAddress string `protobuf:"bytes,1,opt,name=evm_address,json=evmAddress,proto3" json:"evm_address,omitempty"`
 }
 
-func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
-func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryParamsRequest) ProtoMessage()    {}
-func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
+func (m *QuerySeiAddressByEVMAddressRequest) Reset()         { *m = QuerySeiAddressByEVMAddressRequest{} }
+func (m *QuerySeiAddressByEVMAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySeiAddressByEVMAddressRequest) ProtoMessage()    {}
+func (*QuerySeiAddressByEVMAddressRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8b422d72d032b01b, []int{0}
 }
-func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QuerySeiAddressByEVMAddressRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QuerySeiAddressByEVMAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryParamsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QuerySeiAddressByEVMAddressRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -57,36 +53,42 @@ func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *QueryParamsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryParamsRequest.Merge(m, src)
+func (m *QuerySeiAddressByEVMAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySeiAddressByEVMAddressRequest.Merge(m, src)
 }
-func (m *QueryParamsRequest) XXX_Size() int {
+func (m *QuerySeiAddressByEVMAddressRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryParamsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryParamsRequest.DiscardUnknown(m)
+func (m *QuerySeiAddressByEVMAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySeiAddressByEVMAddressRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryParamsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QuerySeiAddressByEVMAddressRequest proto.InternalMessageInfo
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
-type QueryParamsResponse struct {
-	// params holds all the parameters of this module.
-	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+func (m *QuerySeiAddressByEVMAddressRequest) GetEvmAddress() string {
+	if m != nil {
+		return m.EvmAddress
+	}
+	return ""
 }
 
-func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
-func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryParamsResponse) ProtoMessage()    {}
-func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
+type QuerySeiAddressByEVMAddressResponse struct {
+	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"`
+	Associated bool   `protobuf:"varint,2,opt,name=associated,proto3" json:"associated,omitempty"`
+}
+
+func (m *QuerySeiAddressByEVMAddressResponse) Reset()         { *m = QuerySeiAddressByEVMAddressResponse{} }
+func (m *QuerySeiAddressByEVMAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySeiAddressByEVMAddressResponse) ProtoMessage()    {}
+func (*QuerySeiAddressByEVMAddressResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8b422d72d032b01b, []int{1}
 }
-func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QuerySeiAddressByEVMAddressResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QuerySeiAddressByEVMAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryParamsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QuerySeiAddressByEVMAddressResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -96,54 +98,604 @@ func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *QueryParamsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryParamsResponse.Merge(m, src)
+func (m *QuerySeiAddressByEVMAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySeiAddressByEVMAddressResponse.Merge(m, src)
 }
-func (m *QueryParamsResponse) XXX_Size() int {
+func (m *QuerySeiAddressByEVMAddressResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryParamsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryParamsResponse.DiscardUnknown(m)
+func (m *QuerySeiAddressByEVMAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySeiAddressByEVMAddressResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryParamsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QuerySeiAddressByEVMAddressResponse proto.InternalMessageInfo
 
-func (m *QueryParamsResponse) GetParams() Params {
+func (m *QuerySeiAddressByEVMAddressResponse) GetSeiAddress() string {
 	if m != nil {
-		return m.Params
+		return m.SeiAddress
 	}
-	return Params{}
+	return ""
+}
+
+func (m *QuerySeiAddressByEVMAddressResponse) GetAssociated() bool {
+	if m != nil {
+		return m.Associated
+	}
+	return false
+}
+
+type QueryEVMAddressBySeiAddressRequest struct {
+	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"`
+}
+
+func (m *QueryEVMAddressBySeiAddressRequest) Reset()         { *m = QueryEVMAddressBySeiAddressRequest{} }
+func (m *QueryEVMAddressBySeiAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEVMAddressBySeiAddressRequest) ProtoMessage()    {}
+func (*QueryEVMAddressBySeiAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{2}
+}
+func (m *QueryEVMAddressBySeiAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEVMAddressBySeiAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEVMAddressBySeiAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEVMAddressBySeiAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEVMAddressBySeiAddressRequest.Merge(m, src)
+}
+func (m *QueryEVMAddressBySeiAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEVMAddressBySeiAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEVMAddressBySeiAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEVMAddressBySeiAddressRequest proto.InternalMessageInfo
+
+func (m *QueryEVMAddressBySeiAddressRequest) GetSeiAddress() string {
+	if m != nil {
+		return m.SeiAddress
+	}
+	return ""
+}
+
+type QueryEVMAddressBySeiAddressResponse struct {
+	EvmAddress string `protobuf:"bytes,1,opt,name=evm_address,json=evmAddress,proto3" json:"evm_address,omitempty"`
+	Associated bool   `protobuf:"varint,2,opt,name=associated,proto3" json:"associated,omitempty"`
+}
+
+func (m *QueryEVMAddressBySeiAddressResponse) Reset()         { *m = QueryEVMAddressBySeiAddressResponse{} }
+func (m *QueryEVMAddressBySeiAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEVMAddressBySeiAddressResponse) ProtoMessage()    {}
+func (*QueryEVMAddressBySeiAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{3}
+}
+func (m *QueryEVMAddressBySeiAddressResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEVMAddressBySeiAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEVMAddressBySeiAddressResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEVMAddressBySeiAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEVMAddressBySeiAddressResponse.Merge(m, src)
+}
+func (m *QueryEVMAddressBySeiAddressResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEVMAddressBySeiAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEVMAddressBySeiAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEVMAddressBySeiAddressResponse proto.InternalMessageInfo
+
+func (m *QueryEVMAddressBySeiAddressResponse) GetEvmAddress() string {
+	if m != nil {
+		return m.EvmAddress
+	}
+	return ""
+}
+
+func (m *QueryEVMAddressBySeiAddressResponse) GetAssociated() bool {
+	if m != nil {
+		return m.Associated
+	}
+	return false
+}
+
+type QueryStaticCallRequest struct {
+	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+}
+
+func (m *QueryStaticCallRequest) Reset()         { *m = QueryStaticCallRequest{} }
+func (m *QueryStaticCallRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryStaticCallRequest) ProtoMessage()    {}
+func (*QueryStaticCallRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{4}
+}
+func (m *QueryStaticCallRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryStaticCallRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryStaticCallRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryStaticCallRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStaticCallRequest.Merge(m, src)
+}
+func (m *QueryStaticCallRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryStaticCallRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStaticCallRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryStaticCallRequest proto.InternalMessageInfo
+
+func (m *QueryStaticCallRequest) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+func (m *QueryStaticCallRequest) GetTo() string {
+	if m != nil {
+		return m.To
+	}
+	return ""
+}
+
+type QueryStaticCallResponse struct {
+	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *QueryStaticCallResponse) Reset()         { *m = QueryStaticCallResponse{} }
+func (m *QueryStaticCallResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryStaticCallResponse) ProtoMessage()    {}
+func (*QueryStaticCallResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{5}
+}
+func (m *QueryStaticCallResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryStaticCallResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryStaticCallResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryStaticCallResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStaticCallResponse.Merge(m, src)
+}
+func (m *QueryStaticCallResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryStaticCallResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStaticCallResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryStaticCallResponse proto.InternalMessageInfo
+
+func (m *QueryStaticCallResponse) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type QueryPointerRequest struct {
+	PointerType PointerType `protobuf:"varint,1,opt,name=pointer_type,json=pointerType,proto3,enum=goeni.evm.PointerType" json:"pointer_type,omitempty"`
+	Pointee     string      `protobuf:"bytes,2,opt,name=pointee,proto3" json:"pointee,omitempty"`
+}
+
+func (m *QueryPointerRequest) Reset()         { *m = QueryPointerRequest{} }
+func (m *QueryPointerRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryPointerRequest) ProtoMessage()    {}
+func (*QueryPointerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{6}
+}
+func (m *QueryPointerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPointerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPointerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPointerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPointerRequest.Merge(m, src)
+}
+func (m *QueryPointerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPointerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPointerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPointerRequest proto.InternalMessageInfo
+
+func (m *QueryPointerRequest) GetPointerType() PointerType {
+	if m != nil {
+		return m.PointerType
+	}
+	return PointerType_ERC20
+}
+
+func (m *QueryPointerRequest) GetPointee() string {
+	if m != nil {
+		return m.Pointee
+	}
+	return ""
+}
+
+type QueryPointerResponse struct {
+	Pointer string `protobuf:"bytes,1,opt,name=pointer,proto3" json:"pointer,omitempty"`
+	Version uint32 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
+	Exists  bool   `protobuf:"varint,3,opt,name=exists,proto3" json:"exists,omitempty"`
+}
+
+func (m *QueryPointerResponse) Reset()         { *m = QueryPointerResponse{} }
+func (m *QueryPointerResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryPointerResponse) ProtoMessage()    {}
+func (*QueryPointerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{7}
+}
+func (m *QueryPointerResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPointerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPointerResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPointerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPointerResponse.Merge(m, src)
+}
+func (m *QueryPointerResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPointerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPointerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPointerResponse proto.InternalMessageInfo
+
+func (m *QueryPointerResponse) GetPointer() string {
+	if m != nil {
+		return m.Pointer
+	}
+	return ""
+}
+
+func (m *QueryPointerResponse) GetVersion() uint32 {
+	if m != nil {
+		return m.Version
+	}
+	return 0
+}
+
+func (m *QueryPointerResponse) GetExists() bool {
+	if m != nil {
+		return m.Exists
+	}
+	return false
+}
+
+type QueryPointerVersionRequest struct {
+	PointerType PointerType `protobuf:"varint,1,opt,name=pointer_type,json=pointerType,proto3,enum=goeni.evm.PointerType" json:"pointer_type,omitempty"`
+}
+
+func (m *QueryPointerVersionRequest) Reset()         { *m = QueryPointerVersionRequest{} }
+func (m *QueryPointerVersionRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryPointerVersionRequest) ProtoMessage()    {}
+func (*QueryPointerVersionRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{8}
+}
+func (m *QueryPointerVersionRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPointerVersionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPointerVersionRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPointerVersionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPointerVersionRequest.Merge(m, src)
+}
+func (m *QueryPointerVersionRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPointerVersionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPointerVersionRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPointerVersionRequest proto.InternalMessageInfo
+
+func (m *QueryPointerVersionRequest) GetPointerType() PointerType {
+	if m != nil {
+		return m.PointerType
+	}
+	return PointerType_ERC20
+}
+
+type QueryPointerVersionResponse struct {
+	Version  uint32 `protobuf:"varint,1,opt,name=version,proto3" json:"version,omitempty"`
+	CwCodeId uint64 `protobuf:"varint,2,opt,name=cw_code_id,json=cwCodeId,proto3" json:"cw_code_id,omitempty"`
+}
+
+func (m *QueryPointerVersionResponse) Reset()         { *m = QueryPointerVersionResponse{} }
+func (m *QueryPointerVersionResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryPointerVersionResponse) ProtoMessage()    {}
+func (*QueryPointerVersionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{9}
+}
+func (m *QueryPointerVersionResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPointerVersionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPointerVersionResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPointerVersionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPointerVersionResponse.Merge(m, src)
+}
+func (m *QueryPointerVersionResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPointerVersionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPointerVersionResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPointerVersionResponse proto.InternalMessageInfo
+
+func (m *QueryPointerVersionResponse) GetVersion() uint32 {
+	if m != nil {
+		return m.Version
+	}
+	return 0
+}
+
+func (m *QueryPointerVersionResponse) GetCwCodeId() uint64 {
+	if m != nil {
+		return m.CwCodeId
+	}
+	return 0
+}
+
+type QueryPointeeRequest struct {
+	PointerType PointerType `protobuf:"varint,1,opt,name=pointer_type,json=pointerType,proto3,enum=goeni.evm.PointerType" json:"pointer_type,omitempty"`
+	Pointer     string      `protobuf:"bytes,2,opt,name=pointer,proto3" json:"pointer,omitempty"`
+}
+
+func (m *QueryPointeeRequest) Reset()         { *m = QueryPointeeRequest{} }
+func (m *QueryPointeeRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryPointeeRequest) ProtoMessage()    {}
+func (*QueryPointeeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{10}
+}
+func (m *QueryPointeeRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPointeeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPointeeRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPointeeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPointeeRequest.Merge(m, src)
+}
+func (m *QueryPointeeRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPointeeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPointeeRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPointeeRequest proto.InternalMessageInfo
+
+func (m *QueryPointeeRequest) GetPointerType() PointerType {
+	if m != nil {
+		return m.PointerType
+	}
+	return PointerType_ERC20
+}
+
+func (m *QueryPointeeRequest) GetPointer() string {
+	if m != nil {
+		return m.Pointer
+	}
+	return ""
+}
+
+type QueryPointeeResponse struct {
+	Pointee string `protobuf:"bytes,1,opt,name=pointee,proto3" json:"pointee,omitempty"`
+	Version uint32 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
+	Exists  bool   `protobuf:"varint,3,opt,name=exists,proto3" json:"exists,omitempty"`
+}
+
+func (m *QueryPointeeResponse) Reset()         { *m = QueryPointeeResponse{} }
+func (m *QueryPointeeResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryPointeeResponse) ProtoMessage()    {}
+func (*QueryPointeeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b422d72d032b01b, []int{11}
+}
+func (m *QueryPointeeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryPointeeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryPointeeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryPointeeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryPointeeResponse.Merge(m, src)
+}
+func (m *QueryPointeeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryPointeeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryPointeeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryPointeeResponse proto.InternalMessageInfo
+
+func (m *QueryPointeeResponse) GetPointee() string {
+	if m != nil {
+		return m.Pointee
+	}
+	return ""
+}
+
+func (m *QueryPointeeResponse) GetVersion() uint32 {
+	if m != nil {
+		return m.Version
+	}
+	return 0
+}
+
+func (m *QueryPointeeResponse) GetExists() bool {
+	if m != nil {
+		return m.Exists
+	}
+	return false
 }
 
 func init() {
-	proto.RegisterType((*QueryParamsRequest)(nil), "goeni.evm.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "goeni.evm.QueryParamsResponse")
+	proto.RegisterType((*QuerySeiAddressByEVMAddressRequest)(nil), "goeni.evm.QuerySeiAddressByEVMAddressRequest")
+	proto.RegisterType((*QuerySeiAddressByEVMAddressResponse)(nil), "goeni.evm.QuerySeiAddressByEVMAddressResponse")
+	proto.RegisterType((*QueryEVMAddressBySeiAddressRequest)(nil), "goeni.evm.QueryEVMAddressBySeiAddressRequest")
+	proto.RegisterType((*QueryEVMAddressBySeiAddressResponse)(nil), "goeni.evm.QueryEVMAddressBySeiAddressResponse")
+	proto.RegisterType((*QueryStaticCallRequest)(nil), "goeni.evm.QueryStaticCallRequest")
+	proto.RegisterType((*QueryStaticCallResponse)(nil), "goeni.evm.QueryStaticCallResponse")
+	proto.RegisterType((*QueryPointerRequest)(nil), "goeni.evm.QueryPointerRequest")
+	proto.RegisterType((*QueryPointerResponse)(nil), "goeni.evm.QueryPointerResponse")
+	proto.RegisterType((*QueryPointerVersionRequest)(nil), "goeni.evm.QueryPointerVersionRequest")
+	proto.RegisterType((*QueryPointerVersionResponse)(nil), "goeni.evm.QueryPointerVersionResponse")
+	proto.RegisterType((*QueryPointeeRequest)(nil), "goeni.evm.QueryPointeeRequest")
+	proto.RegisterType((*QueryPointeeResponse)(nil), "goeni.evm.QueryPointeeResponse")
 }
 
 func init() { proto.RegisterFile("goeni/evm/query.proto", fileDescriptor_8b422d72d032b01b) }
 
 var fileDescriptor_8b422d72d032b01b = []byte{
-	// 312 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x90, 0xc1, 0x4a, 0x03, 0x31,
-	0x10, 0x86, 0x77, 0x05, 0x0b, 0x5d, 0x4f, 0x8d, 0x55, 0xa4, 0xd4, 0x28, 0x45, 0x50, 0x0a, 0xdd,
-	0xd0, 0xea, 0x0b, 0xd8, 0xab, 0x17, 0xed, 0xd1, 0x5b, 0xb6, 0x0c, 0x69, 0xc0, 0x64, 0xd2, 0x26,
-	0x5d, 0xec, 0xd5, 0x27, 0x10, 0x7c, 0x09, 0x8f, 0x3e, 0x46, 0x8f, 0x05, 0x2f, 0x9e, 0x44, 0xba,
-	0x82, 0xaf, 0x21, 0x4d, 0x16, 0xb5, 0x14, 0x2f, 0x61, 0xf8, 0xe7, 0xfb, 0xff, 0x99, 0x49, 0xb2,
-	0x27, 0x10, 0xb4, 0x64, 0x90, 0x2b, 0x36, 0x9e, 0xc2, 0x64, 0x96, 0x9a, 0x09, 0x3a, 0x24, 0x55,
-	0x2f, 0xa7, 0x90, 0xab, 0x46, 0x8d, 0x2b, 0xa9, 0x91, 0xf9, 0x37, 0x74, 0x1b, 0x75, 0x81, 0x02,
-	0x7d, 0xc9, 0x56, 0x55, 0xa9, 0x36, 0x05, 0xa2, 0xb8, 0x03, 0xc6, 0x8d, 0x64, 0x5c, 0x6b, 0x74,
-	0xdc, 0x49, 0xd4, 0xb6, 0xec, 0xb6, 0x87, 0x68, 0x15, 0x5a, 0x96, 0x71, 0x0b, 0x61, 0x14, 0xcb,
-	0xbb, 0x19, 0x38, 0xde, 0x65, 0x86, 0x0b, 0xa9, 0x3d, 0x5c, 0xb2, 0xfb, 0xbf, 0x4b, 0x19, 0x3e,
-	0xe1, 0xaa, 0xcc, 0x68, 0xd5, 0x13, 0x72, 0xb3, 0x72, 0x5e, 0x7b, 0x71, 0x00, 0xe3, 0x29, 0x58,
-	0xd7, 0xba, 0x4a, 0x76, 0xd7, 0x54, 0x6b, 0x50, 0x5b, 0x20, 0x17, 0x49, 0x25, 0x98, 0x0f, 0xe2,
-	0xe3, 0xf8, 0x6c, 0xa7, 0x57, 0x4b, 0x7f, 0x6e, 0x4a, 0x03, 0xda, 0xaf, 0xce, 0xdf, 0x8f, 0xa2,
-	0xe7, 0xaf, 0x97, 0x76, 0x3c, 0x28, 0xd9, 0x5e, 0x9e, 0x6c, 0xfb, 0x30, 0xa2, 0x92, 0x4a, 0xa0,
-	0xc8, 0xe1, 0x1f, 0xe3, 0xe6, 0xf8, 0x06, 0xfd, 0xaf, 0x1d, 0xf6, 0x68, 0x9d, 0x3c, 0xbc, 0x7e,
-	0x3e, 0x6d, 0x51, 0xd2, 0x64, 0xa0, 0x65, 0x67, 0x38, 0xe2, 0x52, 0x33, 0x81, 0x9d, 0xf5, 0x03,
-	0xfb, 0x97, 0xf3, 0x25, 0x8d, 0x17, 0x4b, 0x1a, 0x7f, 0x2c, 0x69, 0xfc, 0x58, 0xd0, 0x68, 0x51,
-	0xd0, 0xe8, 0xad, 0xa0, 0xd1, 0xed, 0xa9, 0x90, 0x6e, 0x34, 0xcd, 0xd2, 0x21, 0xaa, 0xcd, 0x84,
-	0x7b, 0x9f, 0xe1, 0x66, 0x06, 0x6c, 0x56, 0xf1, 0x9f, 0x74, 0xfe, 0x1d, 0x00, 0x00, 0xff, 0xff,
-	0x9e, 0x09, 0xd3, 0x90, 0xd3, 0x01, 0x00, 0x00,
+	// 647 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xcf, 0x4f, 0xd4, 0x40,
+	0x14, 0xa6, 0x2b, 0xf2, 0xe3, 0x81, 0x1c, 0x46, 0x59, 0xd6, 0x02, 0x05, 0x6a, 0x50, 0x2e, 0xdb,
+	0x4d, 0xf0, 0x64, 0xe2, 0x05, 0x08, 0x07, 0x0f, 0x26, 0x5a, 0x15, 0x13, 0x2f, 0x4d, 0x69, 0x9f,
+	0xcb, 0x18, 0xb6, 0x53, 0x3a, 0xb3, 0x85, 0xbd, 0x7a, 0xf0, 0x6c, 0xe2, 0xc5, 0xf8, 0x17, 0x79,
+	0x24, 0xf1, 0xe2, 0xd1, 0x80, 0x7f, 0x88, 0xe9, 0x74, 0xda, 0x6d, 0xf7, 0x47, 0x17, 0xa3, 0xb7,
+	0xbe, 0xe9, 0x7b, 0xdf, 0xfb, 0xbe, 0xaf, 0x7d, 0x6f, 0x60, 0xb9, 0xcd, 0x30, 0xa0, 0x2d, 0x8c,
+	0x3b, 0xad, 0xb3, 0x2e, 0x46, 0x3d, 0x2b, 0x8c, 0x98, 0x60, 0x64, 0x5e, 0x1e, 0x5b, 0x18, 0x77,
+	0xf4, 0xb5, 0x36, 0x63, 0xed, 0x53, 0x6c, 0xb9, 0x21, 0x6d, 0xb9, 0x41, 0xc0, 0x84, 0x2b, 0x28,
+	0x0b, 0x78, 0x9a, 0xa8, 0x17, 0xea, 0x31, 0xe8, 0x76, 0xd4, 0xb1, 0x79, 0x08, 0xe6, 0xcb, 0x04,
+	0xee, 0x15, 0xd2, 0x3d, 0xdf, 0x8f, 0x90, 0xf3, 0xfd, 0xde, 0xe1, 0xd1, 0x73, 0xf5, 0x6c, 0xe3,
+	0x59, 0x17, 0xb9, 0x20, 0x1b, 0xb0, 0x80, 0x71, 0xc7, 0x71, 0xd3, 0xd3, 0x86, 0xb6, 0xa9, 0xed,
+	0xcc, 0xdb, 0x80, 0x71, 0x47, 0xe5, 0x99, 0xef, 0xe1, 0x41, 0x25, 0x0c, 0x0f, 0x59, 0xc0, 0x31,
+	0xc1, 0xe1, 0x48, 0x07, 0x71, 0x78, 0x5e, 0x44, 0x0c, 0x00, 0x97, 0x73, 0xe6, 0x51, 0x57, 0xa0,
+	0xdf, 0xa8, 0x6d, 0x6a, 0x3b, 0x73, 0x76, 0xe1, 0x24, 0xa7, 0xdb, 0xc7, 0xde, 0x2f, 0xf4, 0x2c,
+	0xd0, 0xad, 0x6c, 0x93, 0xd3, 0x1d, 0x07, 0xd3, 0xa7, 0x5b, 0x29, 0x7b, 0x22, 0xdd, 0xa7, 0x50,
+	0x4f, 0x6d, 0x49, 0xbe, 0x85, 0x77, 0xe0, 0x9e, 0x9e, 0x66, 0x14, 0x09, 0x4c, 0xfb, 0xae, 0x70,
+	0x25, 0xe6, 0xa2, 0x2d, 0x9f, 0xc9, 0x12, 0xd4, 0x04, 0x93, 0x28, 0xf3, 0x76, 0x4d, 0x30, 0xb3,
+	0x09, 0x2b, 0x43, 0xd5, 0x8a, 0xd9, 0x88, 0x72, 0xf3, 0x03, 0xdc, 0x95, 0xe9, 0x2f, 0x18, 0x0d,
+	0x04, 0x46, 0x59, 0xa7, 0x27, 0xb0, 0x18, 0xa6, 0x27, 0x8e, 0xe8, 0x85, 0x28, 0x4b, 0x96, 0x76,
+	0xeb, 0x56, 0xfe, 0xe3, 0x58, 0xaa, 0xe0, 0x75, 0x2f, 0x44, 0x7b, 0x21, 0xec, 0x07, 0xa4, 0x01,
+	0xb3, 0x69, 0x88, 0x8a, 0x55, 0x16, 0x9a, 0xc7, 0x70, 0xaf, 0xdc, 0x4b, 0xf1, 0xca, 0x2b, 0x22,
+	0xe5, 0x56, 0x16, 0x26, 0x6f, 0x62, 0x8c, 0x38, 0x65, 0x81, 0xc4, 0xba, 0x63, 0x67, 0x21, 0xa9,
+	0xc3, 0x0c, 0x5e, 0x50, 0x2e, 0x78, 0xe3, 0x96, 0x34, 0x50, 0x45, 0xe6, 0x5b, 0xd0, 0x8b, 0x3d,
+	0x8e, 0xd2, 0xf4, 0x7f, 0x97, 0x65, 0xbe, 0x81, 0xd5, 0x91, 0xc0, 0x7d, 0x0d, 0x19, 0x53, 0xad,
+	0xcc, 0x74, 0x0d, 0xc0, 0x3b, 0x77, 0x3c, 0xe6, 0xa3, 0x43, 0xd3, 0xcf, 0x3d, 0x6d, 0xcf, 0x79,
+	0xe7, 0x07, 0xcc, 0xc7, 0x67, 0xfe, 0x80, 0xff, 0xf8, 0x3f, 0xfd, 0x8f, 0xca, 0xfe, 0x47, 0x03,
+	0xfe, 0xe3, 0xb0, 0xff, 0x58, 0xf6, 0x1f, 0xff, 0xde, 0xff, 0xdd, 0xaf, 0x33, 0x70, 0x5b, 0x36,
+	0x21, 0xdf, 0x34, 0xa8, 0x8f, 0x9e, 0x6c, 0xd2, 0x2c, 0xe8, 0x98, 0xbc, 0x48, 0x74, 0xeb, 0xa6,
+	0xe9, 0xa9, 0x1e, 0x73, 0xeb, 0xe3, 0x8f, 0xdf, 0x5f, 0x6a, 0xab, 0xe4, 0x7e, 0x0b, 0x03, 0xea,
+	0x9d, 0xb8, 0x34, 0x90, 0x1b, 0xac, 0x30, 0xdd, 0x92, 0xdc, 0xe8, 0x39, 0x1e, 0x26, 0x57, 0xb9,
+	0x36, 0x86, 0xc9, 0x55, 0xaf, 0x87, 0x71, 0xe4, 0x0a, 0x2b, 0x83, 0xc4, 0x00, 0xfd, 0xe9, 0x25,
+	0x5b, 0x43, 0xea, 0x07, 0xf7, 0x82, 0x6e, 0x56, 0xa5, 0x4c, 0x30, 0x45, 0x66, 0x3a, 0x5e, 0xd2,
+	0x89, 0xc2, 0xac, 0xfa, 0xab, 0x88, 0x31, 0x88, 0x58, 0xde, 0x0f, 0xfa, 0xc6, 0xd8, 0xf7, 0xaa,
+	0xdd, 0xba, 0x6c, 0xb7, 0x42, 0x96, 0xcb, 0xed, 0xb2, 0xc1, 0xfe, 0xa4, 0xc1, 0x52, 0x79, 0x92,
+	0xc8, 0xf6, 0x18, 0xc8, 0xf2, 0x08, 0xeb, 0x0f, 0x27, 0xa5, 0x29, 0x02, 0xdb, 0x92, 0xc0, 0x06,
+	0x59, 0x1f, 0x49, 0xc0, 0xc9, 0xfe, 0xe3, 0x5c, 0x33, 0x8e, 0xd3, 0x8c, 0x13, 0x34, 0xe3, 0xcd,
+	0x34, 0xe3, 0xfe, 0xde, 0xf7, 0x2b, 0x43, 0xbb, 0xbc, 0x32, 0xb4, 0x5f, 0x57, 0x86, 0xf6, 0xf9,
+	0xda, 0x98, 0xba, 0xbc, 0x36, 0xa6, 0x7e, 0x5e, 0x1b, 0x53, 0xef, 0x1e, 0xb5, 0xa9, 0x38, 0xe9,
+	0x1e, 0x5b, 0x1e, 0x4b, 0xee, 0x59, 0xda, 0x4c, 0x6b, 0xdb, 0xac, 0x99, 0x5c, 0xbe, 0x17, 0x12,
+	0x24, 0xd9, 0x02, 0xfc, 0x78, 0x46, 0xde, 0xbf, 0x8f, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0xc3,
+	0x8f, 0xb6, 0x5a, 0xd8, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -158,8 +710,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Parameters queries the parameters of the module.
-	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	SeiAddressByEVMAddress(ctx context.Context, in *QuerySeiAddressByEVMAddressRequest, opts ...grpc.CallOption) (*QuerySeiAddressByEVMAddressResponse, error)
+	EVMAddressBySeiAddress(ctx context.Context, in *QueryEVMAddressBySeiAddressRequest, opts ...grpc.CallOption) (*QueryEVMAddressBySeiAddressResponse, error)
+	StaticCall(ctx context.Context, in *QueryStaticCallRequest, opts ...grpc.CallOption) (*QueryStaticCallResponse, error)
+	Pointer(ctx context.Context, in *QueryPointerRequest, opts ...grpc.CallOption) (*QueryPointerResponse, error)
+	PointerVersion(ctx context.Context, in *QueryPointerVersionRequest, opts ...grpc.CallOption) (*QueryPointerVersionResponse, error)
+	Pointee(ctx context.Context, in *QueryPointeeRequest, opts ...grpc.CallOption) (*QueryPointeeResponse, error)
 }
 
 type queryClient struct {
@@ -170,9 +726,54 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
-	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/goeni.evm.Query/Params", in, out, opts...)
+func (c *queryClient) SeiAddressByEVMAddress(ctx context.Context, in *QuerySeiAddressByEVMAddressRequest, opts ...grpc.CallOption) (*QuerySeiAddressByEVMAddressResponse, error) {
+	out := new(QuerySeiAddressByEVMAddressResponse)
+	err := c.cc.Invoke(ctx, "/goeni.evm.Query/SeiAddressByEVMAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) EVMAddressBySeiAddress(ctx context.Context, in *QueryEVMAddressBySeiAddressRequest, opts ...grpc.CallOption) (*QueryEVMAddressBySeiAddressResponse, error) {
+	out := new(QueryEVMAddressBySeiAddressResponse)
+	err := c.cc.Invoke(ctx, "/goeni.evm.Query/EVMAddressBySeiAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) StaticCall(ctx context.Context, in *QueryStaticCallRequest, opts ...grpc.CallOption) (*QueryStaticCallResponse, error) {
+	out := new(QueryStaticCallResponse)
+	err := c.cc.Invoke(ctx, "/goeni.evm.Query/StaticCall", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Pointer(ctx context.Context, in *QueryPointerRequest, opts ...grpc.CallOption) (*QueryPointerResponse, error) {
+	out := new(QueryPointerResponse)
+	err := c.cc.Invoke(ctx, "/goeni.evm.Query/Pointer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) PointerVersion(ctx context.Context, in *QueryPointerVersionRequest, opts ...grpc.CallOption) (*QueryPointerVersionResponse, error) {
+	out := new(QueryPointerVersionResponse)
+	err := c.cc.Invoke(ctx, "/goeni.evm.Query/PointerVersion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Pointee(ctx context.Context, in *QueryPointeeRequest, opts ...grpc.CallOption) (*QueryPointeeResponse, error) {
+	out := new(QueryPointeeResponse)
+	err := c.cc.Invoke(ctx, "/goeni.evm.Query/Pointee", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -181,36 +782,145 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Parameters queries the parameters of the module.
-	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	SeiAddressByEVMAddress(context.Context, *QuerySeiAddressByEVMAddressRequest) (*QuerySeiAddressByEVMAddressResponse, error)
+	EVMAddressBySeiAddress(context.Context, *QueryEVMAddressBySeiAddressRequest) (*QueryEVMAddressBySeiAddressResponse, error)
+	StaticCall(context.Context, *QueryStaticCallRequest) (*QueryStaticCallResponse, error)
+	Pointer(context.Context, *QueryPointerRequest) (*QueryPointerResponse, error)
+	PointerVersion(context.Context, *QueryPointerVersionRequest) (*QueryPointerVersionResponse, error)
+	Pointee(context.Context, *QueryPointeeRequest) (*QueryPointeeResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+func (*UnimplementedQueryServer) SeiAddressByEVMAddress(ctx context.Context, req *QuerySeiAddressByEVMAddressRequest) (*QuerySeiAddressByEVMAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SeiAddressByEVMAddress not implemented")
+}
+func (*UnimplementedQueryServer) EVMAddressBySeiAddress(ctx context.Context, req *QueryEVMAddressBySeiAddressRequest) (*QueryEVMAddressBySeiAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EVMAddressBySeiAddress not implemented")
+}
+func (*UnimplementedQueryServer) StaticCall(ctx context.Context, req *QueryStaticCallRequest) (*QueryStaticCallResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StaticCall not implemented")
+}
+func (*UnimplementedQueryServer) Pointer(ctx context.Context, req *QueryPointerRequest) (*QueryPointerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pointer not implemented")
+}
+func (*UnimplementedQueryServer) PointerVersion(ctx context.Context, req *QueryPointerVersionRequest) (*QueryPointerVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PointerVersion not implemented")
+}
+func (*UnimplementedQueryServer) Pointee(ctx context.Context, req *QueryPointeeRequest) (*QueryPointeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pointee not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
 }
 
-func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryParamsRequest)
+func _Query_SeiAddressByEVMAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySeiAddressByEVMAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Params(ctx, in)
+		return srv.(QueryServer).SeiAddressByEVMAddress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/goeni.evm.Query/Params",
+		FullMethod: "/goeni.evm.Query/SeiAddressByEVMAddress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
+		return srv.(QueryServer).SeiAddressByEVMAddress(ctx, req.(*QuerySeiAddressByEVMAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_EVMAddressBySeiAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEVMAddressBySeiAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EVMAddressBySeiAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goeni.evm.Query/EVMAddressBySeiAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EVMAddressBySeiAddress(ctx, req.(*QueryEVMAddressBySeiAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_StaticCall_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryStaticCallRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).StaticCall(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goeni.evm.Query/StaticCall",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).StaticCall(ctx, req.(*QueryStaticCallRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Pointer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPointerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Pointer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goeni.evm.Query/Pointer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Pointer(ctx, req.(*QueryPointerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_PointerVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPointerVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PointerVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goeni.evm.Query/PointerVersion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PointerVersion(ctx, req.(*QueryPointerVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Pointee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPointeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Pointee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goeni.evm.Query/Pointee",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Pointee(ctx, req.(*QueryPointeeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -221,15 +931,35 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Params",
-			Handler:    _Query_Params_Handler,
+			MethodName: "SeiAddressByEVMAddress",
+			Handler:    _Query_SeiAddressByEVMAddress_Handler,
+		},
+		{
+			MethodName: "EVMAddressBySeiAddress",
+			Handler:    _Query_EVMAddressBySeiAddress_Handler,
+		},
+		{
+			MethodName: "StaticCall",
+			Handler:    _Query_StaticCall_Handler,
+		},
+		{
+			MethodName: "Pointer",
+			Handler:    _Query_Pointer_Handler,
+		},
+		{
+			MethodName: "PointerVersion",
+			Handler:    _Query_PointerVersion_Handler,
+		},
+		{
+			MethodName: "Pointee",
+			Handler:    _Query_Pointee_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "goeni/evm/query.proto",
 }
 
-func (m *QueryParamsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QuerySeiAddressByEVMAddressRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -239,20 +969,27 @@ func (m *QueryParamsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryParamsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QuerySeiAddressByEVMAddressRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryParamsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QuerySeiAddressByEVMAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.EvmAddress) > 0 {
+		i -= len(m.EvmAddress)
+		copy(dAtA[i:], m.EvmAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.EvmAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryParamsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QuerySeiAddressByEVMAddressResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -262,26 +999,391 @@ func (m *QueryParamsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QuerySeiAddressByEVMAddressResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QuerySeiAddressByEVMAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
+	if m.Associated {
+		i--
+		if m.Associated {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
 		}
-		i -= size
-		i = encodeVarintQuery(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x10
 	}
-	i--
-	dAtA[i] = 0xa
+	if len(m.SeiAddress) > 0 {
+		i -= len(m.SeiAddress)
+		copy(dAtA[i:], m.SeiAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.SeiAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEVMAddressBySeiAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEVMAddressBySeiAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEVMAddressBySeiAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.SeiAddress) > 0 {
+		i -= len(m.SeiAddress)
+		copy(dAtA[i:], m.SeiAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.SeiAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEVMAddressBySeiAddressResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEVMAddressBySeiAddressResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEVMAddressBySeiAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Associated {
+		i--
+		if m.Associated {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.EvmAddress) > 0 {
+		i -= len(m.EvmAddress)
+		copy(dAtA[i:], m.EvmAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.EvmAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryStaticCallRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryStaticCallRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryStaticCallRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.To) > 0 {
+		i -= len(m.To)
+		copy(dAtA[i:], m.To)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.To)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Data)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryStaticCallResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryStaticCallResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryStaticCallResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Data)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPointerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPointerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPointerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Pointee) > 0 {
+		i -= len(m.Pointee)
+		copy(dAtA[i:], m.Pointee)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Pointee)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PointerType != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PointerType))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPointerResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPointerResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPointerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Exists {
+		i--
+		if m.Exists {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Version != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Version))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Pointer) > 0 {
+		i -= len(m.Pointer)
+		copy(dAtA[i:], m.Pointer)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Pointer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPointerVersionRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPointerVersionRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPointerVersionRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.PointerType != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PointerType))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPointerVersionResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPointerVersionResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPointerVersionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.CwCodeId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.CwCodeId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Version != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Version))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPointeeRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPointeeRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPointeeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Pointer) > 0 {
+		i -= len(m.Pointer)
+		copy(dAtA[i:], m.Pointer)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Pointer)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.PointerType != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.PointerType))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryPointeeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryPointeeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryPointeeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Exists {
+		i--
+		if m.Exists {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Version != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Version))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Pointee) > 0 {
+		i -= len(m.Pointee)
+		copy(dAtA[i:], m.Pointee)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Pointee)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -296,23 +1398,188 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *QueryParamsRequest) Size() (n int) {
+func (m *QuerySeiAddressByEVMAddressRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	l = len(m.EvmAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
-func (m *QueryParamsResponse) Size() (n int) {
+func (m *QuerySeiAddressByEVMAddressResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.Params.Size()
-	n += 1 + l + sovQuery(uint64(l))
+	l = len(m.SeiAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Associated {
+		n += 2
+	}
+	return n
+}
+
+func (m *QueryEVMAddressBySeiAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SeiAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryEVMAddressBySeiAddressResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.EvmAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Associated {
+		n += 2
+	}
+	return n
+}
+
+func (m *QueryStaticCallRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.To)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryStaticCallResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryPointerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PointerType != 0 {
+		n += 1 + sovQuery(uint64(m.PointerType))
+	}
+	l = len(m.Pointee)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryPointerResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Pointer)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Version != 0 {
+		n += 1 + sovQuery(uint64(m.Version))
+	}
+	if m.Exists {
+		n += 2
+	}
+	return n
+}
+
+func (m *QueryPointerVersionRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PointerType != 0 {
+		n += 1 + sovQuery(uint64(m.PointerType))
+	}
+	return n
+}
+
+func (m *QueryPointerVersionResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Version != 0 {
+		n += 1 + sovQuery(uint64(m.Version))
+	}
+	if m.CwCodeId != 0 {
+		n += 1 + sovQuery(uint64(m.CwCodeId))
+	}
+	return n
+}
+
+func (m *QueryPointeeRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PointerType != 0 {
+		n += 1 + sovQuery(uint64(m.PointerType))
+	}
+	l = len(m.Pointer)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryPointeeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Pointee)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Version != 0 {
+		n += 1 + sovQuery(uint64(m.Version))
+	}
+	if m.Exists {
+		n += 2
+	}
 	return n
 }
 
@@ -322,7 +1589,7 @@ func sovQuery(x uint64) (n int) {
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
+func (m *QuerySeiAddressByEVMAddressRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -345,12 +1612,44 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryParamsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QuerySeiAddressByEVMAddressRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryParamsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QuerySeiAddressByEVMAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EvmAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EvmAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -372,7 +1671,7 @@ func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
+func (m *QuerySeiAddressByEVMAddressResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -395,17 +1694,17 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryParamsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QuerySeiAddressByEVMAddressResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QuerySeiAddressByEVMAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -415,25 +1714,1029 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.SeiAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Associated", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Associated = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
 				return err
 			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEVMAddressBySeiAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEVMAddressBySeiAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEVMAddressBySeiAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SeiAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEVMAddressBySeiAddressResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEVMAddressBySeiAddressResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEVMAddressBySeiAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EvmAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EvmAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Associated", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Associated = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryStaticCallRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryStaticCallRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryStaticCallRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.To = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryStaticCallResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryStaticCallResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryStaticCallResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPointerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPointerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPointerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PointerType", wireType)
+			}
+			m.PointerType = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PointerType |= PointerType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pointee", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Pointee = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPointerResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPointerResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPointerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pointer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Pointer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+			}
+			m.Version = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Version |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Exists", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Exists = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPointerVersionRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPointerVersionRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPointerVersionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PointerType", wireType)
+			}
+			m.PointerType = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PointerType |= PointerType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPointerVersionResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPointerVersionResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPointerVersionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+			}
+			m.Version = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Version |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CwCodeId", wireType)
+			}
+			m.CwCodeId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CwCodeId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPointeeRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPointeeRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPointeeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PointerType", wireType)
+			}
+			m.PointerType = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PointerType |= PointerType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pointer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Pointer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryPointeeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryPointeeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryPointeeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pointee", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Pointee = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+			}
+			m.Version = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Version |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Exists", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Exists = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

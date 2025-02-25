@@ -8,7 +8,6 @@ package evm
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,16 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName = "/goeni.evm.Msg/UpdateParams"
+	Msg_EVMTransaction_FullMethodName           = "/goeni.evm.Msg/EVMTransaction"
+	Msg_Send_FullMethodName                     = "/goeni.evm.Msg/Send"
+	Msg_RegisterPointer_FullMethodName          = "/goeni.evm.Msg/RegisterPointer"
+	Msg_AssociateContractAddress_FullMethodName = "/goeni.evm.Msg/AssociateContractAddress"
+	Msg_Associate_FullMethodName                = "/goeni.evm.Msg/Associate"
 )
 
 // MsgClient is the client API for Msg service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
-	// UpdateParams defines a (governance) operation for updating the module
-	// parameters. The authority defaults to the x/gov module account.
-	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	EVMTransaction(ctx context.Context, in *MsgEVMTransaction, opts ...grpc.CallOption) (*MsgEVMTransactionResponse, error)
+	Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error)
+	RegisterPointer(ctx context.Context, in *MsgRegisterPointer, opts ...grpc.CallOption) (*MsgRegisterPointerResponse, error)
+	AssociateContractAddress(ctx context.Context, in *MsgAssociateContractAddress, opts ...grpc.CallOption) (*MsgAssociateContractAddressResponse, error)
+	Associate(ctx context.Context, in *MsgAssociate, opts ...grpc.CallOption) (*MsgAssociateResponse, error)
 }
 
 type msgClient struct {
@@ -40,9 +45,45 @@ func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
-	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
+func (c *msgClient) EVMTransaction(ctx context.Context, in *MsgEVMTransaction, opts ...grpc.CallOption) (*MsgEVMTransactionResponse, error) {
+	out := new(MsgEVMTransactionResponse)
+	err := c.cc.Invoke(ctx, Msg_EVMTransaction_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error) {
+	out := new(MsgSendResponse)
+	err := c.cc.Invoke(ctx, Msg_Send_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RegisterPointer(ctx context.Context, in *MsgRegisterPointer, opts ...grpc.CallOption) (*MsgRegisterPointerResponse, error) {
+	out := new(MsgRegisterPointerResponse)
+	err := c.cc.Invoke(ctx, Msg_RegisterPointer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AssociateContractAddress(ctx context.Context, in *MsgAssociateContractAddress, opts ...grpc.CallOption) (*MsgAssociateContractAddressResponse, error) {
+	out := new(MsgAssociateContractAddressResponse)
+	err := c.cc.Invoke(ctx, Msg_AssociateContractAddress_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) Associate(ctx context.Context, in *MsgAssociate, opts ...grpc.CallOption) (*MsgAssociateResponse, error) {
+	out := new(MsgAssociateResponse)
+	err := c.cc.Invoke(ctx, Msg_Associate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,9 +94,11 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
 type MsgServer interface {
-	// UpdateParams defines a (governance) operation for updating the module
-	// parameters. The authority defaults to the x/gov module account.
-	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	EVMTransaction(context.Context, *MsgEVMTransaction) (*MsgEVMTransactionResponse, error)
+	Send(context.Context, *MsgSend) (*MsgSendResponse, error)
+	RegisterPointer(context.Context, *MsgRegisterPointer) (*MsgRegisterPointerResponse, error)
+	AssociateContractAddress(context.Context, *MsgAssociateContractAddress) (*MsgAssociateContractAddressResponse, error)
+	Associate(context.Context, *MsgAssociate) (*MsgAssociateResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -63,8 +106,20 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+func (UnimplementedMsgServer) EVMTransaction(context.Context, *MsgEVMTransaction) (*MsgEVMTransactionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EVMTransaction not implemented")
+}
+func (UnimplementedMsgServer) Send(context.Context, *MsgSend) (*MsgSendResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
+}
+func (UnimplementedMsgServer) RegisterPointer(context.Context, *MsgRegisterPointer) (*MsgRegisterPointerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterPointer not implemented")
+}
+func (UnimplementedMsgServer) AssociateContractAddress(context.Context, *MsgAssociateContractAddress) (*MsgAssociateContractAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssociateContractAddress not implemented")
+}
+func (UnimplementedMsgServer) Associate(context.Context, *MsgAssociate) (*MsgAssociateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Associate not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -79,20 +134,92 @@ func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
 }
 
-func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateParams)
+func _Msg_EVMTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEVMTransaction)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateParams(ctx, in)
+		return srv.(MsgServer).EVMTransaction(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateParams_FullMethodName,
+		FullMethod: Msg_EVMTransaction_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateParams(ctx, req.(*MsgUpdateParams))
+		return srv.(MsgServer).EVMTransaction(ctx, req.(*MsgEVMTransaction))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_Send_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSend)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Send(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_Send_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Send(ctx, req.(*MsgSend))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RegisterPointer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegisterPointer)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RegisterPointer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_RegisterPointer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RegisterPointer(ctx, req.(*MsgRegisterPointer))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AssociateContractAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAssociateContractAddress)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AssociateContractAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AssociateContractAddress_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AssociateContractAddress(ctx, req.(*MsgAssociateContractAddress))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_Associate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAssociate)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Associate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_Associate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Associate(ctx, req.(*MsgAssociate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -105,8 +232,24 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UpdateParams",
-			Handler:    _Msg_UpdateParams_Handler,
+			MethodName: "EVMTransaction",
+			Handler:    _Msg_EVMTransaction_Handler,
+		},
+		{
+			MethodName: "Send",
+			Handler:    _Msg_Send_Handler,
+		},
+		{
+			MethodName: "RegisterPointer",
+			Handler:    _Msg_RegisterPointer_Handler,
+		},
+		{
+			MethodName: "AssociateContractAddress",
+			Handler:    _Msg_AssociateContractAddress_Handler,
+		},
+		{
+			MethodName: "Associate",
+			Handler:    _Msg_Associate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

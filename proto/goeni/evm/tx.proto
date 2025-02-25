@@ -25,8 +25,10 @@ service Msg {
 }
 
 message MsgEVMTransaction {
-  google.protobuf.Any data = 1;
-  bytes derived = 2 [(gogoproto.customtype) = "github.com/eni-chain/go-eni/x/evm/derived.Derived"];
+  option (cosmos.msg.v1.signer) = "sender";
+  string sender = 1; //it is derived.SenderSeiAddr
+  google.protobuf.Any data = 2;
+  bytes derived = 3 [(gogoproto.customtype) = "github.com/eni-chain/go-eni/x/evm/derived.Derived"];
 }
 
 message MsgEVMTransactionResponse {
@@ -38,6 +40,7 @@ message MsgEVMTransactionResponse {
 }
 
 message MsgInternalEVMCall {
+  option (cosmos.msg.v1.signer) = "sender";
   string sender = 1;
   string value = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int"
@@ -49,6 +52,7 @@ message MsgInternalEVMCall {
 message MsgInternalEVMCallResponse {}
 
 message MsgInternalEVMDelegateCall {
+  option (cosmos.msg.v1.signer) = "sender";
   string sender = 1;
   bytes codeHash = 2;
   string to = 3;
@@ -59,6 +63,7 @@ message MsgInternalEVMDelegateCall {
 message MsgInternalEVMDelegateCallResponse {}
 
 message MsgSend {
+  option (cosmos.msg.v1.signer) = "from_address";
   string   from_address                    = 1;
   string   to_address                      = 2;
   repeated cosmos.base.v1beta1.Coin amount = 3
@@ -68,6 +73,7 @@ message MsgSend {
 message MsgSendResponse {}
 
 message MsgRegisterPointer {
+  option (cosmos.msg.v1.signer) = "sender";
   string sender = 1;
   PointerType pointer_type = 2;
   string erc_address = 3;
@@ -78,6 +84,7 @@ message MsgRegisterPointerResponse {
 }
 
 message MsgAssociateContractAddress {
+  option (cosmos.msg.v1.signer) = "sender";
   string sender = 1;
   string address = 2;
 }
@@ -85,6 +92,7 @@ message MsgAssociateContractAddress {
 message MsgAssociateContractAddressResponse {}
 
 message MsgAssociate {
+  option (cosmos.msg.v1.signer) = "sender";
   string sender = 1;
   string custom_message = 2;
 }

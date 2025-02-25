@@ -3,25 +3,87 @@ package evm
 
 import (
 	fmt "fmt"
-	io "io"
-	reflect "reflect"
-	sync "sync"
-
-	_ "cosmossdk.io/api/amino"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	io "io"
+	reflect "reflect"
+	sync "sync"
 )
 
+var _ protoreflect.List = (*_Params_8_list)(nil)
+
+type _Params_8_list struct {
+	list *[][]byte
+}
+
+func (x *_Params_8_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Params_8_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfBytes((*x.list)[i])
+}
+
+func (x *_Params_8_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Bytes()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Params_8_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Bytes()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Params_8_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Params at list field WhitelistedCwCodeHashesForDelegateCall as it is not of Message kind"))
+}
+
+func (x *_Params_8_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Params_8_list) NewElement() protoreflect.Value {
+	var v []byte
+	return protoreflect.ValueOfBytes(v)
+}
+
+func (x *_Params_8_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_Params protoreflect.MessageDescriptor
+	md_Params                                              protoreflect.MessageDescriptor
+	fd_Params_priority_normalizer                          protoreflect.FieldDescriptor
+	fd_Params_base_fee_per_gas                             protoreflect.FieldDescriptor
+	fd_Params_minimum_fee_per_gas                          protoreflect.FieldDescriptor
+	fd_Params_whitelisted_cw_code_hashes_for_delegate_call protoreflect.FieldDescriptor
+	fd_Params_deliver_tx_hook_wasm_gas_limit               protoreflect.FieldDescriptor
+	fd_Params_max_dynamic_base_fee_upward_adjustment       protoreflect.FieldDescriptor
+	fd_Params_max_dynamic_base_fee_downward_adjustment     protoreflect.FieldDescriptor
+	fd_Params_target_gas_used_per_block                    protoreflect.FieldDescriptor
+	fd_Params_maximum_fee_per_gas                          protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_params_proto_init()
 	md_Params = File_goeni_evm_params_proto.Messages().ByName("Params")
+	fd_Params_priority_normalizer = md_Params.Fields().ByName("priority_normalizer")
+	fd_Params_base_fee_per_gas = md_Params.Fields().ByName("base_fee_per_gas")
+	fd_Params_minimum_fee_per_gas = md_Params.Fields().ByName("minimum_fee_per_gas")
+	fd_Params_whitelisted_cw_code_hashes_for_delegate_call = md_Params.Fields().ByName("whitelisted_cw_code_hashes_for_delegate_call")
+	fd_Params_deliver_tx_hook_wasm_gas_limit = md_Params.Fields().ByName("deliver_tx_hook_wasm_gas_limit")
+	fd_Params_max_dynamic_base_fee_upward_adjustment = md_Params.Fields().ByName("max_dynamic_base_fee_upward_adjustment")
+	fd_Params_max_dynamic_base_fee_downward_adjustment = md_Params.Fields().ByName("max_dynamic_base_fee_downward_adjustment")
+	fd_Params_target_gas_used_per_block = md_Params.Fields().ByName("target_gas_used_per_block")
+	fd_Params_maximum_fee_per_gas = md_Params.Fields().ByName("maximum_fee_per_gas")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -89,6 +151,60 @@ func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.PriorityNormalizer != "" {
+		value := protoreflect.ValueOfString(x.PriorityNormalizer)
+		if !f(fd_Params_priority_normalizer, value) {
+			return
+		}
+	}
+	if x.BaseFeePerGas != "" {
+		value := protoreflect.ValueOfString(x.BaseFeePerGas)
+		if !f(fd_Params_base_fee_per_gas, value) {
+			return
+		}
+	}
+	if x.MinimumFeePerGas != "" {
+		value := protoreflect.ValueOfString(x.MinimumFeePerGas)
+		if !f(fd_Params_minimum_fee_per_gas, value) {
+			return
+		}
+	}
+	if len(x.WhitelistedCwCodeHashesForDelegateCall) != 0 {
+		value := protoreflect.ValueOfList(&_Params_8_list{list: &x.WhitelistedCwCodeHashesForDelegateCall})
+		if !f(fd_Params_whitelisted_cw_code_hashes_for_delegate_call, value) {
+			return
+		}
+	}
+	if x.DeliverTxHookWasmGasLimit != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.DeliverTxHookWasmGasLimit)
+		if !f(fd_Params_deliver_tx_hook_wasm_gas_limit, value) {
+			return
+		}
+	}
+	if x.MaxDynamicBaseFeeUpwardAdjustment != "" {
+		value := protoreflect.ValueOfString(x.MaxDynamicBaseFeeUpwardAdjustment)
+		if !f(fd_Params_max_dynamic_base_fee_upward_adjustment, value) {
+			return
+		}
+	}
+	if x.MaxDynamicBaseFeeDownwardAdjustment != "" {
+		value := protoreflect.ValueOfString(x.MaxDynamicBaseFeeDownwardAdjustment)
+		if !f(fd_Params_max_dynamic_base_fee_downward_adjustment, value) {
+			return
+		}
+	}
+	if x.TargetGasUsedPerBlock != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.TargetGasUsedPerBlock)
+		if !f(fd_Params_target_gas_used_per_block, value) {
+			return
+		}
+	}
+	if x.MaximumFeePerGas != "" {
+		value := protoreflect.ValueOfString(x.MaximumFeePerGas)
+		if !f(fd_Params_maximum_fee_per_gas, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -104,6 +220,24 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
+	case "goeni.evm.Params.priority_normalizer":
+		return x.PriorityNormalizer != ""
+	case "goeni.evm.Params.base_fee_per_gas":
+		return x.BaseFeePerGas != ""
+	case "goeni.evm.Params.minimum_fee_per_gas":
+		return x.MinimumFeePerGas != ""
+	case "goeni.evm.Params.whitelisted_cw_code_hashes_for_delegate_call":
+		return len(x.WhitelistedCwCodeHashesForDelegateCall) != 0
+	case "goeni.evm.Params.deliver_tx_hook_wasm_gas_limit":
+		return x.DeliverTxHookWasmGasLimit != uint64(0)
+	case "goeni.evm.Params.max_dynamic_base_fee_upward_adjustment":
+		return x.MaxDynamicBaseFeeUpwardAdjustment != ""
+	case "goeni.evm.Params.max_dynamic_base_fee_downward_adjustment":
+		return x.MaxDynamicBaseFeeDownwardAdjustment != ""
+	case "goeni.evm.Params.target_gas_used_per_block":
+		return x.TargetGasUsedPerBlock != uint64(0)
+	case "goeni.evm.Params.maximum_fee_per_gas":
+		return x.MaximumFeePerGas != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -120,6 +254,24 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
+	case "goeni.evm.Params.priority_normalizer":
+		x.PriorityNormalizer = ""
+	case "goeni.evm.Params.base_fee_per_gas":
+		x.BaseFeePerGas = ""
+	case "goeni.evm.Params.minimum_fee_per_gas":
+		x.MinimumFeePerGas = ""
+	case "goeni.evm.Params.whitelisted_cw_code_hashes_for_delegate_call":
+		x.WhitelistedCwCodeHashesForDelegateCall = nil
+	case "goeni.evm.Params.deliver_tx_hook_wasm_gas_limit":
+		x.DeliverTxHookWasmGasLimit = uint64(0)
+	case "goeni.evm.Params.max_dynamic_base_fee_upward_adjustment":
+		x.MaxDynamicBaseFeeUpwardAdjustment = ""
+	case "goeni.evm.Params.max_dynamic_base_fee_downward_adjustment":
+		x.MaxDynamicBaseFeeDownwardAdjustment = ""
+	case "goeni.evm.Params.target_gas_used_per_block":
+		x.TargetGasUsedPerBlock = uint64(0)
+	case "goeni.evm.Params.maximum_fee_per_gas":
+		x.MaximumFeePerGas = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -136,6 +288,36 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
+	case "goeni.evm.Params.priority_normalizer":
+		value := x.PriorityNormalizer
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.Params.base_fee_per_gas":
+		value := x.BaseFeePerGas
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.Params.minimum_fee_per_gas":
+		value := x.MinimumFeePerGas
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.Params.whitelisted_cw_code_hashes_for_delegate_call":
+		if len(x.WhitelistedCwCodeHashesForDelegateCall) == 0 {
+			return protoreflect.ValueOfList(&_Params_8_list{})
+		}
+		listValue := &_Params_8_list{list: &x.WhitelistedCwCodeHashesForDelegateCall}
+		return protoreflect.ValueOfList(listValue)
+	case "goeni.evm.Params.deliver_tx_hook_wasm_gas_limit":
+		value := x.DeliverTxHookWasmGasLimit
+		return protoreflect.ValueOfUint64(value)
+	case "goeni.evm.Params.max_dynamic_base_fee_upward_adjustment":
+		value := x.MaxDynamicBaseFeeUpwardAdjustment
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.Params.max_dynamic_base_fee_downward_adjustment":
+		value := x.MaxDynamicBaseFeeDownwardAdjustment
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.Params.target_gas_used_per_block":
+		value := x.TargetGasUsedPerBlock
+		return protoreflect.ValueOfUint64(value)
+	case "goeni.evm.Params.maximum_fee_per_gas":
+		value := x.MaximumFeePerGas
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -156,6 +338,26 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
+	case "goeni.evm.Params.priority_normalizer":
+		x.PriorityNormalizer = value.Interface().(string)
+	case "goeni.evm.Params.base_fee_per_gas":
+		x.BaseFeePerGas = value.Interface().(string)
+	case "goeni.evm.Params.minimum_fee_per_gas":
+		x.MinimumFeePerGas = value.Interface().(string)
+	case "goeni.evm.Params.whitelisted_cw_code_hashes_for_delegate_call":
+		lv := value.List()
+		clv := lv.(*_Params_8_list)
+		x.WhitelistedCwCodeHashesForDelegateCall = *clv.list
+	case "goeni.evm.Params.deliver_tx_hook_wasm_gas_limit":
+		x.DeliverTxHookWasmGasLimit = value.Uint()
+	case "goeni.evm.Params.max_dynamic_base_fee_upward_adjustment":
+		x.MaxDynamicBaseFeeUpwardAdjustment = value.Interface().(string)
+	case "goeni.evm.Params.max_dynamic_base_fee_downward_adjustment":
+		x.MaxDynamicBaseFeeDownwardAdjustment = value.Interface().(string)
+	case "goeni.evm.Params.target_gas_used_per_block":
+		x.TargetGasUsedPerBlock = value.Uint()
+	case "goeni.evm.Params.maximum_fee_per_gas":
+		x.MaximumFeePerGas = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -176,6 +378,28 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "goeni.evm.Params.whitelisted_cw_code_hashes_for_delegate_call":
+		if x.WhitelistedCwCodeHashesForDelegateCall == nil {
+			x.WhitelistedCwCodeHashesForDelegateCall = [][]byte{}
+		}
+		value := &_Params_8_list{list: &x.WhitelistedCwCodeHashesForDelegateCall}
+		return protoreflect.ValueOfList(value)
+	case "goeni.evm.Params.priority_normalizer":
+		panic(fmt.Errorf("field priority_normalizer of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.base_fee_per_gas":
+		panic(fmt.Errorf("field base_fee_per_gas of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.minimum_fee_per_gas":
+		panic(fmt.Errorf("field minimum_fee_per_gas of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.deliver_tx_hook_wasm_gas_limit":
+		panic(fmt.Errorf("field deliver_tx_hook_wasm_gas_limit of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.max_dynamic_base_fee_upward_adjustment":
+		panic(fmt.Errorf("field max_dynamic_base_fee_upward_adjustment of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.max_dynamic_base_fee_downward_adjustment":
+		panic(fmt.Errorf("field max_dynamic_base_fee_downward_adjustment of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.target_gas_used_per_block":
+		panic(fmt.Errorf("field target_gas_used_per_block of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.maximum_fee_per_gas":
+		panic(fmt.Errorf("field maximum_fee_per_gas of message goeni.evm.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -189,6 +413,25 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "goeni.evm.Params.priority_normalizer":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.Params.base_fee_per_gas":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.Params.minimum_fee_per_gas":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.Params.whitelisted_cw_code_hashes_for_delegate_call":
+		list := [][]byte{}
+		return protoreflect.ValueOfList(&_Params_8_list{list: &list})
+	case "goeni.evm.Params.deliver_tx_hook_wasm_gas_limit":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "goeni.evm.Params.max_dynamic_base_fee_upward_adjustment":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.Params.max_dynamic_base_fee_downward_adjustment":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.Params.target_gas_used_per_block":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "goeni.evm.Params.maximum_fee_per_gas":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -258,6 +501,42 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
+		l = len(x.PriorityNormalizer)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BaseFeePerGas)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MinimumFeePerGas)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.WhitelistedCwCodeHashesForDelegateCall) > 0 {
+			for _, b := range x.WhitelistedCwCodeHashesForDelegateCall {
+				l = len(b)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.DeliverTxHookWasmGasLimit != 0 {
+			n += 1 + runtime.Sov(uint64(x.DeliverTxHookWasmGasLimit))
+		}
+		l = len(x.MaxDynamicBaseFeeUpwardAdjustment)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MaxDynamicBaseFeeDownwardAdjustment)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.TargetGasUsedPerBlock != 0 {
+			n += 1 + runtime.Sov(uint64(x.TargetGasUsedPerBlock))
+		}
+		l = len(x.MaximumFeePerGas)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -286,6 +565,67 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.MaximumFeePerGas) > 0 {
+			i -= len(x.MaximumFeePerGas)
+			copy(dAtA[i:], x.MaximumFeePerGas)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaximumFeePerGas)))
+			i--
+			dAtA[i] = 0x6a
+		}
+		if x.TargetGasUsedPerBlock != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.TargetGasUsedPerBlock))
+			i--
+			dAtA[i] = 0x60
+		}
+		if len(x.MaxDynamicBaseFeeDownwardAdjustment) > 0 {
+			i -= len(x.MaxDynamicBaseFeeDownwardAdjustment)
+			copy(dAtA[i:], x.MaxDynamicBaseFeeDownwardAdjustment)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxDynamicBaseFeeDownwardAdjustment)))
+			i--
+			dAtA[i] = 0x5a
+		}
+		if len(x.MaxDynamicBaseFeeUpwardAdjustment) > 0 {
+			i -= len(x.MaxDynamicBaseFeeUpwardAdjustment)
+			copy(dAtA[i:], x.MaxDynamicBaseFeeUpwardAdjustment)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxDynamicBaseFeeUpwardAdjustment)))
+			i--
+			dAtA[i] = 0x52
+		}
+		if x.DeliverTxHookWasmGasLimit != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.DeliverTxHookWasmGasLimit))
+			i--
+			dAtA[i] = 0x48
+		}
+		if len(x.WhitelistedCwCodeHashesForDelegateCall) > 0 {
+			for iNdEx := len(x.WhitelistedCwCodeHashesForDelegateCall) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.WhitelistedCwCodeHashesForDelegateCall[iNdEx])
+				copy(dAtA[i:], x.WhitelistedCwCodeHashesForDelegateCall[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WhitelistedCwCodeHashesForDelegateCall[iNdEx])))
+				i--
+				dAtA[i] = 0x42
+			}
+		}
+		if len(x.MinimumFeePerGas) > 0 {
+			i -= len(x.MinimumFeePerGas)
+			copy(dAtA[i:], x.MinimumFeePerGas)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MinimumFeePerGas)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.BaseFeePerGas) > 0 {
+			i -= len(x.BaseFeePerGas)
+			copy(dAtA[i:], x.BaseFeePerGas)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BaseFeePerGas)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.PriorityNormalizer) > 0 {
+			i -= len(x.PriorityNormalizer)
+			copy(dAtA[i:], x.PriorityNormalizer)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PriorityNormalizer)))
+			i--
+			dAtA[i] = 0x12
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -336,6 +676,268 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PriorityNormalizer", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PriorityNormalizer = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BaseFeePerGas", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BaseFeePerGas = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinimumFeePerGas", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MinimumFeePerGas = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WhitelistedCwCodeHashesForDelegateCall", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WhitelistedCwCodeHashesForDelegateCall = append(x.WhitelistedCwCodeHashesForDelegateCall, make([]byte, postIndex-iNdEx))
+				copy(x.WhitelistedCwCodeHashesForDelegateCall[len(x.WhitelistedCwCodeHashesForDelegateCall)-1], dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 9:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DeliverTxHookWasmGasLimit", wireType)
+				}
+				x.DeliverTxHookWasmGasLimit = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.DeliverTxHookWasmGasLimit |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxDynamicBaseFeeUpwardAdjustment", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaxDynamicBaseFeeUpwardAdjustment = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 11:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxDynamicBaseFeeDownwardAdjustment", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaxDynamicBaseFeeDownwardAdjustment = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 12:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TargetGasUsedPerBlock", wireType)
+				}
+				x.TargetGasUsedPerBlock = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.TargetGasUsedPerBlock |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 13:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaximumFeePerGas", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaximumFeePerGas = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -384,11 +986,42 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Params defines the parameters for the module.
+// Params defines the parameters for the module
 type Params struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	// string base_denom = 1 [
+	//
+	//	(gogoproto.moretags)   = "yaml:\"base_denom\"",
+	//	(gogoproto.jsontag) = "base_denom"
+	//
+	// ];
+	PriorityNormalizer string `protobuf:"bytes,2,opt,name=priority_normalizer,json=priorityNormalizer,proto3" json:"priority_normalizer,omitempty"`
+	BaseFeePerGas      string `protobuf:"bytes,3,opt,name=base_fee_per_gas,json=baseFeePerGas,proto3" json:"base_fee_per_gas,omitempty"`
+	MinimumFeePerGas   string `protobuf:"bytes,4,opt,name=minimum_fee_per_gas,json=minimumFeePerGas,proto3" json:"minimum_fee_per_gas,omitempty"`
+	// ChainConfig chain_config = 5 [(gogoproto.moretags) = "yaml:\"chain_config\"", (gogoproto.nullable) = false];
+	//
+	//	string chain_id = 6 [
+	//	(gogoproto.moretags)   = "yaml:\"chain_id\"",
+	//	(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+	//	(gogoproto.nullable)   = false,
+	//	(gogoproto.jsontag) = "chain_id"
+	//
+	// ];
+	// repeated string whitelisted_codehashes_bank_send = 7 [
+	//
+	//	(gogoproto.moretags)   = "yaml:\"whitelisted_codehashes_bank_send\"",
+	//	(gogoproto.jsontag) = "whitelisted_codehashes_bank_send"
+	//
+	// ];
+	WhitelistedCwCodeHashesForDelegateCall [][]byte `protobuf:"bytes,8,rep,name=whitelisted_cw_code_hashes_for_delegate_call,json=whitelistedCwCodeHashesForDelegateCall,proto3" json:"whitelisted_cw_code_hashes_for_delegate_call,omitempty"`
+	DeliverTxHookWasmGasLimit              uint64   `protobuf:"varint,9,opt,name=deliver_tx_hook_wasm_gas_limit,json=deliverTxHookWasmGasLimit,proto3" json:"deliver_tx_hook_wasm_gas_limit,omitempty"`
+	MaxDynamicBaseFeeUpwardAdjustment      string   `protobuf:"bytes,10,opt,name=max_dynamic_base_fee_upward_adjustment,json=maxDynamicBaseFeeUpwardAdjustment,proto3" json:"max_dynamic_base_fee_upward_adjustment,omitempty"`
+	MaxDynamicBaseFeeDownwardAdjustment    string   `protobuf:"bytes,11,opt,name=max_dynamic_base_fee_downward_adjustment,json=maxDynamicBaseFeeDownwardAdjustment,proto3" json:"max_dynamic_base_fee_downward_adjustment,omitempty"`
+	TargetGasUsedPerBlock                  uint64   `protobuf:"varint,12,opt,name=target_gas_used_per_block,json=targetGasUsedPerBlock,proto3" json:"target_gas_used_per_block,omitempty"`
+	MaximumFeePerGas                       string   `protobuf:"bytes,13,opt,name=maximum_fee_per_gas,json=maximumFeePerGas,proto3" json:"maximum_fee_per_gas,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -411,26 +1044,167 @@ func (*Params) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_params_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *Params) GetPriorityNormalizer() string {
+	if x != nil {
+		return x.PriorityNormalizer
+	}
+	return ""
+}
+
+func (x *Params) GetBaseFeePerGas() string {
+	if x != nil {
+		return x.BaseFeePerGas
+	}
+	return ""
+}
+
+func (x *Params) GetMinimumFeePerGas() string {
+	if x != nil {
+		return x.MinimumFeePerGas
+	}
+	return ""
+}
+
+func (x *Params) GetWhitelistedCwCodeHashesForDelegateCall() [][]byte {
+	if x != nil {
+		return x.WhitelistedCwCodeHashesForDelegateCall
+	}
+	return nil
+}
+
+func (x *Params) GetDeliverTxHookWasmGasLimit() uint64 {
+	if x != nil {
+		return x.DeliverTxHookWasmGasLimit
+	}
+	return 0
+}
+
+func (x *Params) GetMaxDynamicBaseFeeUpwardAdjustment() string {
+	if x != nil {
+		return x.MaxDynamicBaseFeeUpwardAdjustment
+	}
+	return ""
+}
+
+func (x *Params) GetMaxDynamicBaseFeeDownwardAdjustment() string {
+	if x != nil {
+		return x.MaxDynamicBaseFeeDownwardAdjustment
+	}
+	return ""
+}
+
+func (x *Params) GetTargetGasUsedPerBlock() uint64 {
+	if x != nil {
+		return x.TargetGasUsedPerBlock
+	}
+	return 0
+}
+
+func (x *Params) GetMaximumFeePerGas() string {
+	if x != nil {
+		return x.MaximumFeePerGas
+	}
+	return ""
+}
+
 var File_goeni_evm_params_proto protoreflect.FileDescriptor
 
 var file_goeni_evm_params_proto_rawDesc = []byte{
 	0x0a, 0x16, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x70, 0x61, 0x72, 0x61,
 	0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e,
-	0x65, 0x76, 0x6d, 0x1a, 0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x25, 0x0a, 0x06,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x3a, 0x1b, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a,
-	0x12, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x78, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x42, 0x8c, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x67, 0x6f, 0x65, 0x6e,
-	0x69, 0x2e, 0x65, 0x76, 0x6d, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f,
-	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x65, 0x6e, 0x69, 0x2d, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x67, 0x6f, 0x2d, 0x65, 0x6e,
-	0x69, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d, 0xa2,
-	0x02, 0x03, 0x47, 0x45, 0x58, 0xaa, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x45, 0x76,
-	0x6d, 0xca, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76, 0x6d, 0xe2, 0x02, 0x15,
-	0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x3a, 0x3a, 0x45,
-	0x76, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x76, 0x6d, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67,
+	0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9b, 0x0a, 0x0a, 0x06, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x12, 0x89, 0x01, 0x0a, 0x13, 0x70, 0x72, 0x69, 0x6f, 0x72, 0x69, 0x74,
+	0x79, 0x5f, 0x6e, 0x6f, 0x72, 0x6d, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x42, 0x58, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xea, 0xde, 0x1f, 0x13, 0x70, 0x72, 0x69, 0x6f, 0x72,
+	0x69, 0x74, 0x79, 0x5f, 0x6e, 0x6f, 0x72, 0x6d, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x72, 0xf2, 0xde,
+	0x1f, 0x1a, 0x79, 0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x70, 0x72, 0x69, 0x6f, 0x72, 0x69, 0x74, 0x79,
+	0x5f, 0x6e, 0x6f, 0x72, 0x6d, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x72, 0x22, 0x52, 0x12, 0x70, 0x72,
+	0x69, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x4e, 0x6f, 0x72, 0x6d, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x72,
+	0x12, 0x7b, 0x0a, 0x10, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65, 0x72,
+	0x5f, 0x67, 0x61, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x52, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xea,
+	0xde, 0x1f, 0x10, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65, 0x72, 0x5f,
+	0x67, 0x61, 0x73, 0xf2, 0xde, 0x1f, 0x17, 0x79, 0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x62, 0x61, 0x73,
+	0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65, 0x72, 0x5f, 0x67, 0x61, 0x73, 0x22, 0x52, 0x0d,
+	0x62, 0x61, 0x73, 0x65, 0x46, 0x65, 0x65, 0x50, 0x65, 0x72, 0x47, 0x61, 0x73, 0x12, 0x87, 0x01,
+	0x0a, 0x13, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65,
+	0x72, 0x5f, 0x67, 0x61, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x42, 0x58, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xea, 0xde, 0x1f, 0x13, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x66, 0x65, 0x65, 0x5f,
+	0x70, 0x65, 0x72, 0x5f, 0x67, 0x61, 0x73, 0xf2, 0xde, 0x1f, 0x1a, 0x79, 0x61, 0x6d, 0x6c, 0x3a,
+	0x22, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65, 0x72,
+	0x5f, 0x67, 0x61, 0x73, 0x22, 0x52, 0x10, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x46, 0x65,
+	0x65, 0x50, 0x65, 0x72, 0x47, 0x61, 0x73, 0x12, 0xc5, 0x01, 0x0a, 0x2c, 0x77, 0x68, 0x69, 0x74,
+	0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x5f, 0x63, 0x77, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x5f,
+	0x68, 0x61, 0x73, 0x68, 0x65, 0x73, 0x5f, 0x66, 0x6f, 0x72, 0x5f, 0x64, 0x65, 0x6c, 0x65, 0x67,
+	0x61, 0x74, 0x65, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0c, 0x42, 0x67,
+	0xea, 0xde, 0x1f, 0x2c, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x5f,
+	0x63, 0x77, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x65, 0x73, 0x5f, 0x66,
+	0x6f, 0x72, 0x5f, 0x64, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x65, 0x5f, 0x63, 0x61, 0x6c, 0x6c,
+	0xf2, 0xde, 0x1f, 0x33, 0x79, 0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c,
+	0x69, 0x73, 0x74, 0x65, 0x64, 0x5f, 0x63, 0x77, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x5f, 0x68, 0x61,
+	0x73, 0x68, 0x65, 0x73, 0x5f, 0x66, 0x6f, 0x72, 0x5f, 0x64, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74,
+	0x65, 0x5f, 0x63, 0x61, 0x6c, 0x6c, 0x22, 0x52, 0x26, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69,
+	0x73, 0x74, 0x65, 0x64, 0x43, 0x77, 0x43, 0x6f, 0x64, 0x65, 0x48, 0x61, 0x73, 0x68, 0x65, 0x73,
+	0x46, 0x6f, 0x72, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x65, 0x43, 0x61, 0x6c, 0x6c, 0x12,
+	0x41, 0x0a, 0x1e, 0x64, 0x65, 0x6c, 0x69, 0x76, 0x65, 0x72, 0x5f, 0x74, 0x78, 0x5f, 0x68, 0x6f,
+	0x6f, 0x6b, 0x5f, 0x77, 0x61, 0x73, 0x6d, 0x5f, 0x67, 0x61, 0x73, 0x5f, 0x6c, 0x69, 0x6d, 0x69,
+	0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x04, 0x52, 0x19, 0x64, 0x65, 0x6c, 0x69, 0x76, 0x65, 0x72,
+	0x54, 0x78, 0x48, 0x6f, 0x6f, 0x6b, 0x57, 0x61, 0x73, 0x6d, 0x47, 0x61, 0x73, 0x4c, 0x69, 0x6d,
+	0x69, 0x74, 0x12, 0xd1, 0x01, 0x0a, 0x26, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x79, 0x6e, 0x61, 0x6d,
+	0x69, 0x63, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x75, 0x70, 0x77, 0x61,
+	0x72, 0x64, 0x5f, 0x61, 0x64, 0x6a, 0x75, 0x73, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x0a, 0x20,
+	0x01, 0x28, 0x09, 0x42, 0x7e, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xea, 0xde, 0x1f, 0x26, 0x6d, 0x61, 0x78, 0x5f,
+	0x64, 0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65,
+	0x5f, 0x75, 0x70, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x61, 0x64, 0x6a, 0x75, 0x73, 0x74, 0x6d, 0x65,
+	0x6e, 0x74, 0xf2, 0xde, 0x1f, 0x2d, 0x79, 0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x6d, 0x61, 0x78, 0x5f,
+	0x64, 0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65,
+	0x5f, 0x75, 0x70, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x61, 0x64, 0x6a, 0x75, 0x73, 0x74, 0x6d, 0x65,
+	0x6e, 0x74, 0x22, 0x52, 0x21, 0x6d, 0x61, 0x78, 0x44, 0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x42,
+	0x61, 0x73, 0x65, 0x46, 0x65, 0x65, 0x55, 0x70, 0x77, 0x61, 0x72, 0x64, 0x41, 0x64, 0x6a, 0x75,
+	0x73, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0xda, 0x01, 0x0a, 0x28, 0x6d, 0x61, 0x78, 0x5f, 0x64,
+	0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f,
+	0x64, 0x6f, 0x77, 0x6e, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x61, 0x64, 0x6a, 0x75, 0x73, 0x74, 0x6d,
+	0x65, 0x6e, 0x74, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x42, 0x82, 0x01, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xea,
+	0xde, 0x1f, 0x28, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x5f, 0x62,
+	0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x64, 0x6f, 0x77, 0x6e, 0x77, 0x61, 0x72, 0x64,
+	0x5f, 0x61, 0x64, 0x6a, 0x75, 0x73, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0xf2, 0xde, 0x1f, 0x2f, 0x79,
+	0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x6d, 0x61, 0x78, 0x5f, 0x64, 0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63,
+	0x5f, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x64, 0x6f, 0x77, 0x6e, 0x77, 0x61,
+	0x72, 0x64, 0x5f, 0x61, 0x64, 0x6a, 0x75, 0x73, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x22, 0x52, 0x23,
+	0x6d, 0x61, 0x78, 0x44, 0x79, 0x6e, 0x61, 0x6d, 0x69, 0x63, 0x42, 0x61, 0x73, 0x65, 0x46, 0x65,
+	0x65, 0x44, 0x6f, 0x77, 0x6e, 0x77, 0x61, 0x72, 0x64, 0x41, 0x64, 0x6a, 0x75, 0x73, 0x74, 0x6d,
+	0x65, 0x6e, 0x74, 0x12, 0x38, 0x0a, 0x19, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x67, 0x61,
+	0x73, 0x5f, 0x75, 0x73, 0x65, 0x64, 0x5f, 0x70, 0x65, 0x72, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x18, 0x0c, 0x20, 0x01, 0x28, 0x04, 0x52, 0x15, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x47, 0x61,
+	0x73, 0x55, 0x73, 0x65, 0x64, 0x50, 0x65, 0x72, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x12, 0x87, 0x01,
+	0x0a, 0x13, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65,
+	0x72, 0x5f, 0x67, 0x61, 0x73, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x09, 0x42, 0x58, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0xea, 0xde, 0x1f, 0x13, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x66, 0x65, 0x65, 0x5f,
+	0x70, 0x65, 0x72, 0x5f, 0x67, 0x61, 0x73, 0xf2, 0xde, 0x1f, 0x1a, 0x79, 0x61, 0x6d, 0x6c, 0x3a,
+	0x22, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65, 0x72,
+	0x5f, 0x67, 0x61, 0x73, 0x22, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x46, 0x65,
+	0x65, 0x50, 0x65, 0x72, 0x47, 0x61, 0x73, 0x42, 0x8c, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e,
+	0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6e, 0x69, 0x2d, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x67,
+	0x6f, 0x2d, 0x65, 0x6e, 0x69, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f,
+	0x65, 0x76, 0x6d, 0xa2, 0x02, 0x03, 0x47, 0x45, 0x58, 0xaa, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e,
+	0x69, 0x2e, 0x45, 0x76, 0x6d, 0xca, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76,
+	0x6d, 0xe2, 0x02, 0x15, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76, 0x6d, 0x5c, 0x47, 0x50,
+	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x47, 0x6f, 0x65, 0x6e,
+	0x69, 0x3a, 0x3a, 0x45, 0x76, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
