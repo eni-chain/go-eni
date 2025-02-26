@@ -25,9 +25,9 @@ func NewMsgEVMTransaction(txData proto.Message) (*MsgEVMTransaction, error) {
 	return &MsgEVMTransaction{Data: txDataAny}, nil
 }
 
-//func (msg *MsgEVMTransaction) Route() string {
-//	return RouterKey
-//}
+func (msg *MsgEVMTransaction) Route() string {
+	return RouterKey
+}
 
 func (msg *MsgEVMTransaction) Type() string {
 	return TypeMsgEVMTransaction
@@ -63,20 +63,20 @@ func (msg *MsgEVMTransaction) GetSignBytes() []byte {
 //	return unpacker.UnpackAny(msg.Data, new(ethtx.TxData))
 //}
 
-//func (msg *MsgEVMTransaction) IsAssociateTx() bool {
-//	_, ok := msg.GetAssociateTx()
-//	return ok
-//}
+func (msg *MsgEVMTransaction) IsAssociateTx() bool {
+	_, ok := msg.GetAssociateTx()
+	return ok
+}
 
-//func (msg *MsgEVMTransaction) GetAssociateTx() (*ethtx.AssociateTx, bool) {
-//	txData, err := UnpackTxData(msg.Data)
-//	if err != nil {
-//		// should never happen
-//		panic(err)
-//	}
-//	amsg, ok := txData.(*ethtx.AssociateTx)
-//	return amsg, ok
-//}
+func (msg *MsgEVMTransaction) GetAssociateTx() (*ethtx.AssociateTx, bool) {
+	txData, err := UnpackTxData(msg.Data)
+	if err != nil {
+		// should never happen
+		panic(err)
+	}
+	amsg, ok := txData.(*ethtx.AssociateTx)
+	return amsg, ok
+}
 
 func MustGetEVMTransactionMessage(tx sdk.Tx) *MsgEVMTransaction {
 	if len(tx.GetMsgs()) != 1 {

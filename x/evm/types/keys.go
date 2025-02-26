@@ -10,6 +10,8 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "evm"
 
+	RouterKey = ModuleName
+
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
 
