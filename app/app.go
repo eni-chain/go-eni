@@ -1,6 +1,9 @@
 package app
 
 import (
+	"fmt"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
+	"github.com/eni-chain/go-eni/evmrpc"
 	"io"
 
 	_ "cosmossdk.io/api/cosmos/tx/config/v1" // import for side-effects
@@ -22,6 +25,7 @@ import (
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -149,6 +153,8 @@ type App struct {
 
 	// simulation manager
 	sm *module.SimulationManager
+
+	evmRPCConfig evmrpc.Config
 }
 
 func init() {
@@ -225,7 +231,7 @@ func New(
 		)
 	)
 
-	if err := depinject.Inject(appConfig,
+	err := depinject.Inject(appConfig,
 		&appBuilder,
 		&app.appCodec,
 		&app.legacyAmino,
@@ -251,13 +257,20 @@ func New(
 		&app.GoeniKeeper,
 		&app.EvmKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
-	); err != nil {
+	)
+
+	if err != nil {
 		panic(err)
 	}
 
 	// add to default baseapp options
 	// enable optimistic execution
 	baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
+
+	app.evmRPCConfig, err = evmrpc.ReadConfig(appOpts)
+	if err != nil {
+		panic(fmt.Sprintf("error reading EVM config due to %s", err))
+	}
 
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
@@ -395,6 +408,55 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 	// register app's OpenAPI routes.
 	docs.RegisterOpenAPIService(Name, apiSvr.Router)
+}
+
+// RegisterTendermintService implements the Application.RegisterTendermintService method.
+func (app *App) RegisterTendermintService(clientCtx client.Context) {
+	//tmservice.RegisterTendermintService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.interfaceRegistry)
+	cmtApp := server.NewCometABCIWrapper(app)
+	cmtservice.RegisterTendermintService(clientCtx, app.GRPCQueryRouter(), app.interfaceRegistry, cmtApp.Query)
+
+	ctxProvider := func(i int64) sdk.Context {
+		if i == evmrpc.LatestCtxHeight {
+			//todo:Can't get it at the moment, comment first, then add
+			//return app.GetCheckCtx()
+			return sdk.Context{}
+		}
+		ctx, err := app.CreateQueryContext(i, false)
+		if err != nil {
+			app.Logger().Error(fmt.Sprintf("failed to create query context for EVM; using latest context instead: %v+", err.Error()))
+			//todo:Can't get it at the moment, comment first, then add
+			//return app.GetCheckCtx()
+			return sdk.Context{}
+		}
+		//todo: Depends on x/evm, and when the x/evm migration is completed, it will be replaced here
+		//return ctx.WithIsEVM(true)
+		return ctx
+	}
+	rpcClient, ok := clientCtx.Client.(rpcclient.Client)
+	if !ok {
+		return
+	}
+
+	if app.evmRPCConfig.HTTPEnabled {
+		evmHTTPServer, err := evmrpc.NewEVMHTTPServer(app.Logger(), app.evmRPCConfig, rpcClient, &app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome, nil)
+		if err != nil {
+			panic(err)
+		}
+		if err := evmHTTPServer.Start(); err != nil {
+			panic(err)
+		}
+	}
+
+	if app.evmRPCConfig.WSEnabled {
+		evmWSServer, err := evmrpc.NewEVMWebSocketServer(app.Logger(), app.evmRPCConfig, rpcClient, &app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome)
+		if err != nil {
+			panic(err)
+		}
+		if err := evmWSServer.Start(); err != nil {
+			panic(err)
+		}
+	}
 }
 
 // GetMaccPerms returns a copy of the module account permissions
