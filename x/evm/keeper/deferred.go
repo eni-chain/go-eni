@@ -1,10 +1,10 @@
 package keeper
 
 import (
+	cosmossdk_io_math "cosmossdk.io/math"
+	"cosmossdk.io/store/prefix"
 	"encoding/binary"
 	"fmt"
-
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -24,17 +24,17 @@ func (k *Keeper) GetAllEVMTxDeferredInfo(ctx sdk.Context) (res []*types.Deferred
 			}
 			// this means the transaction got reverted during execution, either in ante handler
 			// or due to a panic in msg server
-			etx, _ := msg.AsTransaction()
-			if etx == nil {
-				panic("etx is nil for EVM DeferredInfo msg.AsTransaction(). This should never happen.")
-			}
+			//etx, _ := msg.AsTransaction()
+			//if etx == nil {
+			//	panic("etx is nil for EVM DeferredInfo msg.AsTransaction(). This should never happen.")
+			//}
 			if txRes.Code == 0 {
-				ctx.Logger().Error(fmt.Sprintf("transaction %s has code 0 but no deferred info", etx.Hash().Hex()))
+				//ctx.Logger().Error(fmt.Sprintf("transaction %s has code 0 but no deferred info", etx.Hash().Hex()))
 			}
 			res = append(res, &types.DeferredInfo{
 				TxIndex: uint32(txIdx),
-				TxHash:  etx.Hash().Bytes(),
-				Error:   txRes.Log,
+				//TxHash:  etx.Hash().Bytes(),
+				Error: txRes.Log,
 			})
 		} else {
 			info := &types.DeferredInfo{}
@@ -49,11 +49,11 @@ func (k *Keeper) GetAllEVMTxDeferredInfo(ctx sdk.Context) (res []*types.Deferred
 	return
 }
 
-func (k *Keeper) AppendToEvmTxDeferredInfo(ctx sdk.Context, bloom ethtypes.Bloom, txHash common.Hash, surplus sdk.Int) {
+func (k *Keeper) AppendToEvmTxDeferredInfo(ctx sdk.Context, bloom ethtypes.Bloom, txHash common.Hash, surplus cosmossdk_io_math.Int) {
 	key := make([]byte, 8)
-	binary.BigEndian.PutUint64(key, uint64(ctx.TxIndex()))
+	//binary.BigEndian.PutUint64(key, uint64(ctx.TxIndex()))
 	val := &types.DeferredInfo{
-		TxIndex: uint32(ctx.TxIndex()),
+		//TxIndex: uint32(ctx.TxIndex()),
 		TxBloom: bloom[:],
 		TxHash:  txHash[:],
 		Surplus: surplus,
@@ -69,7 +69,7 @@ func (k *Keeper) AppendToEvmTxDeferredInfo(ctx sdk.Context, bloom ethtypes.Bloom
 
 func (k *Keeper) GetEVMTxDeferredInfo(ctx sdk.Context) (*types.DeferredInfo, bool) {
 	key := make([]byte, 8)
-	binary.BigEndian.PutUint64(key, uint64(ctx.TxIndex()))
+	//binary.BigEndian.PutUint64(key, uint64(ctx.TxIndex()))
 	val := &types.DeferredInfo{}
 	bz := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.DeferredInfoPrefix).Get(key)
 	if bz == nil {

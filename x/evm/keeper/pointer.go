@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"encoding/binary"
+	"errors"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/eni-chain/go-eni/x/evm/artifacts/native"
@@ -16,7 +16,7 @@ import (
 type PointerGetter func(sdk.Context, string) (common.Address, uint16, bool)
 type PointerSetter func(sdk.Context, string, common.Address) error
 
-var ErrorPointerToPointerNotAllowed = sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot create a pointer to a pointer")
+//var ErrorPointerToPointerNotAllowed = sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot create a pointer to a pointer")
 
 // ERC20 -> Native Token
 func (k *Keeper) SetERC20NativePointer(ctx sdk.Context, token string, addr common.Address) error {
@@ -26,7 +26,8 @@ func (k *Keeper) SetERC20NativePointer(ctx sdk.Context, token string, addr commo
 // ERC20 -> Native Token
 func (k *Keeper) SetERC20NativePointerWithVersion(ctx sdk.Context, token string, addr common.Address, version uint16) error {
 	if k.cwAddressIsPointer(ctx, token) {
-		return ErrorPointerToPointerNotAllowed
+		//return ErrorPointerToPointerNotAllowed
+		return errors.New("cannot create a pointer to a pointer")
 	}
 	err := k.setPointerInfo(ctx, types.PointerERC20NativeKey(token), addr[:], version)
 	if err != nil {

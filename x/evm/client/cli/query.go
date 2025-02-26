@@ -57,14 +57,16 @@ func CmdQueryEniAddress() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.EniAddressByEVMAddress(context.Background(), &types.QueryEniAddressByEVMAddressRequest{EvmAddress: args[0]})
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
+			//queryClient := types.NewQueryClient(clientCtx)
+			_ = types.NewQueryClient(clientCtx)
+			//
+			//res, err := queryClient.EniAddressByEVMAddress(context.Background(), &types.QueryEniAddressByEVMAddressRequest{EvmAddress: args[0]})
+			//if err != nil {
+			//	return err
+			//}
+			//
+			//return clientCtx.PrintProto(res)
+			return nil
 		},
 	}
 
@@ -83,14 +85,16 @@ func CmdQueryEVMAddress() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			queryClient := types.NewQueryClient(clientCtx)
+			//queryClient := types.NewQueryClient(clientCtx)
+			_ = types.NewQueryClient(clientCtx)
+			//
+			//res, err := queryClient.EVMAddressByEniAddress(context.Background(), &types.QueryEVMAddressByEniAddressRequest{EniAddress: args[0]})
+			//if err != nil {
+			//	return err
+			//}
 
-			res, err := queryClient.EVMAddressByEniAddress(context.Background(), &types.QueryEVMAddressByEniAddressRequest{EniAddress: args[0]})
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
+			//return clientCtx.PrintProto(res)
+			return nil
 		},
 	}
 

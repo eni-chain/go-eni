@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/eni-chain/go-eni/x/evm/types"
-	"github.com/ethereum/go-ethereum/common"
+	//"github.com/ethereum/go-ethereum/common"
 )
 
 func (k *Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
@@ -16,8 +16,8 @@ func (k *Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 	eniAddrFc := k.accountKeeper.GetModuleAddress(authtypes.FeeCollectorName) // feeCollector == coinbase
 	k.SetAddressMapping(ctx, eniAddrFc, GetCoinbaseAddress())
 
-	for _, addr := range genState.AddressAssociations {
-		k.SetAddressMapping(ctx, sdk.MustAccAddressFromBech32(addr.EniAddress), common.HexToAddress(addr.EthAddress))
-	}
+	//for _, addr := range genState.AddressAssociations {
+	//	//k.SetAddressMapping(ctx, sdk.MustAccAddressFromBech32(addr.EniAddress), common.HexToAddress(addr.EthAddress))
+	//}
 
 }

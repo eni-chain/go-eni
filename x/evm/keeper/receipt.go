@@ -4,10 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/iavl"
-	"github.com/eni-chain/eni-db/proto"
+	//"github.com/eni-chain/eni-db/proto"
 	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/eni-chain/go-eni/utils"
@@ -53,30 +51,30 @@ func (k *Keeper) DeleteTransientReceipt(ctx sdk.Context, txHash common.Hash) {
 func (k *Keeper) GetReceipt(ctx sdk.Context, txHash common.Hash) (*types.Receipt, error) {
 
 	// receipts are immutable, use latest version
-	lv, err := k.receiptStore.GetLatestVersion()
-	if err != nil {
-		return nil, err
-	}
+	//lv, err := k.receiptStore.GetLatestVersion()
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//// try persistent store
+	//bz, err := k.receiptStore.Get(types.ReceiptStoreKey, lv, types.ReceiptKey(txHash))
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	// try persistent store
-	bz, err := k.receiptStore.Get(types.ReceiptStoreKey, lv, types.ReceiptKey(txHash))
-	if err != nil {
-		return nil, err
-	}
-
-	if bz == nil {
-		// try legacy store for older receipts
-		store := ctx.KVStore(k.storeKey)
-		bz = store.Get(types.ReceiptKey(txHash))
-		if bz == nil {
-			return nil, errors.New("not found")
-		}
-	}
+	//if bz == nil {
+	//	// try legacy store for older receipts
+	//	store := ctx.KVStore(k.storeKey)
+	//	bz = store.Get(types.ReceiptKey(txHash))
+	//	if bz == nil {
+	//		return nil, errors.New("not found")
+	//	}
+	//}
 
 	var r types.Receipt
-	if err := r.Unmarshal(bz); err != nil {
-		return nil, err
-	}
+	//if err := r.Unmarshal(bz); err != nil {
+	//	return nil, err
+	//}
 	return &r, nil
 }
 
@@ -92,24 +90,25 @@ func (k *Keeper) MockReceipt(ctx sdk.Context, txHash common.Hash, receipt *types
 }
 
 func (k *Keeper) FlushTransientReceipts(ctx sdk.Context) error {
-	iter := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.ReceiptKeyPrefix).Iterator(nil, nil)
-	defer iter.Close()
-	var pairs []*iavl.KVPair
-	var changesets []*proto.NamedChangeSet
-	for ; iter.Valid(); iter.Next() {
-		kvPair := &iavl.KVPair{Key: types.ReceiptKey(common.Hash(iter.Key())), Value: iter.Value()}
-		pairs = append(pairs, kvPair)
-	}
-	if len(pairs) == 0 {
-		return nil
-	}
-	ncs := &proto.NamedChangeSet{
-		Name:      types.ReceiptStoreKey,
-		Changeset: iavl.ChangeSet{Pairs: pairs},
-	}
-	changesets = append(changesets, ncs)
-
-	return k.receiptStore.ApplyChangesetAsync(ctx.BlockHeight(), changesets)
+	//iter := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.ReceiptKeyPrefix).Iterator(nil, nil)
+	//defer iter.Close()
+	//var pairs []*iavl.KVPair
+	//var changesets []*proto.NamedChangeSet
+	//for ; iter.Valid(); iter.Next() {
+	//	kvPair := &iavl.KVPair{Key: types.ReceiptKey(common.Hash(iter.Key())), Value: iter.Value()}
+	//	pairs = append(pairs, kvPair)
+	//}
+	//if len(pairs) == 0 {
+	//	return nil
+	//}
+	//ncs := &proto.NamedChangeSet{
+	//	Name:      types.ReceiptStoreKey,
+	//	Changeset: iavl.ChangeSet{Pairs: pairs},
+	//}
+	//changesets = append(changesets, ncs)
+	//
+	//return k.receiptStore.ApplyChangesetAsync(ctx.BlockHeight(), changesets)
+	return nil
 }
 
 func (k *Keeper) WriteReceipt(
@@ -129,7 +128,7 @@ func (k *Keeper) WriteReceipt(
 		TxHashHex:         txHash.Hex(),
 		GasUsed:           gasUsed,
 		BlockNumber:       uint64(ctx.BlockHeight()),
-		TransactionIndex:  uint32(ctx.TxIndex()),
+		//TransactionIndex:  uint32(ctx.TxIndex()),
 		EffectiveGasPrice: msg.GasPrice.Uint64(),
 		VmError:           vmError,
 		Logs:              utils.Map(ethLogs, ConvertEthLog),

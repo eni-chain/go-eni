@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/store/prefix"
-	//"github.com/cosmos/cosmos-sdk/store/prefix"
+	//"cosmossdk.io/store/prefix"
 	cosmossdk_io_math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/x/evm/types"

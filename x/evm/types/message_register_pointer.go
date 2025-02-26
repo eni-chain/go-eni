@@ -24,9 +24,9 @@ func NewMsgRegisterERC1155Pointer(sender sdk.AccAddress, ercAddress common.Addre
 	return &MsgRegisterPointer{Sender: sender.String(), ErcAddress: ercAddress.Hex(), PointerType: PointerType_ERC1155}
 }
 
-func (msg *MsgRegisterPointer) Route() string {
-	return RouterKey
-}
+//func (msg *MsgRegisterPointer) Route() string {
+//	return RouterKey
+//}
 
 func (msg *MsgRegisterPointer) Type() string {
 	return TypeMsgRegisterPointer
@@ -40,14 +40,15 @@ func (msg *MsgRegisterPointer) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from}
 }
 
-func (msg *MsgRegisterPointer) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
+//func (msg *MsgRegisterPointer) GetSignBytes() []byte {
+//	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+//}
 
 func (msg *MsgRegisterPointer) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
+		//return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
+		return err
 	}
 
 	if !common.IsHexAddress(msg.ErcAddress) {

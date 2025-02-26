@@ -10,7 +10,7 @@ import (
 )
 
 type EVMKeeper interface {
-	PrefixStore(sdk.Context, []byte) sdk.KVStore
+	//PrefixStore(sdk.Context, []byte) sdk.KVStore
 	PurgePrefix(sdk.Context, []byte)
 	GetEniAddress(sdk.Context, common.Address) (sdk.AccAddress, bool)
 	GetEniAddressOrDefault(ctx sdk.Context, evmAddress common.Address) sdk.AccAddress

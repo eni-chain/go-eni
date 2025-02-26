@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/big"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	cosmossdk_io_math "cosmossdk.io/math"
 	"github.com/holiman/uint256"
 )
 
@@ -18,4 +18,4 @@ var Big35 = big.NewInt(35)
 var BigMaxI64 = big.NewInt(math.MaxInt64)
 var BigMaxU64 = new(big.Int).SetUint64(math.MaxUint64)
 
-var Sdk0 = sdk.NewInt(0)
+var Sdk0 = cosmossdk_io_math.NewInt(0)

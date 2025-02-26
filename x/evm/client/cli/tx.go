@@ -13,7 +13,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
+	//"github.com/cosmos/cosmos-sdk/crypto/hd"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -24,16 +24,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/codec/legacy"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/eni-chain/go-eni/evmrpc"
-	"github.com/eni-chain/go-eni/precompiles"
+
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/x/evm/artifacts/native"
 	"github.com/eni-chain/go-eni/x/evm/artifacts/weni"
 	"github.com/eni-chain/go-eni/x/evm/types"
-	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
+	//"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 )
 
@@ -62,99 +58,99 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdDeployWENI())
 	cmd.AddCommand(CmdERC20Send())
 	cmd.AddCommand(CmdCallPrecompile())
-	cmd.AddCommand(NativeSendTxCmd())
-	cmd.AddCommand(RegisterCwPointerCmd())
-	cmd.AddCommand(RegisterEvmPointerCmd())
-	cmd.AddCommand(NewAddERCNativePointerProposalTxCmd())
-	cmd.AddCommand(AssociateContractAddressCmd())
-	cmd.AddCommand(NativeAssociateCmd())
+	//cmd.AddCommand(NativeSendTxCmd())
+	//cmd.AddCommand(RegisterCwPointerCmd())
+	//cmd.AddCommand(RegisterEvmPointerCmd())
+	//cmd.AddCommand(NewAddERCNativePointerProposalTxCmd())
+	//cmd.AddCommand(AssociateContractAddressCmd())
+	//cmd.AddCommand(NativeAssociateCmd())
 
 	return cmd
 }
 
 func CmdAssociateAddress() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "associate-address [optional priv key hex] --rpc=<url> --from=<sender>",
-		Short: "associate EVM and Eni address for the sender",
-		Long:  "",
-		Args:  cobra.MaximumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-			var privHex string
-			if len(args) == 1 {
-				privHex = args[0]
-			} else {
-				txf := tx.NewFactoryCLI(clientCtx, cmd.Flags())
-				kb := txf.Keybase()
-				info, err := kb.Key(clientCtx.GetFromName())
-				if err != nil {
-					return err
-				}
-				localInfo, ok := info.(keyring.LocalInfo)
-				if !ok {
-					return errors.New("can only associate address for local keys")
-				}
-				if localInfo.GetAlgo() != hd.Secp256k1Type {
-					return errors.New("can only use addresses using secp256k1")
-				}
-				priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
-				if err != nil {
-					return err
-				}
-				privHex = hex.EncodeToString(priv.Bytes())
-			}
+	//cmd := &cobra.Command{
+	//	Use:   "associate-address [optional priv key hex] --rpc=<url> --from=<sender>",
+	//	Short: "associate EVM and Eni address for the sender",
+	//	Long:  "",
+	//	Args:  cobra.MaximumNArgs(1),
+	//	RunE: func(cmd *cobra.Command, args []string) (err error) {
+	//		clientCtx, err := client.GetClientTxContext(cmd)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		var privHex string
+	//		if len(args) == 1 {
+	//			privHex = args[0]
+	//		} else {
+	//			txf := tx.NewFactoryCLI(clientCtx, cmd.Flags())
+	//			kb := txf.Keybase()
+	//			info, err := kb.Key(clientCtx.GetFromName())
+	//			if err != nil {
+	//				return err
+	//			}
+	//			localInfo, ok := info.(keyring.LocalInfo)
+	//			if !ok {
+	//				return errors.New("can only associate address for local keys")
+	//			}
+	//			if localInfo.GetAlgo() != hd.Secp256k1Type {
+	//				return errors.New("can only use addresses using secp256k1")
+	//			}
+	//			priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
+	//			if err != nil {
+	//				return err
+	//			}
+	//			privHex = hex.EncodeToString(priv.Bytes())
+	//		}
+	//
+	//		emptyHash := crypto.Keccak256Hash([]byte{})
+	//		key, err := crypto.HexToECDSA(privHex)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		sig, err := crypto.Sign(emptyHash[:], key)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		R, S, _, err := ethtx.DecodeSignature(sig)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		V := big.NewInt(int64(sig[64]))
+	//		txData := evmrpc.AssociateRequest{V: hex.EncodeToString(V.Bytes()), R: hex.EncodeToString(R.Bytes()), S: hex.EncodeToString(S.Bytes())}
+	//		bz, err := json.Marshal(txData)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		body := fmt.Sprintf("{\"jsonrpc\": \"2.0\",\"method\": \"eni_associate\",\"params\":[%s],\"id\":\"associate_addr\"}", string(bz))
+	//		rpc, err := cmd.Flags().GetString(FlagRPC)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		req, err := http.NewRequest(http.MethodGet, rpc, strings.NewReader(body))
+	//		if err != nil {
+	//			return err
+	//		}
+	//		req.Header.Set("Content-Type", "application/json")
+	//		res, err := http.DefaultClient.Do(req)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		defer res.Body.Close()
+	//		resBody, err := io.ReadAll(res.Body)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		fmt.Printf("Response: %s\n", string(resBody))
+	//
+	//		return nil
+	//	},
+	//}
 
-			emptyHash := crypto.Keccak256Hash([]byte{})
-			key, err := crypto.HexToECDSA(privHex)
-			if err != nil {
-				return err
-			}
-			sig, err := crypto.Sign(emptyHash[:], key)
-			if err != nil {
-				return err
-			}
-			R, S, _, err := ethtx.DecodeSignature(sig)
-			if err != nil {
-				return err
-			}
-			V := big.NewInt(int64(sig[64]))
-			txData := evmrpc.AssociateRequest{V: hex.EncodeToString(V.Bytes()), R: hex.EncodeToString(R.Bytes()), S: hex.EncodeToString(S.Bytes())}
-			bz, err := json.Marshal(txData)
-			if err != nil {
-				return err
-			}
-			body := fmt.Sprintf("{\"jsonrpc\": \"2.0\",\"method\": \"eni_associate\",\"params\":[%s],\"id\":\"associate_addr\"}", string(bz))
-			rpc, err := cmd.Flags().GetString(FlagRPC)
-			if err != nil {
-				return err
-			}
-			req, err := http.NewRequest(http.MethodGet, rpc, strings.NewReader(body))
-			if err != nil {
-				return err
-			}
-			req.Header.Set("Content-Type", "application/json")
-			res, err := http.DefaultClient.Do(req)
-			if err != nil {
-				return err
-			}
-			defer res.Body.Close()
-			resBody, err := io.ReadAll(res.Body)
-			if err != nil {
-				return err
-			}
-			fmt.Printf("Response: %s\n", string(resBody))
-
-			return nil
-		},
-	}
-
-	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
+	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	//flags.AddTxFlagsToCmd(cmd)
+	//return cmd
+	return nil
 }
 
 func CmdSend() *cobra.Command {
@@ -209,7 +205,7 @@ func CmdSend() *cobra.Command {
 
 	cmd.Flags().Uint64(FlagGasFeeCap, 1000000000000, "Gas fee cap for the transaction")
 	cmd.Flags().Uint64(FlagGas, 21000, "Gas limit for the transaction")
-	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -288,7 +284,7 @@ func CmdDeployContract() *cobra.Command {
 
 	cmd.Flags().Uint64(FlagGasFeeCap, 1000000000000, "Gas fee cap for the transaction")
 	cmd.Flags().Uint64(FlagGas, 5000000, "Gas limit for the transaction")
-	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -358,7 +354,7 @@ func CmdCallContract() *cobra.Command {
 	cmd.Flags().Uint64(FlagGasFeeCap, 1000000000000, "Gas fee cap for the transaction")
 	cmd.Flags().Uint64(FlagGas, 7000000, "Gas limit for the transaction")
 	cmd.Flags().String(FlagValue, "0", "Value for the transaction")
-	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -427,7 +423,7 @@ func CmdERC20Send() *cobra.Command {
 
 	cmd.Flags().Uint64(FlagGasFeeCap, 1000000000000, "Gas fee cap for the transaction")
 	cmd.Flags().Uint64(FlagGas, 7000000, "Gas limit for the transaction")
-	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -441,8 +437,8 @@ func CmdCallPrecompile() *cobra.Command {
 		Long:  "",
 		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			pInfo := precompiles.GetPrecompileInfo(args[0])
-			payload, err := getMethodPayload(pInfo.ABI, args[1:])
+			//pInfo := precompiles.GetPrecompileInfo(args[0])
+			//payload, err := getMethodPayload(pInfo.ABI, args[1:])
 			if err != nil {
 				return err
 			}
@@ -485,9 +481,9 @@ func CmdCallPrecompile() *cobra.Command {
 			}
 			txData.Nonce = nonce
 			txData.Value = valueBig
-			txData.Data = payload
-			to := pInfo.Address
-			txData.To = &to
+			//txData.Data = payload
+			//to := pInfo.Address
+			//txData.To = &to
 
 			resp, err := sendTx(txData, rpc, key)
 			if err != nil {
@@ -501,7 +497,7 @@ func CmdCallPrecompile() *cobra.Command {
 
 	cmd.Flags().Uint64(FlagGasFeeCap, 1000000000000, "Gas fee cap for the transaction")
 	cmd.Flags().Uint64(FlagGas, 7000000, "Gas limit for the transaction")
-	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
 	cmd.Flags().String(FlagValue, "", "Value for the transaction")
 	flags.AddTxFlagsToCmd(cmd)
@@ -568,7 +564,7 @@ func CmdDeployWENI() *cobra.Command {
 
 	cmd.Flags().Uint64(FlagGasFeeCap, 1000000000000, "Gas fee cap for the transaction")
 	cmd.Flags().Uint64(FlagGas, 5000000, "Gas limit for the transaction")
-	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -576,30 +572,31 @@ func CmdDeployWENI() *cobra.Command {
 }
 
 func getPrivateKey(cmd *cobra.Command) (*ecdsa.PrivateKey, error) {
-	clientCtx, err := client.GetClientTxContext(cmd)
-	if err != nil {
-		return nil, err
-	}
-	txf := tx.NewFactoryCLI(clientCtx, cmd.Flags())
-	kb := txf.Keybase()
-	info, err := kb.Key(clientCtx.GetFromName())
-	if err != nil {
-		return nil, err
-	}
-	localInfo, ok := info.(keyring.LocalInfo)
-	if !ok {
-		return nil, errors.New("can only associate address for local keys")
-	}
-	if localInfo.GetAlgo() != hd.Secp256k1Type {
-		return nil, errors.New("can only use addresses using secp256k1")
-	}
-	priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
-	if err != nil {
-		return nil, err
-	}
-	privHex := hex.EncodeToString(priv.Bytes())
-	key, _ := crypto.HexToECDSA(privHex)
-	return key, nil
+	//clientCtx, err := client.GetClientTxContext(cmd)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//txf := tx.NewFactoryCLI(clientCtx, cmd.Flags())
+	//kb := txf.Keybase()
+	//info, err := kb.Key(clientCtx.GetFromName())
+	//if err != nil {
+	//	return nil, err
+	//}
+	//localInfo, ok := info.(keyring.LocalInfo)
+	//if !ok {
+	//	return nil, errors.New("can only associate address for local keys")
+	//}
+	//if localInfo.GetAlgo() != hd.Secp256k1Type {
+	//	return nil, errors.New("can only use addresses using secp256k1")
+	//}
+	//priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
+	//if err != nil {
+	//	return nil, err
+	//}
+	//privHex := hex.EncodeToString(priv.Bytes())
+	//key, _ := crypto.HexToECDSA(privHex)
+	//return key, nil
+	return nil, errors.New("not implemented")
 }
 
 func getNonce(rpc string, key ecdsa.PublicKey) (uint64, error) {

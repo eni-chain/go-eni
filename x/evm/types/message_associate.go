@@ -2,7 +2,6 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const TypeMsgAssociate = "evm_associate"
@@ -15,9 +14,9 @@ func NewMsgAssociate(sender sdk.AccAddress, customMsg string) *MsgAssociate {
 	return &MsgAssociate{Sender: sender.String(), CustomMessage: customMsg}
 }
 
-func (msg *MsgAssociate) Route() string {
-	return RouterKey
-}
+//func (msg *MsgAssociate) Route() string {
+//	return RouterKey
+//}
 
 func (msg *MsgAssociate) Type() string {
 	return TypeMsgAssociate
@@ -31,21 +30,21 @@ func (msg *MsgAssociate) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{from}
 }
 
-func (msg *MsgAssociate) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-
-func (msg *MsgAssociate) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
-	}
-	if len(msg.CustomMessage) > MaxAssociateCustomMessageLength {
-		return sdkerrors.Wrapf(sdkerrors.ErrTxTooLarge, "custom message can have at most 64 characters")
-	}
-
-	return nil
-}
+//func (msg *MsgAssociate) GetSignBytes() []byte {
+//	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+//}
+//
+//func (msg *MsgAssociate) ValidateBasic() error {
+//	_, err := sdk.AccAddressFromBech32(msg.Sender)
+//	if err != nil {
+//		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
+//	}
+//	if len(msg.CustomMessage) > MaxAssociateCustomMessageLength {
+//		return sdkerrors.Wrapf(sdkerrors.ErrTxTooLarge, "custom message can have at most 64 characters")
+//	}
+//
+//	return nil
+//}
 
 func IsTxMsgAssociate(tx sdk.Tx) bool {
 	msgs := tx.GetMsgs()

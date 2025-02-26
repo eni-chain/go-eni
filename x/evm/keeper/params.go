@@ -99,7 +99,8 @@ eni gas = evm gas * multiplier
 eni gas price = fee / eni gas = fee / (evm gas * multiplier) = evm gas / multiplier
 */
 func (k *Keeper) GetEVMGasLimitFromCtx(ctx sdk.Context) uint64 {
-	return k.getEvmGasLimitFromCtx(ctx)
+	//return k.getEvmGasLimitFromCtx(ctx)
+	return 0
 }
 
 func (k *Keeper) GetCosmosGasLimitFromEVMGas(ctx sdk.Context, evmGas uint64) uint64 {
