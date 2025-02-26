@@ -6,9 +6,9 @@ import (
 	"math/big"
 
 	sdk "cosmossdk.io/math"
+	"github.com/eni-chain/go-eni/utils"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/sei-protocol/sei-chain/utils"
 )
 
 func NewLegacyTx(tx *ethtypes.Transaction) (*LegacyTx, error) {

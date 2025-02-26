@@ -36,7 +36,7 @@ require (
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
 	github.com/cosmos/ibc-go/v8 v8.5.2
 	github.com/ethereum/go-ethereum v1.15.0
-	github.com/gogo/protobuf v1.3.2
+	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
@@ -48,7 +48,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
-	github.com/tendermint/tendermint v0.35.9
+	github.com/tendermint/tendermint v0.37.0-dev
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 	golang.org/x/tools v0.29.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250102185135-69823020774d
