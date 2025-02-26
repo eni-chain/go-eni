@@ -8,7 +8,7 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) SeiAddressByEVMAddress(goCtx context.Context, req *types.QuerySeiAddressByEVMAddressRequest) (res *types.QuerySeiAddressByEVMAddressResponse, err error) {
+func (k Keeper) EniAddressByEVMAddress(goCtx context.Context, req *types.QuerySeiAddressByEVMAddressRequest) (res *types.QuerySeiAddressByEVMAddressResponse, err error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
 	return
