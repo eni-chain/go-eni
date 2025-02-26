@@ -8,7 +8,7 @@ option go_package = "github.com/eni-chain/go-eni/x/evm/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  rpc SeiAddressByEVMAddress(QuerySeiAddressByEVMAddressRequest) returns (QuerySeiAddressByEVMAddressResponse) {
+  rpc EniAddressByEVMAddress(QuerySeiAddressByEVMAddressRequest) returns (QuerySeiAddressByEVMAddressResponse) {
     option (google.api.http).get = "/enichain/evm/sei_address";
   }
 
