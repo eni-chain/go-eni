@@ -7,7 +7,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
@@ -16,7 +17,8 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
 )
 
 type SendAPI struct {
@@ -79,16 +81,20 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		} else if res == nil {
 			err = errors.New("missing broadcast response")
 		} else if res.CheckTx.Code != 0 {
-			err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.CheckTx.Code, "")
+			//err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.CheckTx.Code, "")
+			//todo: need to confirm the codespace
+			err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.CheckTx.Code, "")
 		}
 	} else {
-		res, broadcastError := s.tmClient.BroadcastTx(ctx, txbz)
+		res, broadcastError := s.tmClient.BroadcastTxSync(ctx, txbz)
 		if broadcastError != nil {
 			err = broadcastError
 		} else if res == nil {
 			err = errors.New("missing broadcast response")
 		} else if res.Code != 0 {
-			err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.Code, "")
+			//err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.Code, "")
+			//todo: need to confirm the codespace
+			err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.Code, "")
 		}
 	}
 	return

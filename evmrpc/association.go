@@ -9,13 +9,15 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rpc"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
 )
 
 type AssociationAPI struct {
@@ -74,13 +76,15 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 		return encodeErr
 	}
 
-	res, broadcastError := t.tmClient.BroadcastTx(ctx, txbz)
+	//res, broadcastError := t.tmClient.BroadcastTx(ctx, txbz)
+	res, broadcastError := t.tmClient.BroadcastTxSync(ctx, txbz)
 	if broadcastError != nil {
 		err = broadcastError
 	} else if res == nil {
 		err = errors.New("missing broadcast response")
 	} else if res.Code != 0 {
-		err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.Code, "")
+		//todo: need to confirm the codespace
+		err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.Code, "")
 	}
 
 	return err
@@ -173,9 +177,11 @@ func (t *AssociationAPI) GetEvmTx(ctx context.Context, cosmosHash string) (resul
 	if err != nil {
 		return "", err
 	}
-	if txResponse.TxResult.EvmTxInfo == nil {
-		return "", fmt.Errorf("transaction not found")
-	}
+	//todo: EvmTxInfo EvmTxInfoy has been deleted, find an alternative later`
+	//if txResponse.TxResult.EvmTxInfo == nil {
+	//	return "", fmt.Errorf("transaction not found")
+	//}
 
-	return txResponse.TxResult.EvmTxInfo.TxHash, nil
+	//return txResponse.TxResult.EvmTxInfo.TxHash, nil
+	return string(txResponse.Tx.Hash()), nil
 }

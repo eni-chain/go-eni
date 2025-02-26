@@ -11,7 +11,8 @@ import (
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
 )
 
 type TxPoolAPI struct {
@@ -41,7 +42,9 @@ func (t *TxPoolAPI) Content(ctx context.Context) (result map[string]map[string]m
 	}
 
 	total := t.txPoolConfig.maxNumTxs
-	resUnconfirmedTxs, err := t.tmClient.UnconfirmedTxs(ctx, nil, &total)
+	//resUnconfirmedTxs, err := t.tmClient.UnconfirmedTxs(ctx, nil, &total)
+	//todo: need to confirm whether the parameters are passed correctly
+	resUnconfirmedTxs, err := t.tmClient.UnconfirmedTxs(ctx, &total)
 	if err != nil {
 		return nil, err
 	}

@@ -31,8 +31,10 @@ import (
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rpc"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	"github.com/tendermint/tendermint/rpc/coretypes"
+	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//"github.com/tendermint/tendermint/rpc/coretypes"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
+	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 )
 
 type CtxIsWasmdPrecompileCallKeyType string

@@ -20,9 +20,12 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rpc"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	"github.com/tendermint/tendermint/rpc/coretypes"
-	tmtypes "github.com/tendermint/tendermint/types"
+	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//"github.com/tendermint/tendermint/rpc/coretypes"
+	//tmtypes "github.com/tendermint/tendermint/types"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
+	"github.com/cometbft/cometbft/rpc/core/types"
+	tmtypes "github.com/cometbft/cometbft/types"
 )
 
 var ErrPanicTx = errors.New("transaction is panic tx")
@@ -187,7 +190,9 @@ func (t *TransactionAPI) GetTransactionByHash(ctx context.Context, hash common.H
 	sdkCtx := t.ctxProvider(LatestCtxHeight)
 	// first try get from mempool
 	for page := 1; page <= UnconfirmedTxQueryMaxPage; page++ {
-		res, err := t.tmClient.UnconfirmedTxs(ctx, &page, nil)
+		//res, err := t.tmClient.UnconfirmedTxs(ctx, &page, nil)
+		//todo:need to verify that the new method is passed correctly
+		res, err := t.tmClient.UnconfirmedTxs(ctx, &page)
 		if err != nil || len(res.Txs) == 0 {
 			break
 		}

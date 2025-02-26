@@ -12,18 +12,22 @@ import (
 	//iavlstore "github.com/cosmos/cosmos-sdk/store/iavl"
 	"cosmossdk.io/store/cachekv"
 	iavlstore "cosmossdk.io/store/iavl"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	//sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "cosmossdk.io/store/types"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/state"
 	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rpc"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/proto/tendermint/crypto"
+	//abci "github.com/tendermint/tendermint/abci/types"
+	//"github.com/tendermint/tendermint/proto/tendermint/crypto"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//"github.com/tendermint/tendermint/rpc/coretypes"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/proto/tendermint/crypto"
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
-	"github.com/tendermint/tendermint/rpc/coretypes"
+	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 )
 
 type StateAPI struct {
@@ -147,12 +151,14 @@ OUTER:
 	for _, key := range storageKeys {
 		paddedKey := common.BytesToHash([]byte(key))
 		formattedKey := append(types.StateKey(address), paddedKey[:]...)
-		qres := iavl.Query(abci.RequestQuery{
+
+		rq := abci.RequestQuery{
 			Path:   "/key",
 			Data:   formattedKey,
 			Height: block.Block.Height,
 			Prove:  true,
-		})
+		}
+		qres, err := iavl.Query(&rq)
 		proofResult.HexValues = append(proofResult.HexValues, hex.EncodeToString(qres.Value))
 		proofResult.StorageProof = append(proofResult.StorageProof, qres.ProofOps)
 	}

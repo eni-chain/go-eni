@@ -12,7 +12,8 @@ import (
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native" // run init()s to register native tracers
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/golang-lru/v2/expirable"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
 )
 
 const (

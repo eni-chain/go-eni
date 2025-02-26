@@ -13,8 +13,10 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/rpc"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	"github.com/tendermint/tendermint/rpc/coretypes"
+	//rpcclient "github.com/tendermint/tendermint/rpc/client"
+	//"github.com/tendermint/tendermint/rpc/coretypes"
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
+	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 )
 
 const highTotalGasUsedThreshold = 8500000
