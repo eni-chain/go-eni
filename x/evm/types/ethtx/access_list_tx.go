@@ -142,7 +142,7 @@ func (tx *AccessListTx) SetSignatureValues(chainID, v, r, s *big.Int) {
 		tx.S = s.Bytes()
 	}
 	if chainID != nil {
-		chainIDInt := sdk.NewIntFromBigInt(chainID)
+		chainIDInt := math.NewIntFromBigInt(chainID)
 		tx.ChainID = &chainIDInt
 	}
 }

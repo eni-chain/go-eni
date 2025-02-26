@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "cosmossdk.io/math"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto/kzg4844"

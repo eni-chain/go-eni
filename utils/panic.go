@@ -2,6 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	"github.com/hashicorp/go-metrics"
 	"runtime/debug"
 	"strings"
 
@@ -30,17 +32,17 @@ func LogPanicCallback(ctx sdk.Context, r any) func(any) {
 	}
 }
 
-//func MetricsPanicCallback(err any, ctx sdk.Context, key string) {
-//	ctx.Logger().Error(fmt.Sprintf("panic %s occurred during order matching for: %s", err, key))
-//	telemetry.IncrCounterWithLabels(
-//		[]string{"panic"},
-//		1,
-//		[]metrics.Label{
-//			telemetry.NewLabel("error", fmt.Sprintf("%s", err)),
-//			telemetry.NewLabel("module", key),
-//		},
-//	)
-//}
+func MetricsPanicCallback(err any, ctx sdk.Context, key string) {
+	ctx.Logger().Error(fmt.Sprintf("panic %s occurred during order matching for: %s", err, key))
+	telemetry.IncrCounterWithLabels(
+		[]string{"panic"},
+		1,
+		[]metrics.Label{
+			telemetry.NewLabel("error", fmt.Sprintf("%s", err)),
+			telemetry.NewLabel("module", key),
+		},
+	)
+}
 
 func DecorateHardFailError(err error) error {
 	return fmt.Errorf("%s:%s", HardFailPrefix, err.Error())

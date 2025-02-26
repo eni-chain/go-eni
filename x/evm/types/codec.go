@@ -6,6 +6,8 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
+	"github.com/gogo/protobuf/proto"
 	// this line is used by starport scaffolding # 1
 )
 

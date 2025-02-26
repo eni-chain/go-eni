@@ -12,6 +12,8 @@ import (
 var (
 	ErrInvalidSigner = sdkerrors.Register(ModuleName, 1100, "expected gov account as only signer for proposal message")
 	ErrSample        = sdkerrors.Register(ModuleName, 1101, "sample error")
+	// ErrTxTooLarge defines an ABCI typed error where tx is too large.
+	ErrTxTooLarge = sdkerrors.Register(ModuleName, 21, "tx too large")
 )
 
 type AssociationMissingErr struct {

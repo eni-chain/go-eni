@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/stretchr/testify/require"
@@ -108,7 +108,7 @@ func TestValidateAccessListTransaction(t *testing.T) {
 	require.NotNil(t, tx.Validate())
 	tx.Amount = amt
 	overflowed := &big.Int{}
-	sdkOverflowed := sdk.NewIntFromBigInt(overflowed.Exp(big.NewInt(math.MaxInt64), big.NewInt(4), nil))
+	sdkOverflowed := sdkmath.NewIntFromBigInt(overflowed.Exp(big.NewInt(math.MaxInt64), big.NewInt(4), nil))
 	tx.GasPrice = &sdkOverflowed
 	require.NotNil(t, tx.Validate())
 	tx.GasPrice = gp

@@ -72,12 +72,12 @@ var _ types.MsgServer = msgServer{}
 //}
 
 func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMTransaction) (serverRes *types.MsgEVMTransactionResponse, err error) {
-	//if msg.IsAssociateTx() {
-	//	// no-op in msg server for associate tx; all the work have been done in ante handler
-	//	return &types.MsgEVMTransactionResponse{}, nil
-	//}
+	if msg.IsAssociateTx() {
+		// no-op in msg server for associate tx; all the work have been done in ante handler
+		return &types.MsgEVMTransactionResponse{}, nil
+	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	//tx, _ := msg.AsTransaction()
+	tx, _ := msg.AsTransaction()
 
 	// EVM has a special case here, mainly because for an EVM transaction the gas limit is set on EVM payload level, not on top-level GasWanted field
 	// as normal transactions (because existing eth client can't). As a result EVM has its own dedicated ante handler chain. The full sequence is:
@@ -90,8 +90,8 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 	//ctx = ctx.WithGasMeter(sdk.NewInfiniteGasMeterWithMultiplier(ctx)) //todo check if this is needed
 
 	stateDB := state.NewDBImpl(ctx, &server, false)
-	//emsg := server.GetEVMMessage(ctx, tx, msg.Derived.SenderEVMAddr)
-	//gp := server.GetGasPool()
+	emsg := server.GetEVMMessage(ctx, tx, msg.Derived.SenderEVMAddr)
+	gp := server.GetGasPool()
 
 	defer func() {
 		defer stateDB.Cleanup()
@@ -131,8 +131,8 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 			return
 		}
 
-		//receipt, rerr := server.WriteReceipt(ctx, stateDB, emsg, uint32(tx.Type()), tx.Hash(), serverRes.GasUsed, serverRes.VmError)
-		receipt, rerr := &types.Receipt{}, errors.New("not implemented")
+		receipt, rerr := server.WriteReceipt(ctx, stateDB, emsg, uint32(tx.Type()), tx.Hash(), serverRes.GasUsed, serverRes.VmError)
+		//receipt, rerr := &types.Receipt{}, errors.New("not implemented")
 		if rerr != nil {
 			err = rerr
 			ctx.Logger().Error(fmt.Sprintf("failed to write EVM receipt: %s", err))
@@ -157,7 +157,7 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 		surplus = surplus.Add(extraSurplus)
 		bloom := ethtypes.Bloom{}
 		bloom.SetBytes(receipt.LogsBloom)
-		//server.AppendToEvmTxDeferredInfo(ctx, bloom, tx.Hash(), surplus)
+		server.AppendToEvmTxDeferredInfo(ctx, bloom, tx.Hash(), surplus)
 
 		// GasUsed in serverRes is in EVM's gas unit, not Eni's gas unit.
 		// PriorityNormalizer is the coefficient that's used to adjust EVM
@@ -168,8 +168,7 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 		originalGasMeter.ConsumeGas(adjustedGasUsed.TruncateInt().Uint64(), "evm transaction")
 	}()
 
-	//res, applyErr := server.applyEVMMessage(ctx, emsg, stateDB, gp)
-	res, applyErr := core.ExecutionResult{}, errors.New("not implemented")
+	res, applyErr := server.applyEVMMessage(ctx, emsg, stateDB, gp)
 	serverRes = &types.MsgEVMTransactionResponse{
 		//Hash: tx.Hash().Hex(),
 	}
@@ -245,6 +244,7 @@ func BigMin(x, y *big.Int) *big.Int {
 	}
 	return x
 }
+
 func (k Keeper) applyEVMMessage(ctx sdk.Context, msg *core.Message, stateDB *state.DBImpl, gp core.GasPool) (*core.ExecutionResult, error) {
 	blockCtx, err := k.GetVMBlockContext(ctx, gp)
 	if err != nil {

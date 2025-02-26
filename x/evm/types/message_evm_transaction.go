@@ -1,8 +1,12 @@
 package types
 
 import (
+	sdkerrors "cosmossdk.io/errors"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
+
 	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	//"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	//ethtypes "github.com/ethereum/go-ethereum/core/types"
@@ -41,27 +45,27 @@ func (msg *MsgEVMTransaction) GetSignBytes() []byte {
 	panic("sign bytes should be accessed on EVM transaction level")
 }
 
-//func (msg *MsgEVMTransaction) ValidateBasic() error {
-//	amsg, isAssociate := msg.GetAssociateTx()
-//	if isAssociate && len(amsg.CustomMessage) > MaxAssociateCustomMessageLength {
-//		return sdkerrors.Wrapf(sdkerrors.ErrTxTooLarge, "custom message can have at most 64 characters")
-//	}
-//	return nil
-//}
+func (msg *MsgEVMTransaction) ValidateBasic() error {
+	amsg, isAssociate := msg.GetAssociateTx()
+	if isAssociate && len(amsg.CustomMessage) > MaxAssociateCustomMessageLength {
+		return sdkerrors.Wrapf(ErrTxTooLarge, "custom message can have at most 64 characters")
+	}
+	return nil
+}
 
-//func (msg *MsgEVMTransaction) AsTransaction() (*ethtypes.Transaction, ethtx.TxData) {
-//	txData, err := UnpackTxData(msg.Data)
-//	if err != nil {
-//		return nil, nil
-//	}
-//
-//	return ethtypes.NewTx(txData.AsEthereumData()), txData
-//}
+func (msg *MsgEVMTransaction) AsTransaction() (*ethtypes.Transaction, ethtx.TxData) {
+	txData, err := UnpackTxData(msg.Data)
+	if err != nil {
+		return nil, nil
+	}
+
+	return ethtypes.NewTx(txData.AsEthereumData()), txData
+}
 
 // UnpackInterfaces implements UnpackInterfacesMesssage.UnpackInterfaces
-//func (msg *MsgEVMTransaction) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-//	return unpacker.UnpackAny(msg.Data, new(ethtx.TxData))
-//}
+func (msg *MsgEVMTransaction) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	return unpacker.UnpackAny(msg.Data, new(ethtx.TxData))
+}
 
 func (msg *MsgEVMTransaction) IsAssociateTx() bool {
 	_, ok := msg.GetAssociateTx()
@@ -100,11 +104,13 @@ func GetEVMTransactionMessage(tx sdk.Tx) *MsgEVMTransaction {
 	return msg
 }
 
-//func (res *MsgEVMTransactionResponse) DecorateSdkResult(sdkRes *sdk.Result) {
-//	if res == nil {
-//		return
-//	}
-//	if res.VmError != "" {
-//		sdkRes.EvmError = res.VmError
-//	}
-//}
+func (res *MsgEVMTransactionResponse) DecorateSdkResult(sdkRes *sdk.Result) {
+	if res == nil {
+		return
+	}
+	if res.VmError != "" {
+		//todo eni change
+		//sdkRes.EvmError = res.VmError
+
+	}
+}

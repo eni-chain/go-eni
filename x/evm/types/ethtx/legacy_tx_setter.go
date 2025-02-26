@@ -1,6 +1,6 @@
 package ethtx
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import sdk "cosmossdk.io/math"
 
 func (tx *LegacyTx) SetTo(v string) {
 	tx.To = v
