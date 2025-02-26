@@ -39,38 +39,6 @@ func NewMsgServerImpl(keeper *Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-//
-//func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMTransaction) (serverRes *types.MsgEVMTransactionResponse, err error) {
-//	ctx := sdk.UnwrapSDKContext(goCtx)
-//	_ = ctx
-//	return
-//}
-//
-//func (server msgServer) Send(goCtx context.Context, msg *types.MsgSend) (res *types.MsgSendResponse, err error) {
-//	ctx := sdk.UnwrapSDKContext(goCtx)
-//	_ = ctx
-//	return
-//}
-//
-//func (server msgServer) RegisterPointer(goCtx context.Context, msg *types.MsgRegisterPointer) (res *types.MsgRegisterPointerResponse, err error) {
-//	ctx := sdk.UnwrapSDKContext(goCtx)
-//	_ = ctx
-//	return
-//}
-//
-//func (server msgServer) Associate(goCtx context.Context, msg *types.MsgAssociate) (res *types.MsgAssociateResponse, err error) {
-//	ctx := sdk.UnwrapSDKContext(goCtx)
-//	_ = ctx
-//	return
-//}
-//
-//func (server msgServer) AssociateContractAddress(goCtx context.Context, msg *types.MsgAssociateContractAddress) (res *types.MsgAssociateContractAddressResponse, err error) {
-//	ctx := sdk.UnwrapSDKContext(goCtx)
-//	_ = ctx
-//	return
-//
-//}
-
 func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMTransaction) (serverRes *types.MsgEVMTransactionResponse, err error) {
 	if msg.IsAssociateTx() {
 		// no-op in msg server for associate tx; all the work have been done in ante handler
@@ -132,7 +100,6 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 		}
 
 		receipt, rerr := server.WriteReceipt(ctx, stateDB, emsg, uint32(tx.Type()), tx.Hash(), serverRes.GasUsed, serverRes.VmError)
-		//receipt, rerr := &types.Receipt{}, errors.New("not implemented")
 		if rerr != nil {
 			err = rerr
 			ctx.Logger().Error(fmt.Sprintf("failed to write EVM receipt: %s", err))
@@ -170,7 +137,7 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 
 	res, applyErr := server.applyEVMMessage(ctx, emsg, stateDB, gp)
 	serverRes = &types.MsgEVMTransactionResponse{
-		//Hash: tx.Hash().Hex(),
+		Hash: tx.Hash().Hex(),
 	}
 	if applyErr != nil {
 		// This should not happen, as anything that could cause applyErr is supposed to
