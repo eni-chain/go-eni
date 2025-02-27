@@ -1,8 +1,6 @@
 module github.com/eni-chain/go-eni
 
-go 1.23.0
-
-toolchain go1.24.0
+go 1.23.6
 
 replace (
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.

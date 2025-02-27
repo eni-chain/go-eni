@@ -18,6 +18,9 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(APPNAME) \
 	-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT)
 
 BUILD_FLAGS := -ldflags '$(ldflags)'
+build:
+	@go build $(BUILD_FLAGS) -o build/$(APPNAME)d ./cmd/$(APPNAME)d
+.PHONY: build
 
 ##############
 ###  Test  ###
