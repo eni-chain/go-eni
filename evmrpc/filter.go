@@ -23,7 +23,6 @@ import (
 	//tmtypes "github.com/tendermint/tendermint/types"
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
-	tmtypes "github.com/cometbft/cometbft/types"
 )
 
 const TxSearchPerPage = 10
@@ -234,34 +233,35 @@ func (a *FilterAPI) getBlockHeadersAfter(
 	ctx context.Context,
 	cursor string,
 ) ([]common.Hash, string, error) {
-	q := NewBlockQueryBuilder()
-	builtQuery := q.Build()
+	//todo cosmos version update interface change,must need be readapted
+	//q := NewBlockQueryBuilder()
+	//builtQuery := q.Build()
 	hasMore := true
 	headers := []common.Hash{}
 	for hasMore {
-		res, err := a.tmClient.Events(ctx, &coretypes.RequestEvents{
-			Filter: &coretypes.EventFilter{Query: builtQuery},
-			After:  cursor,
-		})
-		if err != nil {
-			return nil, "", err
-		}
-		hasMore = res.More
-		cursor = res.Newest
-
-		for _, item := range res.Items {
-			wrapper := EventItemDataWrapper{}
-			err := json.Unmarshal(item.Data, &wrapper)
-			if err != nil {
-				return nil, "", err
-			}
-			block := tmtypes.EventDataNewBlock{}
-			err = json.Unmarshal(wrapper.Value, &block)
-			if err != nil {
-				return nil, "", err
-			}
-			headers = append(headers, common.BytesToHash(block.Block.Hash()))
-		}
+		//res, err := a.tmClient.Events(ctx, &coretypes.RequestEvents{
+		//	Filter: &coretypes.EventFilter{Query: builtQuery},
+		//	After:  cursor,
+		//})
+		//if err != nil {
+		//	return nil, "", err
+		//}
+		//hasMore = res.More
+		//cursor = res.Newest
+		//
+		//for _, item := range res.Items {
+		//	wrapper := EventItemDataWrapper{}
+		//	err := json.Unmarshal(item.Data, &wrapper)
+		//	if err != nil {
+		//		return nil, "", err
+		//	}
+		//	block := tmtypes.EventDataNewBlock{}
+		//	err = json.Unmarshal(wrapper.Value, &block)
+		//	if err != nil {
+		//		return nil, "", err
+		//	}
+		//	headers = append(headers, common.BytesToHash(block.Block.Hash()))
+		//}
 	}
 	return headers, cursor, nil
 }

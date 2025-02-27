@@ -12,8 +12,9 @@ import (
 	//iavlstore "github.com/cosmos/cosmos-sdk/store/iavl"
 	"cosmossdk.io/store/cachekv"
 	iavlstore "cosmossdk.io/store/iavl"
-	//sdk "github.com/cosmos/cosmos-sdk/types"
-	sdk "cosmossdk.io/store/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	//sdk "cosmossdk.io/store/types"
+
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/state"
 	"github.com/eni-chain/go-eni/x/evm/types"
@@ -24,7 +25,7 @@ import (
 	//"github.com/tendermint/tendermint/proto/tendermint/crypto"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
 	//"github.com/tendermint/tendermint/rpc/coretypes"
-	abci "github.com/cometbft/cometbft/abci/types"
+	storytypes "cosmossdk.io/store/types"
 	"github.com/cometbft/cometbft/proto/tendermint/crypto"
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
@@ -139,10 +140,11 @@ OUTER:
 			iavl = cast
 			break OUTER
 		case *cachekv.Store:
-			if cast.GetParent() == nil {
-				return nil, errors.New("cannot find EVM IAVL store")
-			}
-			s = cast.GetParent()
+			// todo must be readapted
+			//if cast.GetParent() == nil {
+			//	return nil, errors.New("cannot find EVM IAVL store")
+			//}
+			//s = cast.GetParent()
 		default:
 			return nil, errors.New("cannot find EVM IAVL store")
 		}
@@ -152,13 +154,16 @@ OUTER:
 		paddedKey := common.BytesToHash([]byte(key))
 		formattedKey := append(types.StateKey(address), paddedKey[:]...)
 
-		rq := abci.RequestQuery{
+		rq := storytypes.RequestQuery{
 			Path:   "/key",
 			Data:   formattedKey,
 			Height: block.Block.Height,
 			Prove:  true,
 		}
 		qres, err := iavl.Query(&rq)
+		if err != nil {
+			return nil, err
+		}
 		proofResult.HexValues = append(proofResult.HexValues, hex.EncodeToString(qres.Value))
 		proofResult.StorageProof = append(proofResult.StorageProof, qres.ProofOps)
 	}

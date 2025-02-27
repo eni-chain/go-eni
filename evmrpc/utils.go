@@ -2,10 +2,13 @@ package evmrpc
 
 import (
 	"context"
+	errorsmod "cosmossdk.io/errors"
 	"crypto/ecdsa"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"math/big"
 	"time"
 
@@ -13,7 +16,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	//sdk "github.com/cosmos/cosmos-sdk/types"
 	sdk "cosmossdk.io/store/types"
@@ -37,6 +39,15 @@ const LatestCtxHeight int64 = -1
 // to reflect the fact that base fee would never change, which is only true if
 // the block is exactly half-utilized.
 const GasUsedRatio float64 = 0.5
+
+var (
+	// ErrPrivKeyExtr is used to output an error if extraction of a private key from Local item fails.
+	ErrPrivKeyExtr = errors.New("private key extraction works only for Local")
+	// ErrPrivKeyNotAvailable is used when a Record_Local.PrivKey is nil.
+	ErrPrivKeyNotAvailable = errors.New("private key is not available")
+	// ErrCastAny is used to output an error if cast from types.Any fails.
+	ErrCastAny = errors.New("unable to cast to cryptotypes")
+)
 
 func GetBlockNumberByNrOrHash(ctx context.Context, tmClient rpcclient.Client, blockNrOrHash rpc.BlockNumberOrHash) (*int64, error) {
 	if blockNrOrHash.BlockHash != nil {
@@ -92,17 +103,24 @@ func getAddressPrivKeyMap(kb keyring.Keyring) map[string]*ecdsa.PrivateKey {
 		return res
 	}
 	for _, key := range keys {
-		localInfo, ok := key.(keyring.LocalInfo)
-		if !ok {
-			// will only show local key
-			continue
-		}
-		if localInfo.GetAlgo() != hd.Secp256k1Type {
-			fmt.Printf("Skipping address %s because it isn't signed with secp256k1\n", localInfo.Name)
-			continue
-		}
-		priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
+		//todo added code focus test
+		//localInfo, ok := key.(keyring.LocalInfo)
+		//if !ok {
+		//	// will only show local key
+		//	continue
+		//}
+		//if localInfo.GetAlgo() != hd.Secp256k1Type {
+		//	fmt.Printf("Skipping address %s because it isn't signed with secp256k1\n", localInfo.Name)
+		//	continue
+		//}
+		//priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
+		priv, err := extractPrivKeyFromRecord(key)
 		if err != nil {
+			fmt.Printf("extractPrivKeyFromRecord failed,err %s ", err.Error())
+			continue
+		}
+		if priv.Type() != string(hd.Secp256k1Type) {
+			fmt.Printf("Skipping address %s because it isn't signed with secp256k1\n", key.Name)
 			continue
 		}
 		privHex := hex.EncodeToString(priv.Bytes())
@@ -114,6 +132,28 @@ func getAddressPrivKeyMap(kb keyring.Keyring) map[string]*ecdsa.PrivateKey {
 		res[address.Hex()] = privKey
 	}
 	return res
+}
+
+func extractPrivKeyFromRecord(k *keyring.Record) (cryptotypes.PrivKey, error) {
+	rl := k.GetLocal()
+	if rl == nil {
+		return nil, ErrPrivKeyExtr
+	}
+
+	return extractPrivKeyFromLocal(rl)
+}
+
+func extractPrivKeyFromLocal(rl *keyring.Record_Local) (cryptotypes.PrivKey, error) {
+	if rl.PrivKey == nil {
+		return nil, ErrPrivKeyNotAvailable
+	}
+
+	priv, ok := rl.PrivKey.GetCachedValue().(cryptotypes.PrivKey)
+	if !ok {
+		return nil, errorsmod.Wrap(ErrCastAny, "PrivKey")
+	}
+
+	return priv, nil
 }
 
 func blockResultsWithRetry(ctx context.Context, client rpcclient.Client, height *int64) (*coretypes.ResultBlockResults, error) {
@@ -197,11 +237,15 @@ func CheckVersion(ctx sdk.Context, k *keeper.Keeper) error {
 }
 
 func bankExists(ctx sdk.Context, k *keeper.Keeper) bool {
-	return ctx.KVStore(k.BankKeeper().GetStoreKey()).VersionExists(ctx.BlockHeight())
+	//todo cosmos add interface,must need test
+	//return ctx.KVStore(k.BankKeeper().GetStoreKey()).VersionExists(ctx.BlockHeight())
+	return true
 }
 
 func evmExists(ctx sdk.Context, k *keeper.Keeper) bool {
-	return ctx.KVStore(k.GetStoreKey()).VersionExists(ctx.BlockHeight())
+	//todo cosmos add interface,must need test
+	//return ctx.KVStore(k.GetStoreKey()).VersionExists(ctx.BlockHeight())
+	return true
 }
 
 func shouldIncludeSynthetic(namespace string) bool {

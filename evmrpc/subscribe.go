@@ -272,10 +272,11 @@ func encodeTmHeader(
 	resultHash := common.HexToHash(header.Header.LastResultsHash.String())
 	appHash := common.HexToHash(header.Header.AppHash.String())
 	txHash := common.HexToHash(header.Header.DataHash.String())
-	for _, txRes := range header.ResultFinalizeBlock.TxResults {
-		gasLimit += txRes.GasWanted
-		gasWanted += txRes.GasUsed
-	}
+	//todo must be readapted
+	//for _, txRes := range header.ResultFinalizeBlock.TxResults {
+	//	gasLimit += txRes.GasWanted
+	//	gasWanted += txRes.GasUsed
+	//}
 	result := map[string]interface{}{
 		"difficulty":            (*hexutil.Big)(utils.Big0), // inapplicable to Eni
 		"extraData":             hexutil.Bytes{},            // inapplicable to Eni

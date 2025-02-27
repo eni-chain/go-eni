@@ -194,16 +194,18 @@ func NewBackend(ctxProvider func(int64) sdk.Context, keeper *keeper.Keeper, txDe
 }
 
 func (b *Backend) StateAndHeaderByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (vm.StateDB, *ethtypes.Header, error) {
-	height, err := b.getBlockHeight(ctx, blockNrOrHash)
-	if err != nil {
-		return nil, nil, err
-	}
-	isWasmdCall, ok := ctx.Value(CtxIsWasmdPrecompileCallKey).(bool)
-	sdkCtx := b.ctxProvider(height).WithIsEVM(true).WithEVMEntryViaWasmdPrecompile(ok && isWasmdCall)
-	if err := CheckVersion(sdkCtx, b.keeper); err != nil {
-		return nil, nil, err
-	}
-	return state.NewDBImpl(sdkCtx, b.keeper, true), b.getHeader(big.NewInt(height)), nil
+	// todo must be readapted
+	//height, err := b.getBlockHeight(ctx, blockNrOrHash)
+	//if err != nil {
+	//	return nil, nil, err
+	//}
+	//isWasmdCall, ok := ctx.Value(CtxIsWasmdPrecompileCallKey).(bool)
+	////sdkCtx := b.ctxProvider(height).WithIsEVM(true).WithEVMEntryViaWasmdPrecompile(ok && isWasmdCall)
+	//if err := CheckVersion(sdkCtx, b.keeper); err != nil {
+	//	return nil, nil, err
+	//}
+	//return state.NewDBImpl(sdkCtx, b.keeper, true), b.getHeader(big.NewInt(height)), nil
+	return nil, nil, nil
 }
 
 func (b *Backend) GetTransaction(ctx context.Context, txHash common.Hash) (found bool, tx *ethtypes.Transaction, blockHash common.Hash, blockNumber uint64, index uint64, err error) {
@@ -312,7 +314,9 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 	// get the parent block using block.parentHash
 	prevBlockHeight := block.Number().Int64() - 1
 	// Get statedb of parent block from the store
-	statedb := state.NewDBImpl(b.ctxProvider(prevBlockHeight).WithIsEVM(true), b.keeper, true)
+	// todo must be readapted
+	//statedb := state.NewDBImpl(b.ctxProvider(prevBlockHeight).WithIsEVM(true), b.keeper, true)
+	statedb := state.NewDBImpl(b.ctxProvider(prevBlockHeight), b.keeper, true)
 	if txIndex == 0 && len(block.Transactions()) == 0 {
 		return nil, vm.BlockContext{}, statedb, emptyRelease, nil
 	}
@@ -350,7 +354,9 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 		if idx == txIndex {
 			return tx, *blockContext, statedb, emptyRelease, nil
 		}
-		statedb.WithCtx(statedb.Ctx().WithEVMEntryViaWasmdPrecompile(false))
+		//todo must be readapted
+		//statedb.WithCtx(statedb.Ctx().WithEVMEntryViaWasmdPrecompile(false))
+		statedb.WithCtx(statedb.Ctx())
 		// Not yet the searched for transaction, execute on top of the current state
 		vmenv := vm.NewEVM(*blockContext, statedb, b.ChainConfig(), vm.Config{})
 		vmenv.SetTxContext(txContext)
@@ -394,7 +400,9 @@ func (b *Backend) StateAtBlock(ctx context.Context, block *ethtypes.Block, reexe
 func (b *Backend) GetEVM(_ context.Context, msg *core.Message, stateDB vm.StateDB, _ *ethtypes.Header, vmConfig *vm.Config, blockCtx *vm.BlockContext) *vm.EVM {
 	txContext := core.NewEVMTxContext(msg)
 	if blockCtx == nil {
-		blockCtx, _ = b.keeper.GetVMBlockContext(b.ctxProvider(LatestCtxHeight).WithIsEVM(true).WithEVMEntryViaWasmdPrecompile(false), core.GasPool(b.RPCGasCap()))
+		// todo must be readapted
+		//blockCtx, _ = b.keeper.GetVMBlockContext(b.ctxProvider(LatestCtxHeight).WithIsEVM(true).WithEVMEntryViaWasmdPrecompile(false), core.GasPool(b.RPCGasCap()))
+		blockCtx, _ = b.keeper.GetVMBlockContext(b.ctxProvider(LatestCtxHeight), core.GasPool(b.RPCGasCap()))
 	}
 	evm := vm.NewEVM(*blockCtx, stateDB, b.ChainConfig(), *vmConfig)
 	evm.SetTxContext(txContext)
