@@ -33,7 +33,8 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
-	"github.com/tendermint/tendermint/libs/log"
+	//"github.com/tendermint/tendermint/libs/log"
+	"cosmossdk.io/log"
 )
 
 const testMethod = "rpc_modules"

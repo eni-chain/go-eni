@@ -8,11 +8,9 @@ import (
 	"strings"
 	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi/override"
-	"github.com/eni-chain/go-eni/utils/helpers"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/utils/metrics"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
@@ -346,9 +344,11 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 				metrics.IncrementAssociationError("state_at_tx", err)
 				return nil, vm.BlockContext{}, nil, nil, err
 			}
-			if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
-				return nil, vm.BlockContext{}, nil, nil, err
-			}
+			//if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
+			//	return nil, vm.BlockContext{}, nil, nil, err
+			//}
+			//todo:Wait until statedb migration is complete
+			_ = eniAddr
 		}
 
 		if idx == txIndex {
@@ -389,9 +389,11 @@ func (b *Backend) StateAtBlock(ctx context.Context, block *ethtypes.Block, reexe
 				metrics.IncrementAssociationError("state_at_block", err)
 				continue // don't return error, just continue bc we want to process the rest of the txs and return the statedb
 			}
-			if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
-				return nil, emptyRelease, err
-			}
+			//if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
+			//	return nil, emptyRelease, err
+			//}
+			//todo:Wait until statedb migration is complete
+			_ = eniAddr
 		}
 	}
 	return statedb, emptyRelease, nil
