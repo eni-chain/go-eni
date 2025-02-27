@@ -1,12 +1,16 @@
 package keeper
 
 import (
-	"cosmossdk.io/store/prefix"
 	"encoding/binary"
 	"fmt"
+	"math"
+	"math/big"
+	"slices"
+	"sort"
+
+	"cosmossdk.io/store/prefix"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmtypes "github.com/cometbft/cometbft/types"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -23,15 +27,12 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/holiman/uint256"
-	"math"
-	"math/big"
-	"slices"
-	"sort"
 
 	//enidbtypes "github.com/eni-chain/eni-db/ss/types"
 
-	"github.com/ethereum/go-ethereum/tests"
 	"sync"
+
+	"github.com/ethereum/go-ethereum/tests"
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
@@ -71,7 +72,7 @@ type (
 		msgs      []*types.MsgEVMTransaction
 
 		bankKeeper     bankkeeper.Keeper
-		accountKeeper  *authkeeper.AccountKeeper
+		accountKeeper  types.AccountKeeper
 		stakingKeeper  *stakingkeeper.Keeper
 		transferKeeper ibctransferkeeper.Keeper
 		//wasmKeeper     *wasmkeeper.PermissionedKeeper
@@ -105,7 +106,7 @@ func NewKeeper(
 	logger log.Logger,
 	authority string,
 
-	accountKeeper *authkeeper.AccountKeeper,
+	accountKeeper types.AccountKeeper,
 	bankKeeper bankkeeper.Keeper,
 	stakingKeeper *stakingkeeper.Keeper,
 ) Keeper {
@@ -135,7 +136,7 @@ func (k Keeper) Logger() log.Logger {
 	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k *Keeper) AccountKeeper() *authkeeper.AccountKeeper {
+func (k *Keeper) AccountKeeper() types.AccountKeeper {
 	return k.accountKeeper
 }
 

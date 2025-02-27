@@ -17,8 +17,19 @@ type StakingKeeper interface {
 
 // AccountKeeper defines the expected interface for the Account module.
 type AccountKeeper interface {
-	GetAccount(context.Context, sdk.AccAddress) sdk.AccountI // only used for simulation
-	// Methods imported from account should be defined here
+	// Return a new account with the next account number and the specified address. Does not save the new account to the store.
+	NewAccountWithAddress(context.Context, sdk.AccAddress) sdk.AccountI
+
+	// Check if an account exists in the store.
+	HasAccount(context.Context, sdk.AccAddress) bool
+
+	// Retrieve an account from the store.
+	GetAccount(context.Context, sdk.AccAddress) sdk.AccountI
+
+	// Set an account in the store.
+	SetAccount(context.Context, sdk.AccountI)
+	SetModuleAccount(ctx context.Context, macc sdk.ModuleAccountI)
+	GetModuleAddress(moduleName string) sdk.AccAddress
 }
 
 // BankKeeper defines the expected interface for the Bank module.

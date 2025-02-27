@@ -4,8 +4,8 @@ import (
 	"math/big"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -23,7 +23,7 @@ type EVMKeeper interface {
 	GetCodeSize(sdk.Context, common.Address) int
 	GetState(sdk.Context, common.Address, common.Hash) common.Hash
 	SetState(sdk.Context, common.Address, common.Hash, common.Hash)
-	AccountKeeper() *authkeeper.AccountKeeper
+	AccountKeeper() types.AccountKeeper
 	GetFeeCollectorAddress(sdk.Context) (common.Address, error)
 	GetNonce(sdk.Context, common.Address) uint64
 	SetNonce(sdk.Context, common.Address, uint64)

@@ -2,20 +2,20 @@ package evm
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
 	cosmossdk_io_math "cosmossdk.io/math"
-	"encoding/json"
-	"fmt"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -251,7 +251,7 @@ type ModuleInputs struct {
 	Logger       log.Logger
 
 	// todo  check code correct
-	AccountKeeper *authkeeper.AccountKeeper
+	AccountKeeper types.AccountKeeper
 	BankKeeper    bankkeeper.Keeper
 	StakingKeeper *stakingkeeper.Keeper
 }
