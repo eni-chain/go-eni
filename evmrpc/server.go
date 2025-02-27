@@ -6,7 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//evmCfg "github.com/eni-chain/go-eni/x/evm/config"
+	evmCfg "github.com/eni-chain/go-eni/x/evm/config"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -31,7 +31,7 @@ func NewEVMHTTPServer(
 	logger log.Logger,
 	config Config,
 	tmClient rpcclient.Client,
-//tmClient client.CometRPC,
+	//tmClient client.CometRPC,
 	k *keeper.Keeper,
 	ctxProvider func(int64) sdk.Context,
 	txConfig client.TxConfig,
@@ -49,7 +49,7 @@ func NewEVMHTTPServer(
 	}
 	simulateConfig := &SimulateConfig{GasCap: config.SimulationGasLimit, EVMTimeout: config.SimulationEVMTimeout}
 	sendAPI := NewSendAPI(tmClient, txConfig, &SendConfig{slow: config.Slow}, k, ctxProvider, homeDir, simulateConfig, ConnectionTypeHTTP)
-	//ctx := ctxProvider(LatestCtxHeight)
+	ctx := ctxProvider(LatestCtxHeight)
 
 	txAPI := NewTransactionAPI(tmClient, k, ctxProvider, txConfig, homeDir, ConnectionTypeHTTP)
 	debugAPI := NewDebugAPI(tmClient, k, ctxProvider, txConfig.TxDecoder(), simulateConfig, ConnectionTypeHTTP)
@@ -132,18 +132,15 @@ func NewEVMHTTPServer(
 		},
 	}
 	// Test API can only exist on non-live chain IDs.  These APIs instrument certain overrides.
-	//if config.EnableTestAPI && !evmCfg.IsLiveChainID(ctx) {
-	//todo: evmCfg.IsLiveChainID(ctx) depends on x/evm and will be replaced after x/evm migration is complete
-	if config.EnableTestAPI {
+	//ctx := sdk.UnwrapSDKContext(ctx)
+	if config.EnableTestAPI && !evmCfg.IsLiveChainID(ctx) {
 		logger.Info("Enabling Test EVM APIs")
 		apis = append(apis, rpc.API{
 			Namespace: "test",
 			Service:   NewTestAPI(),
 		})
 	} else {
-		//logger.Info("Disabling Test EVM APIs", "liveChainID", evmCfg.IsLiveChainID(ctx), "enableTestAPI", config.EnableTestAPI)
-		//todo: evmCfg.IsLiveChainID(ctx) depends on x/evm and will be replaced after x/evm migration is complete
-		logger.Info("Disabling Test EVM APIs", "liveChainID", "enableTestAPI", config.EnableTestAPI)
+		logger.Info("Disabling Test EVM APIs", "liveChainID", evmCfg.IsLiveChainID(ctx), "enableTestAPI", config.EnableTestAPI)
 	}
 
 	if err := httpServer.EnableRPC(apis, HTTPConfig{
@@ -159,7 +156,7 @@ func NewEVMWebSocketServer(
 	logger log.Logger,
 	config Config,
 	tmClient rpcclient.Client,
-//tmClient client.CometRPC,
+	//tmClient client.CometRPC,
 	k *keeper.Keeper,
 	ctxProvider func(int64) sdk.Context,
 	txConfig client.TxConfig,

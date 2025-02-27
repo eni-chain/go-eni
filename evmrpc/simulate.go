@@ -200,7 +200,7 @@ func (b *Backend) StateAndHeaderByNumberOrHash(ctx context.Context, blockNrOrHas
 	//	return nil, nil, err
 	//}
 	//isWasmdCall, ok := ctx.Value(CtxIsWasmdPrecompileCallKey).(bool)
-	////sdkCtx := b.ctxProvider(height).WithIsEVM(true).WithEVMEntryViaWasmdPrecompile(ok && isWasmdCall)
+	//sdkCtx := b.ctxProvider(height).WithIsEVM(true).WithEVMEntryViaWasmdPrecompile(ok && isWasmdCall)
 	//if err := CheckVersion(sdkCtx, b.keeper); err != nil {
 	//	return nil, nil, err
 	//}
