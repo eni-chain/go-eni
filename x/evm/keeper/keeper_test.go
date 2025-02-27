@@ -22,7 +22,7 @@ package keeper_test
 //	ethtypes "github.com/ethereum/go-ethereum/core/types"
 //	"github.com/ethereum/go-ethereum/crypto"
 //	"github.com/stretchr/testify/require"
-//	abci "github.com/tendermint/tendermint/abci/types"
+//	abci "github.com/cometbft/cometbft/abci/types"
 //	"github.com/tendermint/tendermint/libs/rand"
 //	tmtypes "github.com/tendermint/tendermint/types"
 //)

@@ -88,8 +88,9 @@ import (
 )
 
 const (
-	AccountAddressPrefix = "cosmos"
-	Name                 = "go-eni"
+	AccountAddressPrefix                 = "cosmos"
+	Name                                 = "go-eni"
+	OptimisticProcessingTimeoutInSeconds = 5
 )
 
 var (
