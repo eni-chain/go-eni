@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	tmtypes "github.com/cometbft/cometbft/types"
 	"math"
 	"sort"
 	"sync"
@@ -159,12 +160,13 @@ func (a *FilterAPI) GetFilterChanges(
 
 	switch filter.typ {
 	case BlocksSubscription:
-		hashes, cursor, err := a.getBlockHeadersAfter(ctx, filter.blockCursor)
+		//hashes, cursor, err := a.getBlockHeadersAfter(ctx, filter.blockCursor)
+		hashes, err := a.getBlockHeadersAfter(ctx, filterID)
 		if err != nil {
 			return nil, err
 		}
 		updatedFilter := a.filters[filterID]
-		updatedFilter.blockCursor = cursor
+		//updatedFilter.blockCursor = cursor
 		a.filters[filterID] = updatedFilter
 		return hashes, nil
 	case LogsSubscription:
@@ -231,39 +233,53 @@ func (a *FilterAPI) GetLogs(
 // to get the latest block header.
 func (a *FilterAPI) getBlockHeadersAfter(
 	ctx context.Context,
-	cursor string,
-) ([]common.Hash, string, error) {
-	//todo cosmos version update interface change,must need be readapted
-	//q := NewBlockQueryBuilder()
-	//builtQuery := q.Build()
-	hasMore := true
+	subscriberID ethrpc.ID,
+) ([]common.Hash, error) {
+	q := NewBlockQueryBuilder()
+	builtQuery := q.Build()
+	//hasMore := true
 	headers := []common.Hash{}
-	for hasMore {
-		//res, err := a.tmClient.Events(ctx, &coretypes.RequestEvents{
-		//	Filter: &coretypes.EventFilter{Query: builtQuery},
-		//	After:  cursor,
-		//})
-		//if err != nil {
-		//	return nil, "", err
-		//}
-		//hasMore = res.More
-		//cursor = res.Newest
-		//
-		//for _, item := range res.Items {
-		//	wrapper := EventItemDataWrapper{}
-		//	err := json.Unmarshal(item.Data, &wrapper)
-		//	if err != nil {
-		//		return nil, "", err
-		//	}
-		//	block := tmtypes.EventDataNewBlock{}
-		//	err = json.Unmarshal(wrapper.Value, &block)
-		//	if err != nil {
-		//		return nil, "", err
-		//	}
-		//	headers = append(headers, common.BytesToHash(block.Block.Hash()))
-		//}
+	//for hasMore {
+	//Subscribe(ctx context.Context, subscriber, query string, outCapacity ...int) (out <-chan ctypes.ResultEvent, err error)
+	//res, err := a.tmClient.Events(ctx, &coretypes.RequestEvents{
+	//	Filter: &coretypes.EventFilter{Query: builtQuery},
+	//	After:  cursor,
+	//})
+	//hasMore = res.More
+	//cursor = res.Newest
+	//for _, item := range res.Items {
+	//	wrapper := EventItemDataWrapper{}
+	//	err := json.Unmarshal(item.Data, &wrapper)
+	//	if err != nil {
+	//		return nil, "", err
+	//	}
+	//	block := tmtypes.EventDataNewBlock{}
+	//	err = json.Unmarshal(wrapper.Value, &block)
+	//	if err != nil {
+	//		return nil, "", err
+	//	}
+	//	headers = append(headers, common.BytesToHash(block.Block.Hash()))
+	//}
+	//}
+
+	//todo: need to test confirm
+	res, err := a.tmClient.Subscribe(ctx, string(subscriberID), builtQuery)
+	if err != nil {
+		return nil, err
 	}
-	return headers, cursor, nil
+	for resEvent := range res {
+		block := tmtypes.EventDataNewBlock{}
+		data, ok := resEvent.Data.([]byte)
+		if ok {
+			err = json.Unmarshal(data, &block)
+			if err != nil {
+				return nil, err
+			}
+			headers = append(headers, common.BytesToHash(block.Block.Hash()))
+		}
+	}
+
+	return headers, nil
 }
 
 func (a *FilterAPI) UninstallFilter(
