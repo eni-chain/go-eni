@@ -120,3 +120,7 @@ govulncheck:
 	@govulncheck ./...
 
 .PHONY: govet govulncheck
+
+reset-eni-node:
+	@echo Resetting eni node...
+	rm -rf eni-node && git checkout  eni-node
