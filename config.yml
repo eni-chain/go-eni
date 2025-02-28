@@ -20,7 +20,7 @@ faucet:
 validators:
 - name: alice
   bonded: 100000000stake
-  home: "~/.enid"
+  home: "$HOME/.enid"
 build:
   binary: enid
   main: './cmd/enid'
