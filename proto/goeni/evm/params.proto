@@ -69,4 +69,12 @@ message Params {
     (gogoproto.nullable)   = false,
     (gogoproto.jsontag) = "maximum_fee_per_gas"
   ];
+  string init_eni_amount = 14 [
+    (gogoproto.moretags)   = "yaml:\"init_eni_amount\"",
+    (gogoproto.jsontag) = "init_eni_amount"
+  ];
+  string init_eni_address = 15 [
+    (gogoproto.moretags)   = "yaml:\"init_eni_address\"",
+    (gogoproto.jsontag) = "init_eni_address"
+  ];
 }

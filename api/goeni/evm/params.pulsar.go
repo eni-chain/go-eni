@@ -70,6 +70,8 @@ var (
 	fd_Params_max_dynamic_base_fee_downward_adjustment     protoreflect.FieldDescriptor
 	fd_Params_target_gas_used_per_block                    protoreflect.FieldDescriptor
 	fd_Params_maximum_fee_per_gas                          protoreflect.FieldDescriptor
+	fd_Params_init_eni_amount                              protoreflect.FieldDescriptor
+	fd_Params_init_eni_address                             protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -84,6 +86,8 @@ func init() {
 	fd_Params_max_dynamic_base_fee_downward_adjustment = md_Params.Fields().ByName("max_dynamic_base_fee_downward_adjustment")
 	fd_Params_target_gas_used_per_block = md_Params.Fields().ByName("target_gas_used_per_block")
 	fd_Params_maximum_fee_per_gas = md_Params.Fields().ByName("maximum_fee_per_gas")
+	fd_Params_init_eni_amount = md_Params.Fields().ByName("init_eni_amount")
+	fd_Params_init_eni_address = md_Params.Fields().ByName("init_eni_address")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -205,6 +209,18 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.InitEniAmount != "" {
+		value := protoreflect.ValueOfString(x.InitEniAmount)
+		if !f(fd_Params_init_eni_amount, value) {
+			return
+		}
+	}
+	if x.InitEniAddress != "" {
+		value := protoreflect.ValueOfString(x.InitEniAddress)
+		if !f(fd_Params_init_eni_address, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -238,6 +254,10 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.TargetGasUsedPerBlock != uint64(0)
 	case "goeni.evm.Params.maximum_fee_per_gas":
 		return x.MaximumFeePerGas != ""
+	case "goeni.evm.Params.init_eni_amount":
+		return x.InitEniAmount != ""
+	case "goeni.evm.Params.init_eni_address":
+		return x.InitEniAddress != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -272,6 +292,10 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.TargetGasUsedPerBlock = uint64(0)
 	case "goeni.evm.Params.maximum_fee_per_gas":
 		x.MaximumFeePerGas = ""
+	case "goeni.evm.Params.init_eni_amount":
+		x.InitEniAmount = ""
+	case "goeni.evm.Params.init_eni_address":
+		x.InitEniAddress = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -318,6 +342,12 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "goeni.evm.Params.maximum_fee_per_gas":
 		value := x.MaximumFeePerGas
 		return protoreflect.ValueOfString(value)
+	case "goeni.evm.Params.init_eni_amount":
+		value := x.InitEniAmount
+		return protoreflect.ValueOfString(value)
+	case "goeni.evm.Params.init_eni_address":
+		value := x.InitEniAddress
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -358,6 +388,10 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.TargetGasUsedPerBlock = value.Uint()
 	case "goeni.evm.Params.maximum_fee_per_gas":
 		x.MaximumFeePerGas = value.Interface().(string)
+	case "goeni.evm.Params.init_eni_amount":
+		x.InitEniAmount = value.Interface().(string)
+	case "goeni.evm.Params.init_eni_address":
+		x.InitEniAddress = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -400,6 +434,10 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field target_gas_used_per_block of message goeni.evm.Params is not mutable"))
 	case "goeni.evm.Params.maximum_fee_per_gas":
 		panic(fmt.Errorf("field maximum_fee_per_gas of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.init_eni_amount":
+		panic(fmt.Errorf("field init_eni_amount of message goeni.evm.Params is not mutable"))
+	case "goeni.evm.Params.init_eni_address":
+		panic(fmt.Errorf("field init_eni_address of message goeni.evm.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.Params"))
@@ -431,6 +469,10 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "goeni.evm.Params.target_gas_used_per_block":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "goeni.evm.Params.maximum_fee_per_gas":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.Params.init_eni_amount":
+		return protoreflect.ValueOfString("")
+	case "goeni.evm.Params.init_eni_address":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -537,6 +579,14 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.InitEniAmount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.InitEniAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -565,6 +615,20 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.InitEniAddress) > 0 {
+			i -= len(x.InitEniAddress)
+			copy(dAtA[i:], x.InitEniAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.InitEniAddress)))
+			i--
+			dAtA[i] = 0x7a
+		}
+		if len(x.InitEniAmount) > 0 {
+			i -= len(x.InitEniAmount)
+			copy(dAtA[i:], x.InitEniAmount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.InitEniAmount)))
+			i--
+			dAtA[i] = 0x72
 		}
 		if len(x.MaximumFeePerGas) > 0 {
 			i -= len(x.MaximumFeePerGas)
@@ -938,6 +1002,70 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				}
 				x.MaximumFeePerGas = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 14:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field InitEniAmount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.InitEniAmount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 15:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field InitEniAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.InitEniAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1022,6 +1150,8 @@ type Params struct {
 	MaxDynamicBaseFeeDownwardAdjustment    string   `protobuf:"bytes,11,opt,name=max_dynamic_base_fee_downward_adjustment,json=maxDynamicBaseFeeDownwardAdjustment,proto3" json:"max_dynamic_base_fee_downward_adjustment,omitempty"`
 	TargetGasUsedPerBlock                  uint64   `protobuf:"varint,12,opt,name=target_gas_used_per_block,json=targetGasUsedPerBlock,proto3" json:"target_gas_used_per_block,omitempty"`
 	MaximumFeePerGas                       string   `protobuf:"bytes,13,opt,name=maximum_fee_per_gas,json=maximumFeePerGas,proto3" json:"maximum_fee_per_gas,omitempty"`
+	InitEniAmount                          string   `protobuf:"bytes,14,opt,name=init_eni_amount,json=initEniAmount,proto3" json:"init_eni_amount,omitempty"`
+	InitEniAddress                         string   `protobuf:"bytes,15,opt,name=init_eni_address,json=initEniAddress,proto3" json:"init_eni_address,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -1107,13 +1237,27 @@ func (x *Params) GetMaximumFeePerGas() string {
 	return ""
 }
 
+func (x *Params) GetInitEniAmount() string {
+	if x != nil {
+		return x.InitEniAmount
+	}
+	return ""
+}
+
+func (x *Params) GetInitEniAddress() string {
+	if x != nil {
+		return x.InitEniAddress
+	}
+	return ""
+}
+
 var File_goeni_evm_params_proto protoreflect.FileDescriptor
 
 var file_goeni_evm_params_proto_rawDesc = []byte{
 	0x0a, 0x16, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x70, 0x61, 0x72, 0x61,
 	0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e,
 	0x65, 0x76, 0x6d, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67,
-	0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9b, 0x0a, 0x0a, 0x06, 0x50, 0x61,
+	0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xcd, 0x0b, 0x0a, 0x06, 0x50, 0x61,
 	0x72, 0x61, 0x6d, 0x73, 0x12, 0x89, 0x01, 0x0a, 0x13, 0x70, 0x72, 0x69, 0x6f, 0x72, 0x69, 0x74,
 	0x79, 0x5f, 0x6e, 0x6f, 0x72, 0x6d, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x09, 0x42, 0x58, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
@@ -1195,16 +1339,27 @@ var file_goeni_evm_params_proto_rawDesc = []byte{
 	0x70, 0x65, 0x72, 0x5f, 0x67, 0x61, 0x73, 0xf2, 0xde, 0x1f, 0x1a, 0x79, 0x61, 0x6d, 0x6c, 0x3a,
 	0x22, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x70, 0x65, 0x72,
 	0x5f, 0x67, 0x61, 0x73, 0x22, 0x52, 0x10, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x46, 0x65,
-	0x65, 0x50, 0x65, 0x72, 0x47, 0x61, 0x73, 0x42, 0x8c, 0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e,
-	0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6e, 0x69, 0x2d, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x67,
-	0x6f, 0x2d, 0x65, 0x6e, 0x69, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f,
-	0x65, 0x76, 0x6d, 0xa2, 0x02, 0x03, 0x47, 0x45, 0x58, 0xaa, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e,
-	0x69, 0x2e, 0x45, 0x76, 0x6d, 0xca, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76,
-	0x6d, 0xe2, 0x02, 0x15, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76, 0x6d, 0x5c, 0x47, 0x50,
-	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x47, 0x6f, 0x65, 0x6e,
-	0x69, 0x3a, 0x3a, 0x45, 0x76, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x50, 0x65, 0x72, 0x47, 0x61, 0x73, 0x12, 0x55, 0x0a, 0x0f, 0x69, 0x6e, 0x69, 0x74, 0x5f,
+	0x65, 0x6e, 0x69, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09,
+	0x42, 0x2d, 0xea, 0xde, 0x1f, 0x0f, 0x69, 0x6e, 0x69, 0x74, 0x5f, 0x65, 0x6e, 0x69, 0x5f, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0xf2, 0xde, 0x1f, 0x16, 0x79, 0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x69,
+	0x6e, 0x69, 0x74, 0x5f, 0x65, 0x6e, 0x69, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x52,
+	0x0d, 0x69, 0x6e, 0x69, 0x74, 0x45, 0x6e, 0x69, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x59,
+	0x0a, 0x10, 0x69, 0x6e, 0x69, 0x74, 0x5f, 0x65, 0x6e, 0x69, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x09, 0x42, 0x2f, 0xea, 0xde, 0x1f, 0x10, 0x69, 0x6e,
+	0x69, 0x74, 0x5f, 0x65, 0x6e, 0x69, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0xf2, 0xde,
+	0x1f, 0x17, 0x79, 0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x69, 0x6e, 0x69, 0x74, 0x5f, 0x65, 0x6e, 0x69,
+	0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x52, 0x0e, 0x69, 0x6e, 0x69, 0x74, 0x45,
+	0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x8c, 0x01, 0x0a, 0x0d, 0x63, 0x6f,
+	0x6d, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x42, 0x0b, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x6e, 0x69, 0x2d, 0x63, 0x68, 0x61, 0x69, 0x6e,
+	0x2f, 0x67, 0x6f, 0x2d, 0x65, 0x6e, 0x69, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x65, 0x6e,
+	0x69, 0x2f, 0x65, 0x76, 0x6d, 0xa2, 0x02, 0x03, 0x47, 0x45, 0x58, 0xaa, 0x02, 0x09, 0x47, 0x6f,
+	0x65, 0x6e, 0x69, 0x2e, 0x45, 0x76, 0x6d, 0xca, 0x02, 0x09, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c,
+	0x45, 0x76, 0x6d, 0xe2, 0x02, 0x15, 0x47, 0x6f, 0x65, 0x6e, 0x69, 0x5c, 0x45, 0x76, 0x6d, 0x5c,
+	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x47, 0x6f,
+	0x65, 0x6e, 0x69, 0x3a, 0x3a, 0x45, 0x76, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
