@@ -278,115 +278,97 @@
       ]
     },
     "gov": {
-      "starting_proposal_id": "1",
+      "constitution": "",
+      "deposit_params": null,
       "deposits": [],
-      "votes": [],
-      "proposals": [],
-      "deposit_params": {
-        "min_deposit": [
+      "params": {
+        "burn_proposal_deposit_prevote": false,
+        "burn_vote_quorum": false,
+        "burn_vote_veto": true,
+        "expedited_min_deposit": [
           {
-            "denom": "ueni",
-            "amount": "10000000"
+            "amount": "50000000",
+            "denom": "stake"
           }
         ],
-        "max_deposit_period": "100s",
-        "min_expedited_deposit": [
+        "expedited_threshold": "0.667000000000000000",
+        "expedited_voting_period": "86400s",
+        "max_deposit_period": "172800s",
+        "min_deposit": [
           {
-            "denom": "ueni",
-            "amount": "20000000"
+            "amount": "10000000",
+            "denom": "stake"
           }
-        ]
-      },
-      "voting_params": {
-        "voting_period": "30s",
-        "expedited_voting_period": "15s"
-      },
-      "tally_params": {
-        "quorum": "0.5",
-        "threshold": "0.5",
+        ],
+        "min_deposit_ratio": "0.010000000000000000",
+        "min_initial_deposit_ratio": "0.000000000000000000",
+        "proposal_cancel_dest": "",
+        "proposal_cancel_ratio": "0.500000000000000000",
+        "quorum": "0.334000000000000000",
+        "threshold": "0.500000000000000000",
         "veto_threshold": "0.334000000000000000",
-        "expedited_quorum": "0.9",
-        "expedited_threshold": "0.9"
-      }
+        "voting_period": "172800s"
+      },
+      "proposals": [],
+      "starting_proposal_id": "1",
+      "tally_params": null,
+      "votes": [],
+      "voting_params": null
     },
     "ibc": {
+      "channel_genesis": {
+        "ack_sequences": [],
+        "acknowledgements": [],
+        "channels": [],
+        "commitments": [],
+        "next_channel_sequence": "0",
+        "params": {
+          "upgrade_timeout": {
+            "height": {
+              "revision_height": "0",
+              "revision_number": "0"
+            },
+            "timestamp": "600000000000"
+          }
+        },
+        "receipts": [],
+        "recv_sequences": [],
+        "send_sequences": []
+      },
       "client_genesis": {
         "clients": [],
         "clients_consensus": [],
         "clients_metadata": [],
+        "create_localhost": false,
+        "next_client_sequence": "0",
         "params": {
           "allowed_clients": [
-            "06-solomachine",
-            "07-tendermint"
+            "*"
           ]
-        },
-        "create_localhost": false,
-        "next_client_sequence": "0"
+        }
       },
       "connection_genesis": {
-        "connections": [],
         "client_connection_paths": [],
+        "connections": [],
         "next_connection_sequence": "0",
         "params": {
           "max_expected_time_per_block": "30000000000"
         }
-      },
-      "channel_genesis": {
-        "channels": [],
-        "acknowledgements": [],
-        "commitments": [],
-        "receipts": [],
-        "send_sequences": [],
-        "recv_sequences": [],
-        "ack_sequences": [],
-        "next_channel_sequence": "0"
       }
     },
     "mint": {
       "minter": {
-        "start_date": "0001-01-01",
-        "end_date": "0001-01-01",
-        "denom": "ueni",
-        "total_mint_amount": "0",
-        "remaining_mint_amount": "0",
-        "last_mint_amount": "0",
-        "last_mint_date": "0001-01-01",
-        "last_mint_height": "0"
+        "annual_provisions": "0.000000000000000000",
+        "inflation": "0.130000000000000000"
       },
       "params": {
-        "mint_denom": "ueni",
-        "token_release_schedule": [
-          {
-            "start_date": "2025-02-12",
-            "end_date": "2025-02-15",
-            "token_release_amount": "999999999999"
-          }
-        ]
+        "blocks_per_year": "6311520",
+        "goal_bonded": "0.670000000000000000",
+        "inflation_max": "0.200000000000000000",
+        "inflation_min": "0.070000000000000000",
+        "inflation_rate_change": "0.130000000000000000",
+        "mint_denom": "stake"
       }
-    },
-    "oracle": {
-      "params": {
-        "vote_period": "2",
-        "vote_threshold": "0.667000000000000000",
-        "reward_band": "0.020000000000000000",
-        "whitelist": [
-          {
-            "name": "uatom"
-          },
-          {
-            "name": "ueth"
-          }
-        ],
-        "slash_fraction": "0.000000000000000000",
-        "slash_window": "216000",
-        "min_valid_per_window": "0.050000000000000000",
-        "lookback_duration": "3600"
-      },
-      "feeder_delegations": [],
-      "exchange_rates": [],
-      "penalty_counters": [],
-      "aggregate_exchange_rate_votes": [],
-      "price_snapshots": []
     },
     "params": {
       "fees_params": {
@@ -420,9 +402,7 @@
         "max_entries": 7,
         "historical_entries": 10000,
         "bond_denom": "ueni",
-        "min_commission_rate": "0.050000000000000000",
-        "max_voting_power_ratio": "0.200000000000000000",
-        "max_voting_power_enforcement_threshold": "1000000"
+        "min_commission_rate": "0.050000000000000000"
       },
       "last_total_power": "0",
       "last_validator_powers": [],

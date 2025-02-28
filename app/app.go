@@ -2,9 +2,10 @@ package app
 
 import (
 	"fmt"
+	"io"
+
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	"github.com/eni-chain/go-eni/evmrpc"
-	"io"
 
 	_ "cosmossdk.io/api/cosmos/tx/config/v1" // import for side-effects
 	clienthelpers "cosmossdk.io/client/v2/helpers"
@@ -88,8 +89,8 @@ import (
 )
 
 const (
-	AccountAddressPrefix                 = "cosmos"
-	Name                                 = "go-eni"
+	AccountAddressPrefix                 = "eni"
+	Name                                 = "enid"
 	OptimisticProcessingTimeoutInSeconds = 5
 )
 
