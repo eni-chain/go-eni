@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -16,7 +17,8 @@ const (
 	StoreKey = ModuleName
 
 	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_evm"
+	MemStoreKey       = "mem_evm"
+	TransientStoreKey = "evm_transient"
 )
 
 var (

@@ -34,7 +34,6 @@ import (
 
 	"github.com/ethereum/go-ethereum/tests"
 
-	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -55,9 +54,9 @@ type (
 	}
 
 	Keeper struct {
-		cdc          codec.BinaryCodec
-		storeService store.KVStoreService
-		logger       log.Logger
+		cdc codec.BinaryCodec
+		//storeService store.KVStoreService
+		logger log.Logger
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
@@ -101,8 +100,10 @@ type (
 )
 
 func NewKeeper(
+	storeKey storetypes.StoreKey,
+	transientStoreKey storetypes.StoreKey,
 	cdc codec.BinaryCodec,
-	storeService store.KVStoreService,
+	//storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
 
@@ -115,10 +116,12 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		cdc:          cdc,
-		storeService: storeService,
-		authority:    authority,
-		logger:       logger,
+		storeKey:          storeKey,
+		transientStoreKey: transientStoreKey,
+		cdc:               cdc,
+		//storeService:      storeService,
+		authority: authority,
+		logger:    logger,
 
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,

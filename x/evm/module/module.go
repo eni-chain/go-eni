@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/appmodule"
-	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
 	cosmossdk_io_math "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -244,11 +244,12 @@ func init() {
 
 type ModuleInputs struct {
 	depinject.In
-
-	StoreService store.KVStoreService
-	Cdc          codec.Codec
-	Config       *modulev1.Module
-	Logger       log.Logger
+	KvStoreKey        *storetypes.KVStoreKey
+	TransientStoreKey *storetypes.TransientStoreKey
+	//StoreService      store.KVStoreService
+	Cdc    codec.Codec
+	Config *modulev1.Module
+	Logger log.Logger
 
 	// todo  check code correct
 	AccountKeeper types.AccountKeeper
@@ -269,9 +270,12 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	if in.Config.Authority != "" {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
+
 	k := keeper.NewKeeper(
+		in.KvStoreKey,
+		in.TransientStoreKey,
 		in.Cdc,
-		in.StoreService,
+		//in.StoreService,
 		in.Logger,
 		authority.String(),
 		in.AccountKeeper,
