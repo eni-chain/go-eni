@@ -34,14 +34,13 @@ import (
 //}
 
 func (app *App) CheckTx(tx *abci.RequestCheckTx) (*abci.ResponseCheckTx, error) {
-	//TODO implement me
-	panic("implement me")
+	return app.BaseApp.CheckTx(tx)
 }
 
 //func (app *App) DeliverTx(ctx sdk.Context, req abci.RequestDeliverTx, tx sdk.Tx, checksum [32]byte) abci.ResponseDeliverTx {
 //	defer metrics.MeasureDeliverTxDuration(time.Now())
 //	// ensure we carry the initial context from tracer here
-//	ctx = ctx.WithTraceSpanContext(app.GetBaseApp().TracingInfo.GetContext())
+//	ctx = ctx.WithTraceSpanContext(app.GetBaseApp().TracingInfo.GetContext())maker
 //	spanCtx, span := app.GetBaseApp().TracingInfo.StartWithContext("DeliverTx", ctx.TraceSpanContext())
 //	defer span.End()
 //	// update context with trace span new context
@@ -73,8 +72,7 @@ func (app *App) CheckTx(tx *abci.RequestCheckTx) (*abci.ResponseCheckTx, error) 
 //}
 
 func (app *App) Commit() (*abci.ResponseCommit, error) {
-	//TODO implement me
-	panic("implement me")
+	return app.BaseApp.Commit()
 }
 
 //func (app *App) LoadLatest(ctx context.Context, req *abci.RequestLoadLatest) (*abci.ResponseLoadLatest, error) {
