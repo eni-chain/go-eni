@@ -7,6 +7,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/eni-chain/go-eni/evmrpc"
 	"io"
 	"math/big"
 	"net/http"
@@ -205,7 +209,7 @@ func CmdSend() *cobra.Command {
 
 	cmd.Flags().Uint64(FlagGasFeeCap, 1000000000000, "Gas fee cap for the transaction")
 	cmd.Flags().Uint64(FlagGas, 21000, "Gas limit for the transaction")
-	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -572,31 +576,38 @@ func CmdDeployWENI() *cobra.Command {
 }
 
 func getPrivateKey(cmd *cobra.Command) (*ecdsa.PrivateKey, error) {
-	//clientCtx, err := client.GetClientTxContext(cmd)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//txf := tx.NewFactoryCLI(clientCtx, cmd.Flags())
-	//kb := txf.Keybase()
-	//info, err := kb.Key(clientCtx.GetFromName())
-	//if err != nil {
-	//	return nil, err
-	//}
+	clientCtx, err := client.GetClientTxContext(cmd)
+	if err != nil {
+		return nil, err
+	}
+	txf, err := tx.NewFactoryCLI(clientCtx, cmd.Flags())
+	if err != nil {
+		return nil, err
+	}
+
+	kb := txf.Keybase()
+	info, err := kb.Key(clientCtx.GetFromName())
+	if err != nil {
+		return nil, err
+	}
 	//localInfo, ok := info.(keyring.LocalInfo)
-	//if !ok {
-	//	return nil, errors.New("can only associate address for local keys")
-	//}
+	localInfo, ok := info.Item.(*keyring.Record_Local_)
+	if !ok {
+		return nil, errors.New("can only associate address for local keys")
+	}
+	priv, ok := localInfo.Local.PrivKey.GetCachedValue().(cryptotypes.PrivKey)
+	if err != nil {
+		return nil, err
+	}
+
 	//if localInfo.GetAlgo() != hd.Secp256k1Type {
 	//	return nil, errors.New("can only use addresses using secp256k1")
 	//}
 	//priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
-	//if err != nil {
-	//	return nil, err
-	//}
-	//privHex := hex.EncodeToString(priv.Bytes())
-	//key, _ := crypto.HexToECDSA(privHex)
-	//return key, nil
-	return nil, errors.New("not implemented")
+	privHex := hex.EncodeToString(priv.Bytes())
+	key, _ := crypto.HexToECDSA(privHex)
+	return key, nil
+	//return nil, errors.New("not implemented")
 }
 
 func getNonce(rpc string, key ecdsa.PublicKey) (uint64, error) {
