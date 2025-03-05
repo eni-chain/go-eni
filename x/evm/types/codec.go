@@ -32,6 +32,15 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	//registry.RegisterImplementations((*sdk.Msg)(nil),
 	//	&MsgUpdateParams{},
 	//)
+	registry.RegisterInterface(
+		"goeni.evm.TxData",
+		(*ethtx.TxData)(nil),
+		&ethtx.DynamicFeeTx{},
+		&ethtx.AccessListTx{},
+		&ethtx.LegacyTx{},
+		&ethtx.BlobTx{},
+		&ethtx.AssociateTx{},
+	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 
