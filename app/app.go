@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"io"
 
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
@@ -308,6 +309,29 @@ func New(
 		}
 		return app.App.InitChainer(ctx, req)
 	})
+
+	//todo SetAnteHandle
+	anteHandler, err := NewAnteHandlerAndDepGenerator(
+		HandlerOptions{
+			HandlerOptions: ante.HandlerOptions{
+				AccountKeeper:   app.AccountKeeper,
+				BankKeeper:      app.BankKeeper,
+				SignModeHandler: app.txConfig.SignModeHandler(),
+				FeegrantKeeper:  app.FeeGrantKeeper,
+				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			},
+
+			EVMKeeper: &app.EvmKeeper,
+			LatestCtxGetter: func() sdk.Context {
+				return app.NewContext(false)
+			},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetAnteHandler(anteHandler)
 
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err

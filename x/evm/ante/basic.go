@@ -1,8 +1,16 @@
 package ante
 
 import (
+	sdkerrors "cosmossdk.io/errors"
+	"errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
+	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/ethereum/go-ethereum/core"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/params"
 )
 
 type BasicDecorator struct {
@@ -15,9 +23,10 @@ func NewBasicDecorator(k *keeper.Keeper) *BasicDecorator {
 
 // cherrypicked from go-ethereum:txpool:ValidateTransaction
 func (gl BasicDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	//msg := evmtypes.MustGetEVMTransactionMessage(tx)
-	//etx, _ := msg.AsTransaction()
-	//
+	msg := evmtypes.MustGetEVMTransactionMessage(tx)
+	etx, _ := msg.AsTransaction()
+
+	//todo need to deal with later
 	//if msg.Derived != nil && !gl.k.EthBlockTestConfig.Enabled {
 	//	startingNonce := gl.k.GetNonce(ctx, msg.Derived.SenderEVMAddr)
 	//	txNonce := etx.Nonce()
@@ -30,35 +39,35 @@ func (gl BasicDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, n
 	//		})
 	//	}
 	//}
-	//
-	//if etx.To() == nil && len(etx.Data()) > params.MaxInitCodeSize {
-	//	return ctx, fmt.Errorf("%w: code size %v, limit %v", core.ErrMaxInitCodeSizeExceeded, len(etx.Data()), params.MaxInitCodeSize)
-	//}
-	//
-	//if etx.Value().Sign() < 0 {
-	//	return ctx, sdkerrors.ErrInvalidCoins
-	//}
-	//
-	//intrGas, err := core.IntrinsicGas(etx.Data(), etx.AccessList(), nil, etx.To() == nil, true, true, true)
-	//if err != nil {
-	//	return ctx, err
-	//}
-	//if etx.Gas() < intrGas {
-	//	return ctx, sdkerrors.ErrOutOfGas
-	//}
-	//
-	//if etx.Type() == ethtypes.BlobTxType {
-	//	return ctx, sdkerrors.ErrUnsupportedTxType
-	//}
-	//
-	//// Check if gas exceed the limit
-	//if cp := ctx.ConsensusParams(); cp != nil && cp.Block != nil {
-	//	// If there exists a maximum block gas limit, we must ensure that the tx
-	//	// does not exceed it.
-	//	if cp.Block.MaxGas > 0 && etx.Gas() > uint64(cp.Block.MaxGas) {
-	//		return ctx, sdkerrors.Wrapf(sdkerrors.ErrOutOfGas, "tx gas limit %d exceeds block max gas %d", etx.Gas(), cp.Block.MaxGas)
-	//	}
-	//}
+
+	if etx.To() == nil && len(etx.Data()) > params.MaxInitCodeSize {
+		return ctx, fmt.Errorf("%w: code size %v, limit %v", core.ErrMaxInitCodeSizeExceeded, len(etx.Data()), params.MaxInitCodeSize)
+	}
+
+	if etx.Value().Sign() < 0 {
+		return ctx, coserrors.ErrInvalidCoins
+	}
+
+	intrGas, err := core.IntrinsicGas(etx.Data(), etx.AccessList(), nil, etx.To() == nil, true, true, true)
+	if err != nil {
+		return ctx, err
+	}
+	if etx.Gas() < intrGas {
+		return ctx, coserrors.ErrOutOfGas
+	}
+
+	if etx.Type() == ethtypes.BlobTxType {
+		return ctx, errors.New("unsupported transaction type")
+	}
+
+	// Check if gas exceed the limit
+	if cp := ctx.ConsensusParams(); cp.Block != nil {
+		// If there exists a maximum block gas limit, we must ensure that the tx
+		// does not exceed it.
+		if cp.Block.MaxGas > 0 && etx.Gas() > uint64(cp.Block.MaxGas) {
+			return ctx, sdkerrors.Wrapf(coserrors.ErrOutOfGas, "tx gas limit %d exceeds block max gas %d", etx.Gas(), cp.Block.MaxGas)
+		}
+	}
 
 	//TODO: support blobs (leaving this commented out)
 	// Ensure blob transactions have valid commitments
