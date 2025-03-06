@@ -3,6 +3,7 @@ package evmrpc
 import (
 	"context"
 	"errors"
+	"github.com/eni-chain/go-eni/x/evm/ante"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -66,6 +67,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if err != nil {
 		return
 	}
+	ante.Preprocess2(msg)
 	txBuilder := s.txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return

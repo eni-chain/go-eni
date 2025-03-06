@@ -179,6 +179,64 @@ func Preprocess(ctx sdk.Context, msgEVMTransaction *evmtypes.MsgEVMTransaction) 
 	return nil
 }
 
+func Preprocess2(msgEVMTransaction *evmtypes.MsgEVMTransaction) error {
+	if msgEVMTransaction.Derived != nil {
+		if msgEVMTransaction.Derived.PubKey == nil {
+			// this means the message has `Derived` set from the outside, in which case we should reject
+			return coserrors.ErrInvalidPubKey
+		}
+		// already preprocessed
+		return nil
+	}
+	txData, err := evmtypes.UnpackTxData(msgEVMTransaction.Data)
+	if err != nil {
+		return err
+	}
+
+	if atx, ok := txData.(*ethtx.AssociateTx); ok {
+		V, R, S := atx.GetRawSignatureValues()
+		V = new(big.Int).Add(V, utils.Big27)
+		// Hash custom message passed in
+		customMessageHash := crypto.Keccak256Hash([]byte(atx.CustomMessage))
+		evmAddr, eniAddr, pubkey, err := helpers.GetAddresses(V, R, S, customMessageHash)
+		if err != nil {
+			return err
+		}
+		msgEVMTransaction.Derived = &derived.Derived{
+			SenderEVMAddr: evmAddr,
+			SenderEniAddr: eniAddr,
+			PubKey:        &secp256k1.PubKey{Key: pubkey.Bytes()},
+			Version:       derived.Cancun,
+			IsAssociate:   true,
+		}
+		return nil
+	}
+
+	ethTx := ethtypes.NewTx(txData.AsEthereumData())
+	chainID := ethTx.ChainId()
+	chainCfg := evmtypes.DefaultChainConfig()
+	ethCfg := chainCfg.EthereumConfig(chainID)
+	signer := SignerMap[derived.Cancun](chainID)
+	if !isTxTypeAllowed(derived.Cancun, ethTx.Type()) {
+		return ethtypes.ErrInvalidChainId
+	}
+
+	var txHash common.Hash
+	V, R, S := ethTx.RawSignatureValues()
+	if ethTx.Protected() {
+		V = AdjustV(V, ethTx.Type(), ethCfg.ChainID)
+		txHash = signer.Hash(ethTx)
+	} else {
+		txHash = ethtypes.FrontierSigner{}.Hash(ethTx)
+	}
+	_, eniAddr, _, err := helpers.GetAddresses(V, R, S, txHash)
+	if err != nil {
+		return err
+	}
+	msgEVMTransaction.Sender = eniAddr.String()
+	return nil
+}
+
 //func (p *EVMPreprocessDecorator) AnteDeps(txDeps []sdkacltypes.AccessOperation, tx sdk.Tx, txIndex int, next sdk.AnteDepGenerator) (newTxDeps []sdkacltypes.AccessOperation, err error) {
 //	msg := evmtypes.MustGetEVMTransactionMessage(tx)
 //	return next(append(txDeps, sdkacltypes.AccessOperation{
