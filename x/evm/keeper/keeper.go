@@ -126,6 +126,7 @@ func NewKeeper(
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
 		stakingKeeper: stakingKeeper,
+		nonceMx:       &sync.RWMutex{},
 	}
 }
 
