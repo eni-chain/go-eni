@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
@@ -259,7 +260,7 @@ type ModuleInputs struct {
 	Logger log.Logger
 
 	// todo  check code correct
-	AccountKeeper types.AccountKeeper
+	AccountKeeper authkeeper.AccountKeeper
 	BankKeeper    bankkeeper.Keeper
 	StakingKeeper *stakingkeeper.Keeper
 }
@@ -285,7 +286,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		//in.StoreService,
 		in.Logger,
 		authority.String(),
-		in.AccountKeeper,
+		&in.AccountKeeper,
 		in.BankKeeper,
 		in.StakingKeeper,
 	)

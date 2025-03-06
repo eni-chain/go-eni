@@ -56,6 +56,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if err = tx.UnmarshalBinary(input); err != nil {
 		return
 	}
+
 	hash = tx.Hash()
 	txData, err := ethtx.NewTxDataFromTx(tx)
 	if err != nil {
@@ -69,6 +70,8 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return
 	}
+	//todo added SetSignatures implement
+
 	txbz, encodeErr := s.txConfig.TxEncoder()(txBuilder.GetTx())
 	if encodeErr != nil {
 		return hash, encodeErr

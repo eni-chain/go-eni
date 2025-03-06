@@ -29,6 +29,7 @@ type AccountKeeper interface {
 	// Set an account in the store.
 	SetAccount(context.Context, sdk.AccountI)
 	SetModuleAccount(ctx context.Context, macc sdk.ModuleAccountI)
+	GetModuleAccount(ctx context.Context, moduleName string) sdk.ModuleAccountI
 	GetModuleAddress(moduleName string) sdk.AccAddress
 }
 
