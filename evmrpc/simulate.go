@@ -192,18 +192,15 @@ func NewBackend(ctxProvider func(int64) sdk.Context, keeper *keeper.Keeper, txDe
 }
 
 func (b *Backend) StateAndHeaderByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (vm.StateDB, *ethtypes.Header, error) {
-	// todo must be readapted
-	//height, err := b.getBlockHeight(ctx, blockNrOrHash)
-	//if err != nil {
-	//	return nil, nil, err
-	//}
-	//isWasmdCall, ok := ctx.Value(CtxIsWasmdPrecompileCallKey).(bool)
-	//sdkCtx := b.ctxProvider(height).WithIsEVM(true).WithEVMEntryViaWasmdPrecompile(ok && isWasmdCall)
-	//if err := CheckVersion(sdkCtx, b.keeper); err != nil {
-	//	return nil, nil, err
-	//}
-	//return state.NewDBImpl(sdkCtx, b.keeper, true), b.getHeader(big.NewInt(height)), nil
-	return nil, nil, nil
+	height, err := b.getBlockHeight(ctx, blockNrOrHash)
+	if err != nil {
+		return nil, nil, err
+	}
+	sdkCtx := b.ctxProvider(height)
+	if err := CheckVersion(sdkCtx, b.keeper); err != nil {
+		return nil, nil, err
+	}
+	return state.NewDBImpl(sdkCtx, b.keeper, true), b.getHeader(big.NewInt(height)), nil
 }
 
 func (b *Backend) GetTransaction(ctx context.Context, txHash common.Hash) (found bool, tx *ethtypes.Transaction, blockHash common.Hash, blockNumber uint64, index uint64, err error) {
