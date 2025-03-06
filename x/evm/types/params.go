@@ -1,6 +1,7 @@
 package types
 
 import (
+	cosmossdk_io_math "cosmossdk.io/math"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
@@ -16,9 +17,35 @@ func NewParams() Params {
 	return Params{}
 }
 
+var DefaultPriorityNormalizer = cosmossdk_io_math.LegacyNewDec(1)
+
+// DefaultBaseFeePerGas determines how much ueni per gas spent is
+// burnt rather than go to validators (similar to base fee on
+// Ethereum).
+var DefaultBaseFeePerGas = cosmossdk_io_math.LegacyNewDec(0)         // used for static base fee, deprecated in favor of dynamic base fee
+var DefaultMinFeePerGas = cosmossdk_io_math.LegacyNewDec(1000000000) // 1gwei
+var DefaultDeliverTxHookWasmGasLimit = uint64(300000)
+
+var DefaultWhitelistedCwCodeHashesForDelegateCall = [][]byte(nil)
+
+var DefaultMaxDynamicBaseFeeUpwardAdjustment = cosmossdk_io_math.LegacyNewDecWithPrec(189, 4)  // 1.89%
+var DefaultMaxDynamicBaseFeeDownwardAdjustment = cosmossdk_io_math.LegacyNewDecWithPrec(39, 4) // .39%
+var DefaultTargetGasUsedPerBlock = uint64(250000)                                              // 250k
+var DefaultMaxFeePerGas = cosmossdk_io_math.LegacyNewDec(1000000000000)                        // 1,000gwei
+
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
+	return Params{
+		PriorityNormalizer:                     DefaultPriorityNormalizer,
+		BaseFeePerGas:                          DefaultBaseFeePerGas,
+		MaxDynamicBaseFeeUpwardAdjustment:      DefaultMaxDynamicBaseFeeUpwardAdjustment,
+		MaxDynamicBaseFeeDownwardAdjustment:    DefaultMaxDynamicBaseFeeDownwardAdjustment,
+		MinimumFeePerGas:                       DefaultMinFeePerGas,
+		DeliverTxHookWasmGasLimit:              DefaultDeliverTxHookWasmGasLimit,
+		WhitelistedCwCodeHashesForDelegateCall: DefaultWhitelistedCwCodeHashesForDelegateCall,
+		TargetGasUsedPerBlock:                  DefaultTargetGasUsedPerBlock,
+		MaximumFeePerGas:                       DefaultMaxFeePerGas,
+	}
 }
 
 // ParamSetPairs get the params.ParamSet
