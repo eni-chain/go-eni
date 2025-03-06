@@ -3,6 +3,7 @@ package keeper
 import (
 	"encoding/binary"
 	"fmt"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"math"
 	"math/big"
 	"slices"
@@ -71,7 +72,7 @@ type (
 		msgs      []*types.MsgEVMTransaction
 
 		bankKeeper     bankkeeper.Keeper
-		accountKeeper  types.AccountKeeper
+		accountKeeper  *authkeeper.AccountKeeper
 		stakingKeeper  *stakingkeeper.Keeper
 		transferKeeper ibctransferkeeper.Keeper
 		//wasmKeeper     *wasmkeeper.PermissionedKeeper
@@ -107,7 +108,7 @@ func NewKeeper(
 	logger log.Logger,
 	authority string,
 
-	accountKeeper types.AccountKeeper,
+	accountKeeper *authkeeper.AccountKeeper,
 	bankKeeper bankkeeper.Keeper,
 	stakingKeeper *stakingkeeper.Keeper,
 ) Keeper {
@@ -139,7 +140,7 @@ func (k Keeper) Logger() log.Logger {
 	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k *Keeper) AccountKeeper() types.AccountKeeper {
+func (k *Keeper) AccountKeeper() *authkeeper.AccountKeeper {
 	return k.accountKeeper
 }
 
