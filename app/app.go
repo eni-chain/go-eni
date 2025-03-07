@@ -320,8 +320,8 @@ func New(
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
-
-			EVMKeeper: &app.EvmKeeper,
+			AppAccountKeeper: &app.AccountKeeper,
+			EVMKeeper:        &app.EvmKeeper,
 			LatestCtxGetter: func() sdk.Context {
 				return app.NewContext(false)
 			},

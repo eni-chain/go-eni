@@ -1,17 +1,22 @@
 package ante
 
 import (
+	sdkerrors "cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/eni-chain/go-eni/app/antedecorators"
 	"github.com/eni-chain/go-eni/utils/helpers"
+	"github.com/eni-chain/go-eni/utils/metrics"
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 
+	"github.com/btcsuite/btcd/btcec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
 	accountkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	//"github.com/eni-chain/go-eni/app/antedecorators"
 	"github.com/eni-chain/go-eni/utils"
 	//"github.com/eni-chain/go-eni/utils/metrics"
@@ -40,11 +45,11 @@ var AllowedTxTypes = map[derived.SignerVersion][]uint8{
 
 type EVMPreprocessDecorator struct {
 	evmKeeper     *evmkeeper.Keeper
-	accountKeeper ante.AccountKeeper
+	accountKeeper *accountkeeper.AccountKeeper
 }
 
 // todo authkeeper.AccountKeeper auth.AccountKeeper need check
-func NewEVMPreprocessDecorator(evmKeeper *evmkeeper.Keeper, accountKeeper ante.AccountKeeper) *EVMPreprocessDecorator {
+func NewEVMPreprocessDecorator(evmKeeper *evmkeeper.Keeper, accountKeeper *accountkeeper.AccountKeeper) *EVMPreprocessDecorator {
 	return &EVMPreprocessDecorator{evmKeeper: evmKeeper, accountKeeper: accountKeeper}
 }
 
@@ -67,33 +72,32 @@ func (p *EVMPreprocessDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 		sdk.NewAttribute(evmtypes.AttributeKeyEvmAddress, evmAddr.Hex()),
 		sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, eniAddr.String())))
 
-	// todo Need to deal with later
 	// evm and eni address Associate implement
-	//pubkey := derived.PubKey
-	//isAssociateTx := derived.IsAssociate
-	//associateHelper := helpers.NewAssociationHelper(p.evmKeeper, p.evmKeeper.BankKeeper(), p.accountKeeper)
-	//_, isAssociated := p.evmKeeper.GetEVMAddress(ctx, eniAddr)
-	//if isAssociateTx && isAssociated {
-	//	return ctx, sdkerrors.Wrap(coserrors.ErrInvalidRequest, "account already has association set")
-	//} else if isAssociateTx {
-	//	// check if the account has enough balance (without charging)
-	//	if !p.IsAccountBalancePositive(ctx, eniAddr, evmAddr) {
-	//		metrics.IncrementAssociationError("associate_tx_insufficient_funds", evmtypes.NewAssociationMissingErr(eniAddr.String()))
-	//		return ctx, sdkerrors.Wrap(coserrors.ErrInsufficientFunds, "account needs to have at least 1 wei to force association")
-	//	}
-	//	if err := associateHelper.AssociateAddresses(ctx, eniAddr, evmAddr, pubkey); err != nil {
-	//		return ctx, err
-	//	}
-	//
-	//	return ctx.WithPriority(antedecorators.EVMAssociatePriority), nil // short-circuit without calling next
-	//} else if isAssociated {
-	//	// noop; for readability
-	//} else {
-	//	// not associatedTx and not already associated
-	//	if err := associateHelper.AssociateAddresses(ctx, eniAddr, evmAddr, pubkey); err != nil {
-	//		return ctx, err
-	//	}
-	//}
+	pubkey := derived.PubKey
+	isAssociateTx := derived.IsAssociate
+	associateHelper := helpers.NewAssociationHelper(p.evmKeeper, p.evmKeeper.BankKeeper(), p.accountKeeper)
+	_, isAssociated := p.evmKeeper.GetEVMAddress(ctx, eniAddr)
+	if isAssociateTx && isAssociated {
+		return ctx, sdkerrors.Wrap(coserrors.ErrInvalidRequest, "account already has association set")
+	} else if isAssociateTx {
+		// check if the account has enough balance (without charging)
+		if !p.IsAccountBalancePositive(ctx, eniAddr, evmAddr) {
+			metrics.IncrementAssociationError("associate_tx_insufficient_funds", evmtypes.NewAssociationMissingErr(eniAddr.String()))
+			return ctx, sdkerrors.Wrap(coserrors.ErrInsufficientFunds, "account needs to have at least 1 wei to force association")
+		}
+		if err := associateHelper.AssociateAddresses(ctx, eniAddr, evmAddr, pubkey); err != nil {
+			return ctx, err
+		}
+
+		return ctx.WithPriority(antedecorators.EVMAssociatePriority), nil // short-circuit without calling next
+	} else if isAssociated {
+		// noop; for readability
+	} else {
+		// not associatedTx and not already associated
+		if err := associateHelper.AssociateAddresses(ctx, eniAddr, evmAddr, pubkey); err != nil {
+			return ctx, err
+		}
+	}
 
 	return next(ctx, tx, simulate)
 }
@@ -332,58 +336,60 @@ func NewEVMAddressDecorator(evmKeeper *evmkeeper.Keeper, accountKeeper *accountk
 
 //nolint:revive
 func (p *EVMAddressDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	//sigTx, ok := tx.(authsigning.SigVerifiableTx)
-	//if !ok {
-	//	return ctx, sdkerrors.Wrap(cosmoserrors.ErrTxDecode, "invalid tx type")
-	//}
-	//signers, err := sigTx.GetSigners()
-	//if err != nil {
-	//	ctx.Logger().Error(fmt.Sprintf("get signers failed: %s", err))
-	//	return ctx, sdkerrors.Wrap(cosmoserrors.ErrTxDecode, "invalid tx signers")
-	//}
-	//for _, signer := range signers {
-	//if evmAddr, associated := p.evmKeeper.GetEVMAddress(ctx, signer); associated {
-	//	ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
-	//		sdk.NewAttribute(evmtypes.AttributeKeyEvmAddress, evmAddr.Hex()),
-	//		sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, signer.String())))
-	//	continue
-	//}
-	//acc := p.accountKeeper.GetAccount(ctx, signer)
-	//if acc.GetPubKey() == nil {
-	//	ctx.Logger().Error(fmt.Sprintf("missing pubkey for %s", signer.String()))
-	//	ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
-	//		sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, signer.String())))
-	//	continue
-	//}
-	//pk, err := btcec.ParsePubKey(acc.GetPubKey().Bytes(), btcec.S256())
-	//if err != nil {
-	//	ctx.Logger().Debug(fmt.Sprintf("failed to parse pubkey for %s, likely due to the fact that it isn't on secp256k1 curve", acc.GetPubKey()), "err", err)
-	//	ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
-	//		sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, signer.String())))
-	//	continue
-	//}
-	//evmAddr, err := helpers.PubkeyToEVMAddress(pk.SerializeUncompressed())
-	//if err != nil {
-	//	ctx.Logger().Error(fmt.Sprintf("failed to get EVM address from pubkey due to %s", err))
-	//	ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
-	//		sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, signer.String())))
-	//	continue
-	//}
-	//ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
-	//	sdk.NewAttribute(evmtypes.AttributeKeyEvmAddress, evmAddr.Hex()),
-	//	sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, signer.String())))
-	//p.evmKeeper.SetAddressMapping(ctx, signer, evmAddr)
-	//associationHelper := helpers.NewAssociationHelper(p.evmKeeper, p.evmKeeper.BankKeeper(), p.accountKeeper)
-	//if err := associationHelper.MigrateBalance(ctx, evmAddr, signer); err != nil {
-	//	ctx.Logger().Error(fmt.Sprintf("failed to migrate EVM address balance (%s) %s", evmAddr.Hex(), err))
-	//	return ctx, err
-	//}
-	//if evmtypes.IsTxMsgAssociate(tx) {
-	//	// check if there is non-zero balance
-	//	if !p.evmKeeper.BankKeeper().GetBalance(ctx, signer, sdk.MustGetBaseDenom()).IsPositive() && !p.evmKeeper.BankKeeper().GetWeiBalance(ctx, signer).IsPositive() {
-	//		return ctx, sdkerrors.Wrap(cosmoserrors.ErrInsufficientFunds, "account needs to have at least 1 wei to force association")
-	//	}
-	//}
-	//}
+	sigTx, ok := tx.(authsigning.SigVerifiableTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(coserrors.ErrTxDecode, "invalid tx type")
+	}
+	signers, err := sigTx.GetSigners()
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("get signers failed: %s", err))
+		return ctx, sdkerrors.Wrap(coserrors.ErrTxDecode, "invalid tx signers")
+	}
+	for _, signer := range signers {
+		acc := p.accountKeeper.GetAccount(ctx, signer)
+		if evmAddr, associated := p.evmKeeper.GetEVMAddress(ctx, signer); associated {
+			ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
+				sdk.NewAttribute(evmtypes.AttributeKeyEvmAddress, evmAddr.Hex()),
+				sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, acc.String())))
+			continue
+		}
+
+		if acc.GetPubKey() == nil {
+			ctx.Logger().Error(fmt.Sprintf("missing pubkey for %s", acc.String()))
+			ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
+				sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, acc.String())))
+			continue
+		}
+		pk, err := btcec.ParsePubKey(acc.GetPubKey().Bytes(), btcec.S256())
+		if err != nil {
+			ctx.Logger().Debug(fmt.Sprintf("failed to parse pubkey for %s, likely due to the fact that it isn't on secp256k1 curve", acc.GetPubKey()), "err", err)
+			ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
+				sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, acc.String())))
+			continue
+		}
+		evmAddr, err := helpers.PubkeyToEVMAddress(pk.SerializeUncompressed())
+		if err != nil {
+			ctx.Logger().Error(fmt.Sprintf("failed to get EVM address from pubkey due to %s", err))
+			ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
+				sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, acc.String())))
+			continue
+		}
+		ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
+			sdk.NewAttribute(evmtypes.AttributeKeyEvmAddress, evmAddr.Hex()),
+			sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, acc.String())))
+		p.evmKeeper.SetAddressMapping(ctx, signer, evmAddr)
+		associationHelper := helpers.NewAssociationHelper(p.evmKeeper, p.evmKeeper.BankKeeper(), p.accountKeeper)
+		if err := associationHelper.MigrateBalance(ctx, evmAddr, signer); err != nil {
+			ctx.Logger().Error(fmt.Sprintf("failed to migrate EVM address balance (%s) %s", evmAddr.Hex(), err))
+			return ctx, err
+		}
+		if evmtypes.IsTxMsgAssociate(tx) {
+			// check if there is non-zero balance
+			//if !p.evmKeeper.BankKeeper().GetBalance(ctx, signer, p.evmKeeper.GetBaseDenom(ctx)).IsPositive() && !p.evmKeeper.BankKeeper().GetWeiBalance(ctx, signer).IsPositive() {
+			if !p.evmKeeper.BankKeeper().GetBalance(ctx, signer, p.evmKeeper.GetBaseDenom(ctx)).IsPositive() {
+				return ctx, sdkerrors.Wrap(coserrors.ErrInsufficientFunds, "account needs to have at least 1 wei to force association")
+			}
+		}
+	}
 	return next(ctx, tx, simulate)
 }

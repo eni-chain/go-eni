@@ -4,6 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	//ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
@@ -20,8 +21,9 @@ import (
 type HandlerOptions struct {
 	ante.HandlerOptions
 
-	EVMKeeper       *evmkeeper.Keeper
-	LatestCtxGetter func() sdk.Context
+	EVMKeeper        *evmkeeper.Keeper
+	AppAccountKeeper *authkeeper.AccountKeeper
+	LatestCtxGetter  func() sdk.Context
 }
 
 func NewAnteHandlerAndDepGenerator(options HandlerOptions) (sdk.AnteHandler, error) {
@@ -43,7 +45,9 @@ func NewAnteHandlerAndDepGenerator(options HandlerOptions) (sdk.AnteHandler, err
 	if options.LatestCtxGetter == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "latest context getter is required for ante builder")
 	}
-
+	if options.AppAccountKeeper == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "account keeper is required for ante builder")
+	}
 	sigGasConsumer := options.SigGasConsumer
 	if sigGasConsumer == nil {
 		sigGasConsumer = ante.DefaultSigVerificationGasConsumer
@@ -62,11 +66,12 @@ func NewAnteHandlerAndDepGenerator(options HandlerOptions) (sdk.AnteHandler, err
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
 		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
+		evmante.NewEVMAddressDecorator(options.EVMKeeper, options.AppAccountKeeper),
 	}
 
 	anteHandler := sdk.ChainAnteDecorators(anteDecorators...)
 	evmAnteDecorators := []sdk.AnteDecorator{
-		evmante.NewEVMPreprocessDecorator(options.EVMKeeper, options.AccountKeeper),
+		evmante.NewEVMPreprocessDecorator(options.EVMKeeper, options.AppAccountKeeper),
 		evmante.NewBasicDecorator(options.EVMKeeper),
 		evmante.NewEVMFeeCheckDecorator(options.EVMKeeper),
 		evmante.NewEVMSigVerifyDecorator(options.EVMKeeper, options.LatestCtxGetter),
