@@ -127,6 +127,7 @@ func NewKeeper(
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
 		stakingKeeper: stakingKeeper,
+		nonceMx:       &sync.RWMutex{},
 	}
 }
 
@@ -212,8 +213,7 @@ func (k *Keeper) GetVMBlockContext(ctx sdk.Context, gp core.GasPool) (*vm.BlockC
 		BlockNumber: big.NewInt(ctx.BlockHeight()),
 		Time:        uint64(ctx.BlockHeader().Time.Unix()),
 		Difficulty:  utils.Big0, // only needed for PoW
-		//BaseFee:     k.GetCurrBaseFeePerGas(ctx).TruncateInt().BigInt(),
-		//BaseFee:     k.GetCurrBaseFeePerGas(ctx),
+		BaseFee:     k.GetCurrBaseFeePerGas(ctx).TruncateInt().BigInt(),
 		BlobBaseFee: utils.Big1, // Cancun not enabled
 		Random:      &rh,
 	}, nil

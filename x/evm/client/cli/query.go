@@ -22,7 +22,7 @@ const TrueStr = "true"
 const FalseStr = "false"
 
 // GetQueryCmd returns the cli query commands for this module
-func GetQueryCmd(_ string) *cobra.Command {
+func GetQueryCmd() *cobra.Command {
 	// Group epoch queries under a subcommand
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
@@ -57,16 +57,14 @@ func CmdQueryEniAddress() *cobra.Command {
 				return err
 			}
 
-			//queryClient := types.NewQueryClient(clientCtx)
-			_ = types.NewQueryClient(clientCtx)
-			//
-			//res, err := queryClient.EniAddressByEVMAddress(context.Background(), &types.QueryEniAddressByEVMAddressRequest{EvmAddress: args[0]})
-			//if err != nil {
-			//	return err
-			//}
-			//
-			//return clientCtx.PrintProto(res)
-			return nil
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.EniAddressByEVMAddress(context.Background(), &types.QueryEniAddressByEVMAddressRequest{EvmAddress: args[0]})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -85,16 +83,14 @@ func CmdQueryEVMAddress() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			//queryClient := types.NewQueryClient(clientCtx)
-			_ = types.NewQueryClient(clientCtx)
-			//
-			//res, err := queryClient.EVMAddressByEniAddress(context.Background(), &types.QueryEVMAddressByEniAddressRequest{EniAddress: args[0]})
-			//if err != nil {
-			//	return err
-			//}
+			queryClient := types.NewQueryClient(clientCtx)
 
-			//return clientCtx.PrintProto(res)
-			return nil
+			res, err := queryClient.EVMAddressByEniAddress(context.Background(), &types.QueryEVMAddressByEniAddressRequest{EniAddress: args[0]})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 

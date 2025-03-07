@@ -14,25 +14,25 @@ import (
 )
 
 var (
-	md_QuerySeiAddressByEVMAddressRequest             protoreflect.MessageDescriptor
-	fd_QuerySeiAddressByEVMAddressRequest_evm_address protoreflect.FieldDescriptor
+	md_QueryEniAddressByEVMAddressRequest             protoreflect.MessageDescriptor
+	fd_QueryEniAddressByEVMAddressRequest_evm_address protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_query_proto_init()
-	md_QuerySeiAddressByEVMAddressRequest = File_goeni_evm_query_proto.Messages().ByName("QuerySeiAddressByEVMAddressRequest")
-	fd_QuerySeiAddressByEVMAddressRequest_evm_address = md_QuerySeiAddressByEVMAddressRequest.Fields().ByName("evm_address")
+	md_QueryEniAddressByEVMAddressRequest = File_goeni_evm_query_proto.Messages().ByName("QueryEniAddressByEVMAddressRequest")
+	fd_QueryEniAddressByEVMAddressRequest_evm_address = md_QueryEniAddressByEVMAddressRequest.Fields().ByName("evm_address")
 }
 
-var _ protoreflect.Message = (*fastReflection_QuerySeiAddressByEVMAddressRequest)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEniAddressByEVMAddressRequest)(nil)
 
-type fastReflection_QuerySeiAddressByEVMAddressRequest QuerySeiAddressByEVMAddressRequest
+type fastReflection_QueryEniAddressByEVMAddressRequest QueryEniAddressByEVMAddressRequest
 
-func (x *QuerySeiAddressByEVMAddressRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QuerySeiAddressByEVMAddressRequest)(x)
+func (x *QueryEniAddressByEVMAddressRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEniAddressByEVMAddressRequest)(x)
 }
 
-func (x *QuerySeiAddressByEVMAddressRequest) slowProtoReflect() protoreflect.Message {
+func (x *QueryEniAddressByEVMAddressRequest) slowProtoReflect() protoreflect.Message {
 	mi := &file_goeni_evm_query_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -44,43 +44,43 @@ func (x *QuerySeiAddressByEVMAddressRequest) slowProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QuerySeiAddressByEVMAddressRequest_messageType fastReflection_QuerySeiAddressByEVMAddressRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QuerySeiAddressByEVMAddressRequest_messageType{}
+var _fastReflection_QueryEniAddressByEVMAddressRequest_messageType fastReflection_QueryEniAddressByEVMAddressRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEniAddressByEVMAddressRequest_messageType{}
 
-type fastReflection_QuerySeiAddressByEVMAddressRequest_messageType struct{}
+type fastReflection_QueryEniAddressByEVMAddressRequest_messageType struct{}
 
-func (x fastReflection_QuerySeiAddressByEVMAddressRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QuerySeiAddressByEVMAddressRequest)(nil)
+func (x fastReflection_QueryEniAddressByEVMAddressRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEniAddressByEVMAddressRequest)(nil)
 }
-func (x fastReflection_QuerySeiAddressByEVMAddressRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QuerySeiAddressByEVMAddressRequest)
+func (x fastReflection_QueryEniAddressByEVMAddressRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEniAddressByEVMAddressRequest)
 }
-func (x fastReflection_QuerySeiAddressByEVMAddressRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QuerySeiAddressByEVMAddressRequest
+func (x fastReflection_QueryEniAddressByEVMAddressRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEniAddressByEVMAddressRequest
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QuerySeiAddressByEVMAddressRequest
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEniAddressByEVMAddressRequest
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QuerySeiAddressByEVMAddressRequest_messageType
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEniAddressByEVMAddressRequest_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) New() protoreflect.Message {
-	return new(fastReflection_QuerySeiAddressByEVMAddressRequest)
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryEniAddressByEVMAddressRequest)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Interface() protoreflect.ProtoMessage {
-	return (*QuerySeiAddressByEVMAddressRequest)(x)
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryEniAddressByEVMAddressRequest)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -88,10 +88,10 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Interface() protoref
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.EvmAddress != "" {
 		value := protoreflect.ValueOfString(x.EvmAddress)
-		if !f(fd_QuerySeiAddressByEVMAddressRequest_evm_address, value) {
+		if !f(fd_QueryEniAddressByEVMAddressRequest_evm_address, value) {
 			return
 		}
 	}
@@ -108,15 +108,15 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Range(f func(protore
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+	case "goeni.evm.QueryEniAddressByEVMAddressRequest.evm_address":
 		return x.EvmAddress != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -126,15 +126,15 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Has(fd protoreflect.
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+	case "goeni.evm.QueryEniAddressByEVMAddressRequest.evm_address":
 		x.EvmAddress = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -144,16 +144,16 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Clear(fd protoreflec
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+	case "goeni.evm.QueryEniAddressByEVMAddressRequest.evm_address":
 		value := x.EvmAddress
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressRequest does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -167,15 +167,15 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Get(descriptor proto
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+	case "goeni.evm.QueryEniAddressByEVMAddressRequest.evm_address":
 		x.EvmAddress = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -189,40 +189,40 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Set(fd protoreflect.
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
-		panic(fmt.Errorf("field evm_address of message goeni.evm.QuerySeiAddressByEVMAddressRequest is not mutable"))
+	case "goeni.evm.QueryEniAddressByEVMAddressRequest.evm_address":
+		panic(fmt.Errorf("field evm_address of message goeni.evm.QueryEniAddressByEVMAddressRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressRequest.evm_address":
+	case "goeni.evm.QueryEniAddressByEVMAddressRequest.evm_address":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QuerySeiAddressByEVMAddressRequest", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEniAddressByEVMAddressRequest", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -230,7 +230,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) WhichOneof(d protore
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -241,7 +241,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) GetUnknown() protore
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -253,7 +253,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) SetUnknown(fields pr
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) IsValid() bool {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) IsValid() bool {
 	return x != nil
 }
 
@@ -263,9 +263,9 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEniAddressByEVMAddressRequest) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressRequest)
+		x := input.Message.Interface().(*QueryEniAddressByEVMAddressRequest)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -291,7 +291,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) ProtoMethods() *prot
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressRequest)
+		x := input.Message.Interface().(*QueryEniAddressByEVMAddressRequest)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -328,7 +328,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) ProtoMethods() *prot
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressRequest)
+		x := input.Message.Interface().(*QueryEniAddressByEVMAddressRequest)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -360,10 +360,10 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) ProtoMethods() *prot
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressRequest: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEniAddressByEVMAddressRequest: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEniAddressByEVMAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -434,27 +434,27 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressRequest) ProtoMethods() *prot
 }
 
 var (
-	md_QuerySeiAddressByEVMAddressResponse             protoreflect.MessageDescriptor
-	fd_QuerySeiAddressByEVMAddressResponse_sei_address protoreflect.FieldDescriptor
-	fd_QuerySeiAddressByEVMAddressResponse_associated  protoreflect.FieldDescriptor
+	md_QueryEniAddressByEVMAddressResponse             protoreflect.MessageDescriptor
+	fd_QueryEniAddressByEVMAddressResponse_eni_address protoreflect.FieldDescriptor
+	fd_QueryEniAddressByEVMAddressResponse_associated  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_query_proto_init()
-	md_QuerySeiAddressByEVMAddressResponse = File_goeni_evm_query_proto.Messages().ByName("QuerySeiAddressByEVMAddressResponse")
-	fd_QuerySeiAddressByEVMAddressResponse_sei_address = md_QuerySeiAddressByEVMAddressResponse.Fields().ByName("sei_address")
-	fd_QuerySeiAddressByEVMAddressResponse_associated = md_QuerySeiAddressByEVMAddressResponse.Fields().ByName("associated")
+	md_QueryEniAddressByEVMAddressResponse = File_goeni_evm_query_proto.Messages().ByName("QueryEniAddressByEVMAddressResponse")
+	fd_QueryEniAddressByEVMAddressResponse_eni_address = md_QueryEniAddressByEVMAddressResponse.Fields().ByName("eni_address")
+	fd_QueryEniAddressByEVMAddressResponse_associated = md_QueryEniAddressByEVMAddressResponse.Fields().ByName("associated")
 }
 
-var _ protoreflect.Message = (*fastReflection_QuerySeiAddressByEVMAddressResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEniAddressByEVMAddressResponse)(nil)
 
-type fastReflection_QuerySeiAddressByEVMAddressResponse QuerySeiAddressByEVMAddressResponse
+type fastReflection_QueryEniAddressByEVMAddressResponse QueryEniAddressByEVMAddressResponse
 
-func (x *QuerySeiAddressByEVMAddressResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QuerySeiAddressByEVMAddressResponse)(x)
+func (x *QueryEniAddressByEVMAddressResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEniAddressByEVMAddressResponse)(x)
 }
 
-func (x *QuerySeiAddressByEVMAddressResponse) slowProtoReflect() protoreflect.Message {
+func (x *QueryEniAddressByEVMAddressResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_goeni_evm_query_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -466,43 +466,43 @@ func (x *QuerySeiAddressByEVMAddressResponse) slowProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QuerySeiAddressByEVMAddressResponse_messageType fastReflection_QuerySeiAddressByEVMAddressResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QuerySeiAddressByEVMAddressResponse_messageType{}
+var _fastReflection_QueryEniAddressByEVMAddressResponse_messageType fastReflection_QueryEniAddressByEVMAddressResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEniAddressByEVMAddressResponse_messageType{}
 
-type fastReflection_QuerySeiAddressByEVMAddressResponse_messageType struct{}
+type fastReflection_QueryEniAddressByEVMAddressResponse_messageType struct{}
 
-func (x fastReflection_QuerySeiAddressByEVMAddressResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QuerySeiAddressByEVMAddressResponse)(nil)
+func (x fastReflection_QueryEniAddressByEVMAddressResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEniAddressByEVMAddressResponse)(nil)
 }
-func (x fastReflection_QuerySeiAddressByEVMAddressResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QuerySeiAddressByEVMAddressResponse)
+func (x fastReflection_QueryEniAddressByEVMAddressResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEniAddressByEVMAddressResponse)
 }
-func (x fastReflection_QuerySeiAddressByEVMAddressResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QuerySeiAddressByEVMAddressResponse
+func (x fastReflection_QueryEniAddressByEVMAddressResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEniAddressByEVMAddressResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QuerySeiAddressByEVMAddressResponse
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEniAddressByEVMAddressResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QuerySeiAddressByEVMAddressResponse_messageType
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEniAddressByEVMAddressResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) New() protoreflect.Message {
-	return new(fastReflection_QuerySeiAddressByEVMAddressResponse)
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryEniAddressByEVMAddressResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Interface() protoreflect.ProtoMessage {
-	return (*QuerySeiAddressByEVMAddressResponse)(x)
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryEniAddressByEVMAddressResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -510,16 +510,16 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Interface() protore
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.SeiAddress != "" {
-		value := protoreflect.ValueOfString(x.SeiAddress)
-		if !f(fd_QuerySeiAddressByEVMAddressResponse_sei_address, value) {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.EniAddress != "" {
+		value := protoreflect.ValueOfString(x.EniAddress)
+		if !f(fd_QueryEniAddressByEVMAddressResponse_eni_address, value) {
 			return
 		}
 	}
 	if x.Associated != false {
 		value := protoreflect.ValueOfBool(x.Associated)
-		if !f(fd_QuerySeiAddressByEVMAddressResponse_associated, value) {
+		if !f(fd_QueryEniAddressByEVMAddressResponse_associated, value) {
 			return
 		}
 	}
@@ -536,17 +536,17 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Range(f func(protor
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
-		return x.SeiAddress != ""
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.eni_address":
+		return x.EniAddress != ""
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.associated":
 		return x.Associated != false
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -556,17 +556,17 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Has(fd protoreflect
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
-		x.SeiAddress = ""
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.eni_address":
+		x.EniAddress = ""
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.associated":
 		x.Associated = false
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -576,19 +576,19 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Clear(fd protorefle
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
-		value := x.SeiAddress
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.eni_address":
+		value := x.EniAddress
 		return protoreflect.ValueOfString(value)
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.associated":
 		value := x.Associated
 		return protoreflect.ValueOfBool(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -602,17 +602,17 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Get(descriptor prot
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
-		x.SeiAddress = value.Interface().(string)
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.eni_address":
+		x.EniAddress = value.Interface().(string)
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.associated":
 		x.Associated = value.Bool()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -626,44 +626,44 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Set(fd protoreflect
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
-		panic(fmt.Errorf("field sei_address of message goeni.evm.QuerySeiAddressByEVMAddressResponse is not mutable"))
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
-		panic(fmt.Errorf("field associated of message goeni.evm.QuerySeiAddressByEVMAddressResponse is not mutable"))
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.eni_address":
+		panic(fmt.Errorf("field eni_address of message goeni.evm.QueryEniAddressByEVMAddressResponse is not mutable"))
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.associated":
+		panic(fmt.Errorf("field associated of message goeni.evm.QueryEniAddressByEVMAddressResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.sei_address":
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.eni_address":
 		return protoreflect.ValueOfString("")
-	case "goeni.evm.QuerySeiAddressByEVMAddressResponse.associated":
+	case "goeni.evm.QueryEniAddressByEVMAddressResponse.associated":
 		return protoreflect.ValueOfBool(false)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QuerySeiAddressByEVMAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEniAddressByEVMAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QuerySeiAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEniAddressByEVMAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QuerySeiAddressByEVMAddressResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEniAddressByEVMAddressResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -671,7 +671,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) WhichOneof(d protor
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -682,7 +682,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) GetUnknown() protor
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -694,7 +694,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) SetUnknown(fields p
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) IsValid() bool {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -704,9 +704,9 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEniAddressByEVMAddressResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressResponse)
+		x := input.Message.Interface().(*QueryEniAddressByEVMAddressResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -718,7 +718,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *pro
 		var n int
 		var l int
 		_ = l
-		l = len(x.SeiAddress)
+		l = len(x.EniAddress)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -735,7 +735,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *pro
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressResponse)
+		x := input.Message.Interface().(*QueryEniAddressByEVMAddressResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -764,10 +764,10 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *pro
 			i--
 			dAtA[i] = 0x10
 		}
-		if len(x.SeiAddress) > 0 {
-			i -= len(x.SeiAddress)
-			copy(dAtA[i:], x.SeiAddress)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SeiAddress)))
+		if len(x.EniAddress) > 0 {
+			i -= len(x.EniAddress)
+			copy(dAtA[i:], x.EniAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EniAddress)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -782,7 +782,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *pro
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QuerySeiAddressByEVMAddressResponse)
+		x := input.Message.Interface().(*QueryEniAddressByEVMAddressResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -814,15 +814,15 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *pro
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEniAddressByEVMAddressResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySeiAddressByEVMAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEniAddressByEVMAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EniAddress", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -850,7 +850,7 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *pro
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.SeiAddress = string(dAtA[iNdEx:postIndex])
+				x.EniAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 2:
 				if wireType != 0 {
@@ -908,25 +908,25 @@ func (x *fastReflection_QuerySeiAddressByEVMAddressResponse) ProtoMethods() *pro
 }
 
 var (
-	md_QueryEVMAddressBySeiAddressRequest             protoreflect.MessageDescriptor
-	fd_QueryEVMAddressBySeiAddressRequest_sei_address protoreflect.FieldDescriptor
+	md_QueryEVMAddressByEniAddressRequest             protoreflect.MessageDescriptor
+	fd_QueryEVMAddressByEniAddressRequest_eni_address protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_query_proto_init()
-	md_QueryEVMAddressBySeiAddressRequest = File_goeni_evm_query_proto.Messages().ByName("QueryEVMAddressBySeiAddressRequest")
-	fd_QueryEVMAddressBySeiAddressRequest_sei_address = md_QueryEVMAddressBySeiAddressRequest.Fields().ByName("sei_address")
+	md_QueryEVMAddressByEniAddressRequest = File_goeni_evm_query_proto.Messages().ByName("QueryEVMAddressByEniAddressRequest")
+	fd_QueryEVMAddressByEniAddressRequest_eni_address = md_QueryEVMAddressByEniAddressRequest.Fields().ByName("eni_address")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryEVMAddressBySeiAddressRequest)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEVMAddressByEniAddressRequest)(nil)
 
-type fastReflection_QueryEVMAddressBySeiAddressRequest QueryEVMAddressBySeiAddressRequest
+type fastReflection_QueryEVMAddressByEniAddressRequest QueryEVMAddressByEniAddressRequest
 
-func (x *QueryEVMAddressBySeiAddressRequest) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryEVMAddressBySeiAddressRequest)(x)
+func (x *QueryEVMAddressByEniAddressRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressByEniAddressRequest)(x)
 }
 
-func (x *QueryEVMAddressBySeiAddressRequest) slowProtoReflect() protoreflect.Message {
+func (x *QueryEVMAddressByEniAddressRequest) slowProtoReflect() protoreflect.Message {
 	mi := &file_goeni_evm_query_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -938,43 +938,43 @@ func (x *QueryEVMAddressBySeiAddressRequest) slowProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryEVMAddressBySeiAddressRequest_messageType fastReflection_QueryEVMAddressBySeiAddressRequest_messageType
-var _ protoreflect.MessageType = fastReflection_QueryEVMAddressBySeiAddressRequest_messageType{}
+var _fastReflection_QueryEVMAddressByEniAddressRequest_messageType fastReflection_QueryEVMAddressByEniAddressRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEVMAddressByEniAddressRequest_messageType{}
 
-type fastReflection_QueryEVMAddressBySeiAddressRequest_messageType struct{}
+type fastReflection_QueryEVMAddressByEniAddressRequest_messageType struct{}
 
-func (x fastReflection_QueryEVMAddressBySeiAddressRequest_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryEVMAddressBySeiAddressRequest)(nil)
+func (x fastReflection_QueryEVMAddressByEniAddressRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressByEniAddressRequest)(nil)
 }
-func (x fastReflection_QueryEVMAddressBySeiAddressRequest_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryEVMAddressBySeiAddressRequest)
+func (x fastReflection_QueryEVMAddressByEniAddressRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressByEniAddressRequest)
 }
-func (x fastReflection_QueryEVMAddressBySeiAddressRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryEVMAddressBySeiAddressRequest
+func (x fastReflection_QueryEVMAddressByEniAddressRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressByEniAddressRequest
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryEVMAddressBySeiAddressRequest
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressByEniAddressRequest
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Type() protoreflect.MessageType {
-	return _fastReflection_QueryEVMAddressBySeiAddressRequest_messageType
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEVMAddressByEniAddressRequest_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) New() protoreflect.Message {
-	return new(fastReflection_QueryEVMAddressBySeiAddressRequest)
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressByEniAddressRequest)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Interface() protoreflect.ProtoMessage {
-	return (*QueryEVMAddressBySeiAddressRequest)(x)
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryEVMAddressByEniAddressRequest)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -982,10 +982,10 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Interface() protoref
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.SeiAddress != "" {
-		value := protoreflect.ValueOfString(x.SeiAddress)
-		if !f(fd_QueryEVMAddressBySeiAddressRequest_sei_address, value) {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.EniAddress != "" {
+		value := protoreflect.ValueOfString(x.EniAddress)
+		if !f(fd_QueryEVMAddressByEniAddressRequest_eni_address, value) {
 			return
 		}
 	}
@@ -1002,15 +1002,15 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Range(f func(protore
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
-		return x.SeiAddress != ""
+	case "goeni.evm.QueryEVMAddressByEniAddressRequest.eni_address":
+		return x.EniAddress != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1020,15 +1020,15 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Has(fd protoreflect.
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
-		x.SeiAddress = ""
+	case "goeni.evm.QueryEVMAddressByEniAddressRequest.eni_address":
+		x.EniAddress = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1038,16 +1038,16 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Clear(fd protoreflec
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
-		value := x.SeiAddress
+	case "goeni.evm.QueryEVMAddressByEniAddressRequest.eni_address":
+		value := x.EniAddress
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressRequest does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1061,15 +1061,15 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Get(descriptor proto
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
-		x.SeiAddress = value.Interface().(string)
+	case "goeni.evm.QueryEVMAddressByEniAddressRequest.eni_address":
+		x.EniAddress = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1083,40 +1083,40 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Set(fd protoreflect.
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
-		panic(fmt.Errorf("field sei_address of message goeni.evm.QueryEVMAddressBySeiAddressRequest is not mutable"))
+	case "goeni.evm.QueryEVMAddressByEniAddressRequest.eni_address":
+		panic(fmt.Errorf("field eni_address of message goeni.evm.QueryEVMAddressByEniAddressRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressRequest.sei_address":
+	case "goeni.evm.QueryEVMAddressByEniAddressRequest.eni_address":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressRequest"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressRequest"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressRequest does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressRequest does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEVMAddressBySeiAddressRequest", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEVMAddressByEniAddressRequest", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1124,7 +1124,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) WhichOneof(d protore
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1135,7 +1135,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) GetUnknown() protore
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1147,7 +1147,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) SetUnknown(fields pr
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) IsValid() bool {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) IsValid() bool {
 	return x != nil
 }
 
@@ -1157,9 +1157,9 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEVMAddressByEniAddressRequest) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressRequest)
+		x := input.Message.Interface().(*QueryEVMAddressByEniAddressRequest)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1171,7 +1171,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *prot
 		var n int
 		var l int
 		_ = l
-		l = len(x.SeiAddress)
+		l = len(x.EniAddress)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1185,7 +1185,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *prot
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressRequest)
+		x := input.Message.Interface().(*QueryEVMAddressByEniAddressRequest)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1204,10 +1204,10 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *prot
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.SeiAddress) > 0 {
-			i -= len(x.SeiAddress)
-			copy(dAtA[i:], x.SeiAddress)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SeiAddress)))
+		if len(x.EniAddress) > 0 {
+			i -= len(x.EniAddress)
+			copy(dAtA[i:], x.EniAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EniAddress)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -1222,7 +1222,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *prot
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressRequest)
+		x := input.Message.Interface().(*QueryEVMAddressByEniAddressRequest)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1254,15 +1254,15 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *prot
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressRequest: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressByEniAddressRequest: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressByEniAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EniAddress", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1290,7 +1290,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *prot
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.SeiAddress = string(dAtA[iNdEx:postIndex])
+				x.EniAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1328,27 +1328,27 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressRequest) ProtoMethods() *prot
 }
 
 var (
-	md_QueryEVMAddressBySeiAddressResponse             protoreflect.MessageDescriptor
-	fd_QueryEVMAddressBySeiAddressResponse_evm_address protoreflect.FieldDescriptor
-	fd_QueryEVMAddressBySeiAddressResponse_associated  protoreflect.FieldDescriptor
+	md_QueryEVMAddressByEniAddressResponse             protoreflect.MessageDescriptor
+	fd_QueryEVMAddressByEniAddressResponse_evm_address protoreflect.FieldDescriptor
+	fd_QueryEVMAddressByEniAddressResponse_associated  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_query_proto_init()
-	md_QueryEVMAddressBySeiAddressResponse = File_goeni_evm_query_proto.Messages().ByName("QueryEVMAddressBySeiAddressResponse")
-	fd_QueryEVMAddressBySeiAddressResponse_evm_address = md_QueryEVMAddressBySeiAddressResponse.Fields().ByName("evm_address")
-	fd_QueryEVMAddressBySeiAddressResponse_associated = md_QueryEVMAddressBySeiAddressResponse.Fields().ByName("associated")
+	md_QueryEVMAddressByEniAddressResponse = File_goeni_evm_query_proto.Messages().ByName("QueryEVMAddressByEniAddressResponse")
+	fd_QueryEVMAddressByEniAddressResponse_evm_address = md_QueryEVMAddressByEniAddressResponse.Fields().ByName("evm_address")
+	fd_QueryEVMAddressByEniAddressResponse_associated = md_QueryEVMAddressByEniAddressResponse.Fields().ByName("associated")
 }
 
-var _ protoreflect.Message = (*fastReflection_QueryEVMAddressBySeiAddressResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_QueryEVMAddressByEniAddressResponse)(nil)
 
-type fastReflection_QueryEVMAddressBySeiAddressResponse QueryEVMAddressBySeiAddressResponse
+type fastReflection_QueryEVMAddressByEniAddressResponse QueryEVMAddressByEniAddressResponse
 
-func (x *QueryEVMAddressBySeiAddressResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_QueryEVMAddressBySeiAddressResponse)(x)
+func (x *QueryEVMAddressByEniAddressResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressByEniAddressResponse)(x)
 }
 
-func (x *QueryEVMAddressBySeiAddressResponse) slowProtoReflect() protoreflect.Message {
+func (x *QueryEVMAddressByEniAddressResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_goeni_evm_query_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1360,43 +1360,43 @@ func (x *QueryEVMAddressBySeiAddressResponse) slowProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_QueryEVMAddressBySeiAddressResponse_messageType fastReflection_QueryEVMAddressBySeiAddressResponse_messageType
-var _ protoreflect.MessageType = fastReflection_QueryEVMAddressBySeiAddressResponse_messageType{}
+var _fastReflection_QueryEVMAddressByEniAddressResponse_messageType fastReflection_QueryEVMAddressByEniAddressResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryEVMAddressByEniAddressResponse_messageType{}
 
-type fastReflection_QueryEVMAddressBySeiAddressResponse_messageType struct{}
+type fastReflection_QueryEVMAddressByEniAddressResponse_messageType struct{}
 
-func (x fastReflection_QueryEVMAddressBySeiAddressResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_QueryEVMAddressBySeiAddressResponse)(nil)
+func (x fastReflection_QueryEVMAddressByEniAddressResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryEVMAddressByEniAddressResponse)(nil)
 }
-func (x fastReflection_QueryEVMAddressBySeiAddressResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_QueryEVMAddressBySeiAddressResponse)
+func (x fastReflection_QueryEVMAddressByEniAddressResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressByEniAddressResponse)
 }
-func (x fastReflection_QueryEVMAddressBySeiAddressResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryEVMAddressBySeiAddressResponse
+func (x fastReflection_QueryEVMAddressByEniAddressResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressByEniAddressResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_QueryEVMAddressBySeiAddressResponse
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryEVMAddressByEniAddressResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Type() protoreflect.MessageType {
-	return _fastReflection_QueryEVMAddressBySeiAddressResponse_messageType
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryEVMAddressByEniAddressResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) New() protoreflect.Message {
-	return new(fastReflection_QueryEVMAddressBySeiAddressResponse)
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryEVMAddressByEniAddressResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Interface() protoreflect.ProtoMessage {
-	return (*QueryEVMAddressBySeiAddressResponse)(x)
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryEVMAddressByEniAddressResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1404,16 +1404,16 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Interface() protore
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.EvmAddress != "" {
 		value := protoreflect.ValueOfString(x.EvmAddress)
-		if !f(fd_QueryEVMAddressBySeiAddressResponse_evm_address, value) {
+		if !f(fd_QueryEVMAddressByEniAddressResponse_evm_address, value) {
 			return
 		}
 	}
 	if x.Associated != false {
 		value := protoreflect.ValueOfBool(x.Associated)
-		if !f(fd_QueryEVMAddressBySeiAddressResponse_associated, value) {
+		if !f(fd_QueryEVMAddressByEniAddressResponse_associated, value) {
 			return
 		}
 	}
@@ -1430,17 +1430,17 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Range(f func(protor
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.evm_address":
 		return x.EvmAddress != ""
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.associated":
 		return x.Associated != false
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1450,17 +1450,17 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Has(fd protoreflect
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.evm_address":
 		x.EvmAddress = ""
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.associated":
 		x.Associated = false
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1470,19 +1470,19 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Clear(fd protorefle
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.evm_address":
 		value := x.EvmAddress
 		return protoreflect.ValueOfString(value)
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.associated":
 		value := x.Associated
 		return protoreflect.ValueOfBool(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1496,17 +1496,17 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Get(descriptor prot
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.evm_address":
 		x.EvmAddress = value.Interface().(string)
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.associated":
 		x.Associated = value.Bool()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1520,44 +1520,44 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Set(fd protoreflect
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
-		panic(fmt.Errorf("field evm_address of message goeni.evm.QueryEVMAddressBySeiAddressResponse is not mutable"))
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
-		panic(fmt.Errorf("field associated of message goeni.evm.QueryEVMAddressBySeiAddressResponse is not mutable"))
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.evm_address":
+		panic(fmt.Errorf("field evm_address of message goeni.evm.QueryEVMAddressByEniAddressResponse is not mutable"))
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.associated":
+		panic(fmt.Errorf("field associated of message goeni.evm.QueryEVMAddressByEniAddressResponse is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.evm_address":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.evm_address":
 		return protoreflect.ValueOfString("")
-	case "goeni.evm.QueryEVMAddressBySeiAddressResponse.associated":
+	case "goeni.evm.QueryEVMAddressByEniAddressResponse.associated":
 		return protoreflect.ValueOfBool(false)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressBySeiAddressResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: goeni.evm.QueryEVMAddressByEniAddressResponse"))
 		}
-		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressBySeiAddressResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message goeni.evm.QueryEVMAddressByEniAddressResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEVMAddressBySeiAddressResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in goeni.evm.QueryEVMAddressByEniAddressResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1565,7 +1565,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) WhichOneof(d protor
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1576,7 +1576,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) GetUnknown() protor
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1588,7 +1588,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) SetUnknown(fields p
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) IsValid() bool {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -1598,9 +1598,9 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_QueryEVMAddressByEniAddressResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressResponse)
+		x := input.Message.Interface().(*QueryEVMAddressByEniAddressResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1629,7 +1629,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) ProtoMethods() *pro
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressResponse)
+		x := input.Message.Interface().(*QueryEVMAddressByEniAddressResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1676,7 +1676,7 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) ProtoMethods() *pro
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*QueryEVMAddressBySeiAddressResponse)
+		x := input.Message.Interface().(*QueryEVMAddressByEniAddressResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1708,10 +1708,10 @@ func (x *fastReflection_QueryEVMAddressBySeiAddressResponse) ProtoMethods() *pro
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressByEniAddressResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressBySeiAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryEVMAddressByEniAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -5558,7 +5558,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type QuerySeiAddressByEVMAddressRequest struct {
+type QueryEniAddressByEVMAddressRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -5566,8 +5566,8 @@ type QuerySeiAddressByEVMAddressRequest struct {
 	EvmAddress string `protobuf:"bytes,1,opt,name=evm_address,json=evmAddress,proto3" json:"evm_address,omitempty"`
 }
 
-func (x *QuerySeiAddressByEVMAddressRequest) Reset() {
-	*x = QuerySeiAddressByEVMAddressRequest{}
+func (x *QueryEniAddressByEVMAddressRequest) Reset() {
+	*x = QueryEniAddressByEVMAddressRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_goeni_evm_query_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5575,35 +5575,35 @@ func (x *QuerySeiAddressByEVMAddressRequest) Reset() {
 	}
 }
 
-func (x *QuerySeiAddressByEVMAddressRequest) String() string {
+func (x *QueryEniAddressByEVMAddressRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QuerySeiAddressByEVMAddressRequest) ProtoMessage() {}
+func (*QueryEniAddressByEVMAddressRequest) ProtoMessage() {}
 
-// Deprecated: Use QuerySeiAddressByEVMAddressRequest.ProtoReflect.Descriptor instead.
-func (*QuerySeiAddressByEVMAddressRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEniAddressByEVMAddressRequest.ProtoReflect.Descriptor instead.
+func (*QueryEniAddressByEVMAddressRequest) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_query_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *QuerySeiAddressByEVMAddressRequest) GetEvmAddress() string {
+func (x *QueryEniAddressByEVMAddressRequest) GetEvmAddress() string {
 	if x != nil {
 		return x.EvmAddress
 	}
 	return ""
 }
 
-type QuerySeiAddressByEVMAddressResponse struct {
+type QueryEniAddressByEVMAddressResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"`
+	EniAddress string `protobuf:"bytes,1,opt,name=eni_address,json=eniAddress,proto3" json:"eni_address,omitempty"`
 	Associated bool   `protobuf:"varint,2,opt,name=associated,proto3" json:"associated,omitempty"`
 }
 
-func (x *QuerySeiAddressByEVMAddressResponse) Reset() {
-	*x = QuerySeiAddressByEVMAddressResponse{}
+func (x *QueryEniAddressByEVMAddressResponse) Reset() {
+	*x = QueryEniAddressByEVMAddressResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_goeni_evm_query_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5611,41 +5611,41 @@ func (x *QuerySeiAddressByEVMAddressResponse) Reset() {
 	}
 }
 
-func (x *QuerySeiAddressByEVMAddressResponse) String() string {
+func (x *QueryEniAddressByEVMAddressResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QuerySeiAddressByEVMAddressResponse) ProtoMessage() {}
+func (*QueryEniAddressByEVMAddressResponse) ProtoMessage() {}
 
-// Deprecated: Use QuerySeiAddressByEVMAddressResponse.ProtoReflect.Descriptor instead.
-func (*QuerySeiAddressByEVMAddressResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEniAddressByEVMAddressResponse.ProtoReflect.Descriptor instead.
+func (*QueryEniAddressByEVMAddressResponse) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_query_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *QuerySeiAddressByEVMAddressResponse) GetSeiAddress() string {
+func (x *QueryEniAddressByEVMAddressResponse) GetEniAddress() string {
 	if x != nil {
-		return x.SeiAddress
+		return x.EniAddress
 	}
 	return ""
 }
 
-func (x *QuerySeiAddressByEVMAddressResponse) GetAssociated() bool {
+func (x *QueryEniAddressByEVMAddressResponse) GetAssociated() bool {
 	if x != nil {
 		return x.Associated
 	}
 	return false
 }
 
-type QueryEVMAddressBySeiAddressRequest struct {
+type QueryEVMAddressByEniAddressRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"`
+	EniAddress string `protobuf:"bytes,1,opt,name=eni_address,json=eniAddress,proto3" json:"eni_address,omitempty"`
 }
 
-func (x *QueryEVMAddressBySeiAddressRequest) Reset() {
-	*x = QueryEVMAddressBySeiAddressRequest{}
+func (x *QueryEVMAddressByEniAddressRequest) Reset() {
+	*x = QueryEVMAddressByEniAddressRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_goeni_evm_query_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5653,25 +5653,25 @@ func (x *QueryEVMAddressBySeiAddressRequest) Reset() {
 	}
 }
 
-func (x *QueryEVMAddressBySeiAddressRequest) String() string {
+func (x *QueryEVMAddressByEniAddressRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryEVMAddressBySeiAddressRequest) ProtoMessage() {}
+func (*QueryEVMAddressByEniAddressRequest) ProtoMessage() {}
 
-// Deprecated: Use QueryEVMAddressBySeiAddressRequest.ProtoReflect.Descriptor instead.
-func (*QueryEVMAddressBySeiAddressRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEVMAddressByEniAddressRequest.ProtoReflect.Descriptor instead.
+func (*QueryEVMAddressByEniAddressRequest) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_query_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *QueryEVMAddressBySeiAddressRequest) GetSeiAddress() string {
+func (x *QueryEVMAddressByEniAddressRequest) GetEniAddress() string {
 	if x != nil {
-		return x.SeiAddress
+		return x.EniAddress
 	}
 	return ""
 }
 
-type QueryEVMAddressBySeiAddressResponse struct {
+type QueryEVMAddressByEniAddressResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -5680,8 +5680,8 @@ type QueryEVMAddressBySeiAddressResponse struct {
 	Associated bool   `protobuf:"varint,2,opt,name=associated,proto3" json:"associated,omitempty"`
 }
 
-func (x *QueryEVMAddressBySeiAddressResponse) Reset() {
-	*x = QueryEVMAddressBySeiAddressResponse{}
+func (x *QueryEVMAddressByEniAddressResponse) Reset() {
+	*x = QueryEVMAddressByEniAddressResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_goeni_evm_query_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5689,25 +5689,25 @@ func (x *QueryEVMAddressBySeiAddressResponse) Reset() {
 	}
 }
 
-func (x *QueryEVMAddressBySeiAddressResponse) String() string {
+func (x *QueryEVMAddressByEniAddressResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryEVMAddressBySeiAddressResponse) ProtoMessage() {}
+func (*QueryEVMAddressByEniAddressResponse) ProtoMessage() {}
 
-// Deprecated: Use QueryEVMAddressBySeiAddressResponse.ProtoReflect.Descriptor instead.
-func (*QueryEVMAddressBySeiAddressResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryEVMAddressByEniAddressResponse.ProtoReflect.Descriptor instead.
+func (*QueryEVMAddressByEniAddressResponse) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_query_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *QueryEVMAddressBySeiAddressResponse) GetEvmAddress() string {
+func (x *QueryEVMAddressByEniAddressResponse) GetEvmAddress() string {
 	if x != nil {
 		return x.EvmAddress
 	}
 	return ""
 }
 
-func (x *QueryEVMAddressBySeiAddressResponse) GetAssociated() bool {
+func (x *QueryEVMAddressByEniAddressResponse) GetAssociated() bool {
 	if x != nil {
 		return x.Associated
 	}
@@ -6067,23 +6067,23 @@ var file_goeni_evm_query_proto_rawDesc = []byte{
 	0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x1a, 0x15, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x65, 0x6e, 0x75, 0x6d,
 	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x45, 0x0a, 0x22, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41,
+	0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41,
 	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a,
 	0x0b, 0x65, 0x76, 0x6d, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x0a, 0x65, 0x76, 0x6d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x66,
-	0x0a, 0x23, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x0a, 0x23, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
 	0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x65, 0x69, 0x5f, 0x61, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x73, 0x65, 0x69, 0x41,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x6e, 0x69, 0x5f, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x6e, 0x69, 0x41,
 	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x73, 0x73, 0x6f, 0x63, 0x69,
 	0x61, 0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x61, 0x73, 0x73, 0x6f,
 	0x63, 0x69, 0x61, 0x74, 0x65, 0x64, 0x22, 0x45, 0x0a, 0x22, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45,
-	0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64,
+	0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x6e, 0x69, 0x41, 0x64,
 	0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b,
-	0x73, 0x65, 0x69, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0a, 0x73, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x66, 0x0a,
+	0x65, 0x6e, 0x69, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0a, 0x65, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x66, 0x0a,
 	0x23, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x42, 0x79, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70,
 	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x76, 0x6d, 0x5f, 0x61, 0x64, 0x64, 0x72,
 	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x76, 0x6d, 0x41, 0x64,
 	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x73, 0x73, 0x6f, 0x63, 0x69, 0x61,
@@ -6135,21 +6135,21 @@ var file_goeni_evm_query_proto_rawDesc = []byte{
 	0x74, 0x73, 0x32, 0x98, 0x06, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x9a, 0x01, 0x0a,
 	0x16, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d,
 	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x2d, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e,
-	0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72,
 	0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52,
 	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65,
-	0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x76, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65,
 	0x73, 0x73, 0x42, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65,
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19,
-	0x2f, 0x65, 0x6e, 0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x73, 0x65,
+	0x2f, 0x65, 0x6e, 0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x65, 0x6e,
 	0x69, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x9a, 0x01, 0x0a, 0x16, 0x45, 0x56,
-	0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64,
+	0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x79, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64,
 	0x72, 0x65, 0x73, 0x73, 0x12, 0x2d, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d,
 	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x42, 0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x42, 0x79, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e,
 	0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x56, 0x4d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42,
-	0x79, 0x53, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x79, 0x45, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
 	0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19, 0x2f, 0x65, 0x6e,
 	0x69, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x65, 0x76, 0x6d, 0x2f, 0x65, 0x76, 0x6d, 0x5f, 0x61,
 	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x76, 0x0a, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x69, 0x63,
@@ -6208,10 +6208,10 @@ func file_goeni_evm_query_proto_rawDescGZIP() []byte {
 
 var file_goeni_evm_query_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_goeni_evm_query_proto_goTypes = []interface{}{
-	(*QuerySeiAddressByEVMAddressRequest)(nil),  // 0: goeni.evm.QuerySeiAddressByEVMAddressRequest
-	(*QuerySeiAddressByEVMAddressResponse)(nil), // 1: goeni.evm.QuerySeiAddressByEVMAddressResponse
-	(*QueryEVMAddressBySeiAddressRequest)(nil),  // 2: goeni.evm.QueryEVMAddressBySeiAddressRequest
-	(*QueryEVMAddressBySeiAddressResponse)(nil), // 3: goeni.evm.QueryEVMAddressBySeiAddressResponse
+	(*QueryEniAddressByEVMAddressRequest)(nil),  // 0: goeni.evm.QueryEniAddressByEVMAddressRequest
+	(*QueryEniAddressByEVMAddressResponse)(nil), // 1: goeni.evm.QueryEniAddressByEVMAddressResponse
+	(*QueryEVMAddressByEniAddressRequest)(nil),  // 2: goeni.evm.QueryEVMAddressByEniAddressRequest
+	(*QueryEVMAddressByEniAddressResponse)(nil), // 3: goeni.evm.QueryEVMAddressByEniAddressResponse
 	(*QueryStaticCallRequest)(nil),              // 4: goeni.evm.QueryStaticCallRequest
 	(*QueryStaticCallResponse)(nil),             // 5: goeni.evm.QueryStaticCallResponse
 	(*QueryPointerRequest)(nil),                 // 6: goeni.evm.QueryPointerRequest
@@ -6226,14 +6226,14 @@ var file_goeni_evm_query_proto_depIdxs = []int32{
 	12, // 0: goeni.evm.QueryPointerRequest.pointer_type:type_name -> goeni.evm.PointerType
 	12, // 1: goeni.evm.QueryPointerVersionRequest.pointer_type:type_name -> goeni.evm.PointerType
 	12, // 2: goeni.evm.QueryPointeeRequest.pointer_type:type_name -> goeni.evm.PointerType
-	0,  // 3: goeni.evm.Query.EniAddressByEVMAddress:input_type -> goeni.evm.QuerySeiAddressByEVMAddressRequest
-	2,  // 4: goeni.evm.Query.EVMAddressBySeiAddress:input_type -> goeni.evm.QueryEVMAddressBySeiAddressRequest
+	0,  // 3: goeni.evm.Query.EniAddressByEVMAddress:input_type -> goeni.evm.QueryEniAddressByEVMAddressRequest
+	2,  // 4: goeni.evm.Query.EVMAddressByEniAddress:input_type -> goeni.evm.QueryEVMAddressByEniAddressRequest
 	4,  // 5: goeni.evm.Query.StaticCall:input_type -> goeni.evm.QueryStaticCallRequest
 	6,  // 6: goeni.evm.Query.Pointer:input_type -> goeni.evm.QueryPointerRequest
 	8,  // 7: goeni.evm.Query.PointerVersion:input_type -> goeni.evm.QueryPointerVersionRequest
 	10, // 8: goeni.evm.Query.Pointee:input_type -> goeni.evm.QueryPointeeRequest
-	1,  // 9: goeni.evm.Query.EniAddressByEVMAddress:output_type -> goeni.evm.QuerySeiAddressByEVMAddressResponse
-	3,  // 10: goeni.evm.Query.EVMAddressBySeiAddress:output_type -> goeni.evm.QueryEVMAddressBySeiAddressResponse
+	1,  // 9: goeni.evm.Query.EniAddressByEVMAddress:output_type -> goeni.evm.QueryEniAddressByEVMAddressResponse
+	3,  // 10: goeni.evm.Query.EVMAddressByEniAddress:output_type -> goeni.evm.QueryEVMAddressByEniAddressResponse
 	5,  // 11: goeni.evm.Query.StaticCall:output_type -> goeni.evm.QueryStaticCallResponse
 	7,  // 12: goeni.evm.Query.Pointer:output_type -> goeni.evm.QueryPointerResponse
 	9,  // 13: goeni.evm.Query.PointerVersion:output_type -> goeni.evm.QueryPointerVersionResponse
@@ -6253,7 +6253,7 @@ func file_goeni_evm_query_proto_init() {
 	file_goeni_evm_enums_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_goeni_evm_query_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySeiAddressByEVMAddressRequest); i {
+			switch v := v.(*QueryEniAddressByEVMAddressRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6265,7 +6265,7 @@ func file_goeni_evm_query_proto_init() {
 			}
 		}
 		file_goeni_evm_query_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySeiAddressByEVMAddressResponse); i {
+			switch v := v.(*QueryEniAddressByEVMAddressResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6277,7 +6277,7 @@ func file_goeni_evm_query_proto_init() {
 			}
 		}
 		file_goeni_evm_query_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryEVMAddressBySeiAddressRequest); i {
+			switch v := v.(*QueryEVMAddressByEniAddressRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6289,7 +6289,7 @@ func file_goeni_evm_query_proto_init() {
 			}
 		}
 		file_goeni_evm_query_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryEVMAddressBySeiAddressResponse); i {
+			switch v := v.(*QueryEVMAddressByEniAddressResponse); i {
 			case 0:
 				return &v.state
 			case 1:

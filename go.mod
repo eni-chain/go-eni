@@ -322,7 +322,8 @@ require (
 replace (
 	//github.com/cometbft/cometbft => ../eni-cometbft
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250228084903-192b47d1fb20
-	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.50.11
+	//github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250306090903-e1c1741bf297
+	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	github.com/eni-chain/eni-db => github.com/sei-protocol/sei-db v0.0.1
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2

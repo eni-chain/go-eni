@@ -444,19 +444,14 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 
 	ctxProvider := func(i int64) sdk.Context {
 		if i == evmrpc.LatestCtxHeight {
-			//todo:Can't get it at the moment, comment first, then add
+
 			return app.GetContextForCheckTx(nil)
-			return sdk.Context{}
 		}
 		ctx, err := app.CreateQueryContext(i, false)
 		if err != nil {
 			app.Logger().Error(fmt.Sprintf("failed to create query context for EVM; using latest context instead: %v+", err.Error()))
-			//todo:Can't get it at the moment, comment first, then add
-			//return app.GetCheckCtx()
-			return sdk.Context{}
+			return app.GetContextForCheckTx(nil)
 		}
-		//todo: Depends on x/evm, and when the x/evm migration is completed, it will be replaced here
-		//return ctx.WithIsEVM(true)
 		return ctx
 	}
 	rpcClient, ok := clientCtx.Client.(rpcclient.Client)
