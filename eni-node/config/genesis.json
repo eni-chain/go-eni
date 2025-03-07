@@ -51,7 +51,7 @@
             },
             {
               "denom": "ueni",
-              "amount": "1000000000000"
+              "amount": "1000000000000000000000"
             }
           ]
         },
@@ -64,7 +64,7 @@
             },
             {
               "denom": "ueni",
-              "amount": "2000000000000"
+              "amount": "2000000000000000000000"
             }
           ]
         }
@@ -76,7 +76,7 @@
         },
         {
           "denom": "ueni",
-          "amount": "3000000000000"
+          "amount": "3000000000000000000000"
         }
       ],
       "denom_metadata": [],
@@ -126,7 +126,7 @@
       "params": {
         "base_fee_per_gas": "0",
         "deliver_tx_hook_wasm_gas_limit": "0",
-        "init_eni_amount": "1230000000000",
+        "init_eni_amount": "1230000000000000000000000",
         "init_eni_address":"0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
         "max_dynamic_base_fee_downward_adjustment": "0",
         "max_dynamic_base_fee_upward_adjustment": "0",
