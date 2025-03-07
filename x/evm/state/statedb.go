@@ -44,7 +44,7 @@ type DBImpl struct {
 }
 
 func (s *DBImpl) CreateContract(address common.Address) {
-	//TODO implement me
+	s.CreateAccount(address)
 }
 
 func (s *DBImpl) SelfDestruct6780(address common.Address) (uint256.Int, bool) {

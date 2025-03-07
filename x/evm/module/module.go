@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
-	cosmossdk_io_math "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -214,21 +214,21 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 		}
 		surplus = surplus.Add(deferredInfo.Surplus)
 	}
-	if surplus.IsPositive() {
-		surplusUeni, surplusWei := state.SplitUeniWeiAmount(surplus.BigInt())
-		if surplusUeni.GT(cosmossdk_io_math.ZeroInt()) {
-			// todo  check code correct
-			//if err := am.keeper.BankKeeper().AddCoins(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), sdk.NewCoins(sdk.NewCoin(am.keeper.GetBaseDenom(ctx), surplusUeni)), true); err != nil {
-			//	ctx.Logger().Error("failed to send ueni surplus of %s to EVM module account", surplusUeni)
-			//}
-		}
-		if surplusWei.GT(cosmossdk_io_math.ZeroInt()) {
-			// todo  check code correct
-			//if err := am.keeper.BankKeeper().AddWei(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), surplusWei); err != nil {
-			//	ctx.Logger().Error("failed to send wei surplus of %s to EVM module account", surplusWei)
-			//}
-		}
-	}
+	//if surplus.IsPositive() {
+	//	surplusUeni, surplusWei := state.SplitUeniWeiAmount(surplus.BigInt())
+	//	if surplusUeni.GT(cosmossdk_io_math.ZeroInt()) {
+	//		// todo  check code correct
+	//		//if err := am.keeper.BankKeeper().AddCoins(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), sdk.NewCoins(sdk.NewCoin(am.keeper.GetBaseDenom(ctx), surplusUeni)), true); err != nil {
+	//		//	ctx.Logger().Error("failed to send ueni surplus of %s to EVM module account", surplusUeni)
+	//		//}
+	//	}
+	//	if surplusWei.GT(cosmossdk_io_math.ZeroInt()) {
+	//		// todo  check code correct
+	//		//if err := am.keeper.BankKeeper().AddWei(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), surplusWei); err != nil {
+	//		//	ctx.Logger().Error("failed to send wei surplus of %s to EVM module account", surplusWei)
+	//		//}
+	//	}
+	//}
 	am.keeper.SetBlockBloom(ctx, utils.Map(evmTxDeferredInfoList, func(i *types.DeferredInfo) ethtypes.Bloom { return ethtypes.BytesToBloom(i.TxBloom) }))
 	return nil
 }

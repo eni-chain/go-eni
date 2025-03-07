@@ -20,9 +20,3 @@ func GetCoinbaseAddress(txIdx int) sdk.AccAddress {
 	binary.BigEndian.PutUint64(txIndexBz, uint64(txIdx))
 	return append(CoinbaseAddressPrefix, txIndexBz...)
 }
-
-func SplitUeniWeiAmount(amt *big.Int) (cosmossdk_io_math.Int, cosmossdk_io_math.Int) {
-	wei := new(big.Int).Mod(amt, UeniToSweiMultiplier)
-	ueni := new(big.Int).Quo(amt, UeniToSweiMultiplier)
-	return cosmossdk_io_math.NewIntFromBigInt(ueni), cosmossdk_io_math.NewIntFromBigInt(wei)
-}
