@@ -70,10 +70,10 @@ func (s *DBImpl) AccessEvents() *state.AccessEvents {
 func NewDBImpl(ctx sdk.Context, k EVMKeeper, simulation bool) *DBImpl {
 	feeCollector, _ := k.GetFeeCollectorAddress(ctx)
 	s := &DBImpl{
-		ctx:             ctx,
-		k:               k,
-		snapshottedCtxs: []sdk.Context{},
-		//coinbaseAddress:    GetCoinbaseAddress(ctx.TxIndex()),
+		ctx:                ctx,
+		k:                  k,
+		snapshottedCtxs:    []sdk.Context{},
+		coinbaseAddress:    GetCoinbaseAddress(0), //TODO ctx.TxIndex()
 		simulation:         simulation,
 		tempStateCurrent:   NewTemporaryState(),
 		coinbaseEvmAddress: feeCollector,
