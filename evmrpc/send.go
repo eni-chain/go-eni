@@ -3,6 +3,7 @@ package evmrpc
 import (
 	"context"
 	"errors"
+
 	"github.com/eni-chain/go-eni/x/evm/ante"
 	"time"
 
@@ -20,6 +21,7 @@ import (
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
+	bfttypes "github.com/cometbft/cometbft/types"
 )
 
 type SendAPI struct {
@@ -77,6 +79,10 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if encodeErr != nil {
 		return hash, encodeErr
 	}
+
+	h := bfttypes.Tx(txbz).Hash()
+	hexH := hexutil.Encode(h)
+	println(hexH)
 
 	if s.sendConfig.slow {
 		res, broadcastError := s.tmClient.BroadcastTxCommit(ctx, txbz)
