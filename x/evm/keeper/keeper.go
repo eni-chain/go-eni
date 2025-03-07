@@ -3,11 +3,12 @@ package keeper
 import (
 	"encoding/binary"
 	"fmt"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"math"
 	"math/big"
 	"slices"
 	"sort"
+
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
 	"cosmossdk.io/store/prefix"
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -104,7 +105,7 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 	transientStoreKey storetypes.StoreKey,
 	cdc codec.BinaryCodec,
-	//storeService store.KVStoreService,
+//storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
 
@@ -121,13 +122,16 @@ func NewKeeper(
 		transientStoreKey: transientStoreKey,
 		cdc:               cdc,
 		//storeService:      storeService,
-		authority: authority,
-		logger:    logger,
-
+		authority:     authority,
+		logger:        logger,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
 		stakingKeeper: stakingKeeper,
-		nonceMx:       &sync.RWMutex{},
+
+		pendingTxs:                   map[string][]*PendingTx{},
+		nonceMx:                      &sync.RWMutex{},
+		cachedFeeCollectorAddressMtx: &sync.RWMutex{},
+		keyToNonce:                   make(map[tmtypes.TxKey]*AddressNoncePair),
 	}
 }
 
