@@ -7,10 +7,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	bfttypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/eni-chain/go-eni/evmrpc"
+	"github.com/eni-chain/go-eni/x/evm/ante"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"io"
 	"math/big"
 	"net/http"
@@ -164,6 +167,10 @@ func CmdSend() *cobra.Command {
 		Long:  "",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 			key, err := getPrivateKey(cmd)
 			if err != nil {
 				return err
@@ -196,7 +203,7 @@ func CmdSend() *cobra.Command {
 			txData.Value = val
 			txData.Data = []byte("")
 			txData.To = &to
-			resp, err := sendTx(txData, rpc, key)
+			resp, err := sendTx(txData, rpc, key, clientCtx)
 			if err != nil {
 				return err
 			}
@@ -231,6 +238,10 @@ func CmdDeployContract() *cobra.Command {
 		Long:  "",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 			code, err := os.ReadFile(args[0])
 			if err != nil {
 				panic("failed to read contract binary")
@@ -274,7 +285,7 @@ func CmdDeployContract() *cobra.Command {
 			txData.Value = utils.Big0
 			txData.Data = bz
 
-			resp, err := sendTx(txData, rpc, key)
+			resp, err := sendTx(txData, rpc, key, clientCtx)
 			if err != nil {
 				return err
 			}
@@ -311,6 +322,10 @@ func CmdCallContract() *cobra.Command {
 		Long:  "",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 			contract := common.HexToAddress(args[0])
 			payload, err := hex.DecodeString(args[1])
 			if err != nil {
@@ -354,7 +369,7 @@ func CmdCallContract() *cobra.Command {
 			txData.Data = payload
 			txData.To = &contract
 
-			resp, err := sendTx(txData, rpc, key)
+			resp, err := sendTx(txData, rpc, key, clientCtx)
 			if err != nil {
 				return err
 			}
@@ -381,6 +396,10 @@ func CmdERC20Send() *cobra.Command {
 		Long:  "",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 			contract := common.HexToAddress(args[0])
 			recipient := common.HexToAddress(args[1])
 			amt, ok := new(big.Int).SetString(args[2], 10)
@@ -424,7 +443,7 @@ func CmdERC20Send() *cobra.Command {
 			txData.Data = payload
 			txData.To = &contract
 
-			resp, err := sendTx(txData, rpc, key)
+			resp, err := sendTx(txData, rpc, key, clientCtx)
 			if err != nil {
 				return err
 			}
@@ -450,6 +469,10 @@ func CmdCallPrecompile() *cobra.Command {
 		Long:  "",
 		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 			//pInfo := precompiles.GetPrecompileInfo(args[0])
 			//payload, err := getMethodPayload(pInfo.ABI, args[1:])
 			if err != nil {
@@ -498,7 +521,7 @@ func CmdCallPrecompile() *cobra.Command {
 			//to := pInfo.Address
 			//txData.To = &to
 
-			resp, err := sendTx(txData, rpc, key)
+			resp, err := sendTx(txData, rpc, key, clientCtx)
 			if err != nil {
 				return err
 			}
@@ -526,7 +549,10 @@ func CmdDeployWENI() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			contractData := weni.GetBin()
-
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 			key, err := getPrivateKey(cmd)
 			if err != nil {
 				return err
@@ -554,7 +580,7 @@ func CmdDeployWENI() *cobra.Command {
 			txData.Value = utils.Big0
 			txData.Data = contractData
 
-			resp, err := sendTx(txData, rpc, key)
+			resp, err := sendTx(txData, rpc, key, clientCtx)
 			if err != nil {
 				return err
 			}
@@ -698,7 +724,7 @@ func getTxData(cmd *cobra.Command) (*ethtypes.DynamicFeeTx, error) {
 	}, nil
 }
 
-func sendTx(txData *ethtypes.DynamicFeeTx, rpcUrl string, key *ecdsa.PrivateKey) (common.Hash, error) {
+func sendTx(txData *ethtypes.DynamicFeeTx, rpcUrl string, key *ecdsa.PrivateKey, clientCtx client.Context) (common.Hash, error) {
 	ethCfg := types.DefaultChainConfig().EthereumConfig(txData.ChainID)
 	signer := ethtypes.MakeSigner(ethCfg, utils.Big1, 1)
 	signedTx, err := ethtypes.SignTx(ethtypes.NewTx(txData), signer, key)
@@ -715,5 +741,32 @@ func sendTx(txData *ethtypes.DynamicFeeTx, rpcUrl string, key *ecdsa.PrivateKey)
 		return common.Hash{}, err
 	}
 
-	return signedTx.Hash(), nil
+	// todo for eni
+	txData2, err := ethtx.NewTxDataFromTx(signedTx)
+	if err != nil {
+		return common.Hash{}, err
+	}
+	msg, err := types.NewMsgEVMTransaction(txData2)
+	if err != nil {
+		return common.Hash{}, err
+	}
+	hexTxHash := signedTx.Hash()
+	ante.Preprocess2(msg)
+
+	txBuilder := clientCtx.TxConfig.NewTxBuilder()
+	if err = txBuilder.SetMsgs(msg); err != nil {
+		return common.Hash{}, err
+	}
+
+	txbz, encodeErr := clientCtx.TxConfig.TxEncoder()(txBuilder.GetTx())
+	if encodeErr != nil {
+		return common.Hash{}, err
+	}
+
+	h := bfttypes.Tx(txbz).Hash()
+	hexH := hexutil.Encode(h)
+	println("hexH =", hexH)
+	hexTxHash = common.Hash(h)
+
+	return hexTxHash, nil
 }
