@@ -6,6 +6,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/utils"
+	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/tracing"
 	"github.com/holiman/uint256"
@@ -134,11 +135,11 @@ func (s *DBImpl) clearAccountStateIfDestructed(st *TemporaryState) {
 }
 
 func (s *DBImpl) clearAccountState(acc common.Address) {
-	//s.k.PurgePrefix(s.ctx, types.StateKey(acc))
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeKeyPrefix), acc[:])
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeSizeKeyPrefix), acc[:])
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeHashKeyPrefix), acc[:])
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.NonceKeyPrefix), acc[:])
+	s.k.PurgePrefix(s.ctx, types.StateKey(acc))
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeKeyPrefix), acc[:])
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeSizeKeyPrefix), acc[:])
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeHashKeyPrefix), acc[:])
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.NonceKeyPrefix), acc[:])
 }
 
 func (s *DBImpl) MarkAccount(acc common.Address, status []byte) {
