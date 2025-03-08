@@ -2,6 +2,7 @@ package state
 
 import (
 	cosmossdk_io_math "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/ethereum/go-ethereum/common"
@@ -155,7 +156,8 @@ func (s *DBImpl) Finalize() (surplus cosmossdk_io_math.Int, err error) {
 }
 
 func (s *DBImpl) flushCtx(ctx sdk.Context) {
-	//ctx.MultiStore().(sdk.CacheMultiStore).Write()  //todo dev
+	ctx.MultiStore().(storetypes.CacheMultiStore).Write()
+
 }
 
 func (s *DBImpl) flushEvents(ctx sdk.Context) {
