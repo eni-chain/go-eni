@@ -17,9 +17,9 @@ import (
 
 // Initialized for each transaction individually
 type DBImpl struct {
-	ctx             sdk.Context
-	snapshottedCtxs []sdk.Context
-
+	ctx              sdk.Context
+	snapshottedCtxs  []sdk.Context
+	snapshotKVStores []storetypes.MultiStore
 	tempStateCurrent *TemporaryState
 	tempStatesHist   []*TemporaryState
 	// If err is not nil at the end of the execution, the transaction will be rolled
@@ -74,7 +74,8 @@ func NewDBImpl(ctx sdk.Context, k EVMKeeper, simulation bool) *DBImpl {
 		ctx:                ctx,
 		k:                  k,
 		snapshottedCtxs:    []sdk.Context{},
-		coinbaseAddress:    GetCoinbaseAddress(0), //TODO ctx.TxIndex()
+		snapshotKVStores:   []storetypes.MultiStore{},
+		coinbaseAddress:    GetCoinbaseAddress(ctx.TxIndex()),
 		simulation:         simulation,
 		tempStateCurrent:   NewTemporaryState(),
 		coinbaseEvmAddress: feeCollector,
@@ -139,7 +140,7 @@ func (s *DBImpl) Finalize() (surplus cosmossdk_io_math.Int, err error) {
 	// write cache to underlying
 	s.flushCtx(s.ctx)
 	// write all snapshotted caches in reverse order, except the very first one (base) which will be written by baseapp::runTx
-	for i := len(s.snapshottedCtxs) - 1; i > 0; i-- {
+	for i := len(s.snapshottedCtxs) - 1; i >= 0; i-- {
 		s.flushCtx(s.snapshottedCtxs[i])
 	}
 	// write all events in order
@@ -208,8 +209,7 @@ func (s *DBImpl) IntermediateRoot(bool) common.Hash {
 }
 
 func (s *DBImpl) TxIndex() int {
-	//return s.ctx.TxIndex()    //todo dev
-	return 0
+	return s.ctx.TxIndex()
 }
 
 func (s *DBImpl) Preimages() map[common.Hash][]byte {

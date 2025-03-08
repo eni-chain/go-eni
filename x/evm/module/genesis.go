@@ -43,17 +43,18 @@ func getBalance(ctx sdk.Context, k *keeper.Keeper, evmAddr common.Address) *big.
 func SetBalance(ctx sdk.Context, k *keeper.Keeper, evmAddr common.Address, amt *uint256.Int) {
 
 	eniAddr := k.GetEniAddressOrDefault(ctx, evmAddr)
-	moduleAddr := k.AccountKeeper().GetModuleAddress(types.ModuleName)
-	err := send(ctx, k, eniAddr, moduleAddr, getBalance(ctx, k, evmAddr))
-	if err != nil {
-		panic(err)
-	}
+	//moduleAddr := k.AccountKeeper().GetModuleAddress(types.ModuleName)
+	//err := send(ctx, k, eniAddr, moduleAddr, getBalance(ctx, k, evmAddr))
+	//if err != nil {
+	//	panic(err)
+	//}
 	a := amt.ToBig()
-	coinsAmt := sdk.NewCoins(sdk.NewCoin(k.GetBaseDenom(ctx), math.NewIntFromBigIntMut(a)))
-	if err = k.BankKeeper().MintCoins(ctx, types.ModuleName, coinsAmt); err != nil {
-		panic(err)
-	}
-	err = send(ctx, k, moduleAddr, eniAddr, a)
+	//coinsAmt := sdk.NewCoins(sdk.NewCoin(k.GetBaseDenom(ctx), math.NewIntFromBigIntMut(a)))
+	err := k.BankKeeper().SetBalance(ctx, eniAddr, sdk.NewCoin(k.GetBaseDenom(ctx), math.NewIntFromBigIntMut(a)))
+	//if err = k.BankKeeper().MintCoins(ctx, types.ModuleName, coinsAmt); err != nil {
+	//	panic(err)
+	//}
+	//err = send(ctx, k, moduleAddr, eniAddr, a)
 	if err != nil {
 		panic(err)
 	}
