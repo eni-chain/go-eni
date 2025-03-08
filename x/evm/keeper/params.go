@@ -25,6 +25,9 @@ func (k *Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 func (k *Keeper) GetParamsIfExists(ctx sdk.Context) types.Params {
 	params := types.Params{}
 	k.Paramstore.GetParamSetIfExists(ctx, &params)
+	if params.BaseFeePerGas.IsNil() {
+		params = types.DefaultParams()
+	}
 	return params
 }
 
