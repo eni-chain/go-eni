@@ -111,7 +111,7 @@ func (m *GenesisState) GetSerialized() []*Serialized {
 
 // AddressAssociation represents an association between a Cosmos and an Ethereum address.
 type AddressAssociation struct {
-	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"`
+	EniAddress string `protobuf:"bytes,1,opt,name=sei_address,json=eniAddress,proto3" json:"eni_address,omitempty"`
 	EthAddress string `protobuf:"bytes,2,opt,name=eth_address,json=ethAddress,proto3" json:"eth_address,omitempty"`
 }
 
@@ -148,9 +148,9 @@ func (m *AddressAssociation) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AddressAssociation proto.InternalMessageInfo
 
-func (m *AddressAssociation) GetSeiAddress() string {
+func (m *AddressAssociation) GetEniAddress() string {
 	if m != nil {
-		return m.SeiAddress
+		return m.EniAddress
 	}
 	return ""
 }
@@ -560,10 +560,10 @@ func (m *AddressAssociation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.SeiAddress) > 0 {
-		i -= len(m.SeiAddress)
-		copy(dAtA[i:], m.SeiAddress)
-		i = encodeVarintGenesis(dAtA, i, uint64(len(m.SeiAddress)))
+	if len(m.EniAddress) > 0 {
+		i -= len(m.EniAddress)
+		copy(dAtA[i:], m.EniAddress)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.EniAddress)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -788,7 +788,7 @@ func (m *AddressAssociation) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.SeiAddress)
+	l = len(m.EniAddress)
 	if l > 0 {
 		n += 1 + l + sovGenesis(uint64(l))
 	}
@@ -1164,7 +1164,7 @@ func (m *AddressAssociation) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field EniAddress", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1192,7 +1192,7 @@ func (m *AddressAssociation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.SeiAddress = string(dAtA[iNdEx:postIndex])
+			m.EniAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {

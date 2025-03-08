@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//"github.com/eni-chain/eni-db/proto"
 	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/eni-chain/go-eni/utils"
@@ -49,7 +48,7 @@ func (k *Keeper) DeleteTransientReceipt(ctx sdk.Context, txHash common.Hash) {
 // Many EVM applications (e.g. MetaMask) relies on being on able to query receipt
 // by EVM transaction hash (not Eni transaction hash) to function properly.
 func (k *Keeper) GetReceipt(ctx sdk.Context, txHash common.Hash) (*types.Receipt, error) {
-
+	return nil, nil
 	// receipts are immutable, use latest version
 	//lv, err := k.receiptStore.GetLatestVersion()
 	//if err != nil {
@@ -61,7 +60,7 @@ func (k *Keeper) GetReceipt(ctx sdk.Context, txHash common.Hash) (*types.Receipt
 	//if err != nil {
 	//	return nil, err
 	//}
-
+	//
 	//if bz == nil {
 	//	// try legacy store for older receipts
 	//	store := ctx.KVStore(k.storeKey)
@@ -70,12 +69,12 @@ func (k *Keeper) GetReceipt(ctx sdk.Context, txHash common.Hash) (*types.Receipt
 	//		return nil, errors.New("not found")
 	//	}
 	//}
-
-	var r types.Receipt
+	//
+	//var r types.Receipt
 	//if err := r.Unmarshal(bz); err != nil {
 	//	return nil, err
 	//}
-	return &r, nil
+	//return &r, nil
 }
 
 //	MockReceipt sets a data structure that stores EVM specific transaction metadata.
@@ -90,6 +89,7 @@ func (k *Keeper) MockReceipt(ctx sdk.Context, txHash common.Hash, receipt *types
 }
 
 func (k *Keeper) FlushTransientReceipts(ctx sdk.Context) error {
+	return nil
 	//iter := prefix.NewStore(ctx.TransientStore(k.transientStoreKey), types.ReceiptKeyPrefix).Iterator(nil, nil)
 	//defer iter.Close()
 	//var pairs []*iavl.KVPair
@@ -108,7 +108,6 @@ func (k *Keeper) FlushTransientReceipts(ctx sdk.Context) error {
 	//changesets = append(changesets, ncs)
 	//
 	//return k.receiptStore.ApplyChangesetAsync(ctx.BlockHeight(), changesets)
-	return nil
 }
 
 func (k *Keeper) WriteReceipt(
@@ -128,7 +127,7 @@ func (k *Keeper) WriteReceipt(
 		TxHashHex:         txHash.Hex(),
 		GasUsed:           gasUsed,
 		BlockNumber:       uint64(ctx.BlockHeight()),
-		//TransactionIndex:  uint32(ctx.TxIndex()),
+		TransactionIndex:  uint32(ctx.TxIndex()),
 		EffectiveGasPrice: msg.GasPrice.Uint64(),
 		VmError:           vmError,
 		Logs:              utils.Map(ethLogs, ConvertEthLog),

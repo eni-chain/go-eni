@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	"github.com/eni-chain/go-eni/x/evm/exported"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
@@ -20,7 +21,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/x/evm/client/cli"
@@ -114,6 +114,8 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	// legacySubspace is used solely for migration of x/params managed parameters
+	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
@@ -121,19 +123,21 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	ls exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
+		legacySubspace: ls,
 	}
 }
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(&am.keeper))
-	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+	//types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 }
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)
@@ -263,6 +267,9 @@ type ModuleInputs struct {
 	AccountKeeper authkeeper.AccountKeeper
 	BankKeeper    bankkeeper.Keeper
 	StakingKeeper *stakingkeeper.Keeper
+	//ParamsKeeper  *paramskeeper.Keeper
+
+	LegacySubspace exported.Subspace `optional:"true"`
 }
 
 type ModuleOutputs struct {
@@ -274,28 +281,31 @@ type ModuleOutputs struct {
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
 	// default to governance authority if not provided
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-	if in.Config.Authority != "" {
-		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
-	}
+	//authority := authtypes.NewModuleAddress(govtypes.ModuleName)
+	//if in.Config.Authority != "" {
+	//	authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
+	//}
+	//subspace, _ := in.ParamsKeeper.GetSubspace(types.ModuleName)
 
 	k := keeper.NewKeeper(
 		in.KvStoreKey,
 		in.TransientStoreKey,
-		in.Cdc,
+		in.LegacySubspace,
 		//in.StoreService,
-		in.Logger,
-		authority.String(),
-		&in.AccountKeeper,
 		in.BankKeeper,
+		&in.AccountKeeper,
 		in.StakingKeeper,
+		//in.Logger,
+		//authority.String(),
+
 	)
 	m := NewAppModule(
 		in.Cdc,
-		k,
+		*k,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.LegacySubspace,
 	)
 
-	return ModuleOutputs{EvmKeeper: k, Module: m}
+	return ModuleOutputs{EvmKeeper: *k, Module: m}
 }

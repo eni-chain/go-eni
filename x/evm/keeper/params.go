@@ -14,34 +14,17 @@ import (
 
 const BaseDenom = "ueni"
 
-// GetParams get all parameters as types.Params
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.ParamsKey)
-	if bz == nil {
-		return params
-	}
-
-	k.cdc.MustUnmarshal(bz, &params)
-	return params
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
+	k.Paramstore.SetParamSet(ctx, &params)
 }
 
-// SetParams set the params
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) error {
-	store := ctx.KVStore(k.storeKey)
-	bz, err := k.cdc.Marshal(&params)
-	if err != nil {
-		return err
-	}
-	store.Set(types.ParamsKey, bz)
-
-	return nil
+func (k *Keeper) GetParams(ctx sdk.Context) (params types.Params) {
+	return k.GetParamsIfExists(ctx)
 }
 
 func (k *Keeper) GetParamsIfExists(ctx sdk.Context) types.Params {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	params := types.Params{}
-	k.Paramstore.GetParamSetIfExists(sdkCtx, &params)
+	k.Paramstore.GetParamSetIfExists(ctx, &params)
 	return params
 }
 
@@ -97,16 +80,14 @@ eni gas = evm gas * multiplier
 eni gas price = fee / eni gas = fee / (evm gas * multiplier) = evm gas / multiplier
 */
 func (k *Keeper) GetEVMGasLimitFromCtx(ctx sdk.Context) uint64 {
-	//return k.getEvmGasLimitFromCtx(ctx)
-	return 0
+	return k.getEvmGasLimitFromCtx(ctx)
 }
 
 func (k *Keeper) GetCosmosGasLimitFromEVMGas(ctx sdk.Context, evmGas uint64) uint64 {
-	//gasMultipler := k.GetPriorityNormalizer(ctx)
-	//gasLimitBigInt := sdk.NewDecFromInt(sdk.NewIntFromUint64(evmGas)).Mul(gasMultipler).TruncateInt().BigInt()
-	//if gasLimitBigInt.Cmp(utils.BigMaxU64) > 0 {
-	//	gasLimitBigInt = utils.BigMaxU64
-	//}
-	//return gasLimitBigInt.Uint64()
-	return evmGas / k.GetPriorityNormalizer(ctx).BigInt().Uint64() // todo: fix this
+	gasMultipler := k.GetPriorityNormalizer(ctx)
+	gasLimitBigInt := cosmossdk_io_math.LegacyNewDecFromInt(cosmossdk_io_math.NewIntFromUint64(evmGas)).Mul(gasMultipler).TruncateInt().BigInt()
+	if gasLimitBigInt.Cmp(utils.BigMaxU64) > 0 {
+		gasLimitBigInt = utils.BigMaxU64
+	}
+	return gasLimitBigInt.Uint64()
 }

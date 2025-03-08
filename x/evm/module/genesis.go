@@ -26,11 +26,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		}
 		SetBalance(ctx, &k, common.HexToAddress(initEniAddress), uint256.MustFromDecimal(initEniAmount))
 	}
-
-	// this line is used by starport scaffolding # genesis/module/init
-	if err := k.SetParams(ctx, genState.Params); err != nil {
-		panic(err)
-	}
 }
 func send(ctx sdk.Context, k *keeper.Keeper, from sdk.AccAddress, to sdk.AccAddress, amt *big.Int) error {
 	ueni := sdk.NewCoin(k.GetBaseDenom(ctx), math.NewIntFromBigIntMut(amt))
@@ -38,7 +33,7 @@ func send(ctx sdk.Context, k *keeper.Keeper, from sdk.AccAddress, to sdk.AccAddr
 	if err != nil {
 		return err
 	}
-	k.Logger().Info("genesis send", "from", from, "to", to, "amount", ueni)
+	//k.Logger().Info("genesis send", "from", from, "to", to, "amount", ueni)
 	return nil
 }
 func getBalance(ctx sdk.Context, k *keeper.Keeper, evmAddr common.Address) *big.Int {

@@ -3,9 +3,14 @@ package keeper
 import (
 	"context"
 
-	cosmossdk_io_math "cosmossdk.io/math"
 	"errors"
 	"fmt"
+	"math"
+	"math/big"
+	"runtime/debug"
+
+	cosmossdk_io_math "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -17,10 +22,6 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/hashicorp/go-metrics"
-	"math"
-	"math/big"
-	"runtime/debug"
-	"strings"
 )
 
 var (
@@ -55,7 +56,7 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 	// 	3. At the beginning of message server (here), gas meter is set to infinite again, because EVM internal logic will then take over and manage out-of-gas scenarios.
 	// 	4. At the end of message server, gas consumed by EVM is adjusted to Eni's unit and counted in the original gas meter, because that original gas meter will be used to count towards block gas after message server returns
 	originalGasMeter := ctx.GasMeter()
-	//ctx = ctx.WithGasMeter(sdk.NewInfiniteGasMeterWithMultiplier(ctx)) //todo check if this is needed
+	ctx = ctx.WithGasMeter(storetypes.NewInfiniteGasMeter())
 
 	stateDB := state.NewDBImpl(ctx, &server, false)
 	emsg := server.GetEVMMessage(ctx, tx, msg.Derived.SenderEVMAddr)
@@ -64,11 +65,11 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 	defer func() {
 		defer stateDB.Cleanup()
 		if pe := recover(); pe != nil {
-			if !strings.Contains(fmt.Sprintf("%s", pe), ErrReadEstimate.Error()) {
-				debug.PrintStack()
-				ctx.Logger().Error(fmt.Sprintf("EVM PANIC: %s", pe))
-				telemetry.IncrCounter(1, types.ModuleName, "panics")
-			}
+			//if !strings.Contains(fmt.Sprintf("%s", pe), occtypes.ErrReadEstimate.Error()) {
+			debug.PrintStack()
+			ctx.Logger().Error(fmt.Sprintf("EVM PANIC: %s", pe))
+			telemetry.IncrCounter(1, types.ModuleName, "panics")
+			//}
 			panic(pe)
 		}
 		if err != nil {
@@ -211,7 +212,6 @@ func BigMin(x, y *big.Int) *big.Int {
 	}
 	return x
 }
-
 func (k Keeper) applyEVMMessage(ctx sdk.Context, msg *core.Message, stateDB *state.DBImpl, gp core.GasPool) (*core.ExecutionResult, error) {
 	blockCtx, err := k.GetVMBlockContext(ctx, gp)
 	if err != nil {
