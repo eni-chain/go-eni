@@ -60,10 +60,6 @@ func (k *Keeper) GetTargetGasUsedPerBlock(ctx sdk.Context) uint64 {
 	return k.GetParams(ctx).TargetGasUsedPerBlock
 }
 
-func (k *Keeper) GetDeliverTxHookWasmGasLimit(ctx sdk.Context) uint64 {
-	return k.GetParams(ctx).DeliverTxHookWasmGasLimit
-}
-
 func (k *Keeper) ChainID(ctx sdk.Context) *big.Int {
 	if k.EthBlockTestConfig.Enabled {
 		// replay is for eth mainnet so always return 1

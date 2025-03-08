@@ -24,9 +24,6 @@ var DefaultPriorityNormalizer = cosmossdk_io_math.LegacyNewDec(1)
 // Ethereum).
 var DefaultBaseFeePerGas = cosmossdk_io_math.LegacyNewDec(0)         // used for static base fee, deprecated in favor of dynamic base fee
 var DefaultMinFeePerGas = cosmossdk_io_math.LegacyNewDec(1000000000) // 1gwei
-var DefaultDeliverTxHookWasmGasLimit = uint64(300000)
-
-var DefaultWhitelistedCwCodeHashesForDelegateCall = [][]byte(nil)
 
 var DefaultMaxDynamicBaseFeeUpwardAdjustment = cosmossdk_io_math.LegacyNewDecWithPrec(189, 4)  // 1.89%
 var DefaultMaxDynamicBaseFeeDownwardAdjustment = cosmossdk_io_math.LegacyNewDecWithPrec(39, 4) // .39%
@@ -36,15 +33,15 @@ var DefaultMaxFeePerGas = cosmossdk_io_math.LegacyNewDec(1000000000000)         
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		PriorityNormalizer:                     DefaultPriorityNormalizer,
-		BaseFeePerGas:                          DefaultBaseFeePerGas,
-		MaxDynamicBaseFeeUpwardAdjustment:      DefaultMaxDynamicBaseFeeUpwardAdjustment,
-		MaxDynamicBaseFeeDownwardAdjustment:    DefaultMaxDynamicBaseFeeDownwardAdjustment,
-		MinimumFeePerGas:                       DefaultMinFeePerGas,
-		DeliverTxHookWasmGasLimit:              DefaultDeliverTxHookWasmGasLimit,
-		WhitelistedCwCodeHashesForDelegateCall: DefaultWhitelistedCwCodeHashesForDelegateCall,
-		TargetGasUsedPerBlock:                  DefaultTargetGasUsedPerBlock,
-		MaximumFeePerGas:                       DefaultMaxFeePerGas,
+		PriorityNormalizer:                  DefaultPriorityNormalizer,
+		BaseFeePerGas:                       DefaultBaseFeePerGas,
+		MinimumFeePerGas:                    DefaultMinFeePerGas,
+		MaxDynamicBaseFeeUpwardAdjustment:   DefaultMaxDynamicBaseFeeUpwardAdjustment,
+		MaxDynamicBaseFeeDownwardAdjustment: DefaultMaxDynamicBaseFeeDownwardAdjustment,
+		TargetGasUsedPerBlock:               DefaultTargetGasUsedPerBlock,
+		MaximumFeePerGas:                    DefaultMaxFeePerGas,
+		InitEniAmount:                       "",
+		InitEniAddress:                      "",
 	}
 }
 

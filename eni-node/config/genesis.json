@@ -125,7 +125,6 @@
       "nonces": [],
       "params": {
         "base_fee_per_gas": "0",
-        "deliver_tx_hook_wasm_gas_limit": "0",
         "init_eni_amount": "1230000000000000000000000",
         "init_eni_address":"0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
         "max_dynamic_base_fee_downward_adjustment": "0",
@@ -133,8 +132,7 @@
         "maximum_fee_per_gas": "0",
         "minimum_fee_per_gas": "0",
         "priority_normalizer": "0",
-        "target_gas_used_per_block": "0",
-        "whitelisted_cw_code_hashes_for_delegate_call": []
+        "target_gas_used_per_block": "0"
       },
       "serialized": [],
       "states": []
