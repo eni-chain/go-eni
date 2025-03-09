@@ -33,7 +33,7 @@ func send(ctx sdk.Context, k *keeper.Keeper, from sdk.AccAddress, to sdk.AccAddr
 	if err != nil {
 		return err
 	}
-	//k.Logger().Info("genesis send", "from", from, "to", to, "amount", ueni)
+	k.Logger().Info("genesis send", "from", from, "to", to, "amount", ueni)
 	return nil
 }
 func getBalance(ctx sdk.Context, k *keeper.Keeper, evmAddr common.Address) *big.Int {

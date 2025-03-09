@@ -197,7 +197,7 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 	for _, deferredInfo := range evmTxDeferredInfoList {
 		txHash := common.BytesToHash(deferredInfo.TxHash)
 		if deferredInfo.Error != "" && txHash.Cmp(ethtypes.EmptyTxsHash) != 0 {
-			_ = am.keeper.SetTransientReceipt(ctx, txHash, &types.Receipt{
+			_ = am.keeper.SetReceipt(ctx, txHash, &types.Receipt{
 				TxHashHex:        txHash.Hex(),
 				TransactionIndex: deferredInfo.TxIndex,
 				VmError:          deferredInfo.Error,
@@ -295,7 +295,8 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.BankKeeper,
 		&in.AccountKeeper,
 		in.StakingKeeper,
-		//in.Logger,
+		in.Cdc,
+		in.Logger,
 		//authority.String(),
 
 	)

@@ -17,9 +17,9 @@ import (
 
 // Initialized for each transaction individually
 type DBImpl struct {
-	ctx              sdk.Context
-	snapshottedCtxs  []sdk.Context
-	snapshotKVStores []storetypes.MultiStore
+	ctx             sdk.Context
+	snapshottedCtxs []sdk.Context
+	//snapshotKVStores []storetypes.MultiStore
 	tempStateCurrent *TemporaryState
 	tempStatesHist   []*TemporaryState
 	// If err is not nil at the end of the execution, the transaction will be rolled
@@ -71,10 +71,10 @@ func (s *DBImpl) AccessEvents() *state.AccessEvents {
 func NewDBImpl(ctx sdk.Context, k EVMKeeper, simulation bool) *DBImpl {
 	feeCollector, _ := k.GetFeeCollectorAddress(ctx)
 	s := &DBImpl{
-		ctx:                ctx,
-		k:                  k,
-		snapshottedCtxs:    []sdk.Context{},
-		snapshotKVStores:   []storetypes.MultiStore{},
+		ctx:             ctx,
+		k:               k,
+		snapshottedCtxs: []sdk.Context{},
+		//snapshotKVStores:   []storetypes.MultiStore{},
 		coinbaseAddress:    GetCoinbaseAddress(ctx.TxIndex()),
 		simulation:         simulation,
 		tempStateCurrent:   NewTemporaryState(),

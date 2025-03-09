@@ -43,12 +43,28 @@ func (k *Keeper) DeleteTransientReceipt(ctx sdk.Context, txHash common.Hash) {
 	store := ctx.TransientStore(k.transientStoreKey)
 	store.Delete(types.ReceiptKey(txHash))
 }
+func (k *Keeper) SetReceipt(ctx sdk.Context, txHash common.Hash, receipt *types.Receipt) error {
+	store := ctx.KVStore(k.storeKey)
+	k.logger.Debug(fmt.Sprintf("SetReceipt: %s", txHash.String()))
+	store.Set(types.ReceiptKey(txHash), k.cdc.MustMarshal(receipt))
+	return nil
+}
 
 // GetReceipt returns a data structure that stores EVM specific transaction metadata.
 // Many EVM applications (e.g. MetaMask) relies on being on able to query receipt
 // by EVM transaction hash (not Eni transaction hash) to function properly.
 func (k *Keeper) GetReceipt(ctx sdk.Context, txHash common.Hash) (*types.Receipt, error) {
-	return nil, nil
+	store := ctx.KVStore(k.storeKey)
+	k.logger.Debug(fmt.Sprintf("GetReceipt: %s", txHash.String()))
+	value := store.Get(types.ReceiptKey(txHash))
+	if value == nil {
+		return nil, errors.New("not found")
+	}
+	r := &types.Receipt{}
+	if err := k.cdc.Unmarshal(value, r); err != nil {
+		return nil, err
+	}
+	return r, nil
 	// receipts are immutable, use latest version
 	//lv, err := k.receiptStore.GetLatestVersion()
 	//if err != nil {
@@ -80,13 +96,13 @@ func (k *Keeper) GetReceipt(ctx sdk.Context, txHash common.Hash) (*types.Receipt
 //	MockReceipt sets a data structure that stores EVM specific transaction metadata.
 //
 // this is currently used by a number of tests to set receipts at the moment
-func (k *Keeper) MockReceipt(ctx sdk.Context, txHash common.Hash, receipt *types.Receipt) error {
-	fmt.Printf("MOCK RECEIPT height=%d, tx=%s\n", ctx.BlockHeight(), txHash.Hex())
-	if err := k.SetTransientReceipt(ctx, txHash, receipt); err != nil {
-		return err
-	}
-	return k.FlushTransientReceipts(ctx)
-}
+//func (k *Keeper) MockReceipt(ctx sdk.Context, txHash common.Hash, receipt *types.Receipt) error {
+//	fmt.Printf("MOCK RECEIPT height=%d, tx=%s\n", ctx.BlockHeight(), txHash.Hex())
+//	if err := k.SetTransientReceipt(ctx, txHash, receipt); err != nil {
+//		return err
+//	}
+//	return k.FlushTransientReceipts(ctx)
+//}
 
 func (k *Keeper) FlushTransientReceipts(ctx sdk.Context) error {
 	return nil
@@ -160,5 +176,5 @@ func (k *Keeper) WriteReceipt(
 
 	receipt.From = msg.From.Hex()
 
-	return receipt, k.SetTransientReceipt(ctx, txHash, receipt)
+	return receipt, k.SetReceipt(ctx, txHash, receipt)
 }

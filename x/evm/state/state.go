@@ -92,7 +92,7 @@ func (s *DBImpl) HasSelfDestructed(acc common.Address) bool {
 }
 
 func (s *DBImpl) Snapshot() int {
-	s.snapshotKVStores = append(s.snapshotKVStores, s.ctx.MultiStore())
+	//s.snapshotKVStores = append(s.snapshotKVStores, s.ctx.MultiStore())
 	newCtx := s.ctx.WithMultiStore(s.ctx.MultiStore().CacheMultiStore()).WithEventManager(sdk.NewEventManager())
 	s.snapshottedCtxs = append(s.snapshottedCtxs, s.ctx)
 	s.ctx = newCtx
@@ -104,7 +104,7 @@ func (s *DBImpl) Snapshot() int {
 func (s *DBImpl) RevertToSnapshot(rev int) {
 	s.ctx = s.snapshottedCtxs[rev]
 	s.snapshottedCtxs = s.snapshottedCtxs[:rev]
-	s.snapshotKVStores = s.snapshotKVStores[:rev]
+	//s.snapshotKVStores = s.snapshotKVStores[:rev]
 	s.tempStateCurrent = s.tempStatesHist[rev]
 	s.tempStatesHist = s.tempStatesHist[:rev]
 	s.Snapshot()

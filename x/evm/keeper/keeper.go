@@ -9,10 +9,12 @@ import (
 	"sort"
 	"sync"
 
+	"cosmossdk.io/log"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmtypes "github.com/cometbft/cometbft/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -37,8 +39,9 @@ import (
 type Keeper struct {
 	storeKey          storetypes.StoreKey
 	transientStoreKey storetypes.StoreKey
-
-	Paramstore exported.Subspace
+	cdc               codec.BinaryCodec
+	logger            log.Logger
+	Paramstore        exported.Subspace
 
 	txResults []*abci.ExecTxResult
 	msgs      []*types.MsgEVMTransaction
@@ -85,6 +88,7 @@ type PendingTx struct {
 func NewKeeper(
 	storeKey storetypes.StoreKey, transientStoreKey storetypes.StoreKey, paramstore exported.Subspace, //receiptStateStore enidbtypes.StateStore,
 	bankKeeper bankkeeper.Keeper, accountKeeper *authkeeper.AccountKeeper, stakingKeeper *stakingkeeper.Keeper,
+	cdc codec.BinaryCodec, logger log.Logger,
 	// transferKeeper ibctransferkeeper.Keeper
 ) *Keeper {
 	//if !paramstore.HasKeyTable() {
@@ -93,6 +97,8 @@ func NewKeeper(
 	k := &Keeper{
 		storeKey:          storeKey,
 		transientStoreKey: transientStoreKey,
+		cdc:               cdc,
+		logger:            logger,
 		Paramstore:        paramstore,
 		bankKeeper:        bankKeeper,
 		accountKeeper:     accountKeeper,
@@ -117,9 +123,9 @@ func (k *Keeper) BankKeeper() bankkeeper.Keeper {
 	return k.bankKeeper
 }
 
-//func (k *Keeper) WasmKeeper() *wasmkeeper.PermissionedKeeper {
-//	return k.wasmKeeper
-//}
+func (k *Keeper) Logger() log.Logger {
+	return k.logger
+}
 
 func (k *Keeper) GetStoreKey() storetypes.StoreKey {
 	return k.storeKey
