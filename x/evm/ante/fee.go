@@ -36,8 +36,7 @@ func (fc EVMFeeCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	if simulate {
 		return next(ctx, tx, simulate)
 	}
-	return next(ctx, tx, simulate)
-	//todo gas related content, ignore for now
+
 	msg := evmtypes.MustGetEVMTransactionMessage(tx)
 	txData, err := evmtypes.UnpackTxData(msg.Data)
 	if err != nil {
@@ -131,5 +130,4 @@ func (fc EVMFeeCheckDecorator) CalculatePriority(ctx sdk.Context, txData ethtx.T
 		priority = big.NewInt(antedecorators.MaxPriority)
 	}
 	return priority
-	return nil
 }
