@@ -67,6 +67,15 @@
               "amount": "2000000000000000000000"
             }
           ]
+        },
+        {
+          "address": "eni1lpazn8ntc7lt5kxmhed94gsafx7dzm2jmd5hgy",
+          "coins": [
+            {
+              "denom": "ueni",
+              "amount": "123000000000000000000000"
+            }
+          ]
         }
       ],
       "supply": [
@@ -76,10 +85,27 @@
         },
         {
           "denom": "ueni",
-          "amount": "3000000000000000000000"
+          "amount": "126000000000000000000000"
         }
       ],
-      "denom_metadata": [],
+      "denom_metadata": [
+        {
+          "base": "ueni",
+          "display": "ueni",
+          "denom_units": [
+            {
+              "denom": "ueni",
+              "exponent": 0,
+              "aliases": ["wei"]
+            },
+            {
+              "denom": "eni",
+              "exponent": 18,
+              "aliases": []
+            }
+          ]
+        }
+      ],
       "send_enabled": []
     },
     "capability": {
@@ -125,8 +151,8 @@
       "nonces": [],
       "params": {
         "base_fee_per_gas": "0",
-        "init_eni_amount": "1230000000000000000000000",
-        "init_eni_address":"0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
+        "init_eni_amount": "",
+        "init_eni_address":"",
         "max_dynamic_base_fee_downward_adjustment": "0",
         "max_dynamic_base_fee_upward_adjustment": "0",
         "maximum_fee_per_gas": "0",
