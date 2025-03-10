@@ -12,6 +12,10 @@ contract Storage {
     uint256 number;
 
     /**
+     * @dev Constructor marked as payable to accept ETH during deployment
+     */
+    constructor() payable {}
+    /**
      * @dev Store value in variable
      * @param num value to store
      */
@@ -20,10 +24,18 @@ contract Storage {
     }
 
     /**
-     * @dev Return value 
+     * @dev Return value
      * @return value of 'number'
      */
     function retrieve() public view returns (uint256){
         return number;
+    }
+
+        /**
+     * @dev Get the contract's balance
+     * @return The balance of the contract
+     */
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
     }
 }

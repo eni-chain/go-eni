@@ -233,10 +233,10 @@ const LF = 10
 
 func CmdDeployContract() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "deploy [path to binary] --from=<sender> --gas-fee-cap=<cap> --gas-limt=<limit> --evm-rpc=<url>",
+		Use:   "deploy [path to binary] [value] --from=<sender> --gas-fee-cap=<cap> --gas-limt=<limit> --evm-rpc=<url>",
 		Short: "Deploy an EVM contract for binary at specified path",
 		Long:  "",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -276,13 +276,16 @@ func CmdDeployContract() *cobra.Command {
 					return err
 				}
 			}
-
+			val := utils.Big0
+			if n, err := cmd.Flags().GetInt64(FlagNonce); err == nil && n >= 0 {
+				val = big.NewInt(n)
+			}
 			txData, err := getTxData(cmd)
 			if err != nil {
 				return err
 			}
 			txData.Nonce = nonce
-			txData.Value = utils.Big0
+			txData.Value = val
 			txData.Data = bz
 
 			resp, err := sendTx(txData, rpc, key, clientCtx)
@@ -310,6 +313,7 @@ func CmdDeployContract() *cobra.Command {
 	cmd.Flags().Uint64(FlagGas, 5000000, "Gas limit for the transaction")
 	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
 	cmd.Flags().Int64(FlagNonce, -1, "Nonce override for the transaction. Negative value means no override")
+	cmd.Flags().Int64(FlagValue, 0, "Value for the transaction")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
