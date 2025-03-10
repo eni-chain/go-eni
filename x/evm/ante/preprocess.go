@@ -202,17 +202,18 @@ func Preprocess2(msgEVMTransaction *evmtypes.MsgEVMTransaction) error {
 		V = new(big.Int).Add(V, utils.Big27)
 		// Hash custom message passed in
 		customMessageHash := crypto.Keccak256Hash([]byte(atx.CustomMessage))
-		evmAddr, eniAddr, pubkey, err := helpers.GetAddresses(V, R, S, customMessageHash)
+		_, eniAddr, _, err := helpers.GetAddresses(V, R, S, customMessageHash)
 		if err != nil {
 			return err
 		}
-		msgEVMTransaction.Derived = &derived.Derived{
-			SenderEVMAddr: evmAddr,
-			SenderEniAddr: eniAddr,
-			PubKey:        &secp256k1.PubKey{Key: pubkey.Bytes()},
-			Version:       derived.Cancun,
-			IsAssociate:   true,
-		}
+		//msgEVMTransaction.Derived = &derived.Derived{
+		//	SenderEVMAddr: evmAddr,
+		//	SenderEniAddr: eniAddr,
+		//	PubKey:        &secp256k1.PubKey{Key: pubkey.Bytes()},
+		//	Version:       derived.Cancun,
+		//	IsAssociate:   true,
+		//}
+		msgEVMTransaction.Sender = eniAddr.String()
 		return nil
 	}
 

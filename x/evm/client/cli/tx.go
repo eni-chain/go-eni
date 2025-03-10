@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	errorsmod "cosmossdk.io/errors"
 	"crypto/ecdsa"
 	"encoding/hex"
 	"encoding/json"
@@ -9,6 +10,7 @@ import (
 	"fmt"
 	bfttypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/eni-chain/go-eni/evmrpc"
@@ -48,6 +50,15 @@ const (
 	FlagNonce     = "nonce"
 )
 
+var (
+	// ErrPrivKeyExtr is used to output an error if extraction of a private key from Local item fails.
+	ErrPrivKeyExtr = errors.New("private key extraction works only for Local")
+	// ErrPrivKeyNotAvailable is used when a Record_Local.PrivKey is nil.
+	ErrPrivKeyNotAvailable = errors.New("private key is not available")
+	// ErrCastAny is used to output an error if cast from types.Any fails.
+	ErrCastAny = errors.New("unable to cast to cryptotypes")
+)
+
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -58,7 +69,7 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	//cmd.AddCommand(CmdAssociateAddress())
+	cmd.AddCommand(CmdAssociateAddress())
 	cmd.AddCommand(CmdSend())
 	cmd.AddCommand(CmdDeployContract())
 	cmd.AddCommand(CmdCallContract())
@@ -76,88 +87,121 @@ func GetTxCmd() *cobra.Command {
 }
 
 func CmdAssociateAddress() *cobra.Command {
-	//cmd := &cobra.Command{
-	//	Use:   "associate-address [optional priv key hex] --rpc=<url> --from=<sender>",
-	//	Short: "associate EVM and Eni address for the sender",
-	//	Long:  "",
-	//	Args:  cobra.MaximumNArgs(1),
-	//	RunE: func(cmd *cobra.Command, args []string) (err error) {
-	//		clientCtx, err := client.GetClientTxContext(cmd)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		var privHex string
-	//		if len(args) == 1 {
-	//			privHex = args[0]
-	//		} else {
-	//			txf := tx.NewFactoryCLI(clientCtx, cmd.Flags())
-	//			kb := txf.Keybase()
-	//			info, err := kb.Key(clientCtx.GetFromName())
-	//			if err != nil {
-	//				return err
-	//			}
-	//			localInfo, ok := info.(keyring.LocalInfo)
-	//			if !ok {
-	//				return errors.New("can only associate address for local keys")
-	//			}
-	//			if localInfo.GetAlgo() != hd.Secp256k1Type {
-	//				return errors.New("can only use addresses using secp256k1")
-	//			}
-	//			priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
-	//			if err != nil {
-	//				return err
-	//			}
-	//			privHex = hex.EncodeToString(priv.Bytes())
-	//		}
-	//
-	//		emptyHash := crypto.Keccak256Hash([]byte{})
-	//		key, err := crypto.HexToECDSA(privHex)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		sig, err := crypto.Sign(emptyHash[:], key)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		R, S, _, err := ethtx.DecodeSignature(sig)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		V := big.NewInt(int64(sig[64]))
-	//		txData := evmrpc.AssociateRequest{V: hex.EncodeToString(V.Bytes()), R: hex.EncodeToString(R.Bytes()), S: hex.EncodeToString(S.Bytes())}
-	//		bz, err := json.Marshal(txData)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		body := fmt.Sprintf("{\"jsonrpc\": \"2.0\",\"method\": \"eni_associate\",\"params\":[%s],\"id\":\"associate_addr\"}", string(bz))
-	//		rpc, err := cmd.Flags().GetString(FlagRPC)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		req, err := http.NewRequest(http.MethodGet, rpc, strings.NewReader(body))
-	//		if err != nil {
-	//			return err
-	//		}
-	//		req.Header.Set("Content-Type", "application/json")
-	//		res, err := http.DefaultClient.Do(req)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		defer res.Body.Close()
-	//		resBody, err := io.ReadAll(res.Body)
-	//		if err != nil {
-	//			return err
-	//		}
-	//		fmt.Printf("Response: %s\n", string(resBody))
-	//
-	//		return nil
-	//	},
-	//}
+	cmd := &cobra.Command{
+		Use:   "associate-address [optional priv key hex] --rpc=<url> --from=<sender>",
+		Short: "associate EVM and Eni address for the sender",
+		Long:  "",
+		Args:  cobra.MaximumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			var privHex string
+			if len(args) == 1 {
+				privHex = args[0]
+			} else {
+				txf, err := tx.NewFactoryCLI(clientCtx, cmd.Flags())
+				if err != nil {
+					return err
+				}
+				kb := txf.Keybase()
+				info, err := kb.Key(clientCtx.GetFromName())
+				if err != nil {
+					return err
+				}
+				//localInfo, ok := info.(keyring.LocalInfo)
+				//if !ok {
+				//	return errors.New("can only associate address for local keys")
+				//}
+				priv, err := extractPrivKeyFromRecord(info)
+				if err != nil {
+					return errors.New("extractPrivKeyFromRecord failed,err: " + err.Error())
 
-	//cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
-	//flags.AddTxFlagsToCmd(cmd)
-	//return cmd
-	return nil
+				}
+				if priv.Type() != string(hd.Secp256k1Type) {
+					return errors.New("Skipping address %s because it isn't signed with secp256k1\n " + info.Name)
+
+				}
+				//if localInfo.GetAlgo() != hd.Secp256k1Type {
+				//	return errors.New("can only use addresses using secp256k1")
+				//}
+				//priv, err := legacy.PrivKeyFromBytes([]byte(localInfo.PrivKeyArmor))
+				//if err != nil {
+				//	return err
+				//}
+				privHex = hex.EncodeToString(priv.Bytes())
+			}
+
+			emptyHash := crypto.Keccak256Hash([]byte{})
+			key, err := crypto.HexToECDSA(privHex)
+			if err != nil {
+				return err
+			}
+			sig, err := crypto.Sign(emptyHash[:], key)
+			if err != nil {
+				return err
+			}
+			R, S, _, err := ethtx.DecodeSignature(sig)
+			if err != nil {
+				return err
+			}
+			V := big.NewInt(int64(sig[64]))
+			txData := evmrpc.AssociateRequest{V: hex.EncodeToString(V.Bytes()), R: hex.EncodeToString(R.Bytes()), S: hex.EncodeToString(S.Bytes())}
+			bz, err := json.Marshal(txData)
+			if err != nil {
+				return err
+			}
+			body := fmt.Sprintf("{\"jsonrpc\": \"2.0\",\"method\": \"eni_associate\",\"params\":[%s],\"id\":\"associate_addr\"}", string(bz))
+			rpc, err := cmd.Flags().GetString(FlagRPC)
+			if err != nil {
+				return err
+			}
+			req, err := http.NewRequest(http.MethodGet, rpc, strings.NewReader(body))
+			if err != nil {
+				return err
+			}
+			req.Header.Set("Content-Type", "application/json")
+			res, err := http.DefaultClient.Do(req)
+			if err != nil {
+				return err
+			}
+			defer res.Body.Close()
+			resBody, err := io.ReadAll(res.Body)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("Response: %s\n", string(resBody))
+
+			return nil
+		},
+	}
+
+	cmd.Flags().String(FlagRPC, fmt.Sprintf("http://%s:8545", evmrpc.LocalAddress), "RPC endpoint to send request to")
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func extractPrivKeyFromRecord(k *keyring.Record) (cryptotypes.PrivKey, error) {
+	rl := k.GetLocal()
+	if rl == nil {
+		return nil, ErrPrivKeyExtr
+	}
+
+	return extractPrivKeyFromLocal(rl)
+}
+
+func extractPrivKeyFromLocal(rl *keyring.Record_Local) (cryptotypes.PrivKey, error) {
+	if rl.PrivKey == nil {
+		return nil, ErrPrivKeyNotAvailable
+	}
+
+	priv, ok := rl.PrivKey.GetCachedValue().(cryptotypes.PrivKey)
+	if !ok {
+		return nil, errorsmod.Wrap(ErrCastAny, "PrivKey")
+	}
+
+	return priv, nil
 }
 
 func CmdSend() *cobra.Command {

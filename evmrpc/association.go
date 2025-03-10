@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/eni-chain/go-eni/x/evm/ante"
 	"strings"
 	"time"
 
@@ -67,6 +68,7 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 	if err != nil {
 		return err
 	}
+	ante.Preprocess2(msg)
 	txBuilder := t.sendAPI.txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return err
@@ -84,7 +86,7 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 		err = errors.New("missing broadcast response")
 	} else if res.Code != 0 {
 		//todo: need to confirm the codespace
-		err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.Code, "")
+		err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.Code, res.Log)
 	}
 
 	return err
