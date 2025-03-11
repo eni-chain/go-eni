@@ -91,7 +91,7 @@ import (
 
 const (
 	AccountAddressPrefix                 = "eni"
-	Name                                 = "enid"
+	Name                                 = "eni"
 	OptimisticProcessingTimeoutInSeconds = 5
 )
 

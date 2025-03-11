@@ -322,7 +322,7 @@ require (
 replace (
 	//github.com/cometbft/cometbft => ../eni-cometbft
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250228084903-192b47d1fb20
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250308080305-08d5cd502b89
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250311033730-8f39034192bf
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	//github.com/eni-chain/eni-db => github.com/sei-protocol/sei-db v0.0.1
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
@@ -332,7 +332,7 @@ replace (
 )
 
 //replace (
-//	github.com/cosmos/iavl => github.com/eni-chain/eni-iavl v0.0.1
+//	github.com/cosmos/iavl => github.com/eni-chain/eni-iavl v0.0.1git
 //	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 //	github.com/tendermint/tm-db => github.com/eni-chain/tm-db v0.0.1
 //)
