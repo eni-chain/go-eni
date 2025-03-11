@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cosmos/cosmos-sdk/testutil/sims"
 	"github.com/eni-chain/go-eni/app"
 	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
 	ethtests "github.com/ethereum/go-ethereum/tests"
@@ -61,7 +62,7 @@ func BlocktestCmd(defaultNodeHome string) *cobra.Command {
 				db,
 				nil,
 				true,
-				nil,
+				sims.EmptyAppOptions{},
 				baseapp.SetPruning(pruningtypes.NewPruningOptions(pruningtypes.PruningEverything)),
 				baseapp.SetMinGasPrices(cast.ToString(serverCtx.Viper.Get(server.FlagMinGasPrices))),
 				baseapp.SetMinRetainBlocks(cast.ToUint64(serverCtx.Viper.Get(server.FlagMinRetainBlocks))),
