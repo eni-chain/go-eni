@@ -105,5 +105,8 @@ for test_path in $block_tests; do
     echo -e "\n*********************************************************\n"
     make reset-eni-node
     NO_RUN=1 ./scripts/initialize_local_chain.sh
-    enid blocktest --block-test $test_path --test-name "${test_name}_Cancun"
+    echo "./build/enid blocktest --block-test $test_path --test-name ${test_name}_Cancun"
+    ./build/enid blocktest --block-test $test_path --test-name "${test_name}_Cancun"
+    # Kill the process by name
+    pkill -f enid
 done
