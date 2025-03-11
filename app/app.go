@@ -2,8 +2,9 @@ package app
 
 import (
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"io"
+
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	"github.com/eni-chain/go-eni/evmrpc"
