@@ -5,6 +5,8 @@ pragma solidity >= 0.8.0;
 
 uint constant consensusSize = 21; 
 
+uint constant MIN_PLEDGE_AMOUNT = 10000;
+
 uint constant ED25519_VERIFY_PRECOMPILED = 0x03ef;
 
 address constant ADMIN_ADDR = 0x0000000000000000000000000000000000001000;
@@ -44,11 +46,23 @@ contract Common {
         _;
     }
 
+    modifier onlyHub() {
+        require(msg.sender == HUB_ADDR, "the message sender must be hub contract");
+        _;
+    }
+
+
 }
 
 interface IValidatorManager {
     function getPubkey(address validator) external returns (bytes memory);
-    function getValidatorSet() external  returns (address[] memory);
-}
 
+    function getValidatorSet() external  returns (address[] memory);
+
+    function addValidator(address operator, address node, address agent, uint256 amount, uint256 enterTime, string calldata name, string calldata description, bytes  calldata pubKey) external;
+
+    function undateConsensus(address[] calldata nodes)external;
+
+    function getPledgeAmount(address node) external returns (uint256);
+}
 

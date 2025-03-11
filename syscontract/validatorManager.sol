@@ -61,6 +61,7 @@ contract ValidatorManager{
     }
 
     function addValidator(
+        address operator,
         address node,
         address agent,
         uint256 amount,
@@ -71,8 +72,8 @@ contract ValidatorManager{
     ) external onlyHub {
         require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
 
-        validator storage v = infos[tx.origin];
-        v.operator = tx.origin;
+        validator storage v = infos[operator];
+        v.operator = operator;
         v.node = node;
         v.agent = agent;
         v.pubKey = pubKey;
@@ -84,9 +85,9 @@ contract ValidatorManager{
         v.expired = 0;
 
         nodes.push(node);
-        names[name] = tx.origin;
-        node2operator[node] = tx.origin;
-        agent2perator[agent] = tx.origin;
+        names[name] = operator;
+        node2operator[node] = operator;
+        agent2perator[agent] = operator;
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {
@@ -96,6 +97,15 @@ contract ValidatorManager{
         for(uint i = 0; i < nodes.length; ++i){
             consensusNodes[i] = nodes[i];
         }
+    }
+
+    function getPledgeAmount(address node) external returns (uint256) {
+        address oper = node2operator[node];
+        if(oper != address(0) ){
+            return infos[oper].amount;
+        }
+
+        return 0;
     }
 
 }
