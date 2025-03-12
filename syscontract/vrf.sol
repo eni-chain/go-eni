@@ -72,7 +72,7 @@ contract Vrf {
         require(pubKey.length == PUBKEY_LEN, "The public key length is not ed25519 public key size");
         require(pubKey.length == PRIKEY_LEN, "The private key length is not ed25519 public key size");
         require(msgHash.length == HASH_LEN, "The msg hash length is not SHA-512 hash size");
-        
+
         // assemble input:
         // | PubKey   | Signature  |  msgHash   |
         // | 32 bytes | 64 bytes   |  64 bytes  |
@@ -100,7 +100,7 @@ contract Vrf {
         require(epoch > 1, "Epoch number too small");
         require(_seeds[epoch-1].length == SEED_LEN, "Random values sent ahead of epoch!");
         require(rnd.length == SIGN_LEN, "Random length is not ed25519 signature size!");
-     
+
         if(_pubKeys[msg.sender].length == 0){
             //todo: 确认validatorManager合约实现后与IValidatorManager接口匹配
             bytes memory pubkey = IValidatorManager(VALIDATOR_MANAGER_ADDR).getPubkey(msg.sender);
@@ -128,7 +128,7 @@ contract Vrf {
         }
 
         //address[] memory validators = new address[](address(uint160(_randoms[epoch][keccak256("Vrf")])));
-        
+
         for (uint i = 0; i < validators.length; ++i) {
             //遍历validator集合，如果有validator在随机值记录表中未查到，则将其记录到未发送随机值列表
             if(_randoms[epoch][validators[i]].length == 0){
@@ -148,14 +148,14 @@ contract Vrf {
                     break;
                 }
             }
-            
+
             //如果未找到，则将当前validator插入remain集合中
             if(!found){
                 _validNodes.push(validators[i]);
             }
         }
-        
-        address[] memory sorted = sortAddrs(_validNodes);
+
+        address[] memory sorted = sortAddrs(_validNodes, epoch);
         address[] memory topN = getTopNAddresses(sorted, consensusSize);
 
         //生成本轮的随机值种子，供下一轮生成随机值使用
@@ -173,12 +173,12 @@ contract Vrf {
     }
 
     // 比较两个 bytes 元素（通过哈希值比较）
-    // function compare(bytes memory a, bytes memory b) internal pure returns (bool) {
-    //     return keccak256(a) < keccak256(b);
-    // }
+    function compare(bytes memory a, bytes memory b) internal pure returns (bool) {
+        return keccak256(a) < keccak256(b);
+    }
 
-    // 对 bytes[] 进行升序排序
-    function sortAddrs(address[] memory array) internal pure returns (address[] memory) {
+    // 对地址按照随机值进行升序排序
+    function sortAddrs(address[] memory array, uint256 epoch) internal view returns (address[] memory) {
         uint256 n = array.length;
         if (n <= 1){
             return array;
@@ -187,8 +187,9 @@ contract Vrf {
         //bytes[] memory sorted = array.clone();
         for (uint256 i = 0; i < n - 1; i++) {
             for (uint256 j = 0; j < n - 1 - i; j++) {
-                //if (compare(array[j + 1], array[j])) {
-                if (array[j + 1] <= array[j]) {
+                bytes memory rndFront = _randoms[epoch][array[j]];
+                bytes memory rndBack = _randoms[epoch][array[j+1]];
+                if (compare(rndBack, rndFront)) {
                     address temp = array[j];
                     array[j] = array[j + 1];
                     array[j + 1] = temp;
@@ -201,7 +202,7 @@ contract Vrf {
 
     function getTopNAddresses(address[] memory array, uint256 n) internal pure returns (address[] memory) {
         require(n <= array.length, "Invalid slice length");
-        
+
         address[] memory result = new address[](n); // 创建新数组（长度为 n）
         for (uint256 i = 0; i < n; i++) {
             result[i] = array[i]; // 逐个复制元素
@@ -245,5 +246,4 @@ contract Vrf {
 
         return result;
     }
-
 }
