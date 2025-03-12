@@ -7,6 +7,12 @@ import "./common.sol";
 contract Hub {
     //todo: 为每个方法添加event
 
+    //uint256 constant  base_ratio_denominator = 100000;
+    //uint256 constant block_reward_base_numerator = 20000;
+    uint256 constant BASE_RATIO_DENOMINATOR = 100000;
+    uint256 constant BLOCK_REWARD_BASE_NUMERATOR = 20000;
+    uint256 constant PER_COIN_INCREASE_NUMERATOR = 1;
+
     //管理员地址
     address _admin;
 
@@ -81,8 +87,10 @@ contract Hub {
 
     }
 
-    function calculateReward(uint256 pledge) internal  returns (uint256){
-        //todo: 实现奖励算法
-        return 100;
+    function calculateReward(uint256 pledge) internal returns (uint256){
+        //todo: 奖励算法：出块奖励基数 * { 1 + (质押额 * 每币提升点)}
+        //return (BLOCK_REWARD_BASE_NUMERATOR/BASE_RATIO_DENOMINATOR) * (1 + (pledge * PER_COIN_INCREASE_NUMERATOR/BASE_RATIO_DENOMINATOR));
+        return BLOCK_REWARD_BASE_NUMERATOR * (1*BASE_RATIO_DENOMINATOR + (pledge*BASE_RATIO_DENOMINATOR * PER_COIN_INCREASE_NUMERATOR))/BASE_RATIO_DENOMINATOR;
     }
 }
+
