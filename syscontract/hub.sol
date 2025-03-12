@@ -5,6 +5,8 @@ pragma solidity >= 0.8.0;
 import "./common.sol";
 
 contract Hub {
+    //todo: 为每个方法添加event
+
     //管理员地址
     address _admin;
 

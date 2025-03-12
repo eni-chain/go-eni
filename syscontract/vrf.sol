@@ -11,6 +11,7 @@ uint256 constant SIGN_LEN = 64;   //ed25519签名长度
 uint256 constant HASH_LEN = 64;  //ed25519签名前，需要先计算被签名数据的SHA-512哈希值，然后对哈希值签名，该哈希值长度为64字节
 
 contract Vrf {
+    //todo: 为每个方法添加event
 
     //管理员地址
     address public _admin;

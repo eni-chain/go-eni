@@ -5,6 +5,8 @@ pragma solidity >= 0.8.0;
 import "./common.sol";
 
 contract ValidatorManager{
+    //todo: 为每个方法添加event
+
     //当前共识集合
     address[consensusSize] consensusNodes;
 
