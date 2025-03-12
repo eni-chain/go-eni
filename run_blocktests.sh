@@ -103,6 +103,7 @@ for test_path in $block_tests; do
     echo "Running block test: $test_path"
     echo "test name: ${test_name}_Cancun"
     echo -e "\n*********************************************************\n"
+    make build
     make reset-eni-node
 #    NO_RUN=1 ./scripts/initialize_local_chain.sh
     echo "./build/enid blocktest --home=./eni-node --block-test $test_path --test-name ${test_name}_Cancun"
