@@ -9,9 +9,9 @@ import (
 
 	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
-	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	genutilstypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/eni-chain/go-eni/utils"
 	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
@@ -26,7 +26,7 @@ func BlockTest(a *App, bt *ethtests.BlockTest) {
 	a.EvmKeeper.BlockTest = bt
 	a.EvmKeeper.EthBlockTestConfig.Enabled = true
 
-	gendoc, err := tmtypes.GenesisDocFromFile(filepath.Join(DefaultNodeHome, "config/genesis.json"))
+	gendoc, err := genutilstypes.AppGenesisFromFile(filepath.Join(DefaultNodeHome, "config/genesis.json"))
 	if err != nil {
 		panic(err)
 	}

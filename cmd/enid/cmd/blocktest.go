@@ -67,6 +67,7 @@ func BlocktestCmd(defaultNodeHome string) *cobra.Command {
 				baseapp.SetMinGasPrices(cast.ToString(serverCtx.Viper.Get(server.FlagMinGasPrices))),
 				baseapp.SetMinRetainBlocks(cast.ToUint64(serverCtx.Viper.Get(server.FlagMinRetainBlocks))),
 				baseapp.SetInterBlockCache(cache),
+				baseapp.SetChainID("goeni"),
 			)
 			bt := testIngester(blockTestFileName, testName)
 			app.BlockTest(a, bt)
