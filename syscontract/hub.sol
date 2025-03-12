@@ -23,7 +23,7 @@ contract Hub {
     }
 
     //申请者列表
-    mapping (address=>applicant) applicants;
+    mapping (address=>applicant) _applicants;
 
     modifier onlyAdmin() {
         require(msg.sender == _admin, "the message sender must be administrator");
@@ -45,7 +45,7 @@ contract Hub {
         string calldata description,
         bytes  calldata pubKey
     ) payable external {
-        applicant storage a = applicants[msg.sender];
+        applicant storage a = _applicants[msg.sender];
         a.operator = msg.sender;
         a.node = node;
         a.agent = agent;
@@ -57,7 +57,7 @@ contract Hub {
     }
 
     function auditPass(address operator) external onlyAdmin {
-        applicant storage a = applicants[msg.sender];
+        applicant storage a = _applicants[msg.sender];
 
         IValidatorManager(VALIDATOR_MANAGER_ADDR).addValidator(
             a.operator,
@@ -70,7 +70,7 @@ contract Hub {
             a.pubKey
         );
 
-        delete applicants[msg.sender];
+        delete _applicants[msg.sender];
     }
 
     function blockReward(address node) external returns (uint256) {

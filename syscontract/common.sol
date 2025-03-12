@@ -18,7 +18,7 @@ address constant SLASH_ADDR = 0x0000000000000000000000000000000000001005;
 
 
 contract Common {
-    bool public alreadyInit = false;
+    bool public _alreadyInit = false;
 
 
     modifier onlyCoinbase() {
@@ -32,12 +32,12 @@ contract Common {
     }
 
     modifier onlyNotInit() {
-        require(!alreadyInit, "the contract already init");
+        require(!_alreadyInit, "the contract already init");
         _;
     }
 
     modifier onlyInit() {
-        require(alreadyInit, "the contract not init yet");
+        require(_alreadyInit, "the contract not init yet");
         _;
     }
 

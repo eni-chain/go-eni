@@ -32,7 +32,7 @@ contract Vrf {
     address[] private _unSendRandNodes;
 
     //validator[],有效验证者，记录本轮发送了随机值的验证者
-    address[] private validNodes;
+    address[] private _validNodes;
 
     modifier onlyAdmin() {
         require(msg.sender == _admin, "the message sender must be administrator");
@@ -151,11 +151,11 @@ contract Vrf {
             
             //如果未找到，则将当前validator插入remain集合中
             if(!found){
-                validNodes.push(validators[i]);
+                _validNodes.push(validators[i]);
             }
         }
         
-        address[] memory sorted = sortAddrs(validNodes);
+        address[] memory sorted = sortAddrs(_validNodes);
         address[] memory topN = getTopNAddresses(sorted, consensusSize);
 
         //生成本轮的随机值种子，供下一轮生成随机值使用
@@ -166,7 +166,7 @@ contract Vrf {
 
         //清空无效节点集合和有效节点集合，供下一轮使用
         delete _unSendRandNodes;
-        delete validNodes;
+        delete _validNodes;
 
         return topN;
 

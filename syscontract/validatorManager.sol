@@ -8,10 +8,10 @@ contract ValidatorManager{
     //todo: 为每个方法添加event
 
     //当前共识集合
-    address[consensusSize] consensusNodes;
+    address[consensusSize] _consensusSet;
 
     //用于遍历和检索，因为mapping类型无法遍历
-    address[] nodes;
+    address[] _validatorNodes;
 
     //验证者全量信息
     struct validator{
@@ -28,16 +28,16 @@ contract ValidatorManager{
     }
 
     //操作者地址=>验证者信息，根据操作者，可查找到验证者全部信息
-    mapping (address=>validator) infos;
+    mapping (address=>validator) _infos;
 
     //共识节点地址=>操作者地址，eni系统发现共识节点作恶后，需要通过节点地址找到验证者
-    mapping (address=>address) node2operator;
+    mapping (address=>address) _node2operator;
 
     //通过代理人地址可以找到操作者地址，用于代理人权限校验
-    mapping (address=>address) agent2perator;
+    mapping (address=>address) _agent2perator;
 
     //name=>operator, 通过验证者昵称可以找到验证者信息，用于浏览器等应用单查找验证者信息
-    mapping (string=>address) names;
+    mapping (string=>address) _names;
 
     modifier onlyHub() {
         require(msg.sender == HUB_ADDR, "the message sender must be hub contract");
@@ -50,16 +50,16 @@ contract ValidatorManager{
     }
 
     function getPubkey(address node) external returns (bytes memory){
-        address oper = node2operator[node];
+        address oper = _node2operator[node];
         if(oper != address(0) ){
-            return infos[oper].pubKey;
+            return _infos[oper].pubKey;
         }
 
         return bytes("");
     }
 
     function getValidatorSet() external  returns (address[] memory){
-        return nodes;
+        return _validatorNodes;
     }
 
     function addValidator(
@@ -74,7 +74,7 @@ contract ValidatorManager{
     ) external onlyHub {
         require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
 
-        validator storage v = infos[operator];
+        validator storage v = _infos[operator];
         v.operator = operator;
         v.node = node;
         v.agent = agent;
@@ -86,25 +86,25 @@ contract ValidatorManager{
         v.isJail = false;
         v.expired = 0;
 
-        nodes.push(node);
-        names[name] = operator;
-        node2operator[node] = operator;
-        agent2perator[agent] = operator;
+        _validatorNodes.push(node);
+        _names[name] = operator;
+        _node2operator[node] = operator;
+        _agent2perator[agent] = operator;
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {
         require(nodes.length <= consensusSize, "The number of consensuses exceeds the maximum limit");
 
-        delete consensusNodes;
+        delete _consensusSet;
         for(uint i = 0; i < nodes.length; ++i){
-            consensusNodes[i] = nodes[i];
+            _consensusSet[i] = nodes[i];
         }
     }
 
     function getPledgeAmount(address node) external returns (uint256) {
-        address oper = node2operator[node];
+        address oper = _node2operator[node];
         if(oper != address(0) ){
-            return infos[oper].amount;
+            return _infos[oper].amount;
         }
 
         return 0;
