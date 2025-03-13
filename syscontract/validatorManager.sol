@@ -5,38 +5,31 @@ pragma solidity >= 0.8.0;
 import "./common.sol";
 
 contract ValidatorManager{
-    //todo: 为每个方法添加event
+    //todo: add event and emit
 
-    //当前共识集合
     address[consensusSize] _consensusSet;
 
-    //用于遍历和检索，因为mapping类型无法遍历
     address[] _validatorNodes;
 
-    //验证者全量信息
     struct validator{
-        address operator;   //操作者地址，用于操作验证者的账户，也是奖励接收地址
-        address node;       //节点地址，用于共识出块
-        address agent;      //被operator授权后，可代理执行operator职能，可不用
-        bytes  pubKey;      //验证者节点公钥，用于校验验证者生成的随机数、恶意投票、重复提案等数据
-        uint256 amount;      //验证者自质押额，用于计算区块奖励分配
-        string name;        //验证者明文昵称
-        string description; //验证者信息介绍
-        uint256 enterTime;  //记录成为验证者时的区块号
-        bool isJail;        //当前验证者是否被监禁
-        uint256 expired;    //监禁截止日期
+        address operator;
+        address node;
+        address agent;
+        bytes  pubKey;
+        uint256 amount;
+        string name;
+        string description;
+        uint256 enterTime;
+        bool isJail;
+        uint256 expired;
     }
 
-    //操作者地址=>验证者信息，根据操作者，可查找到验证者全部信息
     mapping (address=>validator) _infos;
 
-    //共识节点地址=>操作者地址，eni系统发现共识节点作恶后，需要通过节点地址找到验证者
     mapping (address=>address) _node2operator;
 
-    //通过代理人地址可以找到操作者地址，用于代理人权限校验
     mapping (address=>address) _agent2perator;
 
-    //name=>operator, 通过验证者昵称可以找到验证者信息，用于浏览器等应用单查找验证者信息
     mapping (string=>address) _names;
 
     modifier onlyHub() {
