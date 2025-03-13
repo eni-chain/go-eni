@@ -3,8 +3,6 @@ package evmrpc
 import (
 	"context"
 	"errors"
-	bfttypes "github.com/cometbft/cometbft/types"
-
 	"github.com/eni-chain/go-eni/x/evm/ante"
 	"time"
 
@@ -60,6 +58,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		return
 	}
 
+	hash = tx.Hash()
 	txData, err := ethtx.NewTxDataFromTx(tx)
 	if err != nil {
 		return
@@ -78,8 +77,8 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		return hash, encodeErr
 	}
 
-	h := bfttypes.Tx(txbz).Hash()
-	hash = common.BytesToHash(h)
+	//h := bfttypes.Tx(txbz).Hash()
+	//hash = common.BytesToHash(h)
 
 	if s.sendConfig.slow {
 		res, broadcastError := s.tmClient.BroadcastTxCommit(ctx, txbz)

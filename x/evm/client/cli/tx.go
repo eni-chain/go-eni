@@ -812,9 +812,9 @@ func sendTx(txData *ethtypes.DynamicFeeTx, rpcUrl string, key *ecdsa.PrivateKey,
 	}
 
 	h := bfttypes.Tx(txbz).Hash()
-	hexH := hexutil.Encode(h)
-	println("hexH =", hexH)
 	hexTxHash = common.Hash(h)
+
+	println("send tx hexH = " + signedTx.Hash().Hex())
 
 	return hexTxHash, nil
 }
