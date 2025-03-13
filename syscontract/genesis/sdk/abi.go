@@ -1,7 +1,5 @@
 package sdk
 
-import _ "embed"
-
 const VRFABI = `
 [
 	{
