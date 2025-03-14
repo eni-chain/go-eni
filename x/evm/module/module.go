@@ -2,11 +2,13 @@ package evm
 
 import (
 	"context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
-
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	"github.com/eni-chain/go-eni/x/evm/exported"
+	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
@@ -22,11 +24,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/x/evm/client/cli"
-	"github.com/eni-chain/go-eni/x/evm/state"
 	"github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	// this line is used by starport scaffolding # 1
@@ -180,44 +179,45 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 	//if newBaseFee != nil {
 	//	metrics.GaugeEvmBlockBaseFee(newBaseFee.TruncateInt().BigInt(), req.Height)
 	//}
-	var _ sdk.AccAddress // to avoid unused error
-	if am.keeper.EthBlockTestConfig.Enabled {
-		blocks := am.keeper.BlockTest.Json.Blocks
-		block, err := blocks[ctx.BlockHeight()-1].Decode()
-		if err != nil {
-			panic(err)
-		}
-		_ = am.keeper.GetEniAddressOrDefault(ctx, block.Header().Coinbase)
-	} else {
-		_ = am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
-	}
-	evmTxDeferredInfoList := am.keeper.GetAllEVMTxDeferredInfo(ctx)
-	denom := am.keeper.GetBaseDenom(ctx)
-	surplus := am.keeper.GetAnteSurplusSum(ctx)
-	for _, deferredInfo := range evmTxDeferredInfoList {
-		txHash := common.BytesToHash(deferredInfo.TxHash)
-		if deferredInfo.Error != "" && txHash.Cmp(ethtypes.EmptyTxsHash) != 0 {
-			_ = am.keeper.SetReceipt(ctx, txHash, &types.Receipt{
-				TxHashHex:        txHash.Hex(),
-				TransactionIndex: deferredInfo.TxIndex,
-				VmError:          deferredInfo.Error,
-				BlockNumber:      uint64(ctx.BlockHeight()),
-			})
-			continue
-		}
-		idx := int(deferredInfo.TxIndex)
-		coinbaseAddress := state.GetCoinbaseAddress(idx)
-		balance := am.keeper.BankKeeper().SpendableCoins(ctx, coinbaseAddress).AmountOf(denom)
-		//weiBalance := am.keeper.BankKeeper().GetWeiBalance(ctx, coinbaseAddress)
-		weiBalance := am.keeper.BankKeeper().GetBalance(ctx, coinbaseAddress, denom)
-		if !balance.IsZero() || !weiBalance.IsZero() {
-			// todo  check code correct
-			//if err := am.keeper.BankKeeper().SendCoinsAndWei(ctx, coinbaseAddress, coinbase, balance, weiBalance); err != nil {
-			//	ctx.Logger().Error(fmt.Sprintf("failed to send ueni surplus from %s to coinbase account due to %s", coinbaseAddress.String(), err))
-			//}
-		}
-		surplus = surplus.Add(deferredInfo.Surplus)
-	}
+
+	//var _ sdk.AccAddress // to avoid unused error
+	//if am.keeper.EthBlockTestConfig.Enabled {
+	//	blocks := am.keeper.BlockTest.Json.Blocks
+	//	block, err := blocks[ctx.BlockHeight()-1].Decode()
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	_ = am.keeper.GetEniAddressOrDefault(ctx, block.Header().Coinbase)
+	//} else {
+	//	_ = am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	//}
+	//evmTxDeferredInfoList := am.keeper.GetAllEVMTxDeferredInfo(ctx)
+	//denom := am.keeper.GetBaseDenom(ctx)
+	//surplus := am.keeper.GetAnteSurplusSum(ctx)
+	//for _, deferredInfo := range evmTxDeferredInfoList {
+	//	txHash := common.BytesToHash(deferredInfo.TxHash)
+	//	if deferredInfo.Error != "" && txHash.Cmp(ethtypes.EmptyTxsHash) != 0 {
+	//		_ = am.keeper.SetReceipt(ctx, txHash, &types.Receipt{
+	//			TxHashHex:        txHash.Hex(),
+	//			TransactionIndex: deferredInfo.TxIndex,
+	//			VmError:          deferredInfo.Error,
+	//			BlockNumber:      uint64(ctx.BlockHeight()),
+	//		})
+	//		continue
+	//	}
+	//	idx := int(deferredInfo.TxIndex)
+	//	coinbaseAddress := state.GetCoinbaseAddress(idx)
+	//	balance := am.keeper.BankKeeper().SpendableCoins(ctx, coinbaseAddress).AmountOf(denom)
+	//	//weiBalance := am.keeper.BankKeeper().GetWeiBalance(ctx, coinbaseAddress)
+	//	weiBalance := am.keeper.BankKeeper().GetBalance(ctx, coinbaseAddress, denom)
+	//	if !balance.IsZero() || !weiBalance.IsZero() {
+	//		// todo  check code correct
+	//		//if err := am.keeper.BankKeeper().SendCoinsAndWei(ctx, coinbaseAddress, coinbase, balance, weiBalance); err != nil {
+	//		//	ctx.Logger().Error(fmt.Sprintf("failed to send ueni surplus from %s to coinbase account due to %s", coinbaseAddress.String(), err))
+	//		//}
+	//	}
+	//	surplus = surplus.Add(deferredInfo.Surplus)
+	//}
 	//if surplus.IsPositive() {
 	//	surplusUeni, surplusWei := state.SplitUeniWeiAmount(surplus.BigInt())
 	//	if surplusUeni.GT(cosmossdk_io_math.ZeroInt()) {
@@ -233,7 +233,30 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 	//		//}
 	//	}
 	//}
-	am.keeper.SetBlockBloom(ctx, utils.Map(evmTxDeferredInfoList, func(i *types.DeferredInfo) ethtypes.Bloom { return ethtypes.BytesToBloom(i.TxBloom) }))
+
+	//am.keeper.SetBlockBloom(ctx, utils.Map(evmTxDeferredInfoList, func(i *types.DeferredInfo) ethtypes.Bloom { return ethtypes.BytesToBloom(i.TxBloom) }))
+
+	hub, err := syscontractSdk.NewHub()
+	if err != nil {
+		return err
+	}
+
+	header := ctx.BlockHeader()
+	proposerBytes := header.GetProposerAddress()
+	node := common.Address(proposerBytes)
+
+	moduleAddr := am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	caller := common.Address(moduleAddr)
+	evm := vm.EVM{}
+	reward, err := hub.BlockReward(&evm, caller, node)
+	if err != nil {
+		return err
+	}
+
+	denom := am.keeper.GetBaseDenom(ctx)
+	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
+	am.keeper.BankKeeper().AddCoins(ctx, node[:], sdk.NewCoins(coin))
+
 	return nil
 }
 
