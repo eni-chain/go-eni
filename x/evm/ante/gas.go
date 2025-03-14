@@ -17,7 +17,6 @@ func NewGasLimitDecorator(evmKeeper *evmkeeper.Keeper) *GasLimitDecorator {
 
 // Called at the end of the ante chain to set gas limit properly
 func (gl GasLimitDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	return next(ctx, tx, simulate)
 	msg := evmtypes.MustGetEVMTransactionMessage(tx)
 	txData, err := evmtypes.UnpackTxData(msg.Data)
 	if err != nil {
@@ -25,11 +24,6 @@ func (gl GasLimitDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool
 	}
 
 	adjustedGasLimit := gl.evmKeeper.GetPriorityNormalizer(ctx).MulInt64(int64(txData.GetGas()))
-	// todo gas related content, ignore for now
-	//ctx = ctx.WithGasMeter(sdk.NewGasMeterWithMultiplier(ctx, adjustedGasLimit.TruncateInt().Uint64()))
-	if ctx.GasMeter() == nil {
-		ctx = ctx.WithGasMeter(storetypes.NewGasMeter(adjustedGasLimit.TruncateInt().Uint64()))
-	}
-
+	ctx = ctx.WithGasMeter(storetypes.NewGasMeter(adjustedGasLimit.TruncateInt().Uint64()))
 	return next(ctx, tx, simulate)
 }
