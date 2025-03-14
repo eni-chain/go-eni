@@ -103,7 +103,7 @@ func (v *VRF) UpdateAdmin(evm *vm.EVM, caller common.Address, admin common.Addre
 }
 
 // UpdateConsensusSet updates the consensus set for a specific epoch
-func (v *VRF) UpdateConsensusSet(evm *vm.EVM, caller common.Address, epoch *big.Int) ([]common.Address, error) {
+func (v *VRF) UpdateConsensusSet(evm *vm.EVM, caller common.Address, epoch *big.Int) ([][]byte, error) {
 	input, err := v.abi.Pack("updateConsensusSet", epoch)
 	if err != nil {
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
@@ -114,7 +114,7 @@ func (v *VRF) UpdateConsensusSet(evm *vm.EVM, caller common.Address, epoch *big.
 		return nil, fmt.Errorf("EVM call failed: %v", err)
 	}
 
-	var nodes []common.Address
+	var nodes [][]byte
 	err = v.abi.UnpackIntoInterface(&nodes, "updateConsensusSet", ret)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unpack return value: %v", err)
