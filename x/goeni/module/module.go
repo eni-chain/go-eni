@@ -184,14 +184,24 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 	caller := common.Address(addr)
 	epoch := big.NewInt(ctx.BlockHeight() / EpochPeriod)
 
-	pubKeysBytes, err := vrf.UpdateConsensusSet(ctx, caller, epoch)
+	addrs, err := vrf.UpdateConsensusSet(ctx, caller, epoch)
+	if err != nil {
+		return nil, err
+	}
+
+	valSet, err := syscontractSdk.NewValidatorManager(&am.EvmKeeper)
+	if err != nil {
+		return nil, err
+	}
+
+	pubKeys, err := valSet.GetPubKeysBySequence(ctx, caller, addrs)
 	if err != nil {
 		return nil, err
 	}
 
 	var validatorSet []abci.ValidatorUpdate
-	for i := 0; i < len(pubKeysBytes); i++ {
-		e := validatorSet[i].Unmarshal(pubKeysBytes[i])
+	for i := 0; i < len(pubKeys); i++ {
+		e := validatorSet[i].Unmarshal(pubKeys[i])
 		if e != nil {
 			return nil, e
 		}

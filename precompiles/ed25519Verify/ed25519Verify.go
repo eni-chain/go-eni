@@ -19,7 +19,7 @@ const (
 
 func init() {
 	//todo: need to confirm the addr, and also modify addr in syscontract
-	addr := common.BytesToAddress([]byte{0xf1})
+	addr := common.BytesToAddress([]byte{0xa1})
 	precompiled := ed25519Verify{}
 	addEd25519VerifyToVM(addr, &precompiled)
 }

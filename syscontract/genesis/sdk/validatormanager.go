@@ -59,6 +59,37 @@ func (vm *ValidatorManager) GetPubkey(
 	return pubkey, nil
 }
 
+// GetPubKeysBySequence gets the public keys of a validators by sequence
+func (vm *ValidatorManager) GetPubKeysBySequence(
+	ctx sdk.Context,
+	caller common.Address,
+	validators []common.Address,
+) ([][]byte, error) {
+	input, err := vm.abi.Pack("getPubKeysBySequence", validators)
+	if err != nil {
+		return nil, fmt.Errorf("failed to pack ABI: %v", err)
+	}
+
+	address := common.HexToAddress(syscontract.ValidatorManagerAddr)
+	to := &address
+	retData, err := vm.evmKeeper.CallEVM(ctx, caller, to, nil, input)
+	if err != nil {
+		return nil, fmt.Errorf("EVM call failed: %v", err)
+	}
+
+	if retData == nil {
+		return nil, nil
+	}
+
+	var pubkeys [][]byte
+	err = vm.abi.UnpackIntoInterface(&pubkeys, "getPubkeysBySequence", retData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unpack return value: %v", err)
+	}
+
+	return pubkeys, nil
+}
+
 // GetValidatorSet gets the set of validators
 func (vm *ValidatorManager) GetValidatorSet(
 	ctx sdk.Context,

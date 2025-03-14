@@ -133,7 +133,7 @@ func (v *VRF) UpdateConsensusSet(
 	ctx sdk.Context,
 	caller common.Address,
 	epoch *big.Int,
-) ([][]byte, error) {
+) ([]common.Address, error) {
 	input, err := v.abi.Pack("updateConsensusSet", epoch)
 	if err != nil {
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
@@ -150,7 +150,7 @@ func (v *VRF) UpdateConsensusSet(
 		return nil, nil
 	}
 
-	var nodes [][]byte
+	var nodes []common.Address
 	err = v.abi.UnpackIntoInterface(&nodes, "updateConsensusSet", retData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unpack return value: %v", err)

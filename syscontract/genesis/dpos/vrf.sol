@@ -87,7 +87,7 @@ contract Vrf {
         require(rnd.length == SIGN_LEN, "Random length is not ed25519 signature size!");
 
         if(_pubKeys[msg.sender].length == 0){
-            bytes memory pubkey = IValidatorManager(VALIDATOR_MANAGER_ADDR).getPubkey(msg.sender);
+            bytes memory pubkey = IValidatorManager(VALIDATOR_MANAGER_ADDR).getPubKey(msg.sender);
             if(pubkey.length == 0){
                 revert("Msg sender is not validator");
             }

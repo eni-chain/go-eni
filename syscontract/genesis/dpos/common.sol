@@ -3,11 +3,11 @@
 
 pragma solidity >= 0.8.0;
 
-uint constant consensusSize = 21; 
+uint constant consensusSize = 21;
 
 uint constant MIN_PLEDGE_AMOUNT = 10000;
 
-uint constant ED25519_VERIFY_PRECOMPILED = 0x03ef;
+uint constant ED25519_VERIFY_PRECOMPILED = 0xa1;
 
 address constant ADMIN_ADDR = 0x0000000000000000000000000000000000001000;
 address constant HUB_ADDR = 0x0000000000000000000000000000000000001001;
@@ -55,7 +55,9 @@ contract Common {
 }
 
 interface IValidatorManager {
-    function getPubkey(address validator) external returns (bytes memory);
+    function getPubKey(address validator) external returns (bytes memory);
+
+    function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory);
 
     function getValidatorSet() external  returns (address[] memory);
 
@@ -65,4 +67,3 @@ interface IValidatorManager {
 
     function getPledgeAmount(address node) external returns (uint256);
 }
-

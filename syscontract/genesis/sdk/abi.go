@@ -276,12 +276,31 @@ const validatorManagerABI = `
 				"type": "address"
 			}
 		],
-		"name": "getPubkey",
+		"name": "getPubKey",
 		"outputs": [
 			{
 				"internalType": "bytes",
 				"name": "",
 				"type": "bytes"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "nodes",
+				"type": "address[]"
+			}
+		],
+		"name": "getPubKeysBySequence",
+		"outputs": [
+			{
+				"internalType": "bytes[]",
+				"name": "",
+				"type": "bytes[]"
 			}
 		],
 		"stateMutability": "nonpayable",
