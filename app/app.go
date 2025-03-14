@@ -152,7 +152,7 @@ type App struct {
 	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
 
 	GoeniKeeper goenimodulekeeper.Keeper
-	EvmKeeper   evmmodulekeeper.Keeper
+	EvmKeeper   *evmmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -322,7 +322,7 @@ func New(
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
 			AppAccountKeeper: &app.AccountKeeper,
-			EVMKeeper:        &app.EvmKeeper,
+			EVMKeeper:        app.EvmKeeper,
 			LatestCtxGetter: func() sdk.Context {
 				return app.NewContext(false)
 			},
@@ -461,7 +461,7 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 	}
 
 	if app.evmRPCConfig.HTTPEnabled {
-		evmHTTPServer, err := evmrpc.NewEVMHTTPServer(app.Logger(), app.evmRPCConfig, rpcClient, &app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome, nil)
+		evmHTTPServer, err := evmrpc.NewEVMHTTPServer(app.Logger(), app.evmRPCConfig, rpcClient, app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome, nil)
 		if err != nil {
 			panic(err)
 		}
@@ -471,7 +471,7 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 	}
 
 	if app.evmRPCConfig.WSEnabled {
-		evmWSServer, err := evmrpc.NewEVMWebSocketServer(app.Logger(), app.evmRPCConfig, rpcClient, &app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome)
+		evmWSServer, err := evmrpc.NewEVMWebSocketServer(app.Logger(), app.evmRPCConfig, rpcClient, app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome)
 		if err != nil {
 			panic(err)
 		}

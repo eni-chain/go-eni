@@ -14,7 +14,7 @@ import (
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
-func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
+func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genState types.GenesisState) {
 	k.InitGenesis(ctx, genState)
 	k.SetParams(ctx, genState.Params)
 	initEniAddressList := strings.Split(genState.Params.InitEniAddress, ",")
@@ -24,7 +24,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		if len(initEniAddress) == 0 || len(initEniAmount) == 0 {
 			continue
 		}
-		SetBalance(ctx, &k, common.HexToAddress(initEniAddress), uint256.MustFromDecimal(initEniAmount))
+		SetBalance(ctx, k, common.HexToAddress(initEniAddress), uint256.MustFromDecimal(initEniAmount))
 	}
 }
 func send(ctx sdk.Context, k *keeper.Keeper, from sdk.AccAddress, to sdk.AccAddress, amt *big.Int) error {
@@ -61,7 +61,7 @@ func SetBalance(ctx sdk.Context, k *keeper.Keeper, evmAddr common.Address, amt *
 }
 
 // ExportGenesis returns the module's exported genesis.
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 
