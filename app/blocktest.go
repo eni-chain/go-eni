@@ -13,7 +13,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	genutilstypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/eni-chain/go-eni/utils"
-	"github.com/eni-chain/go-eni/x/evm/ante"
 	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/common"
@@ -132,7 +131,7 @@ func encodeTx(tx *ethtypes.Transaction, txConfig client.TxConfig) []byte {
 	if err != nil {
 		panic(err)
 	}
-	ante.Preprocess2(msg)
+	//ante.Preprocess2(msg)
 	txBuilder := txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		panic(err)

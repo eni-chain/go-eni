@@ -1,9 +1,9 @@
 package ante
 
 import (
-	sdkerrors "cosmossdk.io/errors"
-	"errors"
 	"fmt"
+
+	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
@@ -26,19 +26,18 @@ func (gl BasicDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, n
 	msg := evmtypes.MustGetEVMTransactionMessage(tx)
 	etx, _ := msg.AsTransaction()
 
-	//todo need to deal with later
-	//if msg.Derived != nil && !gl.k.EthBlockTestConfig.Enabled {
-	//	startingNonce := gl.k.GetNonce(ctx, msg.Derived.SenderEVMAddr)
-	//	txNonce := etx.Nonce()
-	//	if !ctx.IsCheckTx() && !ctx.IsReCheckTx() && startingNonce == txNonce {
-	//		ctx = ctx.WithDeliverTxCallback(func(callCtx sdk.Context) {
-	//			// bump nonce if it is for some reason not incremented (e.g. ante failure)
-	//			if gl.k.GetNonce(callCtx, msg.Derived.SenderEVMAddr) == startingNonce {
-	//				gl.k.SetNonce(callCtx, msg.Derived.SenderEVMAddr, startingNonce+1)
-	//			}
-	//		})
-	//	}
-	//}
+	if msg.Derived != nil && !gl.k.EthBlockTestConfig.Enabled {
+		startingNonce := gl.k.GetNonce(ctx, msg.Derived.SenderEVMAddr)
+		txNonce := etx.Nonce()
+		if !ctx.IsCheckTx() && !ctx.IsReCheckTx() && startingNonce == txNonce {
+			ctx = ctx.WithDeliverTxCallback(func(callCtx sdk.Context) {
+				// bump nonce if it is for some reason not incremented (e.g. ante failure)
+				if gl.k.GetNonce(callCtx, msg.Derived.SenderEVMAddr) == startingNonce {
+					gl.k.SetNonce(callCtx, msg.Derived.SenderEVMAddr, startingNonce+1)
+				}
+			})
+		}
+	}
 
 	if etx.To() == nil && len(etx.Data()) > params.MaxInitCodeSize {
 		return ctx, fmt.Errorf("%w: code size %v, limit %v", core.ErrMaxInitCodeSizeExceeded, len(etx.Data()), params.MaxInitCodeSize)
@@ -57,7 +56,7 @@ func (gl BasicDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, n
 	}
 
 	if etx.Type() == ethtypes.BlobTxType {
-		return ctx, errors.New("unsupported transaction type")
+		return ctx, coserrors.ErrUnsupportedTxType
 	}
 
 	// Check if gas exceed the limit

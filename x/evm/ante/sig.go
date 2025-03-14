@@ -1,12 +1,16 @@
 package ante
 
 import (
+	"math/big"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmtypes "github.com/cometbft/cometbft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
+
 	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
-	"math/big"
 )
 
 type EVMSigVerifyDecorator struct {
@@ -28,13 +32,12 @@ func (svd *EVMSigVerifyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 
 	nextNonce := svd.evmKeeper.GetNonce(ctx, evmAddr)
 	txNonce := ethTx.Nonce()
-	return next(ctx, tx, simulate)
+
 	// set EVM properties
-	//todo context related content, you need to add the corresponding interface to context
-	//ctx = ctx.WithIsEVM(true)
-	//ctx = ctx.WithEVMNonce(txNonce)
-	//ctx = ctx.WithEVMSenderAddress(evmAddr.Hex())
-	//ctx = ctx.WithEVMTxHash(ethTx.Hash().Hex())
+	ctx = ctx.WithIsEVM(true)
+	ctx = ctx.WithEVMNonce(txNonce)
+	ctx = ctx.WithEVMSenderAddress(evmAddr.Hex())
+	ctx = ctx.WithEVMTxHash(ethTx.Hash().Hex())
 
 	chainID := svd.evmKeeper.ChainID(ctx)
 	txChainID := ethTx.ChainId()
@@ -59,47 +62,45 @@ func (svd *EVMSigVerifyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 		if txNonce < nextNonce {
 			return ctx, sdkerrors.ErrWrongSequence
 		}
-		//todo context related content, you need to add the corresponding interface to context
-		//ctx = ctx.WithCheckTxCallback(func(thenCtx sdk.Context, e error) {
-		//	if e != nil {
-		//		return
-		//	}
-		//	txKey := tmtypes.Tx(ctx.TxBytes()).Key()
-		//	svd.evmKeeper.AddPendingNonce(txKey, evmAddr, txNonce, thenCtx.Priority())
-		//})
-		//
-		//// if the mempool expires a transaction, this handler is invoked
-		//ctx = ctx.WithExpireTxHandler(func() {
-		//	txKey := tmtypes.Tx(ctx.TxBytes()).Key()
-		//	svd.evmKeeper.RemovePendingNonce(txKey)
-		//})
+		ctx = ctx.WithCheckTxCallback(func(thenCtx sdk.Context, e error) {
+			if e != nil {
+				return
+			}
+			txKey := tmtypes.Tx(ctx.TxBytes()).Key()
+			svd.evmKeeper.AddPendingNonce(txKey, evmAddr, txNonce, thenCtx.Priority())
+		})
+
+		// if the mempool expires a transaction, this handler is invoked
+		ctx = ctx.WithExpireTxHandler(func() {
+			txKey := tmtypes.Tx(ctx.TxBytes()).Key()
+			svd.evmKeeper.RemovePendingNonce(txKey)
+		})
 
 		if txNonce > nextNonce {
-			//todo context related content, you need to add the corresponding interface to context
 			// transaction shall be added to mempool as a pending transaction
-			//ctx = ctx.WithPendingTxChecker(func() abci.PendingTxCheckerResponse {
-			//	latestCtx := svd.latestCtxGetter()
-			//
-			//	// nextNonceToBeMined is the next nonce that will be mined
-			//	// geth calls SetNonce(n+1) after a transaction is mined
-			//	nextNonceToBeMined := svd.evmKeeper.GetNonce(latestCtx, evmAddr)
-			//
-			//	// nextPendingNonce is the minimum nonce a user may send without stomping on an already-sent
-			//	// nonce, including non-mined or pending transactions
-			//	// If a user skips a nonce [1,2,4], then this will be the value of that hole (e.g., 3)
-			//	nextPendingNonce := svd.evmKeeper.CalculateNextNonce(latestCtx, evmAddr, true)
-			//
-			//	if txNonce < nextNonceToBeMined {
-			//		// this nonce has already been mined, we cannot accept it again
-			//		return abci.Rejected
-			//	} else if txNonce < nextPendingNonce {
-			//		// this nonce is allowed to process as it is part of the
-			//		// consecutive nonces from nextNonceToBeMined to nextPendingNonce
-			//		// This logic allows multiple nonces from an account to be processed in a block.
-			//		return abci.Accepted
-			//	}
-			//	return abci.Pending
-			//})
+			ctx = ctx.WithPendingTxChecker(func() abci.PendingTxCheckerResponse {
+				latestCtx := svd.latestCtxGetter()
+
+				// nextNonceToBeMined is the next nonce that will be mined
+				// geth calls SetNonce(n+1) after a transaction is mined
+				nextNonceToBeMined := svd.evmKeeper.GetNonce(latestCtx, evmAddr)
+
+				// nextPendingNonce is the minimum nonce a user may send without stomping on an already-sent
+				// nonce, including non-mined or pending transactions
+				// If a user skips a nonce [1,2,4], then this will be the value of that hole (e.g., 3)
+				nextPendingNonce := svd.evmKeeper.CalculateNextNonce(latestCtx, evmAddr, true)
+
+				if txNonce < nextNonceToBeMined {
+					// this nonce has already been mined, we cannot accept it again
+					return abci.Rejected
+				} else if txNonce < nextPendingNonce {
+					// this nonce is allowed to process as it is part of the
+					// consecutive nonces from nextNonceToBeMined to nextPendingNonce
+					// This logic allows multiple nonces from an account to be processed in a block.
+					return abci.Accepted
+				}
+				return abci.Pending
+			})
 		}
 	} else if txNonce != nextNonce {
 		return ctx, sdkerrors.ErrWrongSequence
