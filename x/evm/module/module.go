@@ -255,6 +255,8 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 
 	denom := am.keeper.GetBaseDenom(ctx)
 	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
+	//am.keeper.BankKeeper().AddCoins(am.keeper.CallEVM, node[:], sdk.NewCoins(coin))
+	//todo: replace by CallEVM handler after Adwind modified interface
 	am.keeper.BankKeeper().AddCoins(ctx, node[:], sdk.NewCoins(coin))
 
 	return nil
