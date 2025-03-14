@@ -41,6 +41,7 @@ func BlockTest(a *App, bt *ethtests.BlockTest) {
 	}
 
 	for addr, genesisAccount := range a.EvmKeeper.BlockTest.Json.Pre {
+		a.Logger().Debug("blocktest Pre SetAccount", "address", addr, "account", genesisAccount)
 		ueni := math.NewIntFromBigInt(genesisAccount.Balance)
 		eniAddr := a.EvmKeeper.GetEniAddressOrDefault(a.GetContextForFinalizeBlock([]byte{}), addr)
 		err := a.EvmKeeper.BankKeeper().AddCoins(a.GetContextForFinalizeBlock([]byte{}), eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", ueni)))
@@ -72,6 +73,7 @@ func BlockTest(a *App, bt *ethtests.BlockTest) {
 		ethblocks = append(ethblocks, b)
 		hash := make([]byte, 8)
 		binary.BigEndian.PutUint64(hash, uint64(h))
+		a.Logger().Debug("blocktest FinalizeBlock", "height", b.Number().Uint64(), "hash", hash)
 		_, err = a.FinalizeBlock(&abci.RequestFinalizeBlock{
 			Txs:               utils.Map(b.Transactions(), func(tx *ethtypes.Transaction) []byte { return encodeTx(tx, a.TxConfig()) }),
 			ProposerAddress:   a.EvmKeeper.GetEniAddressOrDefault(a.GetContextForCheckTx(nil), b.Coinbase()),
@@ -83,6 +85,7 @@ func BlockTest(a *App, bt *ethtests.BlockTest) {
 		if err != nil {
 			panic(err)
 		}
+		a.Logger().Debug("blocktest Commit", "height", b.Number().Uint64(), "hash", hash)
 		_, err = a.Commit()
 		if err != nil {
 			panic(err)

@@ -14,13 +14,16 @@ func (k *Keeper) GetNonce(ctx sdk.Context, addr common.Address) uint64 {
 	if bz == nil {
 		return 0
 	}
-	return binary.BigEndian.Uint64(bz)
+	nonce := binary.BigEndian.Uint64(bz)
+	k.logger.Debug("GetNonce", "address", addr.Hex(), "nonce", nonce)
+	return nonce
 }
 
 func (k *Keeper) SetNonce(ctx sdk.Context, addr common.Address, nonce uint64) {
 	length := make([]byte, 8)
 	binary.BigEndian.PutUint64(length, nonce)
 	k.PrefixStore(ctx, types.NonceKeyPrefix).Set(addr[:], length)
+	k.logger.Debug("SetNonce", "address", addr.Hex(), "nonce", nonce)
 }
 
 func (k *Keeper) IterateAllNonces(ctx sdk.Context, cb func(addr common.Address, nonce uint64) bool) {
