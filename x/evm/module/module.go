@@ -8,7 +8,6 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	"github.com/eni-chain/go-eni/x/evm/exported"
-	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
@@ -236,7 +235,7 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 
 	//am.keeper.SetBlockBloom(ctx, utils.Map(evmTxDeferredInfoList, func(i *types.DeferredInfo) ethtypes.Bloom { return ethtypes.BytesToBloom(i.TxBloom) }))
 
-	hub, err := syscontractSdk.NewHub()
+	hub, err := syscontractSdk.NewHub(&am.keeper)
 	if err != nil {
 		return err
 	}
@@ -247,16 +246,13 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 
 	moduleAddr := am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
 	caller := common.Address(moduleAddr)
-	evm := vm.EVM{}
-	reward, err := hub.BlockReward(&evm, caller, node)
+	reward, err := hub.BlockReward(ctx, caller, node)
 	if err != nil {
 		return err
 	}
 
 	denom := am.keeper.GetBaseDenom(ctx)
 	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
-	//am.keeper.BankKeeper().AddCoins(am.keeper.CallEVM, node[:], sdk.NewCoins(coin))
-	//todo: replace by CallEVM handler after Adwind modified interface
 	am.keeper.BankKeeper().AddCoins(ctx, node[:], sdk.NewCoins(coin))
 
 	return nil

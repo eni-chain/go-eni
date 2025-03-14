@@ -97,6 +97,10 @@ func (h *Hub) BlockReward(
 		return nil, fmt.Errorf("EVM call failed: %v", err)
 	}
 
+	if retData == nil {
+		return big.NewInt(0), nil
+	}
+
 	var amount *big.Int
 	err = h.abi.UnpackIntoInterface(&amount, "blockReward", retData)
 	if err != nil {

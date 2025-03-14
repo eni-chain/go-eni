@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/vm"
 	"math/big"
 
 	"cosmossdk.io/core/appmodule"
@@ -176,21 +175,16 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		return nil, nil
 	}
 
-	vrf, err := syscontractSdk.NewVRF()
+	vrf, err := syscontractSdk.NewVRF(&am.EvmKeeper)
 	if err != nil {
 		return nil, err
 	}
 
-	//addr := am.keeper.AuthAccountKeeper.GetModuleAddress(authtypes.FeeCollectorName)
-	//caller := common.Address(addr)
 	addr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
 	caller := common.Address(addr)
 	epoch := big.NewInt(ctx.BlockHeight() / EpochPeriod)
 
-	//vrf.UpdateConsensusSet(am.EvmKeeper.CallEVM, caller, epoch)
-	//todo: replace by CallEVM handler after Adwind modified interface
-	evm := vm.EVM{}
-	pubKeysBytes, err := vrf.UpdateConsensusSet(&evm, caller, epoch)
+	pubKeysBytes, err := vrf.UpdateConsensusSet(ctx, caller, epoch)
 	if err != nil {
 		return nil, err
 	}
