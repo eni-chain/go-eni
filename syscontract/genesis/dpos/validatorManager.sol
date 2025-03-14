@@ -51,6 +51,19 @@ contract ValidatorManager{
         return bytes("");
     }
 
+    function getPubkeysBySequence(address[] calldata nodes) external returns (bytes[] memory){
+        bytes[] memory pubkeys = new bytes[](nodes.length);
+
+        for(uint i = 0; i < nodes.length; i++){
+            address oper = _node2operator[nodes[i]];
+            if(oper != address(0) ){
+                pubkeys[i] = _infos[oper].pubKey;
+            }
+        }
+
+        return pubkeys;
+    }
+
     function getValidatorSet() external  returns (address[] memory){
         return _validatorNodes;
     }

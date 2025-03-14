@@ -86,6 +86,25 @@
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "nodes",
+				"type": "address[]"
+			}
+		],
+		"name": "getPubkeysBySequence",
+		"outputs": [
+			{
+				"internalType": "bytes[]",
+				"name": "",
+				"type": "bytes[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "getValidatorSet",
 		"outputs": [
