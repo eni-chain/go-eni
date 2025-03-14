@@ -81,6 +81,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
+	epochmodulekeeper "github.com/eni-chain/go-eni/x/epoch/keeper"
 	evmmodulekeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	goenimodulekeeper "github.com/eni-chain/go-eni/x/goeni/keeper"
 
@@ -152,6 +153,8 @@ type App struct {
 
 	GoeniKeeper goenimodulekeeper.Keeper
 	EvmKeeper   evmmodulekeeper.Keeper
+	EpochKeeper epochmodulekeeper.Keeper
+
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -259,6 +262,7 @@ func New(
 		&app.CircuitBreakerKeeper,
 		&app.GoeniKeeper,
 		&app.EvmKeeper,
+		&app.EpochKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	)
 

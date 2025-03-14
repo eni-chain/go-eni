@@ -1,0 +1,38 @@
+syntax = "proto3";
+package  goeni.epoch;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+
+option go_package = "github.com/eni-chain/go-eni/x/epoch/types";
+
+message Epoch {
+  // authority defines the custom module authority. If not set, defaults to the governance module.
+  string authority = 1;
+  google.protobuf.Timestamp genesis_time = 2 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"genesis_time\""
+  ];
+  google.protobuf.Duration epoch_duration = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdduration) = true,
+    (gogoproto.jsontag) = "duration,omitempty",
+    (gogoproto.moretags) = "yaml:\"epoch_duration\""
+  ];
+  uint64 current_epoch = 4 [
+    (gogoproto.jsontag) = "current_epoch",
+    (gogoproto.moretags) = "yaml:\"current_epoch\""
+  ];
+  google.protobuf.Timestamp current_epoch_start_time = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"current_epoch_start_time\""
+  ];
+  int64 current_epoch_height = 6 [
+    (gogoproto.jsontag) = "current_epoch_height",
+    (gogoproto.moretags) = "yaml:\"current_epoch_height\""
+  ];
+}
