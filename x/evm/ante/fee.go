@@ -36,8 +36,7 @@ func (fc EVMFeeCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	if simulate {
 		return next(ctx, tx, simulate)
 	}
-	return next(ctx, tx, simulate)
-	//todo gas related content, ignore for now
+	//return next(ctx, tx, simulate)
 	msg := evmtypes.MustGetEVMTransactionMessage(tx)
 	txData, err := evmtypes.UnpackTxData(msg.Data)
 	if err != nil {
@@ -80,7 +79,7 @@ func (fc EVMFeeCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	txCtx := core.NewEVMTxContext(emsg)
 	evmInstance := vm.NewEVM(*blockCtx, stateDB, cfg, vm.Config{})
 	evmInstance.SetTxContext(txCtx)
-	//st, err := core.ApplyMessage(evmInstance, emsg, &gp)
+
 	st := core.NewStateTransition(evmInstance, emsg, &gp, true)
 	// run stateless checks before charging gas (mimicking Geth behavior)
 	if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
