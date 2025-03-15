@@ -55,7 +55,6 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
-	github.com/tendermint/tendermint v0.37.0-dev
 	golang.org/x/crypto v0.35.0
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 	golang.org/x/tools v0.29.0
@@ -101,7 +100,6 @@ require (
 	github.com/bytedance/sonic v1.12.6 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
-	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chzyer/readline v1.5.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -132,10 +130,8 @@ require (
 	github.com/deckarep/golang-set/v2 v2.6.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
-	github.com/dgraph-io/badger/v2 v2.2007.4 // indirect
 	github.com/dgraph-io/badger/v4 v4.2.0 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
-	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/docker/cli v26.1.4+incompatible // indirect
@@ -268,9 +264,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/supranational/blst v0.3.13 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
-	github.com/tecbot/gorocksdb v0.0.0-20191217155057-f0fad39f321c // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
-	github.com/tendermint/tm-db v0.6.6 // indirect
 	github.com/tidwall/btree v1.7.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
@@ -320,8 +314,8 @@ require (
 )
 
 replace (
-	//github.com/cometbft/cometbft => ../eni-cometbft
-	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250303150538-69632da53c65
+	github.com/cometbft/cometbft => ../eni-cometbft
+	//github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250303150538-69632da53c65
 	//github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250311033730-8f39034192bf
 	github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	//github.com/eni-chain/eni-db => github.com/sei-protocol/sei-db v0.0.1
