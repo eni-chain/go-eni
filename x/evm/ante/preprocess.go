@@ -169,6 +169,7 @@ func Preprocess(ctx sdk.Context, msgEVMTransaction *evmtypes.MsgEVMTransaction) 
 	if err != nil {
 		return err
 	}
+	msgEVMTransaction.Sender = eniAddr.String()
 	msgEVMTransaction.Derived = &derived.Derived{
 		SenderEVMAddr: evmAddr,
 		SenderEniAddr: eniAddr,

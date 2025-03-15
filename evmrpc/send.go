@@ -63,6 +63,10 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		return
 	}
 	msg, err := types.NewMsgEVMTransaction(txData)
+	signer := ethtypes.LatestSignerForChainID(tx.ChainId())
+	sender, _ := ethtypes.Sender(signer, tx)
+	eniAddr := s.keeper.GetEniAddressOrDefault(s.ctxProvider(LatestCtxHeight), sender)
+	msg.Sender = eniAddr.String()
 	if err != nil {
 		return
 	}
