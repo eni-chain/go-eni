@@ -3,7 +3,7 @@ package params
 import (
 	"time"
 
-	tmcfg "github.com/tendermint/tendermint/config"
+	tmcfg "github.com/cometbft/cometbft/config"
 )
 
 const (
@@ -81,7 +81,7 @@ func RegisterDenoms() {
 
 func SetTendermintConfigs(config *tmcfg.Config) {
 	// P2P configs
-	config.P2P.MaxConnections = 200
+	//config.P2P.MaxConnections = 200
 	config.P2P.SendRate = 20480000
 	config.P2P.RecvRate = 20480000
 	config.P2P.MaxPacketMsgPayloadSize = 1000000 // 1MB
@@ -94,12 +94,12 @@ func SetTendermintConfigs(config *tmcfg.Config) {
 	config.Mempool.TTLNumBlocks = 30
 	// Consensus Configs
 	//config.Consensus.GossipTransactionKeyOnly = true  // TODO: Enable when we have a better solution for the mempool
-	config.Consensus.UnsafeProposeTimeoutOverride = 300 * time.Millisecond
-	config.Consensus.UnsafeProposeTimeoutDeltaOverride = 50 * time.Millisecond
-	config.Consensus.UnsafeVoteTimeoutOverride = 50 * time.Millisecond
-	config.Consensus.UnsafeVoteTimeoutDeltaOverride = 50 * time.Millisecond
-	config.Consensus.UnsafeCommitTimeoutOverride = 200 * time.Millisecond
-	config.Consensus.UnsafeBypassCommitTimeoutOverride = &UnsafeBypassCommitTimeoutOverride
+	//config.Consensus.UnsafeProposeTimeoutOverride = 300 * time.Millisecond
+	//config.Consensus.UnsafeProposeTimeoutDeltaOverride = 50 * time.Millisecond
+	//config.Consensus.UnsafeVoteTimeoutOverride = 50 * time.Millisecond
+	//config.Consensus.UnsafeVoteTimeoutDeltaOverride = 50 * time.Millisecond
+	//config.Consensus.UnsafeCommitTimeoutOverride = 200 * time.Millisecond
+	//config.Consensus.UnsafeBypassCommitTimeoutOverride = &UnsafeBypassCommitTimeoutOverride
 	// Metrics
 	config.Instrumentation.Prometheus = true
 }
