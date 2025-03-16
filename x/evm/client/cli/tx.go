@@ -2,25 +2,25 @@ package cli
 
 import (
 	"context"
-	errorsmod "cosmossdk.io/errors"
 	"crypto/ecdsa"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"math/big"
+	"net/http"
+	"os"
+	"strings"
+
+	errorsmod "cosmossdk.io/errors"
 	bfttypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/eni-chain/go-eni/evmrpc"
-	"github.com/eni-chain/go-eni/x/evm/ante"
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
-	"io"
-	"math/big"
-	"net/http"
-	"os"
-	"strings"
 
 	//"github.com/cosmos/cosmos-sdk/crypto/hd"
 
@@ -799,7 +799,7 @@ func sendTx(txData *ethtypes.DynamicFeeTx, rpcUrl string, key *ecdsa.PrivateKey,
 		return common.Hash{}, err
 	}
 	hexTxHash := signedTx.Hash()
-	ante.Preprocess2(msg)
+	//ante.Preprocess2(msg)
 
 	txBuilder := clientCtx.TxConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {

@@ -10,6 +10,7 @@ import (
 func (k *Keeper) GetState(ctx sdk.Context, addr common.Address, hash common.Hash) common.Hash {
 	val := k.PrefixStore(ctx, types.StateKey(addr)).Get(hash[:])
 	if val == nil {
+		k.logger.Debug("GetState", "address", addr.Hex(), "key", hash.Hex(), "value", "nil")
 		return common.Hash{}
 	}
 	return common.BytesToHash(val)
@@ -17,6 +18,7 @@ func (k *Keeper) GetState(ctx sdk.Context, addr common.Address, hash common.Hash
 
 func (k *Keeper) SetState(ctx sdk.Context, addr common.Address, key common.Hash, val common.Hash) {
 	k.PrefixStore(ctx, types.StateKey(addr)).Set(key[:], val[:])
+	k.logger.Debug("SetState", "address", addr.Hex(), "key", key.Hex(), "value", val.Hex())
 }
 
 func (k *Keeper) IterateState(ctx sdk.Context, cb func(addr common.Address, key common.Hash, val common.Hash) bool) {

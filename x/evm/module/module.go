@@ -111,7 +111,7 @@ func (a AppModuleBasic) GetTxCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
+	keeper        *keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	// legacySubspace is used solely for migration of x/params managed parameters
@@ -120,7 +120,7 @@ type AppModule struct {
 
 func NewAppModule(
 	cdc codec.Codec,
-	keeper keeper.Keeper,
+	keeper *keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	ls exported.Subspace,
@@ -136,8 +136,8 @@ func NewAppModule(
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(&am.keeper))
-	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(&am.keeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.keeper))
 }
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)
@@ -275,7 +275,7 @@ type ModuleInputs struct {
 type ModuleOutputs struct {
 	depinject.Out
 
-	EvmKeeper keeper.Keeper
+	EvmKeeper *keeper.Keeper
 	Module    appmodule.AppModule
 }
 
@@ -302,11 +302,11 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	)
 	m := NewAppModule(
 		in.Cdc,
-		*k,
+		k,
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.LegacySubspace,
 	)
 
-	return ModuleOutputs{EvmKeeper: *k, Module: m}
+	return ModuleOutputs{EvmKeeper: k, Module: m}
 }

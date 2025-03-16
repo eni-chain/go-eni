@@ -1,6 +1,8 @@
 package ante
 
 import (
+	"math/big"
+
 	sdkerrors "cosmossdk.io/errors"
 	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/eni-chain/go-eni/app/antedecorators"
@@ -15,9 +17,8 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/params"
-	"math/big"
 
-	math "cosmossdk.io/math"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 )
@@ -36,7 +37,7 @@ func (fc EVMFeeCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	if simulate {
 		return next(ctx, tx, simulate)
 	}
-	//return next(ctx, tx, simulate)
+
 	msg := evmtypes.MustGetEVMTransactionMessage(tx)
 	txData, err := evmtypes.UnpackTxData(msg.Data)
 	if err != nil {
@@ -79,7 +80,7 @@ func (fc EVMFeeCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	txCtx := core.NewEVMTxContext(emsg)
 	evmInstance := vm.NewEVM(*blockCtx, stateDB, cfg, vm.Config{})
 	evmInstance.SetTxContext(txCtx)
-
+	//st, err := core.ApplyMessage(evmInstance, emsg, &gp)
 	st := core.NewStateTransition(evmInstance, emsg, &gp, true)
 	// run stateless checks before charging gas (mimicking Geth behavior)
 	if !ctx.IsCheckTx() && !ctx.IsReCheckTx() {
@@ -130,5 +131,4 @@ func (fc EVMFeeCheckDecorator) CalculatePriority(ctx sdk.Context, txData ethtx.T
 		priority = big.NewInt(antedecorators.MaxPriority)
 	}
 	return priority
-	return nil
 }
