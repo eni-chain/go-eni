@@ -103,7 +103,7 @@ func validatePriorityNormalizer(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v.IsNegative() {
+	if !v.IsPositive() {
 		return fmt.Errorf("nonpositive priority normalizer: %d", v)
 	}
 
