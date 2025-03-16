@@ -3,7 +3,7 @@
 
 pragma solidity >= 0.8.0;
 
-uint constant consensusSize = 21;
+uint constant consensusSize = 2;
 
 uint constant MIN_PLEDGE_AMOUNT = 10000;
 
@@ -56,6 +56,8 @@ contract Common {
 
 interface IValidatorManager {
     function getPubKey(address validator) external returns (bytes memory);
+
+    function getNodeAddrAndPubKey(address operator) external returns (address, bytes memory);
 
     function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory);
 

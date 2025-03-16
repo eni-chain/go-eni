@@ -5,31 +5,49 @@ pragma solidity >= 0.8.0;
 import "./common.sol";
 
 contract ValidatorManager{
-    //todo: add event and emit
+    //todo: add event and emit for every external method
 
+    //current consensus node set
     address[consensusSize] _consensusSet;
 
+    //For traversal and retrieval, because the mapping type cannot be traversed
     address[] _validatorNodes;
 
-    struct validator{
-        address operator;
-        address node;
-        address agent;
-        bytes  pubKey;
-        uint256 amount;
-        string name;
-        string description;
-        uint256 enterTime;
-        bool isJail;
-        uint256 expired;
+    struct applicant{
+        address operator; //operator address, validator node's owner
+        address node; //node address, for consensus
+        address agent; //After being authorized by the operator, the agent can perform operator functions
+        bytes  pubKey; //validator node' public key, ed25519 type
+        uint256 amount;//validator pledge amount
+        string name; //validator name
+        string description; //validator description
+        uint256 enterTime; //time of application
     }
 
+    //validator info
+    struct validator{
+        address operator;   //operator address, validator node's owner, also the address to receive the block reward
+        address node;       //node address, for consensus
+        address agent;      //After being authorized by the operator, the agent can perform operator functions
+        bytes  pubKey;      //validator node' public key, ed25519 type, used to verify data such as random, malicious votes, and duplicate proposals
+        uint256 amount;      //validator pledge amount
+        string name;        //validator name
+        string description; //validator description
+        uint256 enterTime;  //time to be a validator
+        bool isJail;        //current validator is jailed
+        uint256 expired;    //expired time of jail
+    }
+
+    //operator addr=>validator info
     mapping (address=>validator) _infos;
 
+    //node addr=>operator addr
     mapping (address=>address) _node2operator;
 
-    mapping (address=>address) _agent2perator;
+    //agent addr => operator
+    mapping (address=>address) _agent2operator;
 
+    //validator name=>operator addr
     mapping (string=>address) _names;
 
     modifier onlyHub() {
@@ -51,6 +69,12 @@ contract ValidatorManager{
         return bytes("");
     }
 
+    function getNodeAddrAndPubKey(address operator) external returns (address, bytes memory){
+        validator storage a = _infos[operator];
+        require(a.amount > 0, "Operator and validator not exist");
+        return (a.node, a.pubKey);
+    }
+
     function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory){
         bytes[] memory pubKeys = new bytes[](nodes.length);
 
@@ -64,7 +88,7 @@ contract ValidatorManager{
         return pubKeys;
     }
 
-    function getValidatorSet() external  returns (address[] memory){
+    function getValidatorSet() external returns (address[] memory){
         return _validatorNodes;
     }
 
@@ -79,6 +103,7 @@ contract ValidatorManager{
         bytes  calldata pubKey
     ) external onlyHub {
         require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
+        require(_infos[operator].amount == 0, "validator already exist");
 
         validator storage v = _infos[operator];
         v.operator = operator;
@@ -95,7 +120,7 @@ contract ValidatorManager{
         _validatorNodes.push(node);
         _names[name] = operator;
         _node2operator[node] = operator;
-        _agent2perator[agent] = operator;
+        _agent2operator[agent] = operator;
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {

@@ -42,6 +42,11 @@
 				"internalType": "bytes",
 				"name": "rnd",
 				"type": "bytes"
+			},
+			{
+				"internalType": "uint256",
+				"name": "epoch",
+				"type": "uint256"
 			}
 		],
 		"name": "init",

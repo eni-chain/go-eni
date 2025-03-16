@@ -4,27 +4,34 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-uint256 constant PUBKEY_LEN = 32;
-uint256 constant PRIKEY_LEN = 64;
-uint256 constant SEED_LEN = 64;
-uint256 constant SIGN_LEN = 64;
-uint256 constant HASH_LEN = 64;
+uint256 constant PUBKEY_LEN = 32; //ed25519 public key length
+uint256 constant PRIKEY_LEN = 64; //ed25519 private key length
+uint256 constant SEED_LEN = 64;   //random seed length
+uint256 constant SIGN_LEN = 64;   //ed25519 signature length
+uint256 constant HASH_LEN = 64;  //hash length
 
 contract Vrf {
-    //todo: add event and emit
+    //todo: add event and emit for every method
 
+    //init rand seed, will be init by administrator
+    bool _initFlag;
+
+    //administrator address
     address public _admin;
 
-    bytes internal _initSeed;
-
+    //epoch => random seed
     mapping(uint256 => bytes)internal _seeds;
 
+    //validator node address => ed25519 public key
     mapping (address => bytes) private _pubKeys;
 
+    //map(epoch=>map(validator node address=>random))
     mapping (uint256=>mapping (address=>bytes)) private  _randoms;
 
+    //invalid validator[], record the node not send random
     address[] private _unSendRandNodes;
 
+    //valid validator[]
     address[] private _validNodes;
 
     modifier onlyAdmin() {
@@ -37,21 +44,29 @@ contract Vrf {
     }
 
     function updateAdmin(address admin) external onlyAdmin {
+        //require(msg.sender == _admin, "Msg sender is not administrator");
         _admin = admin;
     }
 
-    function init(bytes calldata rnd) external onlyAdmin {
-        require(_initSeed.length == 0, "vrf has not been init!");
+    function init(bytes calldata rnd, uint256 epoch) external onlyAdmin {
+        //require(msg.sender == _admin, "Msg sender is not administrator");
+        require(_initFlag == false, "vrf has been init!");
 
-        _initSeed = rnd;
+        _seeds[epoch] = rnd;
+        _initFlag = true;
     }
 
     function getRandomSeed(uint256 epoch) external view returns (bytes memory) {
+        require(_initFlag == true, "vrf has not been init!");
          require(epoch > 1, "epoch number too small");
 
+        //each random values is generated from the seeds of the previous epoch
         return _seeds[epoch-1];
     }
 
+    // function setPubKey(address validator, bytes calldata pubkey) public {
+    //     _pubKeys[validator] = pubkey;
+    // }
 
     function verifyEd25519Sign(bytes memory pubKey, bytes memory signature, bytes memory msgHash) internal view returns (bool) {
         require(pubKey.length == PUBKEY_LEN, "The public key length is not ed25519 public key size");
@@ -80,79 +95,61 @@ contract Vrf {
     }
 
     function sendRandom(bytes calldata rnd, uint256 epoch) external returns (bool success){
-        require(_initSeed.length > 0, "Send random needs init first!");
-
+        require(_initFlag == true, "Needs init first!");
         require(epoch > 1, "Epoch number too small");
         require(_seeds[epoch-1].length == SEED_LEN, "Random values sent ahead of epoch!");
         require(rnd.length == SIGN_LEN, "Random length is not ed25519 signature size!");
 
-        if(_pubKeys[msg.sender].length == 0){
-            bytes memory pubkey = IValidatorManager(VALIDATOR_MANAGER_ADDR).getPubKey(msg.sender);
-            if(pubkey.length == 0){
-                revert("Msg sender is not validator");
-            }
+        address nodeAddr;
+        bytes memory pubKey;
+        (nodeAddr, pubKey) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getNodeAddrAndPubKey(msg.sender);
+        require(pubKey.length != 0, "Msg sender is not validator operator");
 
-            _pubKeys[msg.sender] = pubkey;
-        }
-
-        bool success = verifyEd25519Sign(_pubKeys[msg.sender], rnd, _seeds[epoch-1]);
+        bool success = verifyEd25519Sign(pubKey, rnd, _seeds[epoch-1]);
         require(success == true, "Random is not signature that signed by validator");
 
-        _randoms[epoch][msg.sender] = rnd;
+        _randoms[epoch][nodeAddr] = rnd;
     }
 
     function updateConsensusSet(uint256 epoch) external returns (address[] memory) {
         //require(_randoms[epoch].length > 0, "Epoch has no random value!");
 
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();
-        if(validators.length == 0){
-            revert(" validator set is empty");
-        }
+        require(validators.length > 0, "Validator set is empty");
 
         //address[] memory validators = new address[](address(uint160(_randoms[epoch][keccak256("Vrf")])));
-
         for (uint i = 0; i < validators.length; ++i) {
             if(_randoms[epoch][validators[i]].length == 0){
                 _unSendRandNodes.push(validators[i]);
-            }
-        }
-
-        //todo: call slash contract
-
-        for (uint i = 0; i < validators.length; ++i) {
-            bool found = false;
-
-            for(uint ii = 0; ii < _unSendRandNodes.length; ++ii){
-                if(_unSendRandNodes[ii] == validators[i]){
-                    found = true;
-                    break;
-                }
-            }
-
-            if(!found){
+            }else{
                 _validNodes.push(validators[i]);
             }
         }
 
+        //todo: call slash contract to penalty evil node
+        //ISlash(SLASH_ADDR).penaltyUnsendRandomValidator(_unSendRandNodes);
+
         address[] memory sorted = sortAddrs(_validNodes, epoch);
         address[] memory topN = getTopNAddresses(sorted, consensusSize);
 
+        //The seed of this epoch are generated for the next epoch to generate random values
         _seeds[epoch] = _seeds[epoch-1];
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
 
+        //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
         delete _validNodes;
 
         return topN;
-
     }
 
     function compare(bytes memory a, bytes memory b) internal pure returns (bool) {
         return keccak256(a) < keccak256(b);
     }
 
+    // Sort addresses in ascending order by random value
     function sortAddrs(address[] memory array, uint256 epoch) internal view returns (address[] memory) {
         uint256 n = array.length;
         if (n <= 1){
@@ -189,9 +186,9 @@ contract Vrf {
         return result;
     }
 
+    // Adds two 64-byte bytes byte by byte
     function addBytes(bytes memory a, bytes memory b) internal pure returns (bytes memory) {
         require(a.length == 64 && b.length == 64, "Invalid input length");
-
         uint256 numA0;
         uint256 numA1;
         uint256 numB0;
@@ -204,6 +201,7 @@ contract Vrf {
             numB1 := mload(add(b, 0x40))
         }
 
+        // The overflow problem is not considered, because overflow also has no more byte bits stored
         uint256 carry = numA0 + numB0;
         uint256 high = numA1 + numB1;
 
