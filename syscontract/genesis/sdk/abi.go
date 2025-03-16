@@ -45,6 +45,11 @@ const VRFABI = `
 				"internalType": "bytes",
 				"name": "rnd",
 				"type": "bytes"
+			},
+			{
+				"internalType": "uint256",
+				"name": "epoch",
+				"type": "uint256"
 			}
 		],
 		"name": "init",
@@ -246,6 +251,30 @@ const validatorManagerABI = `
 		],
 		"name": "addValidator",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "getNodeAddrAndPubKey",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes",
+				"name": "",
+				"type": "bytes"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
