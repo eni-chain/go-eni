@@ -1,11 +1,6 @@
 [
 	{
 		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
 		"name": "_admin",
 		"outputs": [
 			{
@@ -50,6 +45,13 @@
 			}
 		],
 		"name": "init",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "initAdmin",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

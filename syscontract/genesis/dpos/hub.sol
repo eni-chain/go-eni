@@ -32,12 +32,13 @@ contract Hub {
     mapping (address=>applicant) _applicants;
 
     modifier onlyAdmin() {
-        require(msg.sender == _admin, "the message sender must be administrator");
+        require(msg.sender == _admin, "The message sender must be administrator");
         _;
     }
 
-    constructor(){
-        _admin = ADMIN_ADDR;
+    function initAdmin() external {
+        require(msg.sender == ADMIN_ADDR, "The message sender must be administrator");
+        _admin = msg.sender;
     }
 
     function updateAdmin(address admin) external onlyAdmin {
@@ -90,13 +91,13 @@ contract Hub {
     function blockReward(address node) external returns (uint256) {
         uint256 pledgeAmount = IValidatorManager(VALIDATOR_MANAGER_ADDR).getPledgeAmount(node);
         uint256 reward = calculateReward(pledgeAmount);
-
+        return reward;
     }
 
     function calculateReward(uint256 pledge) internal returns (uint256){
         //Reward algorithm: base * { 1 + (pledgeAmount * increasePerCoin)}
         //return (BLOCK_REWARD_BASE_NUMERATOR/BASE_RATIO_DENOMINATOR) * (1 + (pledge * PER_COIN_INCREASE_NUMERATOR/BASE_RATIO_DENOMINATOR));
         //return BLOCK_REWARD_BASE_NUMERATOR * (1*BASE_RATIO_DENOMINATOR + (pledge*BASE_RATIO_DENOMINATOR * PER_COIN_INCREASE_NUMERATOR))/BASE_RATIO_DENOMINATOR;
-        return 100;
+        return 100000000;
     }
 }

@@ -1,10 +1,5 @@
 [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -79,6 +74,13 @@
 				"type": "address"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "initAdmin",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},

@@ -4,11 +4,6 @@ const VRFABI = `
 [
 	{
 		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
 		"name": "_admin",
 		"outputs": [
 			{
@@ -53,6 +48,13 @@ const VRFABI = `
 			}
 		],
 		"name": "init",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "initAdmin",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -118,11 +120,6 @@ const VRFABI = `
 
 const HubABI = `
 [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
 	{
 		"inputs": [
 			{
@@ -198,6 +195,13 @@ const HubABI = `
 				"type": "address"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "initAdmin",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},

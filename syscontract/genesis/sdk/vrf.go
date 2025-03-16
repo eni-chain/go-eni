@@ -159,7 +159,7 @@ func (v *VRF) UpdateConsensusSet(
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
 		revertMsg, e := ParseRevert(retData)
-		if string(revertMsg) == "Validator set is empty" && e == nil {
+		if (string(revertMsg) == "Validator set is empty" || string(revertMsg) == "The initial seed has not been initialized and dpos has not been started") && e == nil {
 			return nil, nil
 		}
 		return nil, fmt.Errorf("EVM call failed: %v", err)

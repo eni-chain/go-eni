@@ -35,12 +35,18 @@ contract Vrf {
     address[] private _validNodes;
 
     modifier onlyAdmin() {
-        require(msg.sender == _admin, "the message sender must be administrator");
+        require(msg.sender == _admin, "The message sender must be administrator");
         _;
     }
 
-    constructor(){
-        _admin = ADMIN_ADDR;
+   modifier needInited() {
+        require(_initFlag == true, "The initial seed has not been initialized and dpos has not been started");
+        _;
+    }
+
+    function initAdmin() external {
+        require(msg.sender == ADMIN_ADDR, "The message sender must be administrator");
+        _admin = msg.sender;
     }
 
     function updateAdmin(address admin) external onlyAdmin {
@@ -56,9 +62,9 @@ contract Vrf {
         _initFlag = true;
     }
 
-    function getRandomSeed(uint256 epoch) external view returns (bytes memory) {
-        require(_initFlag == true, "vrf has not been init!");
-         require(epoch > 1, "epoch number too small");
+    function getRandomSeed(uint256 epoch) external view needInited returns (bytes memory) {
+        //require(_initFlag == true, "vrf has not been init!");
+        require(epoch > 1, "epoch number too small");
 
         //each random values is generated from the seeds of the previous epoch
         return _seeds[epoch-1];
@@ -94,8 +100,8 @@ contract Vrf {
         return true;
     }
 
-    function sendRandom(bytes calldata rnd, uint256 epoch) external returns (bool success){
-        require(_initFlag == true, "Needs init first!");
+    function sendRandom(bytes calldata rnd, uint256 epoch) external needInited returns (bool success){
+        //require(_initFlag == true, "Needs init first!");
         require(epoch > 1, "Epoch number too small");
         require(_seeds[epoch-1].length == SEED_LEN, "Random values sent ahead of epoch!");
         require(rnd.length == SIGN_LEN, "Random length is not ed25519 signature size!");
@@ -111,7 +117,7 @@ contract Vrf {
         _randoms[epoch][nodeAddr] = rnd;
     }
 
-    function updateConsensusSet(uint256 epoch) external returns (address[] memory) {
+    function updateConsensusSet(uint256 epoch) external needInited returns (address[] memory) {
         //require(_randoms[epoch].length > 0, "Epoch has no random value!");
 
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();
