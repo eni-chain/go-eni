@@ -3,13 +3,12 @@ package syscontract
 import (
 	"encoding/hex"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/syscontract/genesis"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"math/big"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/log"
+	evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 )
 
 var contracts *contractsConfig
@@ -44,21 +43,20 @@ func init() {
 	}
 }
 
-func SetupSystemContracts(blockNumber *big.Int, statedb vm.StateDB, logger log.Logger) {
+func SetupSystemContracts(ctx sdk.Context, evmKeeper evmKeeper.Keeper) {
 	if contracts == nil {
-		logger.Info("Empty contracts config", "height", blockNumber.String())
+		evmKeeper.Logger().Info("empty contracts config", "height", ctx.BlockHeight())
 		return
 	}
 
-	logger.Info(fmt.Sprintf("Apply contracts %s at height %d", contracts.Name, blockNumber.Int64()))
+	evmKeeper.Logger().Info(fmt.Sprintf("apply contracts %s at height %d", contracts.Name, ctx.BlockHeight()))
 	for _, cfg := range contracts.Configs {
-		logger.Info(fmt.Sprintf("contractsConfig contract %s", cfg.Addr.String()))
+		evmKeeper.Logger().Info(fmt.Sprintf("contractsConfig contract %s", cfg.Addr.String()))
 
 		newContractCode, err := hex.DecodeString(strings.TrimSpace(cfg.Code))
 		if err != nil {
 			panic(fmt.Errorf("failed to decode new contract code: %s", err.Error()))
 		}
-		statedb.SetCode(cfg.Addr, newContractCode)
-
+		evmKeeper.SetCode(ctx, cfg.Addr, newContractCode)
 	}
 }

@@ -53,8 +53,11 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	"google.golang.org/protobuf/types/known/durationpb"
 
+	epochmodulev1 "github.com/eni-chain/go-eni/api/goeni/epoch/module"
 	evmmodulev1 "github.com/eni-chain/go-eni/api/goeni/evm/module"
 	goenimodulev1 "github.com/eni-chain/go-eni/api/goeni/goeni/module"
+	_ "github.com/eni-chain/go-eni/x/epoch/module" // import for side-effects
+	epochmoduletypes "github.com/eni-chain/go-eni/x/epoch/types"
 	_ "github.com/eni-chain/go-eni/x/evm/module" // import for side-effects
 	evmmoduletypes "github.com/eni-chain/go-eni/x/evm/types"
 	_ "github.com/eni-chain/go-eni/x/goeni/module" // import for side-effects
@@ -98,6 +101,8 @@ var (
 		// chain modules
 		goenimoduletypes.ModuleName,
 		evmmoduletypes.ModuleName,
+		epochmoduletypes.ModuleName,
+
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -124,6 +129,8 @@ var (
 		// chain modules
 		goenimoduletypes.ModuleName,
 		evmmoduletypes.ModuleName,
+		epochmoduletypes.ModuleName,
+
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -144,6 +151,8 @@ var (
 		// chain modules
 		goenimoduletypes.ModuleName,
 		evmmoduletypes.ModuleName,
+		epochmoduletypes.ModuleName,
+
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -307,6 +316,10 @@ var (
 			{
 				Name:   evmmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&evmmodulev1.Module{}),
+			},
+			{
+				Name:   epochmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&epochmodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
