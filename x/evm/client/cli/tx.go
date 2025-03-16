@@ -280,7 +280,7 @@ func CmdDeployContract() *cobra.Command {
 		Use:   "deploy [path to binary] [value] --from=<sender> --gas-fee-cap=<cap> --gas-limt=<limit> --evm-rpc=<url>",
 		Short: "Deploy an EVM contract for binary at specified path",
 		Long:  "",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -321,7 +321,7 @@ func CmdDeployContract() *cobra.Command {
 				}
 			}
 			val := utils.Big0
-			if n, err := cmd.Flags().GetInt64(FlagNonce); err == nil && n >= 0 {
+			if n, err := cmd.Flags().GetInt64(FlagValue); err == nil && n >= 0 {
 				val = big.NewInt(n)
 			}
 			txData, err := getTxData(cmd)
@@ -812,9 +812,9 @@ func sendTx(txData *ethtypes.DynamicFeeTx, rpcUrl string, key *ecdsa.PrivateKey,
 	}
 
 	h := bfttypes.Tx(txbz).Hash()
-	hexH := hexutil.Encode(h)
-	println("hexH =", hexH)
 	hexTxHash = common.Hash(h)
+
+	println("send tx hexH = " + signedTx.Hash().Hex())
 
 	return hexTxHash, nil
 }

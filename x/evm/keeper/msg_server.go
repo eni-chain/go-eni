@@ -100,6 +100,7 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 			return
 		}
 
+		//
 		receipt, rerr := server.WriteReceipt(ctx, stateDB, emsg, uint32(tx.Type()), tx.Hash(), serverRes.GasUsed, serverRes.VmError)
 		if rerr != nil {
 			err = rerr
@@ -133,7 +134,12 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 		// to Eni transactions' priority, which is based on gas limit in
 		// Eni unit, so we use the same coefficient to convert gas unit here.
 		adjustedGasUsed := server.GetPriorityNormalizer(ctx).MulInt64(int64(serverRes.GasUsed))
-		originalGasMeter.ConsumeGas(adjustedGasUsed.TruncateInt().Uint64(), "evm transaction")
+
+		adjustedGasUsed2 := adjustedGasUsed.TruncateInt().Uint64()
+		if adjustedGasUsed2 > uint64(originalGasMeter.GasConsumed()) {
+			adjustedGasUsed2 = adjustedGasUsed.TruncateInt().Uint64() - uint64(originalGasMeter.GasConsumed())
+		}
+		originalGasMeter.ConsumeGas(adjustedGasUsed2, "evm transaction")
 	}()
 
 	res, applyErr := server.applyEVMMessage(ctx, emsg, stateDB, gp)
