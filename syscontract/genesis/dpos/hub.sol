@@ -44,6 +44,10 @@ contract Hub {
         _admin = admin;
     }
 
+    function getAdmin() external  returns (address){
+        return _admin;
+    }
+
     function applyForValidator(
         address node,
         address agent,
@@ -66,7 +70,7 @@ contract Hub {
     }
 
     function auditPass(address operator) external onlyAdmin {
-        applicant storage a = _applicants[msg.sender];
+        applicant storage a = _applicants[operator];
         require(a.amount > 0, "applicant not exists");
 
         IValidatorManager(VALIDATOR_MANAGER_ADDR).addValidator(
@@ -80,7 +84,7 @@ contract Hub {
             a.pubKey
         );
 
-        delete _applicants[msg.sender];
+        delete _applicants[operator];
     }
 
     function blockReward(address node) external returns (uint256) {

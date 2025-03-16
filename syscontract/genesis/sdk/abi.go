@@ -189,6 +189,19 @@ const HubABI = `
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
