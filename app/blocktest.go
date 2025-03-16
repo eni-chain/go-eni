@@ -128,6 +128,10 @@ func encodeTx(tx *ethtypes.Transaction, txConfig client.TxConfig) []byte {
 		panic(err)
 	}
 	msg, err := evmtypes.NewMsgEVMTransaction(txData)
+	signer := ethtypes.LatestSignerForChainID(tx.ChainId())
+	sender, _ := ethtypes.Sender(signer, tx)
+	eniAddr := sdk.AccAddress(sender[:])
+	msg.Sender = eniAddr.String()
 	if err != nil {
 		panic(err)
 	}
