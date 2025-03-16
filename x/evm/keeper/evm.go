@@ -113,7 +113,7 @@ func (k *Keeper) CallEVM(ctx sdk.Context, from common.Address, to *common.Addres
 	}
 	k.consumeEvmGas(ctx, res.UsedGas)
 	if res.Err != nil {
-		return nil, res.Err
+		return res.ReturnData, res.Err
 	}
 	surplus, err := stateDB.Finalize()
 	if err != nil {

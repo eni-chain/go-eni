@@ -82,7 +82,7 @@ func (vm *ValidatorManager) GetPubKeysBySequence(
 	}
 
 	var pubkeys [][]byte
-	err = vm.abi.UnpackIntoInterface(&pubkeys, "getPubkeysBySequence", retData)
+	err = vm.abi.UnpackIntoInterface(&pubkeys, "getPubKeysBySequence", retData)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unpack return value: %v", err)
 	}

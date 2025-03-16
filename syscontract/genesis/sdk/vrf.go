@@ -1,6 +1,7 @@
 package sdk
 
 import (
+	"encoding/hex"
 	"fmt"
 	"math/big"
 	"strings"
@@ -128,6 +129,20 @@ func (v *VRF) UpdateAdmin(
 	return retData, nil
 }
 
+func ParseRevert(data []byte) ([]byte, error) {
+	//len(data) should > select len 4 + offset + str len
+	if len(data) > (4 + 32 + 32) {
+		if hex.EncodeToString(data[:4]) == "08c379a0" { //08c379a0 is select of Error(string)
+			msgLenBytes := data[4+32 : 4+32+32]
+			tmp := big.NewInt(0)
+			tmp.SetBytes(msgLenBytes)
+			msgLen := tmp.Uint64()
+			return data[4+32+32 : 4+32+32+msgLen], nil
+		}
+	}
+	return nil, fmt.Errorf("failed to parse revert data")
+}
+
 // UpdateConsensusSet updates the consensus set for a specific epoch
 func (v *VRF) UpdateConsensusSet(
 	ctx sdk.Context,
@@ -143,6 +158,10 @@ func (v *VRF) UpdateConsensusSet(
 	to := &address
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
+		revertMsg, e := ParseRevert(retData)
+		if string(revertMsg) == "Validator set is empty" && e == nil {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("EVM call failed: %v", err)
 	}
 
