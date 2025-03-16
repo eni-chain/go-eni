@@ -176,7 +176,11 @@ contract Vrf {
     }
 
     function getTopNAddresses(address[] memory array, uint256 n) internal pure returns (address[] memory) {
-        require(n <= array.length, "Invalid slice length");
+        if(array.length < n){
+            n = array.length;
+        }
+
+        require(n >= 1, "Invalid slice length");
 
         address[] memory result = new address[](n);
         for (uint256 i = 0; i < n; i++) {
