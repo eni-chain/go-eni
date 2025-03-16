@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"cosmossdk.io/log"
 )
 
 func LogIfNotDoneAfter[R any](logger log.Logger, task func() (R, error), after time.Duration, label string) (R, error) {

@@ -47,7 +47,7 @@ func (server msgServer) EVMTransaction(goCtx context.Context, msg *types.MsgEVMT
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	tx, _ := msg.AsTransaction()
-
+	server.logger.Debug("processing EVM transaction", "hash", tx.Hash().Hex())
 	// EVM has a special case here, mainly because for an EVM transaction the gas limit is set on EVM payload level, not on top-level GasWanted field
 	// as normal transactions (because existing eth client can't). As a result EVM has its own dedicated ante handler chain. The full sequence is:
 

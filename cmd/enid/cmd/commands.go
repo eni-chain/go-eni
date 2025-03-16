@@ -52,6 +52,7 @@ func initRootCmd(
 		queryCommand(),
 		txCommand(basicManager),
 		keys.Commands(),
+		BlocktestCmd(app.DefaultNodeHome),
 	)
 }
 

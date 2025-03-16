@@ -13,5 +13,7 @@ type (
 	Subspace interface {
 		GetParamSetIfExists(ctx sdk.Context, ps paramtypes.ParamSet)
 		SetParamSet(ctx sdk.Context, ps paramtypes.ParamSet)
+		HasKeyTable() bool
+		WithKeyTable(table paramtypes.KeyTable) paramtypes.Subspace
 	}
 )

@@ -1,0 +1,56 @@
+name: ETH Blocktests
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+defaults:
+ run:
+  shell: bash
+
+env:
+  TOTAL_RUNNERS: 5
+
+jobs:
+  runner-indexes:
+    runs-on: self-hosted
+    name: Generate runner indexes
+    outputs:
+      json: ${{ steps.generate-index-list.outputs.json }}
+    steps:
+      - id: generate-index-list
+        run: |
+          MAX_INDEX=$((${{ env.TOTAL_RUNNERS }}-1))
+          INDEX_LIST=$(seq 0 ${MAX_INDEX})
+          INDEX_JSON=$(jq --null-input --compact-output '. |= [inputs]' <<< ${INDEX_LIST})
+          echo "json=${INDEX_JSON}" >> $GITHUB_OUTPUT
+
+  eth-blocktests:
+    name: "Run ETH Blocktests ${{ matrix.runner-index }}"
+    runs-on: self-hosted
+    needs: runner-indexes
+    strategy:
+      fail-fast: false
+      matrix:
+        # generate runner index array from 0 to total-runners
+        runner-index: ${{fromJson(needs.runner-indexes.outputs.json)}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.23
+
+      - name: Clone ETH Blocktests
+        run: git clone https://github.com/ethereum/tests.git ethtests
+
+      - name: Configure git to use PAT
+        run: |
+          git config --global url."https://github.com".insteadOf "https://github.com"
+      - name: "Run ETH Blocktest"
+        run: ./run_blocktests.sh ./ethtests/BlockchainTests/ ${{ matrix.runner-index }} ${{ env.TOTAL_RUNNERS }}

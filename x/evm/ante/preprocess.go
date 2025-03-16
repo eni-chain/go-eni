@@ -1,30 +1,31 @@
 package ante
 
 import (
-	sdkerrors "cosmossdk.io/errors"
-	storetypes "cosmossdk.io/store/types"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/eni-chain/go-eni/app/antedecorators"
-	"github.com/eni-chain/go-eni/utils/helpers"
-	"github.com/eni-chain/go-eni/utils/metrics"
-	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
-	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 
+	storetypes "cosmossdk.io/store/types"
+	"github.com/eni-chain/go-eni/utils/helpers"
+
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/btcsuite/btcd/btcec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
 	accountkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	//"github.com/eni-chain/go-eni/app/antedecorators"
+	//authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	//banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/eni-chain/go-eni/app/antedecorators"
 	"github.com/eni-chain/go-eni/utils"
-	//"github.com/eni-chain/go-eni/utils/metrics"
+	"github.com/eni-chain/go-eni/utils/metrics"
 	"github.com/eni-chain/go-eni/x/evm/derived"
 	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/params"
 )
 
@@ -48,7 +49,6 @@ type EVMPreprocessDecorator struct {
 	accountKeeper *accountkeeper.AccountKeeper
 }
 
-// todo authkeeper.AccountKeeper auth.AccountKeeper need check
 func NewEVMPreprocessDecorator(evmKeeper *evmkeeper.Keeper, accountKeeper *accountkeeper.AccountKeeper) *EVMPreprocessDecorator {
 	return &EVMPreprocessDecorator{evmKeeper: evmKeeper, accountKeeper: accountKeeper}
 }
@@ -69,8 +69,6 @@ func (p *EVMPreprocessDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 	ctx.EventManager().EmitEvent(sdk.NewEvent(evmtypes.EventTypeSigner,
 		sdk.NewAttribute(evmtypes.AttributeKeyEvmAddress, evmAddr.Hex()),
 		sdk.NewAttribute(evmtypes.AttributeKeyEniAddress, eniAddr.String())))
-
-	// evm and eni address Associate implement
 	pubkey := derived.PubKey
 	isAssociateTx := derived.IsAssociate
 	associateHelper := helpers.NewAssociationHelper(p.evmKeeper, p.evmKeeper.BankKeeper(), p.accountKeeper)
@@ -108,11 +106,11 @@ func (p *EVMPreprocessDecorator) IsAccountBalancePositive(ctx sdk.Context, eniAd
 	if amt := p.evmKeeper.BankKeeper().GetBalance(ctx, sdk.AccAddress(evmAddr[:]), baseDenom).Amount; amt.IsPositive() {
 		return true
 	}
+	return false
 	//if amt := p.evmKeeper.BankKeeper().GetWeiBalance(ctx, eniAddr); amt.IsPositive() {
 	//	return true
 	//}
 	//return p.evmKeeper.BankKeeper().GetWeiBalance(ctx, sdk.AccAddress(evmAddr[:])).IsPositive()
-	return false
 }
 
 // stateless
@@ -171,6 +169,7 @@ func Preprocess(ctx sdk.Context, msgEVMTransaction *evmtypes.MsgEVMTransaction) 
 	if err != nil {
 		return err
 	}
+	msgEVMTransaction.Sender = eniAddr.String()
 	msgEVMTransaction.Derived = &derived.Derived{
 		SenderEVMAddr: evmAddr,
 		SenderEniAddr: eniAddr,
@@ -178,65 +177,6 @@ func Preprocess(ctx sdk.Context, msgEVMTransaction *evmtypes.MsgEVMTransaction) 
 		Version:       version,
 		IsAssociate:   false,
 	}
-	return nil
-}
-
-func Preprocess2(msgEVMTransaction *evmtypes.MsgEVMTransaction) error {
-	if msgEVMTransaction.Derived != nil {
-		if msgEVMTransaction.Derived.PubKey == nil {
-			// this means the message has `Derived` set from the outside, in which case we should reject
-			return coserrors.ErrInvalidPubKey
-		}
-		// already preprocessed
-		return nil
-	}
-	txData, err := evmtypes.UnpackTxData(msgEVMTransaction.Data)
-	if err != nil {
-		return err
-	}
-
-	if atx, ok := txData.(*ethtx.AssociateTx); ok {
-		V, R, S := atx.GetRawSignatureValues()
-		V = new(big.Int).Add(V, utils.Big27)
-		// Hash custom message passed in
-		customMessageHash := crypto.Keccak256Hash([]byte(atx.CustomMessage))
-		_, eniAddr, _, err := helpers.GetAddresses(V, R, S, customMessageHash)
-		if err != nil {
-			return err
-		}
-		//msgEVMTransaction.Derived = &derived.Derived{
-		//	SenderEVMAddr: evmAddr,
-		//	SenderEniAddr: eniAddr,
-		//	PubKey:        &secp256k1.PubKey{Key: pubkey.Bytes()},
-		//	Version:       derived.Cancun,
-		//	IsAssociate:   true,
-		//}
-		msgEVMTransaction.Sender = eniAddr.String()
-		return nil
-	}
-
-	ethTx := ethtypes.NewTx(txData.AsEthereumData())
-	chainID := ethTx.ChainId()
-	chainCfg := evmtypes.DefaultChainConfig()
-	ethCfg := chainCfg.EthereumConfig(chainID)
-	signer := SignerMap[derived.Cancun](chainID)
-	if !isTxTypeAllowed(derived.Cancun, ethTx.Type()) {
-		return ethtypes.ErrInvalidChainId
-	}
-
-	var txHash common.Hash
-	V, R, S := ethTx.RawSignatureValues()
-	if ethTx.Protected() {
-		V = AdjustV(V, ethTx.Type(), ethCfg.ChainID)
-		txHash = signer.Hash(ethTx)
-	} else {
-		txHash = ethtypes.FrontierSigner{}.Hash(ethTx)
-	}
-	_, eniAddr, _, err := helpers.GetAddresses(V, R, S, txHash)
-	if err != nil {
-		return err
-	}
-	msgEVMTransaction.Sender = eniAddr.String()
 	return nil
 }
 
@@ -341,8 +281,7 @@ func (p *EVMAddressDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	}
 	signers, err := sigTx.GetSigners()
 	if err != nil {
-		ctx.Logger().Error(fmt.Sprintf("get signers failed: %s", err))
-		return ctx, sdkerrors.Wrap(coserrors.ErrTxDecode, "invalid tx signers")
+		return ctx, sdkerrors.Wrap(coserrors.ErrInvalidAddress, "failed to get signers")
 	}
 	for _, signer := range signers {
 		acc := p.accountKeeper.GetAccount(ctx, signer)
@@ -384,8 +323,7 @@ func (p *EVMAddressDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		}
 		if evmtypes.IsTxMsgAssociate(tx) {
 			// check if there is non-zero balance
-			//if !p.evmKeeper.BankKeeper().GetBalance(ctx, signer, p.evmKeeper.GetBaseDenom(ctx)).IsPositive() && !p.evmKeeper.BankKeeper().GetWeiBalance(ctx, signer).IsPositive() {
-			if !p.evmKeeper.BankKeeper().GetBalance(ctx, signer, p.evmKeeper.GetBaseDenom(ctx)).IsPositive() {
+			if !p.evmKeeper.BankKeeper().GetBalance(ctx, signer, p.evmKeeper.GetBaseDenom(ctx)).IsPositive() { //&& !p.evmKeeper.BankKeeper().GetWeiBalance(ctx, signer).IsPositive()
 				return ctx, sdkerrors.Wrap(coserrors.ErrInsufficientFunds, "account needs to have at least 1 wei to force association")
 			}
 		}

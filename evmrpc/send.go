@@ -3,13 +3,13 @@ package evmrpc
 import (
 	"context"
 	"errors"
-	"github.com/eni-chain/go-eni/x/evm/ante"
+
 	"time"
 
+	sdkerrors "cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	sdkerrors "cosmossdk.io/errors"
+	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
@@ -57,17 +57,19 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if err = tx.UnmarshalBinary(input); err != nil {
 		return
 	}
-
 	hash = tx.Hash()
 	txData, err := ethtx.NewTxDataFromTx(tx)
 	if err != nil {
 		return
 	}
 	msg, err := types.NewMsgEVMTransaction(txData)
+	signer := ethtypes.LatestSignerForChainID(tx.ChainId())
+	sender, _ := ethtypes.Sender(signer, tx)
+	eniAddr := s.keeper.GetEniAddressOrDefault(s.ctxProvider(LatestCtxHeight), sender)
+	msg.Sender = eniAddr.String()
 	if err != nil {
 		return
 	}
-	ante.Preprocess2(msg)
 	txBuilder := s.txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return
@@ -77,9 +79,6 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		return hash, encodeErr
 	}
 
-	//h := bfttypes.Tx(txbz).Hash()
-	//hash = common.BytesToHash(h)
-
 	if s.sendConfig.slow {
 		res, broadcastError := s.tmClient.BroadcastTxCommit(ctx, txbz)
 		if broadcastError != nil {
@@ -87,9 +86,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		} else if res == nil {
 			err = errors.New("missing broadcast response")
 		} else if res.CheckTx.Code != 0 {
-			//err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.CheckTx.Code, "")
-			//todo: need to confirm the codespace
-			err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.CheckTx.Code, "")
+			err = sdkerrors.ABCIError(coserrors.RootCodespace, res.CheckTx.Code, "")
 		}
 	} else {
 		res, broadcastError := s.tmClient.BroadcastTxSync(ctx, txbz)
@@ -98,9 +95,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		} else if res == nil {
 			err = errors.New("missing broadcast response")
 		} else if res.Code != 0 {
-			//err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.Code, "")
-			//todo: need to confirm the codespace
-			err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.Code, "")
+			err = sdkerrors.ABCIError(coserrors.RootCodespace, res.Code, "")
 		}
 	}
 	return

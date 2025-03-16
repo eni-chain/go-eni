@@ -33,7 +33,7 @@ import (
 //	return app.BaseApp.CheckTx(ctx, req)
 //}
 
-func (app *App) CheckTx(tx *abci.RequestCheckTx) (*abci.ResponseCheckTx, error) {
+func (app *App) CheckTx(tx *abci.RequestCheckTx) (*abci.ResponseCheckTxV2, error) {
 	return app.BaseApp.CheckTx(tx)
 }
 
