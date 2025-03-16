@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"testing"
-
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
 	"cosmossdk.io/store/metrics"
@@ -16,6 +14,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
+	"testing"
 
 	"github.com/eni-chain/go-eni/x/epoch/keeper"
 	"github.com/eni-chain/go-eni/x/epoch/types"

@@ -25,8 +25,9 @@ type (
 )
 
 func (k Keeper) Epoch(ctx context.Context, request *types.QueryEpochRequest) (*types.QueryEpochResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	epoch := k.GetEpoch(sdkContext)
+	return &types.QueryEpochResponse{Epoch: epoch}, nil
 }
 
 func NewKeeper(

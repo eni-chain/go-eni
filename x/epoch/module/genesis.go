@@ -13,6 +13,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if err := k.SetParams(ctx, genState.Params); err != nil {
 		panic(err)
 	}
+	k.SetEpoch(
+		ctx,
+		*genState.Epoch,
+	)
 }
 
 // ExportGenesis returns the module's exported genesis.
@@ -22,5 +26,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	// this line is used by starport scaffolding # genesis/module/export
 
+	epoch := k.GetEpoch(ctx)
+	genesis.Epoch = &epoch
 	return genesis
 }

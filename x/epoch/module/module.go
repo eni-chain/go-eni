@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/telemetry"
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
@@ -58,7 +59,9 @@ func (AppModuleBasic) Name() string {
 
 // RegisterLegacyAminoCodec registers the amino codec for the module, which is used
 // to marshal and unmarshal structs to/from []byte in order to persist them in the module's KVStore.
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	types.RegisterCodec(cdc)
+}
 
 // RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message.
 func (a AppModuleBasic) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
@@ -145,7 +148,35 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
-func (am AppModule) BeginBlock(_ context.Context) error {
+func (am AppModule) BeginBlock(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	lastEpoch := am.keeper.GetEpoch(sdkCtx)
+	sdkCtx.Logger().Info(fmt.Sprintf("Current block time %s, last %s; duration %d", sdkCtx.BlockTime().String(), lastEpoch.CurrentEpochStartTime.String(), lastEpoch.EpochDuration))
+
+	if sdkCtx.BlockTime().Sub(lastEpoch.CurrentEpochStartTime) > lastEpoch.EpochDuration {
+		//am.keeper.AfterEpochEnd(ctx, lastEpoch)
+
+		newEpoch := types.Epoch{
+			GenesisTime:           lastEpoch.GenesisTime,
+			EpochDuration:         lastEpoch.EpochDuration,
+			CurrentEpoch:          lastEpoch.CurrentEpoch + 1,
+			CurrentEpochStartTime: sdkCtx.BlockTime(),
+			CurrentEpochHeight:    sdkCtx.BlockHeight(),
+		}
+		am.keeper.SetEpoch(sdkCtx, newEpoch)
+		//am.keeper.BeforeEpochStart(ctx, newEpoch)
+
+		sdkCtx.EventManager().EmitEvent(
+			sdk.NewEvent(types.EventTypeNewEpoch,
+				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(newEpoch.CurrentEpoch)),
+				sdk.NewAttribute(types.AttributeEpochTime, newEpoch.CurrentEpochStartTime.String()),
+				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(newEpoch.CurrentEpochHeight)),
+			),
+		)
+
+		telemetry.SetGauge(float32(newEpoch.CurrentEpoch), "epoch", "current")
+	}
+
 	return nil
 }
 
