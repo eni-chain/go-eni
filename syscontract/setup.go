@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/eni-chain/go-eni/syscontract/genesis"
 	"github.com/ethereum/go-ethereum/common"
 	"strings"
@@ -57,6 +58,15 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper evmKeeper.Keeper) {
 		if err != nil {
 			panic(fmt.Errorf("failed to decode new contract code: %s", err.Error()))
 		}
-		evmKeeper.SetCode(ctx, cfg.Addr, newContractCode)
+		caller := evmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+
+		//addr0 := common.Address{0}
+		body, err := evmKeeper.CallEVM(ctx, common.Address(caller), nil, nil, newContractCode)
+		if err != nil {
+			panic(err)
+			panic(fmt.Errorf("failed to execute contract constructor: %s", err.Error()))
+		}
+
+		evmKeeper.SetCode(ctx, cfg.Addr, body)
 	}
 }
