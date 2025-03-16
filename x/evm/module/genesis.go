@@ -1,6 +1,7 @@
 package evm
 
 import (
+	"github.com/eni-chain/go-eni/syscontract"
 	"math/big"
 	"strings"
 
@@ -25,6 +26,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			continue
 		}
 		SetBalance(ctx, &k, common.HexToAddress(initEniAddress), uint256.MustFromDecimal(initEniAmount))
+	}
+	// set system contracts for evm module
+	if ctx.BlockHeight() == 0 {
+		syscontract.SetupSystemContracts(ctx, k)
 	}
 }
 func send(ctx sdk.Context, k *keeper.Keeper, from sdk.AccAddress, to sdk.AccAddress, amt *big.Int) error {
