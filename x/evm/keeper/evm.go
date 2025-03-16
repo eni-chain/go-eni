@@ -177,6 +177,10 @@ func (k *Keeper) callEVM(ctx sdk.Context, from common.Address, to *common.Addres
 // only used for StaticCalls
 func (k *Keeper) createReadOnlyEVM(ctx sdk.Context, from sdk.AccAddress) (*vm.EVM, error) {
 	executionCtx := ctx.WithGasMeter(storetypes.NewInfiniteGasMeter())
+	if ctx.GasMeter() != nil {
+		executionCtx = ctx.WithGasMeter(ctx.GasMeter())
+	}
+
 	stateDB := state.NewDBImpl(executionCtx, k, true)
 	gp := k.GetGasPool()
 	blockCtx, err := k.GetVMBlockContext(executionCtx, gp)
