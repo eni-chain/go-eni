@@ -89,11 +89,11 @@ func NewKeeper(
 	storeKey storetypes.StoreKey, transientStoreKey storetypes.StoreKey, paramstore exported.Subspace, //receiptStateStore enidbtypes.StateStore,
 	bankKeeper bankkeeper.Keeper, accountKeeper *authkeeper.AccountKeeper, stakingKeeper *stakingkeeper.Keeper,
 	cdc codec.BinaryCodec, logger log.Logger,
-	// transferKeeper ibctransferkeeper.Keeper
+// transferKeeper ibctransferkeeper.Keeper
 ) *Keeper {
-	//if !paramstore.HasKeyTable() {
-	//	paramstore = paramstore.WithKeyTable(types.ParamKeyTable())
-	//}
+	if !paramstore.HasKeyTable() {
+		paramstore = paramstore.WithKeyTable(types.ParamKeyTable())
+	}
 	k := &Keeper{
 		storeKey:          storeKey,
 		transientStoreKey: transientStoreKey,
