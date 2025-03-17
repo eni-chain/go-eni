@@ -1,9 +1,11 @@
 package sdk
 
 import (
+	"cosmossdk.io/log"
 	"encoding/hex"
 	"fmt"
 	"math/big"
+	"os"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,6 +14,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 )
+
+var logger = log.NewLogger(os.Stdout)
 
 // VRF is the Go interface for the VRF contract
 type VRF struct {
@@ -159,7 +163,8 @@ func (v *VRF) UpdateConsensusSet(
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
 		revertMsg, e := ParseRevert(retData)
-		if (string(revertMsg) == "Validator set is empty" || string(revertMsg) == "The initial seed has not been initialized and dpos has not been started") && e == nil {
+		if e == nil {
+			logger.Error(fmt.Sprintf("VRF.UpdateConsensusSet: revert msg %s", revertMsg))
 			return nil, nil
 		}
 		return nil, fmt.Errorf("EVM call failed: %v", err)
