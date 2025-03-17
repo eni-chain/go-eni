@@ -14,8 +14,8 @@ import (
 	"time"
 )
 
-func calldataF(name, method string, args ...interface{}) (string, error) {
-	//调用合约
+func calldataF(caller string, name, method string, args ...interface{}) (string, error) {
+	//system contract dir
 	path := "/Users/moses/workspace/go-eni/syscontract/genesis/dpos/"
 	abiJson, err := ioutil.ReadFile(path + name + ".abi")
 	if err != nil {
@@ -33,7 +33,7 @@ func calldataF(name, method string, args ...interface{}) (string, error) {
 	}
 
 	dataString := hex.EncodeToString(dataByte)
-	fmt.Printf("\ncontract:%s, method:%s, calldata:\n%s\n", name, method, dataString)
+	fmt.Printf("\nFor:%s, contract:%s, method:%s, calldata:\n%s\n", caller, name, method, dataString)
 
 	return dataString, err
 }
@@ -82,7 +82,7 @@ func getAddrByHexPriKey(hexPriKey string) (Address, ed25519.PublicKey, ed25519.P
 	return addr, pubKey, priKey
 }
 
-// 根据base64字节的私钥返回地址和公钥
+// get address and public key by private key encode by base64
 func getAddrByBase64PriKey(privateKey string) (Address, ed25519.PublicKey, ed25519.PrivateKey) {
 	priBytes, err := base64.StdEncoding.DecodeString(privateKey)
 	if err != nil {
@@ -93,7 +93,7 @@ func getAddrByBase64PriKey(privateKey string) (Address, ed25519.PublicKey, ed255
 	return addr, pubKey, priBytes
 }
 
-// 将16进制字符串类型地址转换为标准地址
+// get standard address by hex str address
 func getAddrByHexStr(str string) Address {
 	addrBytes, err := hex.DecodeString(str)
 	if err != nil {
@@ -113,53 +113,51 @@ func getAddrAndSecKeys() (addr Address, pubKey ed25519.PublicKey, priKey ed25519
 	return addr, pubKey, priKey
 }
 
-// 初始化随机值：0x938be8ec54e6993ce3999883060e732bf00346d73ec3f1f414042a800b3b43cb
-
 //alice
-//地址：0xD5dd01FFCC547734bCe4Df0F5acf4A5407c275d3
-//私钥： dc9bb398d00f7778a61dcbb7e90cfe527b7e7b69ce9d557a08d5e32ea8d3eac0
+//addr：0xD5dd01FFCC547734bCe4Df0F5acf4A5407c275d3
+//priKey： dc9bb398d00f7778a61dcbb7e90cfe527b7e7b69ce9d557a08d5e32ea8d3eac0
 
 //bob
-//地址：0x89b7145BeF43EfAfaf076C181b124d22f9D218e5
-//私钥：d731aab93f2ba8503c351bf67eea13277cf2c35075ff6d9ae1bfa23d40c26501
+//addr：0x89b7145BeF43EfAfaf076C181b124d22f9D218e5
+//priKey：d731aab93f2ba8503c351bf67eea13277cf2c35075ff6d9ae1bfa23d40c26501
 
-//evm有钱账号
-//地址：0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52
-//私钥：0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e
+//clare
+//addr：0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52
+//priKey：0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e
 
 func main() {
-	//获取本地验证节点的地址和私钥
-	valOperator := "251604eBfD1ddeef1F4f40b8F9Fc425538BE1339"
+	//get default validator addr, pubKey, and priKey, bond alice
+	alice := "251604eBfD1ddeef1F4f40b8F9Fc425538BE1339"
 	valAddr, valPubKey, valPriKey := getAddrByBase64PriKey("ooX0ThgTQSWWrH+gVy1w1esHCbLmi9+FyPWPn140F9iIujcEkgvQ9s4XJyoq99AHfqn3DCvRNCO8auNrpn0AEQ==")
-	fmt.Printf("addr:%x\npubKey:%x\npriKey:%x\n", valAddr, valPubKey, valPriKey)
+	fmt.Printf("\naddr:%x\npubKey:%x\npriKey:%x\n", valAddr, valPubKey, valPriKey)
 
-	////生成ed25519类型的密钥对和地址
+	////generate ed25519 secret key and addr
 	//addr1, pubKey1, priKey1 := getAddrAndSecKeys()
 	//fmt.Printf("addr1:%x\npubKey1:%x\npriKey1:%x\n", addr1, pubKey1, priKey1)
 
-	addr2Operator := "F87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
+	//bond clare
+	clare := "F87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
 	addr2, pubKey2, priKey2 := getAddrByHexPriKey("b7cef85c61f7a973896d5b12f7de5020453dde51c19e4693fb6a55dfa8e3e64080f123e970b41abe1709ff176fc6bcd673afd41456e064e337f8713f8bcd068e")
-	fmt.Printf("addr2:%x\npubKey2:%x\npriKey:%x", addr2, pubKey2, priKey2)
+	fmt.Printf("\naddr2:%x\npubKey2:%x\npriKey:%x\n", addr2, pubKey2, priKey2)
 
-	//生成申请验证者的calldata
-	calldataF("hub", "applyForValidator", valAddr, valAddr, "node1", "node1 apply for validator", []byte(valPubKey)) //alice
-	calldataF("hub", "applyForValidator", addr2, addr2, "node2", "node2 apply for validator", []byte(pubKey2))       //addr2
+	//calldata for apply for validator
+	calldataF(alice, "hub", "applyForValidator", valAddr, valAddr, "node1", "node1 apply for validator", []byte(valPubKey))
+	calldataF(clare, "hub", "applyForValidator", addr2, addr2, "node2", "node2 apply for validator", []byte(pubKey2))
 
-	//管理员(alice)审核通过验证者申请
-	calldataF("hub", "auditPass", getAddrByHexStr(valOperator))   //alice
-	calldataF("hub", "auditPass", getAddrByHexStr(addr2Operator)) //addr2
+	//admin(alice) audit
+	calldataF(alice, "hub", "auditPass", getAddrByHexStr(alice)) //alice
+	calldataF(clare, "hub", "auditPass", getAddrByHexStr(clare)) //clare
 
-	//管理员(alice)设置初始化随机种子
+	//admin(alice) set init seed
 	hexInitSeed := "ba1aa46438a7b446c0a6f1ca54d04eccda80fed5f1460be9e17cd6931eaef64c1f1cbe714c603521c2f06a4a39cd8d50015068890aaaf04d92d9ed997f9c0689"
 	initSeed, _ := hex.DecodeString(hexInitSeed)
-	calldataF("vrf", "init", initSeed, big.NewInt(1))
+	calldataF(alice, "vrf", "init", initSeed, big.NewInt(1))
 
-	//validator发送随机值签名
+	//alice send random
 	valSignature := ed25519.Sign(valPriKey, initSeed)
-	calldataF("vrf", "sendRandom", valSignature, big.NewInt(2))
+	calldataF(alice, "vrf", "sendRandom", valSignature, big.NewInt(2))
 
-	//node2发送随机值签名
+	//clare send random
 	valSignature2 := ed25519.Sign(priKey2, initSeed)
-	calldataF("vrf", "sendRandom", valSignature2, big.NewInt(2))
+	calldataF(clare, "vrf", "sendRandom", valSignature2, big.NewInt(2))
 }
-
