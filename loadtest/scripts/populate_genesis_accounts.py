@@ -13,12 +13,13 @@ PARALLEISM=64
 # Does not need to be thread safe, each thread should only be writing to its own index
 global_accounts_mapping = {}
 home_path = os.path.expanduser('~')
+script_dir = Path(__file__).parent.parent.parent
 
 def add_key(account_name, local=False):
     if local:
-        add_key_cmd = f"yes | ~/go/bin/enid keys add {account_name} --keyring-backend test"
+        add_key_cmd = f"yes | {script_dir}/build/enid keys add {account_name} --keyring-backend test"
     else:
-        add_key_cmd = f"printf '12345678\n' | ~/go/bin/enid keys add {account_name}"
+        add_key_cmd = f"printf '12345678\n' | {script_dir}/build/enid keys add {account_name}"
     add_key_output = subprocess.check_output(
         [add_key_cmd],
         stderr=subprocess.STDOUT,
@@ -26,13 +27,13 @@ def add_key(account_name, local=False):
     ).decode()
 
     splitted_outputs = add_key_output.strip().split('\n')
-    address = splitted_outputs[2].split(': ')[1]
+    address = splitted_outputs[0].split(': ')[1]
     mnemonic = splitted_outputs[-1]
     return address, mnemonic
 
 
 def dump_account_data_to_file(account_name, address, mnemonic):
-    filename = f"{home_path}/test_accounts/{account_name}.json"
+    filename = f"{script_dir}/loadtest/test_accounts/{account_name}.json"
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, 'w') as f:
         data = {
@@ -55,8 +56,12 @@ def create_genesis_account(account_index, account_name, local=False):
             "address": address,
             "coins": [
                 {
+                    "denom": "stake",
+                    "amount": "100000000"
+                },
+                {
                     "denom": "ueni",
-                    "amount": "1000000000000000000000000"
+                    "amount": "1000000000000000000000"
                 }
             ]
         },
@@ -94,9 +99,10 @@ def main():
     if len(args) > 1 and args[1] == "loc":
         is_local = True
 
-    genesis_json_file_path = f"{home_path}/.eni/config/genesis.json"
+    genesis_json_file_path = f"{script_dir}/eni-node/config/genesis.json"
     genesis_file = read_genesis_file(genesis_json_file_path)
 
+    print("Work root dir", script_dir)
     num_threads = max(1, number_of_accounts // PARALLEISM)
     threads = []
     for i in range(0, number_of_accounts, num_threads):
