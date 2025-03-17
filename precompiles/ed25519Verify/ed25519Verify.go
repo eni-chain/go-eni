@@ -17,13 +17,6 @@ const (
 	ED25519_HASH_LEN   = 64
 )
 
-func init() {
-	//todo: need to confirm the addr, and also modify addr in syscontract
-	addr := common.BytesToAddress([]byte{0xa1})
-	precompiled := ed25519Verify{}
-	addEd25519VerifyToVM(addr, &precompiled)
-}
-
 type ed25519Verify struct{}
 
 func (c *ed25519Verify) RequiredGas(input []byte) uint64 {
@@ -61,7 +54,10 @@ func (c *ed25519Verify) Run(_ *vm.EVM, _ common.Address, _ common.Address, input
 	return res, nil
 }
 
-func addEd25519VerifyToVM(addr common.Address, p vm.PrecompiledContract) {
+func AddEd25519VerifyToVM() bool {
+	p := &ed25519Verify{}
+	addr := common.BytesToAddress([]byte{0xa1})
+
 	vm.PrecompiledContractsHomestead[addr] = p
 	vm.PrecompiledContractsByzantium[addr] = p
 	vm.PrecompiledContractsIstanbul[addr] = p
@@ -73,4 +69,6 @@ func addEd25519VerifyToVM(addr common.Address, p vm.PrecompiledContract) {
 	vm.PrecompiledAddressesIstanbul = append(vm.PrecompiledAddressesIstanbul, addr)
 	vm.PrecompiledAddressesBerlin = append(vm.PrecompiledAddressesBerlin, addr)
 	vm.PrecompiledAddressesCancun = append(vm.PrecompiledAddressesCancun, addr)
+
+	return true
 }
