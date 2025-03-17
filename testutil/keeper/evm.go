@@ -12,15 +12,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
 )
 
-func EvmKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
+func EvmKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 	transientStoreKey := storetypes.NewKVStoreKey(types.TransientStoreKey)
 
@@ -32,25 +30,22 @@ func EvmKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 
 	k := keeper.NewKeeper(
 		storeKey,
 		transientStoreKey,
+		nil,
+		nil,
+		nil,
+		nil,
 		cdc,
 		log.NewNopLogger(),
-		authority.String(),
-		nil,
-		nil,
-		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	if err := k.SetParams(ctx, types.DefaultParams()); err != nil {
-		panic(err)
-	}
+	k.SetParams(ctx, types.DefaultParams())
 
 	return k, ctx
 }
