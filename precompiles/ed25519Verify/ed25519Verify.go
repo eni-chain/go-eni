@@ -33,11 +33,13 @@ func (c *ed25519Verify) Run(_ *vm.EVM, _ common.Address, _ common.Address, input
 	sigBytes := input[ED25519_PUBKEY_LEN : ED25519_PUBKEY_LEN+ED25519_SIGN_LEN]
 	hashBytes := input[ED25519_PUBKEY_LEN+ED25519_SIGN_LEN:]
 
-	pubKey := crypto.PublicKey{}
-	err := pubKey.Unmarshal(pkBytes)
-	if err != nil {
-		return nil, err
-	}
+	innerPk := crypto.PublicKey_Ed25519{Ed25519: pkBytes}
+	pubKey := crypto.PublicKey{Sum: &innerPk}
+	//pubKey := crypto.PublicKey{}
+	//err := pubKey.Unmarshal(pkBytes)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	pk, err := cryptoencoding.PubKeyFromProto(pubKey)
 	if err != nil {
@@ -45,6 +47,7 @@ func (c *ed25519Verify) Run(_ *vm.EVM, _ common.Address, _ common.Address, input
 	}
 
 	res := make([]byte, EVM_WORD_LEN)
+
 	ret := pk.VerifySignature(hashBytes, sigBytes)
 	if !ret {
 		return res, nil

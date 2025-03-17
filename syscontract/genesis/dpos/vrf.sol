@@ -74,9 +74,9 @@ contract Vrf {
     //     _pubKeys[validator] = pubkey;
     // }
 
-    function verifyEd25519Sign(bytes memory pubKey, bytes memory signature, bytes memory msgHash) internal view returns (bool) {
+    function verifyEd25519Sign(bytes memory pubKey, bytes memory signature, bytes memory msgHash) public view returns (bool) {
         require(pubKey.length == PUBKEY_LEN, "The public key length is not ed25519 public key size");
-        require(pubKey.length == PRIKEY_LEN, "The private key length is not ed25519 public key size");
+        require(signature.length == SIGN_LEN, "The signature length is not ed25519 signature size");
         require(msgHash.length == HASH_LEN, "The msg hash length is not SHA-512 hash size");
 
         // assemble input:
@@ -118,6 +118,7 @@ contract Vrf {
     }
 
     function updateConsensusSet(uint256 epoch) external needInited returns (address[] memory) {
+        //todo: add permission- only the epoch module address can call the updateConsensusSet method
         //require(_randoms[epoch].length > 0, "Epoch has no random value!");
 
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();

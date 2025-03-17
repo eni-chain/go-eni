@@ -160,4 +160,7 @@ func main() {
 	//clare send random
 	valSignature2 := ed25519.Sign(priKey2, initSeed)
 	calldataF(clare, "vrf", "sendRandom", valSignature2, big.NewInt(2))
+
+	//test verifyEd25519Sign method
+	calldataF(clare, "vrf", "verifyEd25519Sign", []byte(pubKey2), valSignature2, initSeed)
 }
