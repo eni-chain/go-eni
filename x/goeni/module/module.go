@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/cometbft/cometbft/proto/tendermint/crypto"
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 
@@ -201,10 +202,9 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 
 	var validatorSet []abci.ValidatorUpdate
 	for i := 0; i < len(pubKeys); i++ {
-		e := validatorSet[i].Unmarshal(pubKeys[i])
-		if e != nil {
-			return nil, e
-		}
+		pk := crypto.PublicKey_Ed25519{Ed25519: pubKeys[i]}
+		pubKey := crypto.PublicKey{Sum: &pk}
+		validatorSet[i].PubKey = pubKey
 		validatorSet[i].Power = 1
 	}
 
