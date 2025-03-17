@@ -29,7 +29,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -150,7 +149,7 @@ func run(config *Config) {
 	client := NewLoadTestClient(*config)
 	client.SetValidators()
 	deployEvmContracts(config)
-	deployUniswapContracts(client, config)
+	//deployUniswapContracts(client, config)
 	startLoadtestWorkers(client, *config)
 	runEvmQueries(*config)
 }
@@ -341,36 +340,36 @@ func (c *LoadTestClient) generateMessage(key cryptotypes.PrivKey, msgType string
 				}),
 			})
 		}
-	case DistributeRewards:
-		adminKey := c.SignerClient.GetAdminKey()
-		msgs = []sdk.Msg{&banktypes.MsgSend{
-			FromAddress: sdk.AccAddress(adminKey.PubKey().Address()).String(),
-			ToAddress:   sdk.AccAddress(key.PubKey().Address()).String(),
-			Amount: sdk.NewCoins(sdk.Coin{
-				Denom:  "ueni",
-				Amount: math.NewInt(10000000),
-			}),
-		}}
-		signer = adminKey
-		gas = 10000000
-		fee = 1000000
-		fmt.Printf("Distribute rewards to %s \n", sdk.AccAddress(key.PubKey().Address()).String())
-	case CollectRewards:
-		adminKey := c.SignerClient.GetAdminKey()
-		delegatorAddr := sdk.AccAddress(adminKey.PubKey().Address())
-		operatorAddress := c.Validators[r.Intn(len(c.Validators))].OperatorAddress
-		randomValidatorAddr, err := sdk.ValAddressFromBech32(operatorAddress)
-		if err != nil {
-			panic(err.Error())
-		}
-		msgs = []sdk.Msg{distributiontypes.NewMsgWithdrawDelegatorReward(
-			string(delegatorAddr),
-			string(randomValidatorAddr),
-		)}
-		fmt.Printf("Collecting rewards from %s \n", operatorAddress)
-		signer = adminKey
-		gas = 10000000
-		fee = 1000000
+	//case DistributeRewards:
+	//	adminKey := c.SignerClient.GetAdminKey()
+	//	msgs = []sdk.Msg{&banktypes.MsgSend{
+	//		FromAddress: sdk.AccAddress(adminKey.PubKey().Address()).String(),
+	//		ToAddress:   sdk.AccAddress(key.PubKey().Address()).String(),
+	//		Amount: sdk.NewCoins(sdk.Coin{
+	//			Denom:  "ueni",
+	//			Amount: math.NewInt(10000000),
+	//		}),
+	//	}}
+	//	signer = adminKey
+	//	gas = 10000000
+	//	fee = 1000000
+	//	fmt.Printf("Distribute rewards to %s \n", sdk.AccAddress(key.PubKey().Address()).String())
+	//case CollectRewards:
+	//	adminKey := c.SignerClient.GetAdminKey()
+	//	delegatorAddr := sdk.AccAddress(adminKey.PubKey().Address())
+	//	operatorAddress := c.Validators[r.Intn(len(c.Validators))].OperatorAddress
+	//	randomValidatorAddr, err := sdk.ValAddressFromBech32(operatorAddress)
+	//	if err != nil {
+	//		panic(err.Error())
+	//	}
+	//	msgs = []sdk.Msg{distributiontypes.NewMsgWithdrawDelegatorReward(
+	//		string(delegatorAddr),
+	//		string(randomValidatorAddr),
+	//	)}
+	//	fmt.Printf("Collecting rewards from %s \n", operatorAddress)
+	//	signer = adminKey
+	//	gas = 10000000
+	//	fee = 1000000
 	//case Staking:
 	//	delegatorAddr := sdk.AccAddress(key.PubKey().Address()).String()
 	//	chosenValidator := c.Validators[r.Intn(len(c.Validators))].OperatorAddress
@@ -497,7 +496,12 @@ func getLastHeight(blockchainEndpoint string) int {
 	if err := json.Unmarshal(out, &dat); err != nil {
 		panic(err)
 	}
-	height, err := strconv.Atoi(dat["last_height"].(string))
+	dat = dat["result"].(map[string]interface{})
+	strHeight, ok := dat["last_height"].(string)
+	if !ok {
+		panic("last_height not found in response")
+	}
+	height, err := strconv.Atoi(strHeight)
 	if err != nil {
 		panic(err)
 	}
