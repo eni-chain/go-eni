@@ -69,8 +69,10 @@ func NewSignerClient(nodeURI string) *SignerClient {
 }
 
 func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivKey {
-	userHomeDir, _ := os.UserHomeDir()
-	files, _ := os.ReadDir(filepath.Join(userHomeDir, "test_accounts"))
+	//userHomeDir, _ := os.UserHomeDir()
+	// todo check code
+	userHomeDir, _ := os.Getwd()
+	files, _ := os.ReadDir(filepath.Join(userHomeDir, "loadtest/test_accounts"))
 	var testAccountsKeys = make([]cryptotypes.PrivKey, int(math.Min(float64(len(files)), float64(maxAccounts))))
 	var wg sync.WaitGroup
 	fmt.Printf("Loading accounts\n")
@@ -81,7 +83,7 @@ func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivK
 		wg.Add(1)
 		go func(i int, fileName string) {
 			defer wg.Done()
-			key := sc.GetKey(fmt.Sprint(i), "test", filepath.Join(userHomeDir, "test_accounts", fileName))
+			key := sc.GetKey(fmt.Sprint(i), "test", filepath.Join(userHomeDir, "loadtest/test_accounts", fileName))
 			testAccountsKeys[i] = key
 		}(i, file.Name())
 	}
