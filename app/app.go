@@ -80,7 +80,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
-	evmmodulekeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	evmmodulekeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	goenimodulekeeper "github.com/eni-chain/go-eni/x/goeni/keeper"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport

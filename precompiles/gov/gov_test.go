@@ -18,10 +18,10 @@ package gov_test
 //	pcommon "github.com/eni-chain/go-eni/precompiles/common"
 //	"github.com/eni-chain/go-eni/precompiles/gov"
 //	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
-//	"github.com/eni-chain/go-eni/x/evm/ante"
-//	"github.com/eni-chain/go-eni/x/evm/keeper"
-//	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
-//	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
+//	"github.com/cosmos/cosmos-sdk/x/evm/ante"
+//	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
+//	evmtypes "github.com/cosmos/cosmos-sdk/x/evm/types"
+//	"github.com/cosmos/cosmos-sdk/x/evm/types/ethtx"
 //)
 //
 ////go:embed abi.json

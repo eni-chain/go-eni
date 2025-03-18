@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/eni-chain/go-eni/x/evm/state"
-	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/state"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
 
 	"github.com/eni-chain/go-eni/precompiles/common"
 	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"

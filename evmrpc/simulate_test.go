@@ -11,7 +11,7 @@ package evmrpc_test
 //	"github.com/eni-chain/go-eni/evmrpc"
 //	"github.com/eni-chain/go-eni/example/contracts/simplestorage"
 //	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
-//	"github.com/eni-chain/go-eni/x/evm/types"
+//	"github.com/cosmos/cosmos-sdk/x/evm/types"
 //	"github.com/ethereum/go-ethereum/core"
 //	"github.com/stretchr/testify/require"
 //)

@@ -7,7 +7,7 @@ package pointerview_test
 //
 //	"github.com/eni-chain/go-eni/precompiles/pointerview"
 //	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
-//	"github.com/eni-chain/go-eni/x/evm/artifacts/native"
+//	"github.com/cosmos/cosmos-sdk/x/evm/artifacts/native"
 //	"github.com/ethereum/go-ethereum/common"
 //	"github.com/stretchr/testify/require"
 //)

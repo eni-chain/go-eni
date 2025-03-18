@@ -6,9 +6,9 @@ import (
 	"sync"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	evmante "github.com/eni-chain/go-eni/x/evm/ante"
-	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
-	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
+	evmante "github.com/cosmos/cosmos-sdk/x/evm/ante"
+	evmtypes "github.com/cosmos/cosmos-sdk/x/evm/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/types/ethtx"
 )
 
 type TxsGrouper interface {

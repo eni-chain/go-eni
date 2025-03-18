@@ -12,7 +12,7 @@ package addr_test
 //	tmtypes "github.com/cometbft/cometbft/proto/tendermint/types"
 //	"github.com/eni-chain/go-eni/precompiles/addr"
 //	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
-//	"github.com/eni-chain/go-eni/x/evm/state"
+//	"github.com/cosmos/cosmos-sdk/x/evm/state"
 //	"github.com/ethereum/go-ethereum/core/vm"
 //	"github.com/ethereum/go-ethereum/crypto"
 //	"github.com/stretchr/testify/require"

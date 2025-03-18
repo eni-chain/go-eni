@@ -14,7 +14,7 @@ package distribution
 //	"github.com/ethereum/go-ethereum/core/vm"
 //
 //	pcommon "github.com/eni-chain/go-eni/precompiles/common"
-//	"github.com/eni-chain/go-eni/x/evm/types"
+//	"github.com/cosmos/cosmos-sdk/x/evm/types"
 //)
 //
 //const (
