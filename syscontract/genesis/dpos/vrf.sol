@@ -10,7 +10,7 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf {
+contract Vrf is nodeLog {
     //todo: add event and emit for every method
 
     //init rand seed, will be init by administrator
@@ -123,13 +123,16 @@ contract Vrf {
 
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();
         require(validators.length > 0, "Validator set is empty");
+        printLog(ERROR, bytes.concat(bytes("getValidatorSet:"), toLog(validators[0]), toLog(validators[1])));
 
         //address[] memory validators = new address[](address(uint160(_randoms[epoch][keccak256("Vrf")])));
         for (uint i = 0; i < validators.length; ++i) {
             if(_randoms[epoch][validators[i]].length == 0){
                 _unSendRandNodes.push(validators[i]);
+                printLog(ERROR, bytes.concat(bytes("record unsend rand node:"), toLog(validators[i])));
             }else{
                 _validNodes.push(validators[i]);
+                printLog(ERROR, bytes.concat(bytes("record valid node:"), toLog(validators[i])));
             }
         }
 
@@ -137,13 +140,16 @@ contract Vrf {
         //ISlash(SLASH_ADDR).penaltyUnsendRandomValidator(_unSendRandNodes);
 
         address[] memory sorted = sortAddrs(_validNodes, epoch);
+        printLog(ERROR, bytes.concat(bytes("sorted address:"), toLog(sorted[1]),toLog(sorted[2])));
         address[] memory topN = getTopNAddresses(sorted, consensusSize);
+        printLog(ERROR, bytes.concat(bytes("topN address:"), toLog(sorted[1]),toLog(sorted[2])));
 
         //The seed of this epoch are generated for the next epoch to generate random values
         _seeds[epoch] = _seeds[epoch-1];
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
+        printLog(ERROR, bytes.concat(bytes("epoch: "), toLog(epoch), bytes("seed: "), toLog(_seeds[epoch])));
 
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;

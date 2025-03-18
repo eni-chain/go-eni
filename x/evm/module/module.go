@@ -7,6 +7,7 @@ import (
 	"fmt"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/eni-chain/go-eni/precompiles/ed25519Verify"
+	ContractNodeLog "github.com/eni-chain/go-eni/precompiles/nodeLog"
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	"github.com/eni-chain/go-eni/x/evm/exported"
 	"github.com/spf13/cobra"
@@ -48,6 +49,7 @@ var (
 )
 
 var _ = ed25519Verify.AddEd25519VerifyToVM()
+var _ = ContractNodeLog.AddNodeLogToVM()
 
 // ----------------------------------------------------------------------------
 // AppModuleBasic
