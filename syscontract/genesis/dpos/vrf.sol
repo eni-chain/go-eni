@@ -14,7 +14,7 @@ contract Vrf is nodeLog {
     //todo: add event and emit for every method
 
     //init rand seed, will be init by administrator
-    bool _initFlag;
+    bytes _initSeed;
 
     //administrator address
     address public _admin;
@@ -40,7 +40,7 @@ contract Vrf is nodeLog {
     }
 
    modifier needInited() {
-        require(_initFlag == true, "The initial seed has not been initialized and dpos has not been started");
+        require(_initSeed.length != 0, "The initial seed has not been initialized and dpos has not been started");
         _;
     }
 
@@ -56,14 +56,14 @@ contract Vrf is nodeLog {
 
     function init(bytes calldata rnd, uint256 epoch) external onlyAdmin {
         //require(msg.sender == _admin, "Msg sender is not administrator");
-        require(_initFlag == false, "vrf has been init!");
+        require(_initSeed.length == 0, "vrf has been init!");
 
+        _initSeed = rnd;
         _seeds[epoch] = rnd;
-        _initFlag = true;
     }
 
     function getRandomSeed(uint256 epoch) external view needInited returns (bytes memory) {
-        //require(_initFlag == true, "vrf has not been init!");
+        //require(_initSeed.length != 0, "vrf has not been init!");
         require(epoch > 1, "epoch number too small");
 
         //each random values is generated from the seeds of the previous epoch
@@ -97,11 +97,12 @@ contract Vrf is nodeLog {
             return  false;
         }
 
+        printLog(ERROR, bytes.concat(bytes("verify rand succeed, user:"), toLog(msg.sender), bytes(", pubKey:"), toLog(pubKey), bytes(", signature:"), toLog(signature), bytes(", msgHash: "), toLog(msgHash)));
         return true;
     }
 
     function sendRandom(bytes calldata rnd, uint256 epoch) external needInited returns (bool success){
-        //require(_initFlag == true, "Needs init first!");
+        //require(_initSeed.length != 0, "Needs init first!");
         require(epoch > 1, "Epoch number too small");
         require(_seeds[epoch-1].length == SEED_LEN, "Random values sent ahead of epoch!");
         require(rnd.length == SIGN_LEN, "Random length is not ed25519 signature size!");
@@ -120,10 +121,11 @@ contract Vrf is nodeLog {
     function updateConsensusSet(uint256 epoch) external needInited returns (address[] memory) {
         //todo: add permission- only the epoch module address can call the updateConsensusSet method
         //require(_randoms[epoch].length > 0, "Epoch has no random value!");
+        require(keccak256(_seeds[epoch]) != keccak256(_initSeed), "Consensus set should be elected in next epoch");
 
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();
         require(validators.length > 0, "Validator set is empty");
-        printLog(ERROR, bytes.concat(bytes("getValidatorSet:"), toLog(validators[0]), toLog(validators[1])));
+        printLog(ERROR, bytes.concat(bytes("getValidatorSet:"), toLog(validators[0]), bytes(", "), toLog(validators[1])));
 
         //address[] memory validators = new address[](address(uint160(_randoms[epoch][keccak256("Vrf")])));
         for (uint i = 0; i < validators.length; ++i) {
@@ -140,16 +142,16 @@ contract Vrf is nodeLog {
         //ISlash(SLASH_ADDR).penaltyUnsendRandomValidator(_unSendRandNodes);
 
         address[] memory sorted = sortAddrs(_validNodes, epoch);
-        printLog(ERROR, bytes.concat(bytes("sorted address:"), toLog(sorted[1]),toLog(sorted[2])));
+        printLog(ERROR, bytes.concat(bytes("sorted address:"), toLog(sorted[0]), bytes(", "),toLog(sorted[1])));
         address[] memory topN = getTopNAddresses(sorted, consensusSize);
-        printLog(ERROR, bytes.concat(bytes("topN address:"), toLog(sorted[1]),toLog(sorted[2])));
+        printLog(ERROR, bytes.concat(bytes("topN address:"), toLog(sorted[0]), bytes(", "),toLog(sorted[1])));
 
         //The seed of this epoch are generated for the next epoch to generate random values
         _seeds[epoch] = _seeds[epoch-1];
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
-        printLog(ERROR, bytes.concat(bytes("epoch: "), toLog(epoch), bytes("seed: "), toLog(_seeds[epoch])));
+        printLog(ERROR, bytes.concat(bytes("epoch: "), toLog(epoch), bytes(", seed: "), toLog(_seeds[epoch])));
 
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
@@ -201,27 +203,11 @@ contract Vrf is nodeLog {
 
     // Adds two 64-byte bytes byte by byte
     function addBytes(bytes memory a, bytes memory b) internal pure returns (bytes memory) {
-        require(a.length == 64 && b.length == 64, "Invalid input length");
-        uint256 numA0;
-        uint256 numA1;
-        uint256 numB0;
-        uint256 numB1;
+        require(a.length == SEED_LEN && b.length == SEED_LEN, "Invalid input length");
 
-        assembly {
-            numA0 := mload(add(a, 0x20))
-            numA1 := mload(add(a, 0x40))
-            numB0 := mload(add(b, 0x20))
-            numB1 := mload(add(b, 0x40))
-        }
-
-        // The overflow problem is not considered, because overflow also has no more byte bits stored
-        uint256 carry = numA0 + numB0;
-        uint256 high = numA1 + numB1;
-
-        bytes memory result = new bytes(64);
-        assembly {
-            mstore(add(result, 0x20), carry)
-            mstore(add(result, 0x40), high)
+        bytes memory result = new bytes(SEED_LEN);
+        for(uint256 i = 0; i < SEED_LEN; i++){
+            result[i] = bytes1(uint8(a[i])+uint8(b[i]));
         }
 
         return result;

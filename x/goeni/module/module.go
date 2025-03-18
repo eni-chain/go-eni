@@ -200,8 +200,10 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		return nil, err
 	}
 
-	var validatorSet []abci.ValidatorUpdate
+	validatorSet := make([]abci.ValidatorUpdate, len(pubKeys))
 	for i := 0; i < len(pubKeys); i++ {
+		//innerPk := crypto.PublicKey_Ed25519{Ed25519: pkBytes}
+		//pubKey := crypto.PublicKey{Sum: &innerPk}
 		pk := crypto.PublicKey_Ed25519{Ed25519: pubKeys[i]}
 		pubKey := crypto.PublicKey{Sum: &pk}
 		validatorSet[i].PubKey = pubKey
