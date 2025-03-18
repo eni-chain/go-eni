@@ -27,7 +27,7 @@ type nodeLog struct{}
 
 // RequiredGas returns the gas required to execute the pre-compiled contract.
 func (c *nodeLog) RequiredGas(input []byte) uint64 {
-	return params.EcrecoverGas
+	return params.BalanceGasFrontier
 }
 
 func (c *nodeLog) Run(_ *vm.EVM, sender common.Address, _ common.Address, input []byte, _ *big.Int, _ bool, _ bool) ([]byte, error) {

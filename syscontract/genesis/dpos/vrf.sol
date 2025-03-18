@@ -97,7 +97,7 @@ contract Vrf is nodeLog {
             return  false;
         }
 
-        printLog(ERROR, bytes.concat(bytes("verify rand succeed, user:"), toLog(msg.sender), bytes(", pubKey:"), toLog(pubKey), bytes(", signature:"), toLog(signature), bytes(", msgHash: "), toLog(msgHash)));
+        printLog(DEBUG, bytes.concat(bytes("verify random signature succeed, user:"), toLog(msg.sender), bytes(", pubKey:"), toLog(pubKey), bytes(", signature:"), toLog(signature), bytes(", msgHash: "), toLog(msgHash)));
         return true;
     }
 
@@ -125,16 +125,15 @@ contract Vrf is nodeLog {
 
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();
         require(validators.length > 0, "Validator set is empty");
-        printLog(ERROR, bytes.concat(bytes("getValidatorSet:"), toLog(validators[0]), bytes(", "), toLog(validators[1])));
 
         //address[] memory validators = new address[](address(uint160(_randoms[epoch][keccak256("Vrf")])));
         for (uint i = 0; i < validators.length; ++i) {
             if(_randoms[epoch][validators[i]].length == 0){
                 _unSendRandNodes.push(validators[i]);
-                printLog(ERROR, bytes.concat(bytes("record unsend rand node:"), toLog(validators[i])));
+                printLog(DEBUG, bytes.concat(bytes("record unsent random node:"), toLog(validators[i])));
             }else{
                 _validNodes.push(validators[i]);
-                printLog(ERROR, bytes.concat(bytes("record valid node:"), toLog(validators[i])));
+                printLog(DEBUG, bytes.concat(bytes("record valid node:"), toLog(validators[i])));
             }
         }
 
@@ -142,20 +141,21 @@ contract Vrf is nodeLog {
         //ISlash(SLASH_ADDR).penaltyUnsendRandomValidator(_unSendRandNodes);
 
         address[] memory sorted = sortAddrs(_validNodes, epoch);
-        printLog(ERROR, bytes.concat(bytes("sorted address:"), toLog(sorted[0]), bytes(", "),toLog(sorted[1])));
         address[] memory topN = getTopNAddresses(sorted, consensusSize);
-        printLog(ERROR, bytes.concat(bytes("topN address:"), toLog(sorted[0]), bytes(", "),toLog(sorted[1])));
 
         //The seed of this epoch are generated for the next epoch to generate random values
         _seeds[epoch] = _seeds[epoch-1];
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
-        printLog(ERROR, bytes.concat(bytes("epoch: "), toLog(epoch), bytes(", seed: "), toLog(_seeds[epoch])));
+        printLog(DEBUG, bytes.concat(bytes("generate new seed:"), toLog(_seeds[epoch]), bytes(", epoch:"), toLog(epoch)));
 
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
         delete _validNodes;
+        if(_unSendRandNodes.length != 0 || _validNodes.length != 0){
+            printLog(ERROR, bytes("_unSendRandNodes or _validNodes not clean"));
+        }
 
         return topN;
     }
