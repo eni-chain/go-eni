@@ -7,10 +7,12 @@ import (
 	"time"
 
 	sdkerrors "cosmossdk.io/errors"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi"
+	evmante "github.com/eni-chain/go-eni/x/evm/ante"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
@@ -31,13 +33,16 @@ type SendAPI struct {
 	homeDir        string
 	backend        *Backend
 	connectionType ConnectionType
+	logger         log.Logger
 }
 
 type SendConfig struct {
 	slow bool
 }
 
-func NewSendAPI(tmClient rpcclient.Client, txConfig client.TxConfig, sendConfig *SendConfig, k *keeper.Keeper, ctxProvider func(int64) sdk.Context, homeDir string, simulateConfig *SimulateConfig, connectionType ConnectionType) *SendAPI {
+func NewSendAPI(tmClient rpcclient.Client, txConfig client.TxConfig, sendConfig *SendConfig, k *keeper.Keeper,
+	ctxProvider func(int64) sdk.Context, homeDir string, simulateConfig *SimulateConfig,
+	connectionType ConnectionType, logger log.Logger) *SendAPI {
 	return &SendAPI{
 		tmClient:       tmClient,
 		txConfig:       txConfig,
@@ -47,6 +52,7 @@ func NewSendAPI(tmClient rpcclient.Client, txConfig client.TxConfig, sendConfig 
 		homeDir:        homeDir,
 		backend:        NewBackend(ctxProvider, k, txConfig.TxDecoder(), tmClient, simulateConfig),
 		connectionType: connectionType,
+		logger:         logger,
 	}
 }
 
@@ -60,14 +66,17 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	hash = tx.Hash()
 	txData, err := ethtx.NewTxDataFromTx(tx)
 	if err != nil {
+		s.logger.Error("failed to convert tx to tx data", "err", err)
 		return
 	}
 	msg, err := types.NewMsgEVMTransaction(txData)
-	signer := ethtypes.LatestSignerForChainID(tx.ChainId())
-	sender, _ := ethtypes.Sender(signer, tx)
-	eniAddr := s.keeper.GetEniAddressOrDefault(s.ctxProvider(LatestCtxHeight), sender)
-	msg.Sender = eniAddr.String()
 	if err != nil {
+		s.logger.Error("failed to convert tx to MsgEVMTransaction", "err", err)
+		return
+	}
+	err = evmante.PreprocessMsgSender(msg)
+	if err != nil {
+		s.logger.Error("failed to convert MsgEVMTransaction to evmante.PreprocessMsgSender", "err", err)
 		return
 	}
 	txBuilder := s.txConfig.NewTxBuilder()
