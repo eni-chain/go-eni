@@ -11,9 +11,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi"
-	"github.com/eni-chain/go-eni/x/evm/keeper"
-	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"

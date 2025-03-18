@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
