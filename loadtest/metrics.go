@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	defaultListenAddress = "0.0.0.0"
+	defaultListenAddress = "127.0.0.1"
 	defaultMetricsPort   = 9696
 )
 
@@ -53,7 +53,7 @@ func (s *MetricsServer) StartMetricsClient(config Config) {
 	}
 
 	listenAddr := fmt.Sprintf("%s:%d", defaultListenAddress, metricsPort)
-	log.Printf("Listening for metrics scrapes on %s", listenAddr)
+	log.Printf("Listening for metrics scrapes on http://%s/metrics", listenAddr)
 
 	s.server = &http.Server{
 		Addr:              listenAddr,
