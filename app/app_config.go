@@ -51,9 +51,9 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	"google.golang.org/protobuf/types/known/durationpb"
 
+	evmmodulev1 "cosmossdk.io/api/cosmos/evm/module"
 	_ "github.com/cosmos/cosmos-sdk/x/evm/module" // import for side-effects
 	evmmoduletypes "github.com/cosmos/cosmos-sdk/x/evm/types"
-	evmmodulev1 "github.com/eni-chain/go-eni/api/goeni/evm/module"
 	goenimodulev1 "github.com/eni-chain/go-eni/api/goeni/goeni/module"
 	_ "github.com/eni-chain/go-eni/x/goeni/module" // import for side-effects
 	goenimoduletypes "github.com/eni-chain/go-eni/x/goeni/types"
