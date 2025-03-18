@@ -11,6 +11,7 @@ import (
 	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
+	evmante "github.com/eni-chain/go-eni/x/evm/ante"
 	"github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
@@ -67,6 +68,10 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 	if err != nil {
 		return err
 	}
+	err = evmante.PreprocessMsgSender(msg)
+	if err != nil {
+		return err
+	}
 	txBuilder := t.sendAPI.txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return err
@@ -83,7 +88,7 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 	} else if res == nil {
 		err = errors.New("missing broadcast response")
 	} else if res.Code != 0 {
-		err = sdkerrors.ABCIError(coserrors.RootCodespace, res.Code, "")
+		err = sdkerrors.ABCIError(coserrors.RootCodespace, res.Code, res.Log)
 	}
 
 	return err
