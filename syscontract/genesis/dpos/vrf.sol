@@ -84,16 +84,16 @@ contract Vrf {
         // | 32 bytes | 64 bytes   |  64 bytes  |
         bytes memory input = bytes.concat(pubKey, signature, msgHash);
         //bytes32[2] memory output;
-        bytes memory output = new bytes(1);
+        bytes memory output = new bytes(32);
 
         assembly {
             let len := mload(input)
-            if iszero(staticcall(not(0), ED25519_VERIFY_PRECOMPILED, add(input, 0x20), len, add(output, 0x20), 0x01)) {
+            if iszero(staticcall(not(0), ED25519_VERIFY_PRECOMPILED, add(input, 0x20), len, add(output, 0x20), 0x20)) {
                 revert(0, 0)
             }
         }
 
-        if(output[0] == 0){
+        if(output[31] == 0){
             return  false;
         }
 

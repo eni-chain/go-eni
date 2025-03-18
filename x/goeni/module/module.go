@@ -44,7 +44,7 @@ var (
 	//_ appmodule.HasEndBlocker   = (*AppModule)(nil)
 )
 
-var EpochPeriod int64 = 10
+var EpochPeriod int64 = 50
 
 //var EpochNum uint64 = 1
 
