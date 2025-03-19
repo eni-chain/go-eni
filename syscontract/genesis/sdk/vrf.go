@@ -163,12 +163,6 @@ func (v *VRF) UpdateConsensusSet(
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
 		return nil, nil
-		//revertMsg, e := ParseRevert(retData)
-		//if e == nil {
-		//	logger.Error(fmt.Sprintf("VRF.UpdateConsensusSet: revert msg %s", revertMsg))
-		//	return nil, nil
-		//}
-		//return nil, fmt.Errorf("EVM call failed: %v", err)
 	}
 
 	if retData == nil {

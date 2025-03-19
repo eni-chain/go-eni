@@ -4,14 +4,13 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract Hub {
+contract Hub is LocalLog {
     //todo: add event and commit for methods
 
-    //uint256 constant  base_ratio_denominator = 100000;
-    //uint256 constant block_reward_base_numerator = 20000;
-    uint256 constant BASE_RATIO_DENOMINATOR = 100000;
-    uint256 constant BLOCK_REWARD_BASE_NUMERATOR = 20000;
-    uint256 constant PER_COIN_INCREASE_NUMERATOR = 1;
+    uint256 constant ratioDeno = 100000;
+    uint256 constant ratioNumer = 20000;
+    uint256 constant increasePerCoin = 1;
+    uint256 constant weiPerCoin = 1000000000000000000;
 
     //administrator address
     address _admin;
@@ -89,6 +88,7 @@ contract Hub {
     }
 
     function blockReward(address node) external returns (address, uint256) {
+
         address operator;
         uint256 pledgeAmount;
         (operator, pledgeAmount) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getOperatorAndPledgeAmount(node);
@@ -96,9 +96,20 @@ contract Hub {
         return (operator, reward);
     }
 
-    function calculateReward(uint256 pledge) internal returns (uint256){
-        //Reward algorithm: base * { 1 + (pledgeAmount * increasePerCoin)}
-        //return (BLOCK_REWARD_BASE_NUMERATOR/BASE_RATIO_DENOMINATOR) * (1 + (pledge * PER_COIN_INCREASE_NUMERATOR/BASE_RATIO_DENOMINATOR));
-        return BLOCK_REWARD_BASE_NUMERATOR * (1*BASE_RATIO_DENOMINATOR + (pledge*BASE_RATIO_DENOMINATOR * PER_COIN_INCREASE_NUMERATOR))/BASE_RATIO_DENOMINATOR;
+    //Reward algorithm: base * { 1 + (pledgeAmount * increasePerCoin)}
+    function calculateReward(uint256 pledgeAmount) internal returns (uint256){
+        require(pledgeAmount != 0, "Pledge amount is 0, maybe dpos not started");
+
+        //convert wei to coin
+        uint256 pledge = pledgeAmount/weiPerCoin;
+        llog(DEBUG, abi.encodePacked("pledge amount in wei:", S(pledgeAmount), ", in coin:", S(pledge)));
+
+        //uint256 reward = (ratioNumer/ratioDeno) *(1 + (pledge*(increasePerCoin/ratioDeno)));
+        //uint256 reward = (ratioNumer/ratioDeno) *(1*ratioDeno + (pledge*increasePerCoin))/ratioDeno;
+        //uint256 reward = ((ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*weiPerCoin)/(ratioDeno*ratioDeno);
+        uint256 reward = (ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*(weiPerCoin/(ratioDeno*ratioDeno));
+        llog(DEBUG, abi.encodePacked("reward amount in wei:", S(reward)));
+
+        return reward;
     }
 }

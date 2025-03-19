@@ -94,7 +94,7 @@ func (h *Hub) BlockReward(
 	to := &address
 	retData, err := h.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
-		return common.Address{0}, nil, fmt.Errorf("EVM call failed: %v", err)
+		return common.Address{0}, big.NewInt(0), nil
 	}
 	if retData == nil {
 		return common.Address{0}, big.NewInt(0), nil
@@ -102,7 +102,7 @@ func (h *Hub) BlockReward(
 
 	rets, err := h.abi.Unpack("blockReward", retData)
 	if err != nil {
-		return common.Address{0}, nil, fmt.Errorf("failed to unpack return value: %v", err)
+		return common.Address{0}, big.NewInt(0), nil
 	}
 
 	operator := rets[0].(common.Address)
