@@ -255,13 +255,18 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 	if err != nil {
 		return err
 	}
+	if reward.Uint64() == 0 {
+		return nil
+	}
 
 	logger := ctx.Logger().With("module", types.ModuleName)
 	logger.Info(fmt.Sprintf("Block reward for %x is %v", operator, reward.Uint64()))
 
+	eniOpe := am.keeper.GetEniAddressOrDefault(ctx, operator)
+
 	denom := am.keeper.GetBaseDenom(ctx)
 	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
-	am.keeper.BankKeeper().AddCoins(ctx, operator[:], sdk.NewCoins(coin))
+	am.keeper.BankKeeper().AddCoins(ctx, eniOpe, sdk.NewCoins(coin))
 
 	return nil
 }
