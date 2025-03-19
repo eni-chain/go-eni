@@ -132,6 +132,15 @@ contract ValidatorManager{
         }
     }
 
+    function getPledgeAmount(address node) external returns (uint256) {
+        address oper = _node2operator[node];
+        if(oper != address(0) ){
+            return _infos[oper].amount;
+        }
+
+        return 0;
+    }
+
     function getOperatorAndPledgeAmount(address node) external returns (address, uint256) {
         address oper = _node2operator[node];
         if(oper != address(0) ){

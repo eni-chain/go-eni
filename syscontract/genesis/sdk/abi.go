@@ -455,6 +455,25 @@ const validatorManagerABI = `
 				"type": "address"
 			}
 		],
+		"name": "getPledgeAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "node",
+				"type": "address"
+			}
+		],
 		"name": "getPubKey",
 		"outputs": [
 			{
