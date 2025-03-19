@@ -88,16 +88,17 @@ contract Hub {
         delete _applicants[operator];
     }
 
-    function blockReward(address node) external returns (uint256) {
-        uint256 pledgeAmount = IValidatorManager(VALIDATOR_MANAGER_ADDR).getPledgeAmount(node);
+    function blockReward(address node) external returns (address, uint256) {
+        address operator;
+        uint256 pledgeAmount;
+        (operator, pledgeAmount) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getOperatorAndPledgeAmount(node);
         uint256 reward = calculateReward(pledgeAmount);
-        return reward;
+        return (operator, reward);
     }
 
     function calculateReward(uint256 pledge) internal returns (uint256){
         //Reward algorithm: base * { 1 + (pledgeAmount * increasePerCoin)}
         //return (BLOCK_REWARD_BASE_NUMERATOR/BASE_RATIO_DENOMINATOR) * (1 + (pledge * PER_COIN_INCREASE_NUMERATOR/BASE_RATIO_DENOMINATOR));
-        //return BLOCK_REWARD_BASE_NUMERATOR * (1*BASE_RATIO_DENOMINATOR + (pledge*BASE_RATIO_DENOMINATOR * PER_COIN_INCREASE_NUMERATOR))/BASE_RATIO_DENOMINATOR;
-        return 100000000;
+        return BLOCK_REWARD_BASE_NUMERATOR * (1*BASE_RATIO_DENOMINATOR + (pledge*BASE_RATIO_DENOMINATOR * PER_COIN_INCREASE_NUMERATOR))/BASE_RATIO_DENOMINATOR;
     }
 }

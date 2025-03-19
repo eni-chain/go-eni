@@ -251,14 +251,17 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 
 	moduleAddr := am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
 	caller := common.Address(moduleAddr)
-	reward, err := hub.BlockReward(ctx, caller, node)
+	operator, reward, err := hub.BlockReward(ctx, caller, node)
 	if err != nil {
 		return err
 	}
 
+	logger := ctx.Logger().With("module", types.ModuleName)
+	logger.Info(fmt.Sprintf("Block reward for %x is %v", operator, reward.Uint64()))
+
 	denom := am.keeper.GetBaseDenom(ctx)
 	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
-	am.keeper.BankKeeper().AddCoins(ctx, node[:], sdk.NewCoins(coin))
+	am.keeper.BankKeeper().AddCoins(ctx, operator[:], sdk.NewCoins(coin))
 
 	return nil
 }

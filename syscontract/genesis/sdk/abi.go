@@ -300,6 +300,11 @@ const HubABI = `
 		"name": "blockReward",
 		"outputs": [
 			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
@@ -426,8 +431,13 @@ const validatorManagerABI = `
 				"type": "address"
 			}
 		],
-		"name": "getPledgeAmount",
+		"name": "getOperatorAndPledgeAmount",
 		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
 				"name": "",

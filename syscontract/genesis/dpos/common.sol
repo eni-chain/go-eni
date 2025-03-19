@@ -70,7 +70,8 @@ interface IValidatorManager {
 
     function undateConsensus(address[] calldata nodes)external;
 
-    function getPledgeAmount(address node) external returns (uint256);
+    //function getPledgeAmount(address node) external returns (uint256);
+    function getOperatorAndPledgeAmount(address node) external returns (address, uint256);
 }
 
 

@@ -84,30 +84,31 @@ func (h *Hub) BlockReward(
 	ctx sdk.Context,
 	caller common.Address,
 	node common.Address,
-) (*big.Int, error) {
+) (common.Address, *big.Int, error) {
 	input, err := h.abi.Pack("blockReward", node)
 	if err != nil {
-		return nil, fmt.Errorf("failed to pack ABI: %v", err)
+		return common.Address{0}, nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
 	address := common.HexToAddress(syscontract.HubAddr)
 	to := &address
 	retData, err := h.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
-		return nil, fmt.Errorf("EVM call failed: %v", err)
+		return common.Address{0}, nil, fmt.Errorf("EVM call failed: %v", err)
 	}
-
 	if retData == nil {
-		return big.NewInt(0), nil
+		return common.Address{0}, big.NewInt(0), nil
 	}
 
-	var amount *big.Int
-	err = h.abi.UnpackIntoInterface(&amount, "blockReward", retData)
+	rets, err := h.abi.Unpack("blockReward", retData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unpack return value: %v", err)
+		return common.Address{0}, nil, fmt.Errorf("failed to unpack return value: %v", err)
 	}
 
-	return amount, nil
+	operator := rets[0].(common.Address)
+	amount := rets[1].(*big.Int)
+
+	return operator, amount, nil
 }
 
 // UpdateAdmin updates the admin address
@@ -170,11 +171,11 @@ func ExampleHub() {
 
 	// Distribute block rewards
 	validatorNodeAddr := common.HexToAddress("0x5678901234567890123456789012345678901234")
-	reward, err := hub.BlockReward(ctx, caller, validatorNodeAddr)
+	operator, reward, err := hub.BlockReward(ctx, caller, validatorNodeAddr)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to distribute block reward: %v", err))
 	}
-	fmt.Printf("Block reward: %s\n", reward.String())
+	fmt.Printf("Block reward: %s, for: %x\n", reward.String(), operator)
 
 	// Update admin address
 	newAdminAddr := common.HexToAddress("0x6789012345678901234567890123456789012345")
