@@ -153,7 +153,7 @@ contract Vrf is LocalLog {
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
         delete _validNodes;
-        llog(DEBUG, abi.encodePacked("clear _unSendRandNodes and _validNodes for next epoch, _unSendRandNodes.len:", S(_unSendRandNodes.length), "_validNodes.len:", S(_validNodes.length)));
+        llog(DEBUG, abi.encodePacked("clear _unSendRandNodes and _validNodes for next epoch, _unSendRandNodes.len:", S(_unSendRandNodes.length), ", _validNodes.len:", S(_validNodes.length)));
         if(_unSendRandNodes.length != 0 || _validNodes.length != 0){
             llog(ERROR, abi.encodePacked("_unSendRandNodes or _validNodes not clean"));
         }
