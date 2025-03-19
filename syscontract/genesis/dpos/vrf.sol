@@ -10,7 +10,7 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf is nodeLog {
+contract Vrf is LocalLog {
     //todo: add event and emit for every method
 
     //init rand seed, will be init by administrator
@@ -97,7 +97,7 @@ contract Vrf is nodeLog {
             return  false;
         }
 
-        printLog(DEBUG, bytes.concat(bytes("verify random signature succeed, user:"), toLog(msg.sender), bytes(", pubKey:"), toLog(pubKey), bytes(", signature:"), toLog(signature), bytes(", msgHash: "), toLog(msgHash)));
+        llog(DEBUG, abi.encodePacked("verify random signature succeed, user:", toLog(msg.sender), ", pubKey:", toLog(pubKey), ", signature:", toLog(signature), ", msgHash: ", toLog(msgHash)));
         return true;
     }
 
@@ -130,10 +130,10 @@ contract Vrf is nodeLog {
         for (uint i = 0; i < validators.length; ++i) {
             if(_randoms[epoch][validators[i]].length == 0){
                 _unSendRandNodes.push(validators[i]);
-                printLog(DEBUG, bytes.concat(bytes("record unsent random node:"), toLog(validators[i])));
+                llog(DEBUG, bytes.concat(bytes("record unsent random node:"), toLog(validators[i])));
             }else{
                 _validNodes.push(validators[i]);
-                printLog(DEBUG, bytes.concat(bytes("record valid node:"), toLog(validators[i])));
+                llog(DEBUG, bytes.concat(bytes("record valid node:"), toLog(validators[i])));
             }
         }
 
@@ -148,13 +148,13 @@ contract Vrf is nodeLog {
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
-        printLog(DEBUG, bytes.concat(bytes("generate new seed:"), toLog(_seeds[epoch]), bytes(", epoch:"), toLog(epoch)));
+        llog(DEBUG, bytes.concat(bytes("generate new seed:"), toLog(_seeds[epoch]), bytes(", epoch:"), toLog(epoch)));
 
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
         delete _validNodes;
         if(_unSendRandNodes.length != 0 || _validNodes.length != 0){
-            printLog(ERROR, bytes("_unSendRandNodes or _validNodes not clean"));
+            llog(ERROR, bytes("_unSendRandNodes or _validNodes not clean"));
         }
 
         return topN;
@@ -207,7 +207,9 @@ contract Vrf is nodeLog {
 
         bytes memory result = new bytes(SEED_LEN);
         for(uint256 i = 0; i < SEED_LEN; i++){
-            result[i] = bytes1(uint8(a[i])+uint8(b[i]));
+            unchecked {
+                result[i] = bytes1(uint8(a[i])+uint8(b[i]));
+            }
         }
 
         return result;

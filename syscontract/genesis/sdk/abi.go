@@ -72,7 +72,7 @@ const VRFABI = `
 				"type": "bytes"
 			}
 		],
-		"name": "printLog",
+		"name": "llog",
 		"outputs": [],
 		"stateMutability": "view",
 		"type": "function"
