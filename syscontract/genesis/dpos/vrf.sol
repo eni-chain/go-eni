@@ -97,7 +97,7 @@ contract Vrf is LocalLog {
             return  false;
         }
 
-        llog(DEBUG, abi.encodePacked("verify random signature succeed, user:", toLog(msg.sender), ", pubKey:", toLog(pubKey), ", signature:", toLog(signature), ", msgHash: ", toLog(msgHash)));
+        llog(DEBUG, abi.encodePacked("verify random succeed, user:", H(msg.sender), ", pubKey:", H(pubKey), ", signature:", H(signature), ", msgHash: ", H(msgHash)));
         return true;
     }
 
@@ -130,10 +130,10 @@ contract Vrf is LocalLog {
         for (uint i = 0; i < validators.length; ++i) {
             if(_randoms[epoch][validators[i]].length == 0){
                 _unSendRandNodes.push(validators[i]);
-                llog(DEBUG, bytes.concat(bytes("record unsent random node:"), toLog(validators[i])));
+                llog(DEBUG, abi.encodePacked("record unsent random node:", H(validators[i])));
             }else{
                 _validNodes.push(validators[i]);
-                llog(DEBUG, bytes.concat(bytes("record valid node:"), toLog(validators[i])));
+                llog(DEBUG, abi.encodePacked("record valid node:", H(validators[i])));
             }
         }
 
@@ -148,13 +148,14 @@ contract Vrf is LocalLog {
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
-        llog(DEBUG, bytes.concat(bytes("generate new seed:"), toLog(_seeds[epoch]), bytes(", epoch:"), toLog(epoch)));
+        llog(DEBUG, abi.encodePacked("generate new seed:", H(_seeds[epoch]), ", epoch:", S(epoch)));
 
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
         delete _validNodes;
+        llog(DEBUG, abi.encodePacked("clear _unSendRandNodes and _validNodes for next epoch, _unSendRandNodes.len:", S(_unSendRandNodes.length), "_validNodes.len:", S(_validNodes.length)));
         if(_unSendRandNodes.length != 0 || _validNodes.length != 0){
-            llog(ERROR, bytes("_unSendRandNodes or _validNodes not clean"));
+            llog(ERROR, abi.encodePacked("_unSendRandNodes or _validNodes not clean"));
         }
 
         return topN;
@@ -202,7 +203,7 @@ contract Vrf is LocalLog {
     }
 
     // Adds two 64-byte bytes byte by byte
-    function addBytes(bytes memory a, bytes memory b) internal pure returns (bytes memory) {
+    function addBytes(bytes memory a, bytes memory b) internal view returns (bytes memory) {
         require(a.length == SEED_LEN && b.length == SEED_LEN, "Invalid input length");
 
         bytes memory result = new bytes(SEED_LEN);
@@ -211,6 +212,8 @@ contract Vrf is LocalLog {
                 result[i] = bytes1(uint8(a[i])+uint8(b[i]));
             }
         }
+
+        llog(DEBUG, abi.encodePacked("sum rand:", H(a), " + ", H(b), " = ", H(result)));
 
         return result;
     }

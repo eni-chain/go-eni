@@ -74,9 +74,9 @@ interface IValidatorManager {
 }
 
 
-contract nodeLog {
+contract LocalLog {
 
-    function hexChar(uint8 c) internal pure returns (bytes1) {
+    function char2Hex(uint8 c) internal pure returns (bytes1) {
         if (c < 10) {
             return bytes1(uint8(c + 0x30)); // '0'-'9'
         } else {
@@ -85,7 +85,7 @@ contract nodeLog {
     }
 
     //convert address to bytes
-    function toBytes(address a) internal pure returns (bytes memory b) {
+    function addr2Bytes(address a) internal pure returns (bytes memory b) {
         assembly {
             let m := mload(0x40)
             a := and(a, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
@@ -99,24 +99,24 @@ contract nodeLog {
     }
 
     // convert bytes to hex string
-    function toLog(bytes memory bs) public pure returns (bytes memory) {
+    function H(bytes memory bs) public pure returns (bytes memory) {
         bytes memory hexStr = new bytes(bs.length * 2);
         for (uint i = 0; i < bs.length; i++) {
             uint8 v = uint8(bs[i]);
-            hexStr[i*2] = hexChar(v >> 4);
-            hexStr[i*2+1] = hexChar(v & 0xf);
+            hexStr[i*2] = char2Hex(v >> 4);
+            hexStr[i*2+1] = char2Hex(v & 0xf);
         }
         return hexStr;
     }
 
     // convert address to hex string
-    function toLog(address addr) public pure returns (bytes memory) {
-        bytes memory addrBytes = toBytes(addr);
-        return toLog(addrBytes);
+    function H(address addr) public pure returns (bytes memory) {
+        bytes memory addrBytes = addr2Bytes(addr);
+        return H(addrBytes);
     }
 
     //convert uint256 to string
-   function toLog(uint256 value) public pure returns (bytes memory) {
+   function S(uint256 value) public pure returns (bytes memory) {
         if (value == 0) {
             return "0";
         }
@@ -139,7 +139,7 @@ contract nodeLog {
     }
 
     //convert bool to string
-    function toLog(bool value) public pure returns (bytes memory) {
+    function S(bool value) public pure returns (bytes memory) {
         if(value) {
             return bytes("true");
         } else {
@@ -147,8 +147,8 @@ contract nodeLog {
         }
     }
 
-    function printLog(uint level, bytes memory logs) public view {
-        bytes memory input = bytes.concat(toLog(level), logs);
+    function llog(uint level, bytes memory logs) public view {
+        bytes memory input = bytes.concat(S(level), logs);
 
         bytes memory output = new bytes(32);
         uint256 len = input.length;
