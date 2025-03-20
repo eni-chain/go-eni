@@ -103,7 +103,7 @@ func (k *Keeper) GetNextBaseFeePerGas(ctx sdk.Context) cosmossdk_io_math.LegacyD
 	bz := store.Get(types.NextBaseFeePerGasPrefix)
 	if bz == nil {
 		minFeePerGas := k.GetMinimumFeePerGas(ctx)
-		if minFeePerGas.IsNil() {
+		if minFeePerGas.IsNil() || minFeePerGas.IsZero() {
 			minFeePerGas = types.DefaultParams().MinimumFeePerGas
 		}
 		return minFeePerGas
