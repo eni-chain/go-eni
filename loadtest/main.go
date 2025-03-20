@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -31,6 +32,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"golang.org/x/sync/semaphore"
 	"golang.org/x/time/rate"
@@ -141,7 +143,7 @@ func deployUniswapContracts(client *LoadTestClient, config *Config) {
 	}
 }
 
-func run(config *Config) {
+func run(config *Config, txFilePath string) {
 	// Start metrics collector in another thread
 	metricsServer := MetricsServer{}
 	go metricsServer.StartMetricsClient(*config)
@@ -150,8 +152,35 @@ func run(config *Config) {
 	client.SetValidators()
 	deployEvmContracts(config)
 	//deployUniswapContracts(client, config)
-	startLoadtestWorkers(client, *config)
+	if txFilePath != "" {
+		go readTransactionsFromFile(client, txFilePath)
+	} else {
+		startLoadtestWorkers(client, *config)
+	}
 	runEvmQueries(*config)
+}
+
+func readTransactionsFromFile(client *LoadTestClient, filePath string) (int, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+	count := 0
+	provider := client.EvmTxClients[0]
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		tx := &ethtypes.Transaction{}
+		tx.UnmarshalBinary(common.Hex2Bytes(line))
+		go provider.SendEvmTx(tx, func() {
+			count++
+		})
+	}
+	if err := scanner.Err(); err != nil {
+		return count, err
+	}
+	return count, nil
 }
 
 // starts loadtest workers. If config.Constant is true, then we don't gather loadtest results and let producer/consumer
@@ -622,9 +651,10 @@ func ReadConfig(path string) Config {
 
 func main() {
 	configFilePath := flag.String("config-file", GetDefaultConfigFilePath(), "Path to the config.json file to use for this run")
+	txFilePath := flag.String("tx", "", "Path to the file containing Ethereum transactions")
 	flag.Parse()
 
 	config := ReadConfig(*configFilePath)
 	fmt.Printf("Using config file: %s\n", *configFilePath)
-	run(&config)
+	run(&config, *txFilePath)
 }
