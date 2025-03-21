@@ -21,6 +21,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
+	epochtypes "github.com/eni-chain/go-eni/x/epoch/keeper"
 	evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
@@ -110,6 +111,7 @@ type AppModule struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	EvmKeeper     evmKeeper.Keeper
+	EpochKeeper   epochtypes.Keeper
 }
 
 func NewAppModule(
@@ -118,6 +120,7 @@ func NewAppModule(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	EvmKeeper evmKeeper.Keeper,
+	EpochKeeper epochtypes.Keeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
@@ -125,6 +128,7 @@ func NewAppModule(
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		EvmKeeper:      EvmKeeper,
+		EpochKeeper:    EpochKeeper,
 	}
 }
 
@@ -172,7 +176,14 @@ func (am AppModule) BeginBlock(_ context.Context) error {
 
 func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	//The last block of the epoch updates the consensus set for the next epoch
 	if ctx.BlockHeight()%EpochPeriod != 0 {
+		return nil, nil
+	}
+
+	epoch := am.EpochKeeper.GetEpoch(ctx)
+	if uint64(ctx.BlockHeight())%epoch.EpochInterval != 0 {
 		return nil, nil
 	}
 
@@ -183,9 +194,10 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 
 	addr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
 	caller := common.Address(addr)
-	epoch := big.NewInt(ctx.BlockHeight() / EpochPeriod)
+	//epoch := big.NewInt(ctx.BlockHeight() / EpochPeriod)
+	epochNum := big.NewInt(int64(epoch.CurrentEpoch))
 
-	addrs, err := vrf.UpdateConsensusSet(ctx, caller, epoch)
+	addrs, err := vrf.UpdateConsensusSet(ctx, caller, epochNum)
 	if err != nil {
 		return nil, err
 	}
@@ -241,6 +253,7 @@ type ModuleInputs struct {
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
 	EvmKeeper     evmKeeper.Keeper
+	EpochKeeper   epochtypes.Keeper
 	//authAccountKeeper *authkeeper.AccountKeeper
 }
 
@@ -270,6 +283,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.EvmKeeper,
+		in.EpochKeeper,
 	)
 
 	return ModuleOutputs{GoeniKeeper: k, Module: m}

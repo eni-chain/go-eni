@@ -151,14 +151,19 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	lastEpoch := am.keeper.GetEpoch(sdkCtx)
+	interval := lastEpoch.EpochInterval
+	if interval == 0 {
+		interval = 10
+	}
+
 	sdkCtx.Logger().Info(fmt.Sprintf("Current block height %d, last %s; interval %d", sdkCtx.BlockHeight(), lastEpoch.CurrentEpochHeight, lastEpoch.EpochInterval))
 
-	if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) > lastEpoch.EpochInterval {
+	if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) > interval {
 		//am.keeper.AfterEpochEnd(ctx, lastEpoch)
 
 		newEpoch := types.Epoch{
 			GenesisTime:             lastEpoch.GenesisTime,
-			EpochInterval:           lastEpoch.EpochInterval,
+			EpochInterval:           interval,
 			CurrentEpoch:            lastEpoch.CurrentEpoch + 1,
 			CurrentEpochStartHeight: uint64(sdkCtx.BlockHeight()),
 			CurrentEpochHeight:      sdkCtx.BlockHeight(),
