@@ -6,6 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cometbft/cometbft/proto/tendermint/crypto"
+	"github.com/eni-chain/go-eni/precompiles/ed25519Verify"
+	ContractNodeLog "github.com/eni-chain/go-eni/precompiles/nodeLog"
+	"github.com/eni-chain/go-eni/syscontract"
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 
@@ -47,7 +50,8 @@ var (
 	//_ appmodule.HasEndBlocker   = (*AppModule)(nil)
 )
 
-var EpochPeriod int64 = 50
+var _ = ed25519Verify.AddEd25519VerifyToVM()
+var _ = ContractNodeLog.AddNodeLogToVM()
 
 //var EpochNum uint64 = 1
 
@@ -165,7 +169,12 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
-func (am AppModule) BeginBlock(_ context.Context) error {
+func (am AppModule) BeginBlock(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	if ctx.BlockHeight() == 1 {
+		syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
+	}
+
 	return nil
 }
 

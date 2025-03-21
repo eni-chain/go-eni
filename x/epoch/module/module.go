@@ -155,7 +155,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 	if lastEpoch.EpochInterval == 0 && lastEpoch.CurrentEpoch == 0 {
 		newEpoch := types.Epoch{
 			GenesisTime:             sdkCtx.BlockTime(),
-			EpochInterval:           10,
+			EpochInterval:           50,
 			CurrentEpoch:            1,
 			CurrentEpochStartHeight: uint64(sdkCtx.BlockHeight()),
 			CurrentEpochHeight:      sdkCtx.BlockHeight(),
