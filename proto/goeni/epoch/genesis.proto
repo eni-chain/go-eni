@@ -1,0 +1,20 @@
+syntax = "proto3";
+package goeni.epoch;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "goeni/epoch/params.proto";
+import "goeni/epoch/epoch.proto";
+
+option go_package = "github.com/eni-chain/go-eni/x/epoch/types";
+
+// GenesisState defines the epoch module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  Epoch epoch = 2;
+
+}
