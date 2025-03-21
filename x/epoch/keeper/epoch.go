@@ -22,8 +22,8 @@ func (k Keeper) GetEpoch(ctx sdk.Context) (epoch types.Epoch) {
 	adapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	b := adapter.Get([]byte(EpochKey))
 	if b != nil {
+		k.cdc.MustUnmarshal(b, &epoch)
 		return epoch
 	}
-	k.cdc.MustUnmarshal(b, &epoch)
 	return epoch
 }
