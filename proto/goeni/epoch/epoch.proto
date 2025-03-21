@@ -1,5 +1,5 @@
 syntax = "proto3";
-package  goeni.epoch;
+package  enichaintest.epoch;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -16,20 +16,17 @@ message Epoch {
     (gogoproto.nullable) = false,
     (gogoproto.moretags) = "yaml:\"genesis_time\""
   ];
-  google.protobuf.Duration epoch_duration = 3 [
-    (gogoproto.nullable) = false,
-    (gogoproto.stdduration) = true,
-    (gogoproto.jsontag) = "duration,omitempty",
-    (gogoproto.moretags) = "yaml:\"epoch_duration\""
+  uint64 epoch_interval = 3 [
+    (gogoproto.jsontag) = "epoch_interval",
+    (gogoproto.moretags) = "yaml:\"epoch_interval\""
   ];
   uint64 current_epoch = 4 [
     (gogoproto.jsontag) = "current_epoch",
     (gogoproto.moretags) = "yaml:\"current_epoch\""
   ];
-  google.protobuf.Timestamp current_epoch_start_time = 5 [
-    (gogoproto.stdtime) = true,
-    (gogoproto.nullable) = false,
-    (gogoproto.moretags) = "yaml:\"current_epoch_start_time\""
+  uint64 current_epoch_start_height = 5 [
+    (gogoproto.jsontag) = "current_epoch_start_height",
+    (gogoproto.moretags) = "yaml:\"current_epoch_start_height\""
   ];
   int64 current_epoch_height = 6 [
     (gogoproto.jsontag) = "current_epoch_height",

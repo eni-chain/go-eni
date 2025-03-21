@@ -151,17 +151,17 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	lastEpoch := am.keeper.GetEpoch(sdkCtx)
-	sdkCtx.Logger().Info(fmt.Sprintf("Current block time %s, last %s; duration %d", sdkCtx.BlockTime().String(), lastEpoch.CurrentEpochStartTime.String(), lastEpoch.EpochDuration))
+	sdkCtx.Logger().Info(fmt.Sprintf("Current block height %d, last %s; interval %d", sdkCtx.BlockHeight(), lastEpoch.CurrentEpochHeight, lastEpoch.EpochInterval))
 
-	if sdkCtx.BlockTime().Sub(lastEpoch.CurrentEpochStartTime) > lastEpoch.EpochDuration {
+	if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) > lastEpoch.EpochInterval {
 		//am.keeper.AfterEpochEnd(ctx, lastEpoch)
 
 		newEpoch := types.Epoch{
-			GenesisTime:           lastEpoch.GenesisTime,
-			EpochDuration:         lastEpoch.EpochDuration,
-			CurrentEpoch:          lastEpoch.CurrentEpoch + 1,
-			CurrentEpochStartTime: sdkCtx.BlockTime(),
-			CurrentEpochHeight:    sdkCtx.BlockHeight(),
+			GenesisTime:             lastEpoch.GenesisTime,
+			EpochInterval:           lastEpoch.EpochInterval,
+			CurrentEpoch:            lastEpoch.CurrentEpoch + 1,
+			CurrentEpochStartHeight: uint64(sdkCtx.BlockHeight()),
+			CurrentEpochHeight:      sdkCtx.BlockHeight(),
 		}
 		am.keeper.SetEpoch(sdkCtx, newEpoch)
 		//am.keeper.BeforeEpochStart(ctx, newEpoch)
@@ -169,7 +169,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 		sdkCtx.EventManager().EmitEvent(
 			sdk.NewEvent(types.EventTypeNewEpoch,
 				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(newEpoch.CurrentEpoch)),
-				sdk.NewAttribute(types.AttributeEpochTime, newEpoch.CurrentEpochStartTime.String()),
+				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(newEpoch.CurrentEpochStartHeight)),
 				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(newEpoch.CurrentEpochHeight)),
 			),
 		)
