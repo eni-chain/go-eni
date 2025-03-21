@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"github.com/eni-chain/go-eni/evmrpc"
 	"io"
 
 	"cosmossdk.io/log"
@@ -58,6 +59,7 @@ func initRootCmd(
 
 func addModuleInitFlags(startCmd *cobra.Command) {
 	crisis.AddModuleInitFlags(startCmd)
+	evmrpc.AddEvmRpcFlagsToCmd(startCmd)
 }
 
 // genesisCommand builds genesis-related `go-enid genesis` command. Users may provide application specific commands as a parameter
