@@ -178,11 +178,11 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	//The last block of the epoch updates the consensus set for the next epoch
-	if ctx.BlockHeight()%EpochPeriod != 0 {
+	epoch := am.EpochKeeper.GetEpoch(ctx)
+	if epoch.EpochInterval == 0 {
 		return nil, nil
 	}
 
-	epoch := am.EpochKeeper.GetEpoch(ctx)
 	if uint64(ctx.BlockHeight())%epoch.EpochInterval != 0 {
 		return nil, nil
 	}

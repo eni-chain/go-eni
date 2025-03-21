@@ -151,25 +151,16 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	lastEpoch := am.keeper.GetEpoch(sdkCtx)
-	interval := lastEpoch.EpochInterval
-	if interval == 0 {
-		interval = 10
-	}
 
-	sdkCtx.Logger().Info(fmt.Sprintf("Current block height %d, last %s; interval %d", sdkCtx.BlockHeight(), lastEpoch.CurrentEpochHeight, lastEpoch.EpochInterval))
-
-	if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) > interval {
-		//am.keeper.AfterEpochEnd(ctx, lastEpoch)
-
+	if lastEpoch.EpochInterval == 0 && lastEpoch.CurrentEpoch == 0 {
 		newEpoch := types.Epoch{
-			GenesisTime:             lastEpoch.GenesisTime,
-			EpochInterval:           interval,
-			CurrentEpoch:            lastEpoch.CurrentEpoch + 1,
+			GenesisTime:             sdkCtx.BlockTime(),
+			EpochInterval:           10,
+			CurrentEpoch:            1,
 			CurrentEpochStartHeight: uint64(sdkCtx.BlockHeight()),
 			CurrentEpochHeight:      sdkCtx.BlockHeight(),
 		}
 		am.keeper.SetEpoch(sdkCtx, newEpoch)
-		//am.keeper.BeforeEpochStart(ctx, newEpoch)
 
 		sdkCtx.EventManager().EmitEvent(
 			sdk.NewEvent(types.EventTypeNewEpoch,
@@ -180,8 +171,28 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 		)
 
 		telemetry.SetGauge(float32(newEpoch.CurrentEpoch), "epoch", "current")
-	}
+	} else if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) >= lastEpoch.EpochInterval {
+		//am.keeper.AfterEpochEnd(ctx, lastEpoch)
+		newEpoch := types.Epoch{
+			GenesisTime:             lastEpoch.GenesisTime,
+			EpochInterval:           lastEpoch.EpochInterval,
+			CurrentEpoch:            lastEpoch.CurrentEpoch + 1,
+			CurrentEpochStartHeight: uint64(sdkCtx.BlockHeight()),
+			CurrentEpochHeight:      sdkCtx.BlockHeight(),
+		}
+		am.keeper.SetEpoch(sdkCtx, newEpoch)
 
+		sdkCtx.EventManager().EmitEvent(
+			sdk.NewEvent(types.EventTypeNewEpoch,
+				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(newEpoch.CurrentEpoch)),
+				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(newEpoch.CurrentEpochStartHeight)),
+				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(newEpoch.CurrentEpochHeight)),
+			),
+		)
+
+		telemetry.SetGauge(float32(newEpoch.CurrentEpoch), "epoch", "current")
+		//am.keeper.BeforeEpochStart(ctx, newEpoch)
+	}
 	return nil
 }
 
