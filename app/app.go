@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"io"
 
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
@@ -80,6 +81,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
+	epochmodulekeeper "github.com/eni-chain/go-eni/x/epoch/keeper"
 	evmmodulekeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	goenimodulekeeper "github.com/eni-chain/go-eni/x/goeni/keeper"
 
@@ -90,7 +92,7 @@ import (
 
 const (
 	AccountAddressPrefix                 = "eni"
-	Name                                 = "enid"
+	Name                                 = "eni"
 	OptimisticProcessingTimeoutInSeconds = 5
 )
 
@@ -151,6 +153,8 @@ type App struct {
 
 	GoeniKeeper goenimodulekeeper.Keeper
 	EvmKeeper   evmmodulekeeper.Keeper
+	EpochKeeper epochmodulekeeper.Keeper
+
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -258,6 +262,7 @@ func New(
 		&app.CircuitBreakerKeeper,
 		&app.GoeniKeeper,
 		&app.EvmKeeper,
+		&app.EpochKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	)
 
@@ -308,6 +313,29 @@ func New(
 		}
 		return app.App.InitChainer(ctx, req)
 	})
+
+	//todo SetAnteHandle
+	anteHandler, err := NewAnteHandlerAndDepGenerator(
+		HandlerOptions{
+			HandlerOptions: ante.HandlerOptions{
+				AccountKeeper:   app.AccountKeeper,
+				BankKeeper:      app.BankKeeper,
+				SignModeHandler: app.txConfig.SignModeHandler(),
+				FeegrantKeeper:  app.FeeGrantKeeper,
+				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			},
+			AppAccountKeeper: &app.AccountKeeper,
+			EVMKeeper:        &app.EvmKeeper,
+			LatestCtxGetter: func() sdk.Context {
+				return app.NewContext(false)
+			},
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetAnteHandler(anteHandler)
 
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
@@ -420,19 +448,14 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 
 	ctxProvider := func(i int64) sdk.Context {
 		if i == evmrpc.LatestCtxHeight {
-			//todo:Can't get it at the moment, comment first, then add
-			//return app.GetCheckCtx()
-			return sdk.Context{}
+
+			return app.GetContextForCheckTx(nil)
 		}
 		ctx, err := app.CreateQueryContext(i, false)
 		if err != nil {
 			app.Logger().Error(fmt.Sprintf("failed to create query context for EVM; using latest context instead: %v+", err.Error()))
-			//todo:Can't get it at the moment, comment first, then add
-			//return app.GetCheckCtx()
-			return sdk.Context{}
+			return app.GetContextForCheckTx(nil)
 		}
-		//todo: Depends on x/evm, and when the x/evm migration is completed, it will be replaced here
-		//return ctx.WithIsEVM(true)
 		return ctx
 	}
 	rpcClient, ok := clientCtx.Client.(rpcclient.Client)

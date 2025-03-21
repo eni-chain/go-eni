@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Query_EniAddressByEVMAddress_FullMethodName = "/goeni.evm.Query/EniAddressByEVMAddress"
-	Query_EVMAddressBySeiAddress_FullMethodName = "/goeni.evm.Query/EVMAddressBySeiAddress"
+	Query_EVMAddressByEniAddress_FullMethodName = "/goeni.evm.Query/EVMAddressByEniAddress"
 	Query_StaticCall_FullMethodName             = "/goeni.evm.Query/StaticCall"
 	Query_Pointer_FullMethodName                = "/goeni.evm.Query/Pointer"
 	Query_PointerVersion_FullMethodName         = "/goeni.evm.Query/PointerVersion"
@@ -31,8 +31,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
-	EniAddressByEVMAddress(ctx context.Context, in *QuerySeiAddressByEVMAddressRequest, opts ...grpc.CallOption) (*QuerySeiAddressByEVMAddressResponse, error)
-	EVMAddressBySeiAddress(ctx context.Context, in *QueryEVMAddressBySeiAddressRequest, opts ...grpc.CallOption) (*QueryEVMAddressBySeiAddressResponse, error)
+	EniAddressByEVMAddress(ctx context.Context, in *QueryEniAddressByEVMAddressRequest, opts ...grpc.CallOption) (*QueryEniAddressByEVMAddressResponse, error)
+	EVMAddressByEniAddress(ctx context.Context, in *QueryEVMAddressByEniAddressRequest, opts ...grpc.CallOption) (*QueryEVMAddressByEniAddressResponse, error)
 	StaticCall(ctx context.Context, in *QueryStaticCallRequest, opts ...grpc.CallOption) (*QueryStaticCallResponse, error)
 	Pointer(ctx context.Context, in *QueryPointerRequest, opts ...grpc.CallOption) (*QueryPointerResponse, error)
 	PointerVersion(ctx context.Context, in *QueryPointerVersionRequest, opts ...grpc.CallOption) (*QueryPointerVersionResponse, error)
@@ -47,8 +47,8 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) EniAddressByEVMAddress(ctx context.Context, in *QuerySeiAddressByEVMAddressRequest, opts ...grpc.CallOption) (*QuerySeiAddressByEVMAddressResponse, error) {
-	out := new(QuerySeiAddressByEVMAddressResponse)
+func (c *queryClient) EniAddressByEVMAddress(ctx context.Context, in *QueryEniAddressByEVMAddressRequest, opts ...grpc.CallOption) (*QueryEniAddressByEVMAddressResponse, error) {
+	out := new(QueryEniAddressByEVMAddressResponse)
 	err := c.cc.Invoke(ctx, Query_EniAddressByEVMAddress_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,9 +56,9 @@ func (c *queryClient) EniAddressByEVMAddress(ctx context.Context, in *QuerySeiAd
 	return out, nil
 }
 
-func (c *queryClient) EVMAddressBySeiAddress(ctx context.Context, in *QueryEVMAddressBySeiAddressRequest, opts ...grpc.CallOption) (*QueryEVMAddressBySeiAddressResponse, error) {
-	out := new(QueryEVMAddressBySeiAddressResponse)
-	err := c.cc.Invoke(ctx, Query_EVMAddressBySeiAddress_FullMethodName, in, out, opts...)
+func (c *queryClient) EVMAddressByEniAddress(ctx context.Context, in *QueryEVMAddressByEniAddressRequest, opts ...grpc.CallOption) (*QueryEVMAddressByEniAddressResponse, error) {
+	out := new(QueryEVMAddressByEniAddressResponse)
+	err := c.cc.Invoke(ctx, Query_EVMAddressByEniAddress_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,8 +105,8 @@ func (c *queryClient) Pointee(ctx context.Context, in *QueryPointeeRequest, opts
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
-	EniAddressByEVMAddress(context.Context, *QuerySeiAddressByEVMAddressRequest) (*QuerySeiAddressByEVMAddressResponse, error)
-	EVMAddressBySeiAddress(context.Context, *QueryEVMAddressBySeiAddressRequest) (*QueryEVMAddressBySeiAddressResponse, error)
+	EniAddressByEVMAddress(context.Context, *QueryEniAddressByEVMAddressRequest) (*QueryEniAddressByEVMAddressResponse, error)
+	EVMAddressByEniAddress(context.Context, *QueryEVMAddressByEniAddressRequest) (*QueryEVMAddressByEniAddressResponse, error)
 	StaticCall(context.Context, *QueryStaticCallRequest) (*QueryStaticCallResponse, error)
 	Pointer(context.Context, *QueryPointerRequest) (*QueryPointerResponse, error)
 	PointerVersion(context.Context, *QueryPointerVersionRequest) (*QueryPointerVersionResponse, error)
@@ -118,11 +118,11 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (UnimplementedQueryServer) EniAddressByEVMAddress(context.Context, *QuerySeiAddressByEVMAddressRequest) (*QuerySeiAddressByEVMAddressResponse, error) {
+func (UnimplementedQueryServer) EniAddressByEVMAddress(context.Context, *QueryEniAddressByEVMAddressRequest) (*QueryEniAddressByEVMAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EniAddressByEVMAddress not implemented")
 }
-func (UnimplementedQueryServer) EVMAddressBySeiAddress(context.Context, *QueryEVMAddressBySeiAddressRequest) (*QueryEVMAddressBySeiAddressResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EVMAddressBySeiAddress not implemented")
+func (UnimplementedQueryServer) EVMAddressByEniAddress(context.Context, *QueryEVMAddressByEniAddressRequest) (*QueryEVMAddressByEniAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EVMAddressByEniAddress not implemented")
 }
 func (UnimplementedQueryServer) StaticCall(context.Context, *QueryStaticCallRequest) (*QueryStaticCallResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StaticCall not implemented")
@@ -150,7 +150,7 @@ func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 }
 
 func _Query_EniAddressByEVMAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QuerySeiAddressByEVMAddressRequest)
+	in := new(QueryEniAddressByEVMAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -162,25 +162,25 @@ func _Query_EniAddressByEVMAddress_Handler(srv interface{}, ctx context.Context,
 		FullMethod: Query_EniAddressByEVMAddress_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EniAddressByEVMAddress(ctx, req.(*QuerySeiAddressByEVMAddressRequest))
+		return srv.(QueryServer).EniAddressByEVMAddress(ctx, req.(*QueryEniAddressByEVMAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_EVMAddressBySeiAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEVMAddressBySeiAddressRequest)
+func _Query_EVMAddressByEniAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEVMAddressByEniAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).EVMAddressBySeiAddress(ctx, in)
+		return srv.(QueryServer).EVMAddressByEniAddress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_EVMAddressBySeiAddress_FullMethodName,
+		FullMethod: Query_EVMAddressByEniAddress_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).EVMAddressBySeiAddress(ctx, req.(*QueryEVMAddressBySeiAddressRequest))
+		return srv.(QueryServer).EVMAddressByEniAddress(ctx, req.(*QueryEVMAddressByEniAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -269,8 +269,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_EniAddressByEVMAddress_Handler,
 		},
 		{
-			MethodName: "EVMAddressBySeiAddress",
-			Handler:    _Query_EVMAddressBySeiAddress_Handler,
+			MethodName: "EVMAddressByEniAddress",
+			Handler:    _Query_EVMAddressByEniAddress_Handler,
 		},
 		{
 			MethodName: "StaticCall",

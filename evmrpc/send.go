@@ -3,10 +3,8 @@ package evmrpc
 import (
 	"context"
 	"errors"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/eni-chain/go-eni/utils"
-	"github.com/eni-chain/go-eni/utils/helpers"
-	"github.com/ethereum/go-ethereum/crypto"
+
+	"github.com/eni-chain/go-eni/x/evm/ante"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -60,6 +58,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if err = tx.UnmarshalBinary(input); err != nil {
 		return
 	}
+
 	hash = tx.Hash()
 	txData, err := ethtx.NewTxDataFromTx(tx)
 	if err != nil {
@@ -69,52 +68,11 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if err != nil {
 		return
 	}
+	ante.Preprocess2(msg)
 	txBuilder := s.txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return
 	}
-
-	//todo add SetSignatures
-	V, R, S := txData.GetRawSignatureValues()
-	//V = new(big.Int).Add(V, utils.Big27)
-	if V.BitLen() > 8 {
-		return hash, ethtypes.ErrInvalidSig
-	}
-
-	//vb := byte(V.Uint64() - 27)
-	vb := V.Bytes()[0]
-	if !crypto.ValidateSignatureValues(vb, R, S, true) {
-		return hash, ethtypes.ErrInvalidSig
-	}
-	// encode the signature in uncompressed format
-	rb, sb := R.Bytes(), S.Bytes()
-	sig := make([]byte, crypto.SignatureLength)
-	copy(sig[32-len(rb):32], rb)
-	copy(sig[64-len(sb):64], sb)
-	sig[64] = vb
-
-	ethCfg := types.DefaultChainConfig().EthereumConfig(txData.GetChainID())
-	signer := ethtypes.MakeSigner(ethCfg, utils.Big1, 1)
-	H := signer.Hash(tx)
-
-	// recover the public key from the signature
-	pubKeyBytes, err := crypto.Ecrecover(H[:], sig)
-	if err != nil {
-		return
-	}
-	pubKey := helpers.PubkeyBytesToEniPubKey(pubKeyBytes)
-	//evmAddr, eniAddr, pubKey, err := helpers.GetAddresses(V, R, S, H)
-
-	sigV2 := signing.SignatureV2{
-		PubKey: &pubKey,
-		Data: &signing.SingleSignatureData{
-			SignMode:  signing.SignMode_SIGN_MODE_TEXTUAL,
-			Signature: sig[:],
-		},
-		Sequence: txData.GetNonce(),
-	}
-
-	txBuilder.SetSignatures(sigV2)
 
 	txbz, encodeErr := s.txConfig.TxEncoder()(txBuilder.GetTx())
 	if encodeErr != nil {

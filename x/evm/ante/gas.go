@@ -1,8 +1,10 @@
 package ante
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
 )
 
 type GasLimitDecorator struct {
@@ -15,13 +17,19 @@ func NewGasLimitDecorator(evmKeeper *evmkeeper.Keeper) *GasLimitDecorator {
 
 // Called at the end of the ante chain to set gas limit properly
 func (gl GasLimitDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	//msg := evmtypes.MustGetEVMTransactionMessage(tx)
-	//txData, err := evmtypes.UnpackTxData(msg.Data)
-	//if err != nil {
-	//	return ctx, err
-	//}
-	//
-	//adjustedGasLimit := gl.evmKeeper.GetPriorityNormalizer(ctx).MulInt64(int64(txData.GetGas()))
+	return next(ctx, tx, simulate)
+	msg := evmtypes.MustGetEVMTransactionMessage(tx)
+	txData, err := evmtypes.UnpackTxData(msg.Data)
+	if err != nil {
+		return ctx, err
+	}
+
+	adjustedGasLimit := gl.evmKeeper.GetPriorityNormalizer(ctx).MulInt64(int64(txData.GetGas()))
+	// todo gas related content, ignore for now
 	//ctx = ctx.WithGasMeter(sdk.NewGasMeterWithMultiplier(ctx, adjustedGasLimit.TruncateInt().Uint64()))
+	if ctx.GasMeter() == nil {
+		ctx = ctx.WithGasMeter(storetypes.NewGasMeter(adjustedGasLimit.TruncateInt().Uint64()))
+	}
+
 	return next(ctx, tx, simulate)
 }

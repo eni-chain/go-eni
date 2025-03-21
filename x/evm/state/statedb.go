@@ -2,6 +2,7 @@ package state
 
 import (
 	cosmossdk_io_math "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/ethereum/go-ethereum/common"
@@ -18,7 +19,7 @@ import (
 type DBImpl struct {
 	ctx             sdk.Context
 	snapshottedCtxs []sdk.Context
-
+	//snapshotKVStores []storetypes.MultiStore
 	tempStateCurrent *TemporaryState
 	tempStatesHist   []*TemporaryState
 	// If err is not nil at the end of the execution, the transaction will be rolled
@@ -44,7 +45,7 @@ type DBImpl struct {
 }
 
 func (s *DBImpl) CreateContract(address common.Address) {
-	//TODO implement me
+	s.CreateAccount(address)
 }
 
 func (s *DBImpl) SelfDestruct6780(address common.Address) (uint256.Int, bool) {
@@ -73,7 +74,8 @@ func NewDBImpl(ctx sdk.Context, k EVMKeeper, simulation bool) *DBImpl {
 		ctx:             ctx,
 		k:               k,
 		snapshottedCtxs: []sdk.Context{},
-		//coinbaseAddress:    GetCoinbaseAddress(ctx.TxIndex()),
+		//snapshotKVStores:   []storetypes.MultiStore{},
+		coinbaseAddress:    GetCoinbaseAddress(ctx.TxIndex()),
 		simulation:         simulation,
 		tempStateCurrent:   NewTemporaryState(),
 		coinbaseEvmAddress: feeCollector,
@@ -138,7 +140,7 @@ func (s *DBImpl) Finalize() (surplus cosmossdk_io_math.Int, err error) {
 	// write cache to underlying
 	s.flushCtx(s.ctx)
 	// write all snapshotted caches in reverse order, except the very first one (base) which will be written by baseapp::runTx
-	for i := len(s.snapshottedCtxs) - 1; i > 0; i-- {
+	for i := len(s.snapshottedCtxs) - 1; i >= 0; i-- {
 		s.flushCtx(s.snapshottedCtxs[i])
 	}
 	// write all events in order
@@ -155,7 +157,8 @@ func (s *DBImpl) Finalize() (surplus cosmossdk_io_math.Int, err error) {
 }
 
 func (s *DBImpl) flushCtx(ctx sdk.Context) {
-	//ctx.MultiStore().(sdk.CacheMultiStore).Write()  //todo dev
+	ctx.MultiStore().(storetypes.CacheMultiStore).Write()
+
 }
 
 func (s *DBImpl) flushEvents(ctx sdk.Context) {
@@ -206,8 +209,7 @@ func (s *DBImpl) IntermediateRoot(bool) common.Hash {
 }
 
 func (s *DBImpl) TxIndex() int {
-	//return s.ctx.TxIndex()    //todo dev
-	return 0
+	return s.ctx.TxIndex()
 }
 
 func (s *DBImpl) Preimages() map[common.Hash][]byte {

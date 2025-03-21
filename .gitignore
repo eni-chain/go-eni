@@ -8,4 +8,4 @@ release/
 *.log
 *.ign
 build
-eni-node
+eni-node/data/

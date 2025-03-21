@@ -3,14 +3,15 @@ package state
 import (
 	"math/big"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
 )
 
 type EVMKeeper interface {
-	//PrefixStore(sdk.Context, []byte) sdk.KVStore
+	PrefixStore(sdk.Context, []byte) storetypes.KVStore
 	PurgePrefix(sdk.Context, []byte)
 	GetEniAddress(sdk.Context, common.Address) (sdk.AccAddress, bool)
 	GetEniAddressOrDefault(ctx sdk.Context, evmAddress common.Address) sdk.AccAddress
@@ -23,7 +24,7 @@ type EVMKeeper interface {
 	GetCodeSize(sdk.Context, common.Address) int
 	GetState(sdk.Context, common.Address, common.Hash) common.Hash
 	SetState(sdk.Context, common.Address, common.Hash, common.Hash)
-	AccountKeeper() types.AccountKeeper
+	AccountKeeper() *authkeeper.AccountKeeper
 	GetFeeCollectorAddress(sdk.Context) (common.Address, error)
 	GetNonce(sdk.Context, common.Address) uint64
 	SetNonce(sdk.Context, common.Address, uint64)

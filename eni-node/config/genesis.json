@@ -1,63 +1,13 @@
 {
-  "genesis_time": "2025-02-12T09:56:58.278484055Z",
-  "chain_id": "eni",
+  "app_name": "go-enid",
+  "app_version": "",
+  "genesis_time": "2025-03-06T01:59:30.119719Z",
+  "chain_id": "goeni",
   "initial_height": 1,
-  "consensus": {
-    "params": {
-      "block": {
-        "max_bytes": "22020096",
-        "max_gas": "35000000",
-        "min_txs_in_block": "10"
-      },
-      "evidence": {
-        "max_age_num_blocks": "100000",
-        "max_age_duration": "172800000000000",
-        "max_bytes": "1048576"
-      },
-      "validator": {
-        "pub_key_types": [
-          "ed25519"
-        ]
-      },
-      "version": {
-        "app_version": "0"
-      },
-      "abci": {
-        "vote_extensions_enable_height": "0",
-        "recheck_tx": false
-      }
-    }
-  },
-  "synchrony": {
-    "precision": "505000000",
-    "message_delay": "12000000000"
-  },
-  "timeout": {
-    "propose": "1000000000",
-    "propose_delta": "500000000",
-    "vote": "50000000",
-    "vote_delta": "500000000",
-    "commit": "50000000",
-    "bypass_commit_timeout": false
-  },
-  "validators": [
-    {
-      "address": "43658210A04B922D245434FB1A9A8C21B9558DAD",
-      "pub_key": {
-        "type": "tendermint/PubKeyEd25519",
-        "value": "aCL9x2IiDGsOCZ+lD4q80yWwzCnHnIwZ0e4AnUZgHaw="
-      },
-      "power": "10",
-      "name": ""
-    }
-  ],
-  "app_hash": "",
+  "app_hash": null,
   "app_state": {
-    "accesscontrol": {
-      "params": {},
-      "message_dependency_mapping": [],
-      "wasm_dependency_mappings": []
-    },
+    "06-solomachine": null,
+    "07-tendermint": null,
     "auth": {
       "params": {
         "max_memo_characters": "256",
@@ -69,16 +19,16 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "eni1ldgv9xktz3p83zu72lfxjzgth2qj9kjqa94twv",
+          "address": "eni16hwsrl7v23mnf08ymu844n622sruyawn23dmd3",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "eni1p08wlk5aruz29x4ut65w55xfv6yq6tp4vs6csl",
+          "address": "eni12aw6u4j0vnafz3n43e6wes0hgm5qu79hah9gjl",
           "pub_key": null,
-          "account_number": "0",
+          "account_number": "1",
           "sequence": "0"
         }
       ]
@@ -93,124 +43,135 @@
       },
       "balances": [
         {
-          "address": "eni1p08wlk5aruz29x4ut65w55xfv6yq6tp4vs6csl",
+          "address": "eni12aw6u4j0vnafz3n43e6wes0hgm5qu79hah9gjl",
           "coins": [
             {
-              "denom": "uatom",
-              "amount": "1000000000000000000000"
+              "denom": "stake",
+              "amount": "100000000"
             },
             {
               "denom": "ueni",
-              "amount": "1000000000000000000000"
-            },
-            {
-              "denom": "uusdc",
               "amount": "1000000000000000000000"
             }
           ]
         },
         {
-          "address": "eni1ldgv9xktz3p83zu72lfxjzgth2qj9kjqa94twv",
+          "address": "eni16hwsrl7v23mnf08ymu844n622sruyawn23dmd3",
           "coins": [
             {
-              "denom": "uatom",
-              "amount": "1000000000000000000000"
+              "denom": "stake",
+              "amount": "200000000"
             },
             {
               "denom": "ueni",
-              "amount": "1000000000000000000000"
-            },
+              "amount": "2000000000000000000000"
+            }
+          ]
+        },
+        {
+          "address": "eni1lpazn8ntc7lt5kxmhed94gsafx7dzm2jmd5hgy",
+          "coins": [
             {
-              "denom": "uusdc",
-              "amount": "1000000000000000000000"
+              "denom": "ueni",
+              "amount": "123000000000000000000000"
             }
           ]
         }
       ],
-      "supply": [],
+      "supply": [
+        {
+          "denom": "stake",
+          "amount": "300000000"
+        },
+        {
+          "denom": "ueni",
+          "amount": "126000000000000000000000"
+        }
+      ],
       "denom_metadata": [
         {
-          "description": "",
+          "base": "ueni",
+          "display": "ueni",
           "denom_units": [
             {
-              "denom": "UATOM",
-              "exponent": 6,
-              "aliases": [
-                "UATOM"
-              ]
+              "denom": "ueni",
+              "exponent": 0,
+              "aliases": ["wei"]
+            },
+            {
+              "denom": "eni",
+              "exponent": 18,
+              "aliases": []
             }
-          ],
-          "base": "uatom",
-          "display": "uatom",
-          "name": "UATOM",
-          "symbol": "UATOM"
+          ]
         }
-      ]
+      ],
+      "send_enabled": []
     },
     "capability": {
       "index": "1",
       "owners": []
     },
+    "circuit": {
+      "account_permissions": [],
+      "disabled_type_urls": []
+    },
+    "consensus": null,
     "crisis": {
       "constant_fee": {
-        "denom": "ueni",
-        "amount": "1000"
+        "amount": "1000",
+        "denom": "stake"
       }
     },
     "distribution": {
-      "params": {
-        "community_tax": "0.000000000000000000",
-        "base_proposer_reward": "0.000000000000000000",
-        "bonus_proposer_reward": "0.000000000000000000",
-        "withdraw_addr_enabled": true
-      },
+      "delegator_starting_infos": [],
+      "delegator_withdraw_infos": [],
       "fee_pool": {
         "community_pool": []
       },
-      "delegator_withdraw_infos": [],
-      "previous_proposer": "",
       "outstanding_rewards": [],
+      "params": {
+        "base_proposer_reward": "0.000000000000000000",
+        "bonus_proposer_reward": "0.000000000000000000",
+        "community_tax": "0.020000000000000000",
+        "withdraw_addr_enabled": true
+      },
+      "previous_proposer": "",
       "validator_accumulated_commissions": [],
-      "validator_historical_rewards": [],
       "validator_current_rewards": [],
-      "delegator_starting_infos": [],
+      "validator_historical_rewards": [],
       "validator_slash_events": []
-    },
-    "epoch": {
-      "params": {},
-      "epoch": {
-        "genesis_time": "2025-02-12T09:56:58.276655805Z",
-        "epoch_duration": "60s",
-        "current_epoch": "0",
-        "current_epoch_start_time": "2025-02-12T09:56:58.276655805Z",
-        "current_epoch_height": "0"
-      }
     },
     "evidence": {
       "evidence": []
     },
     "evm": {
-      "params": {
-        "priority_normalizer": "1.000000000000000000",
-        "base_fee_per_gas": "0.000000000000000000",
-        "minimum_fee_per_gas": "1000000000.000000000000000000",
-        "whitelisted_cw_code_hashes_for_delegate_call": [],
-        "deliver_tx_hook_wasm_gas_limit": "300000",
-        "max_dynamic_base_fee_upward_adjustment": "0.018900000000000000",
-        "max_dynamic_base_fee_downward_adjustment": "0.003900000000000000",
-        "target_gas_used_per_block": "250000",
-        "maximum_fee_per_gas": "1000000000000.000000000000000000",
-        "init_eni_amount": "10000000000",
-        "init_eni_address":"0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
-      },
       "address_associations": [],
       "codes": [],
-      "states": [],
       "nonces": [],
-      "serialized": []
+      "params": {
+        "base_fee_per_gas": "0",
+        "init_eni_amount": "",
+        "init_eni_address":"",
+        "max_dynamic_base_fee_downward_adjustment": "0",
+        "max_dynamic_base_fee_upward_adjustment": "0",
+        "maximum_fee_per_gas": "0",
+        "minimum_fee_per_gas": "0",
+        "priority_normalizer": "0",
+        "target_gas_used_per_block": "0"
+      },
+      "serialized": [],
+      "states": []
     },
     "feegrant": {
       "allowances": []
+    },
+    "feeibc": {
+      "fee_enabled_channels": [],
+      "forward_relayers": [],
+      "identified_fees": [],
+      "registered_counterparty_payees": [],
+      "registered_payees": []
     },
     "genutil": {
       "gen_txs": [
@@ -220,7 +181,7 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
-                  "moniker": "eni-node-0",
+                  "moniker": "mynode",
                   "identity": "",
                   "website": "",
                   "security_contact": "",
@@ -232,19 +193,19 @@
                   "max_change_rate": "0.010000000000000000"
                 },
                 "min_self_delegation": "1",
-                "delegator_address": "eni1ldgv9xktz3p83zu72lfxjzgth2qj9kjqa94twv",
-                "validator_address": "enivaloper1ldgv9xktz3p83zu72lfxjzgth2qj9kjq20770z",
+                "delegator_address": "",
+                "validator_address": "enivaloper16hwsrl7v23mnf08ymu844n622sruyawnamxwvl",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "aCL9x2IiDGsOCZ+lD4q80yWwzCnHnIwZ0e4AnUZgHaw="
+                  "key": "iLo3BJIL0PbOFycqKvfQB36p9wwr0TQjvGrja6Z9ABE="
                 },
                 "value": {
-                  "denom": "ueni",
-                  "amount": "10000000"
+                  "denom": "stake",
+                  "amount": "100000000"
                 }
               }
             ],
-            "memo": "8fac223bdd2a7f6246dd0de2d1456d888c2ba210@172.17.0.2:26656",
+            "memo": "be144eb017cf71028ee1a87c872fd47222e950a2@192.168.16.230:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -254,7 +215,7 @@
               {
                 "public_key": {
                   "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "AklLPRE+jLxsgMYFc4MqN1zGrwCXMDaTHQ9fDDTHA49U"
+                  "key": "A1nYJvgr42zOwg/Zp/f4e0RIuklpkyePhXph2LxD5yaO"
                 },
                 "mode_info": {
                   "single": {
@@ -269,13 +230,17 @@
               "gas_limit": "200000",
               "payer": "",
               "granter": ""
-            }
+            },
+            "tip": null
           },
           "signatures": [
-            "hVE3Rd4a+i2hXfVU2QPvXIv75YmBJgN1BoXMcYFXWu1XMEEMDQENyKrOkI1WSPU/d/4izPjimkv/eSAHWSVJFg=="
+            "+AzPFEroIzdR99eU9US9hn3TdKTKakIZhhxcfnwy3UkjbxhVR7GgjjbxaowRonX26Fb0oaUyXb8hOB0Zpx9QFg=="
           ]
         }
       ]
+    },
+    "goeni": {
+      "params": {}
     },
     "gov": {
       "constitution": "",
@@ -314,6 +279,16 @@
       "tally_params": null,
       "votes": [],
       "voting_params": null
+    },
+    "group": {
+      "group_members": [],
+      "group_policies": [],
+      "group_policy_seq": "0",
+      "group_seq": "0",
+      "groups": [],
+      "proposal_seq": "0",
+      "proposals": [],
+      "votes": []
     },
     "ibc": {
       "channel_genesis": {
@@ -356,6 +331,27 @@
         }
       }
     },
+    "interchainaccounts": {
+      "controller_genesis_state": {
+        "active_channels": [],
+        "interchain_accounts": [],
+        "params": {
+          "controller_enabled": true
+        },
+        "ports": []
+      },
+      "host_genesis_state": {
+        "active_channels": [],
+        "interchain_accounts": [],
+        "params": {
+          "allow_messages": [
+            "*"
+          ],
+          "host_enabled": true
+        },
+        "port": "icahost"
+      }
+    },
     "mint": {
       "minter": {
         "annual_provisions": "0.000000000000000000",
@@ -370,63 +366,74 @@
         "mint_denom": "stake"
       }
     },
-    "params": {
-      "fees_params": {
-        "global_minimum_gas_prices": [
-          {
-            "denom": "ueni",
-            "amount": "0.010000000000000000"
-          }
-        ]
-      },
-      "cosmos_gas_params": {
-        "cosmos_gas_multiplier_numerator": "1",
-        "cosmos_gas_multiplier_denominator": "1"
-      }
+    "nft": {
+      "classes": [],
+      "entries": []
     },
+    "params": null,
+    "runtime": null,
     "slashing": {
+      "missed_blocks": [],
       "params": {
-        "signed_blocks_window": "10000",
-        "min_signed_per_window": "0.050000000000000000",
         "downtime_jail_duration": "600s",
-        "slash_fraction_double_sign": "0.000000000000000000",
-        "slash_fraction_downtime": "0.000000000000000000"
+        "min_signed_per_window": "0.500000000000000000",
+        "signed_blocks_window": "100",
+        "slash_fraction_double_sign": "0.050000000000000000",
+        "slash_fraction_downtime": "0.010000000000000000"
       },
-      "signing_infos": [],
-      "missed_blocks": []
+      "signing_infos": []
     },
     "staking": {
-      "params": {
-        "unbonding_time": "10s",
-        "max_validators": "50",
-        "max_entries": 7,
-        "historical_entries": 10000,
-        "bond_denom": "ueni",
-        "min_commission_rate": "0.050000000000000000"
-      },
+      "delegations": [],
+      "exported": false,
       "last_total_power": "0",
       "last_validator_powers": [],
-      "validators": [],
-      "delegations": [],
-      "unbonding_delegations": [],
-      "redelegations": [],
-      "exported": false
-    },
-    "tokenfactory": {
       "params": {
-        "denom_allowlist_max_size": 2000
+        "bond_denom": "stake",
+        "historical_entries": 10000,
+        "max_entries": 7,
+        "max_validators": 100,
+        "min_commission_rate": "0.000000000000000000",
+        "unbonding_time": "1814400s"
       },
-      "factory_denoms": []
+      "redelegations": [],
+      "unbonding_delegations": [],
+      "validators": []
     },
     "transfer": {
-      "port_id": "transfer",
       "denom_traces": [],
       "params": {
-        "send_enabled": true,
-        "receive_enabled": true
-      }
+        "receive_enabled": true,
+        "send_enabled": true
+      },
+      "port_id": "transfer",
+      "total_escrowed": []
     },
     "upgrade": {},
     "vesting": {}
+  },
+  "consensus": {
+    "params": {
+      "block": {
+        "max_bytes": "22020096",
+        "max_gas": "-1"
+      },
+      "evidence": {
+        "max_age_num_blocks": "100000",
+        "max_age_duration": "172800000000000",
+        "max_bytes": "1048576"
+      },
+      "validator": {
+        "pub_key_types": [
+          "ed25519"
+        ]
+      },
+      "version": {
+        "app": "0"
+      },
+      "abci": {
+        "vote_extensions_enable_height": "0"
+      }
+    }
   }
 }

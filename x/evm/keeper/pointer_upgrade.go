@@ -67,8 +67,7 @@ func (k *Keeper) UpsertERCPointer(
 	}
 	bin = append(artifacts.GetBin(typ), bin...)
 	existingAddr, _, exists := getter(ctx, pointee)
-	//suppliedGas := k.getEvmGasLimitFromCtx(ctx)
-	suppliedGas := uint64(math.MaxUint64)
+	suppliedGas := k.getEvmGasLimitFromCtx(ctx)
 	var remainingGas uint64
 	if exists {
 		var ret []byte

@@ -1141,14 +1141,14 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 
 var (
 	md_AddressAssociation             protoreflect.MessageDescriptor
-	fd_AddressAssociation_sei_address protoreflect.FieldDescriptor
+	fd_AddressAssociation_eni_address protoreflect.FieldDescriptor
 	fd_AddressAssociation_eth_address protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_goeni_evm_genesis_proto_init()
 	md_AddressAssociation = File_goeni_evm_genesis_proto.Messages().ByName("AddressAssociation")
-	fd_AddressAssociation_sei_address = md_AddressAssociation.Fields().ByName("sei_address")
+	fd_AddressAssociation_eni_address = md_AddressAssociation.Fields().ByName("eni_address")
 	fd_AddressAssociation_eth_address = md_AddressAssociation.Fields().ByName("eth_address")
 }
 
@@ -1217,9 +1217,9 @@ func (x *fastReflection_AddressAssociation) Interface() protoreflect.ProtoMessag
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_AddressAssociation) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.SeiAddress != "" {
-		value := protoreflect.ValueOfString(x.SeiAddress)
-		if !f(fd_AddressAssociation_sei_address, value) {
+	if x.EniAddress != "" {
+		value := protoreflect.ValueOfString(x.EniAddress)
+		if !f(fd_AddressAssociation_eni_address, value) {
 			return
 		}
 	}
@@ -1244,8 +1244,8 @@ func (x *fastReflection_AddressAssociation) Range(f func(protoreflect.FieldDescr
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_AddressAssociation) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "goeni.evm.AddressAssociation.sei_address":
-		return x.SeiAddress != ""
+	case "goeni.evm.AddressAssociation.eni_address":
+		return x.EniAddress != ""
 	case "goeni.evm.AddressAssociation.eth_address":
 		return x.EthAddress != ""
 	default:
@@ -1264,8 +1264,8 @@ func (x *fastReflection_AddressAssociation) Has(fd protoreflect.FieldDescriptor)
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_AddressAssociation) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "goeni.evm.AddressAssociation.sei_address":
-		x.SeiAddress = ""
+	case "goeni.evm.AddressAssociation.eni_address":
+		x.EniAddress = ""
 	case "goeni.evm.AddressAssociation.eth_address":
 		x.EthAddress = ""
 	default:
@@ -1284,8 +1284,8 @@ func (x *fastReflection_AddressAssociation) Clear(fd protoreflect.FieldDescripto
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_AddressAssociation) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "goeni.evm.AddressAssociation.sei_address":
-		value := x.SeiAddress
+	case "goeni.evm.AddressAssociation.eni_address":
+		value := x.EniAddress
 		return protoreflect.ValueOfString(value)
 	case "goeni.evm.AddressAssociation.eth_address":
 		value := x.EthAddress
@@ -1310,8 +1310,8 @@ func (x *fastReflection_AddressAssociation) Get(descriptor protoreflect.FieldDes
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_AddressAssociation) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "goeni.evm.AddressAssociation.sei_address":
-		x.SeiAddress = value.Interface().(string)
+	case "goeni.evm.AddressAssociation.eni_address":
+		x.EniAddress = value.Interface().(string)
 	case "goeni.evm.AddressAssociation.eth_address":
 		x.EthAddress = value.Interface().(string)
 	default:
@@ -1334,8 +1334,8 @@ func (x *fastReflection_AddressAssociation) Set(fd protoreflect.FieldDescriptor,
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_AddressAssociation) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.AddressAssociation.sei_address":
-		panic(fmt.Errorf("field sei_address of message goeni.evm.AddressAssociation is not mutable"))
+	case "goeni.evm.AddressAssociation.eni_address":
+		panic(fmt.Errorf("field eni_address of message goeni.evm.AddressAssociation is not mutable"))
 	case "goeni.evm.AddressAssociation.eth_address":
 		panic(fmt.Errorf("field eth_address of message goeni.evm.AddressAssociation is not mutable"))
 	default:
@@ -1351,7 +1351,7 @@ func (x *fastReflection_AddressAssociation) Mutable(fd protoreflect.FieldDescrip
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_AddressAssociation) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "goeni.evm.AddressAssociation.sei_address":
+	case "goeni.evm.AddressAssociation.eni_address":
 		return protoreflect.ValueOfString("")
 	case "goeni.evm.AddressAssociation.eth_address":
 		return protoreflect.ValueOfString("")
@@ -1424,7 +1424,7 @@ func (x *fastReflection_AddressAssociation) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.SeiAddress)
+		l = len(x.EniAddress)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1468,10 +1468,10 @@ func (x *fastReflection_AddressAssociation) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x12
 		}
-		if len(x.SeiAddress) > 0 {
-			i -= len(x.SeiAddress)
-			copy(dAtA[i:], x.SeiAddress)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SeiAddress)))
+		if len(x.EniAddress) > 0 {
+			i -= len(x.EniAddress)
+			copy(dAtA[i:], x.EniAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EniAddress)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -1526,7 +1526,7 @@ func (x *fastReflection_AddressAssociation) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SeiAddress", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EniAddress", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1554,7 +1554,7 @@ func (x *fastReflection_AddressAssociation) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.SeiAddress = string(dAtA[iNdEx:postIndex])
+				x.EniAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
@@ -3778,7 +3778,7 @@ type AddressAssociation struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SeiAddress string `protobuf:"bytes,1,opt,name=sei_address,json=seiAddress,proto3" json:"sei_address,omitempty"` // Sei address
+	EniAddress string `protobuf:"bytes,1,opt,name=eni_address,json=eniAddress,proto3" json:"eni_address,omitempty"` // Eni address
 	EthAddress string `protobuf:"bytes,2,opt,name=eth_address,json=ethAddress,proto3" json:"eth_address,omitempty"` // Ethereum address
 }
 
@@ -3802,9 +3802,9 @@ func (*AddressAssociation) Descriptor() ([]byte, []int) {
 	return file_goeni_evm_genesis_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AddressAssociation) GetSeiAddress() string {
+func (x *AddressAssociation) GetEniAddress() string {
 	if x != nil {
-		return x.SeiAddress
+		return x.EniAddress
 	}
 	return ""
 }
@@ -4035,9 +4035,9 @@ var file_goeni_evm_genesis_proto_rawDesc = []byte{
 	0x32, 0x15, 0x2e, 0x67, 0x6f, 0x65, 0x6e, 0x69, 0x2e, 0x65, 0x76, 0x6d, 0x2e, 0x53, 0x65, 0x72,
 	0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x64, 0x52, 0x0a, 0x73, 0x65, 0x72, 0x69, 0x61, 0x6c, 0x69,
 	0x7a, 0x65, 0x64, 0x22, 0x56, 0x0a, 0x12, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x41, 0x73,
-	0x73, 0x6f, 0x63, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x65, 0x69,
+	0x73, 0x6f, 0x63, 0x69, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x6e, 0x69,
 	0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
-	0x73, 0x65, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x74,
+	0x65, 0x6e, 0x69, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1f, 0x0a, 0x0b, 0x65, 0x74,
 	0x68, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x0a, 0x65, 0x74, 0x68, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x34, 0x0a, 0x04, 0x43,
 	0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01,

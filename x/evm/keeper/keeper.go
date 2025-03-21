@@ -7,18 +7,24 @@ import (
 	"math/big"
 	"slices"
 	"sort"
+	"sync"
 
+	"cosmossdk.io/log"
 	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmtypes "github.com/cometbft/cometbft/types"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/x/evm/blocktest"
+	"github.com/eni-chain/go-eni/x/evm/exported"
 	"github.com/eni-chain/go-eni/x/evm/querier"
 	"github.com/eni-chain/go-eni/x/evm/state"
+	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/consensus/misc/eip4844"
 	"github.com/ethereum/go-ethereum/core"
@@ -26,120 +32,90 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/holiman/uint256"
-
-	//enidbtypes "github.com/eni-chain/eni-db/ss/types"
-
-	"sync"
-
 	"github.com/ethereum/go-ethereum/tests"
-
-	"cosmossdk.io/log"
-	storetypes "cosmossdk.io/store/types"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/holiman/uint256"
 )
 
-type (
-	AddressNoncePair struct {
-		Address common.Address
-		Nonce   uint64
-	}
+type Keeper struct {
+	storeKey          storetypes.StoreKey
+	transientStoreKey storetypes.StoreKey
+	cdc               codec.BinaryCodec
+	logger            log.Logger
+	Paramstore        exported.Subspace
 
-	PendingTx struct {
-		Key      tmtypes.TxKey
-		Nonce    uint64
-		Priority int64
-	}
+	txResults []*abci.ExecTxResult
+	msgs      []*types.MsgEVMTransaction
 
-	Keeper struct {
-		cdc codec.BinaryCodec
-		//storeService store.KVStoreService
-		logger log.Logger
+	bankKeeper    bankkeeper.Keeper
+	accountKeeper *authkeeper.AccountKeeper
+	stakingKeeper *stakingkeeper.Keeper
+	//transferKeeper ibctransferkeeper.Keeper
+	//wasmKeeper     *wasmkeeper.PermissionedKeeper
+	//wasmViewKeeper *wasmkeeper.Keeper
 
-		// the address capable of executing a MsgUpdateParams message. Typically, this
-		// should be the x/gov module account.
-		authority string
+	cachedFeeCollectorAddressMtx *sync.RWMutex
+	cachedFeeCollectorAddress    *common.Address
+	nonceMx                      *sync.RWMutex
+	pendingTxs                   map[string][]*PendingTx
+	keyToNonce                   map[tmtypes.TxKey]*AddressNoncePair
 
-		storeKey          storetypes.StoreKey
-		transientStoreKey storetypes.StoreKey
+	QueryConfig *querier.Config
 
-		Paramstore paramtypes.Subspace
+	// only used during blocktest. Not used in chain critical path.
+	EthBlockTestConfig blocktest.Config
+	BlockTest          *tests.BlockTest
 
-		txResults []*abci.ExecTxResult
-		msgs      []*types.MsgEVMTransaction
+	// used for both ETH replay and block tests. Not used in chain critical path.
+	Trie        ethstate.Trie
+	DB          ethstate.Database
+	Root        common.Hash
+	ReplayBlock *ethtypes.Block
 
-		bankKeeper     bankkeeper.Keeper
-		accountKeeper  types.AccountKeeper
-		stakingKeeper  *stakingkeeper.Keeper
-		transferKeeper ibctransferkeeper.Keeper
-		//wasmKeeper     *wasmkeeper.PermissionedKeeper
-		//wasmViewKeeper *wasmkeeper.Keeper
+	//receiptStore enidbtypes.StateStore
+}
 
-		cachedFeeCollectorAddressMtx *sync.RWMutex
-		cachedFeeCollectorAddress    *common.Address
-		nonceMx                      *sync.RWMutex
-		pendingTxs                   map[string][]*PendingTx
-		keyToNonce                   map[tmtypes.TxKey]*AddressNoncePair
+type AddressNoncePair struct {
+	Address common.Address
+	Nonce   uint64
+}
 
-		QueryConfig *querier.Config
-
-		// only used during blocktest. Not used in chain critical path.
-		EthBlockTestConfig blocktest.Config
-		BlockTest          *tests.BlockTest
-
-		// used for both ETH replay and block tests. Not used in chain critical path.
-		Trie        ethstate.Trie
-		DB          ethstate.Database
-		Root        common.Hash
-		ReplayBlock *ethtypes.Block
-
-		//receiptStore enidbtypes.StateStore
-	}
-)
+type PendingTx struct {
+	Key      tmtypes.TxKey
+	Nonce    uint64
+	Priority int64
+}
 
 func NewKeeper(
-	storeKey storetypes.StoreKey,
-	transientStoreKey storetypes.StoreKey,
-	cdc codec.BinaryCodec,
-	//storeService store.KVStoreService,
-	logger log.Logger,
-	authority string,
-
-	accountKeeper types.AccountKeeper,
-	bankKeeper bankkeeper.Keeper,
-	stakingKeeper *stakingkeeper.Keeper,
-) Keeper {
-	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
-		panic(fmt.Sprintf("invalid authority address: %s", authority))
-	}
-
-	return Keeper{
+	storeKey storetypes.StoreKey, transientStoreKey storetypes.StoreKey, paramstore exported.Subspace, //receiptStateStore enidbtypes.StateStore,
+	bankKeeper bankkeeper.Keeper, accountKeeper *authkeeper.AccountKeeper, stakingKeeper *stakingkeeper.Keeper,
+	cdc codec.BinaryCodec, logger log.Logger,
+	// transferKeeper ibctransferkeeper.Keeper
+) *Keeper {
+	//if !paramstore.HasKeyTable() {
+	//	paramstore = paramstore.WithKeyTable(types.ParamKeyTable())
+	//}
+	k := &Keeper{
 		storeKey:          storeKey,
 		transientStoreKey: transientStoreKey,
 		cdc:               cdc,
-		//storeService:      storeService,
-		authority: authority,
-		logger:    logger,
-
-		accountKeeper: accountKeeper,
-		bankKeeper:    bankKeeper,
-		stakingKeeper: stakingKeeper,
+		logger:            logger,
+		Paramstore:        paramstore,
+		bankKeeper:        bankKeeper,
+		accountKeeper:     accountKeeper,
+		stakingKeeper:     stakingKeeper,
+		//transferKeeper:    transferKeeper,
+		//wasmKeeper:                   wasmKeeper,
+		//wasmViewKeeper:               wasmViewKeeper,
+		pendingTxs:                   make(map[string][]*PendingTx),
+		nonceMx:                      &sync.RWMutex{},
+		cachedFeeCollectorAddressMtx: &sync.RWMutex{},
+		keyToNonce:                   make(map[tmtypes.TxKey]*AddressNoncePair),
+		//receiptStore:                 receiptStateStore,
 	}
+	return k
 }
 
-// GetAuthority returns the module's authority.
-func (k Keeper) GetAuthority() string {
-	return k.authority
-}
-
-// Logger returns a module-specific logger.
-func (k Keeper) Logger() log.Logger {
-	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
-}
-
-func (k *Keeper) AccountKeeper() types.AccountKeeper {
+func (k *Keeper) AccountKeeper() *authkeeper.AccountKeeper {
 	return k.accountKeeper
 }
 
@@ -147,9 +123,9 @@ func (k *Keeper) BankKeeper() bankkeeper.Keeper {
 	return k.bankKeeper
 }
 
-//func (k *Keeper) WasmKeeper() *wasmkeeper.PermissionedKeeper {
-//	return k.wasmKeeper
-//}
+func (k *Keeper) Logger() log.Logger {
+	return k.logger
+}
 
 func (k *Keeper) GetStoreKey() storetypes.StoreKey {
 	return k.storeKey
@@ -171,11 +147,11 @@ func (k *Keeper) PrefixStore(ctx sdk.Context, pref []byte) storetypes.KVStore {
 }
 
 func (k *Keeper) PurgePrefix(ctx sdk.Context, pref []byte) {
-	store := k.PrefixStore(ctx, pref)
-	////if err := store.DeleteAll(nil, nil); err != nil {
+	//store := k.PrefixStore(ctx, pref)
+	//if err := store.DeleteAll(nil, nil); err != nil {
 	//	panic(err)
 	//}
-	store.Delete(nil)
+	//TODO: implement
 }
 
 func (k *Keeper) GetVMBlockContext(ctx sdk.Context, gp core.GasPool) (*vm.BlockContext, error) {
@@ -211,8 +187,7 @@ func (k *Keeper) GetVMBlockContext(ctx sdk.Context, gp core.GasPool) (*vm.BlockC
 		BlockNumber: big.NewInt(ctx.BlockHeight()),
 		Time:        uint64(ctx.BlockHeader().Time.Unix()),
 		Difficulty:  utils.Big0, // only needed for PoW
-		//BaseFee:     k.GetCurrBaseFeePerGas(ctx).TruncateInt().BigInt(),
-		//BaseFee:     k.GetCurrBaseFeePerGas(ctx),
+		BaseFee:     k.GetCurrBaseFeePerGas(ctx).TruncateInt().BigInt(),
 		BlobBaseFee: utils.Big1, // Cancun not enabled
 		Random:      &rh,
 	}, nil
@@ -240,9 +215,7 @@ func (k *Keeper) GetHashFn(ctx sdk.Context) vm.GetHashFunc {
 }
 
 func (k *Keeper) getHistoricalHash(ctx sdk.Context, h int64) common.Hash {
-	//histInfo, found := k.stakingKeeper.GetHistoricalInfo(ctx, h)
 	histInfo, err := k.stakingKeeper.GetHistoricalInfo(ctx, h)
-	//if !found {
 	if err != nil {
 		// too old, already pruned
 		return common.Hash{}

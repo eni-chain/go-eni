@@ -19,7 +19,7 @@ message GenesisState {
 
 // AddressAssociation represents an association between a Cosmos and an Ethereum address.
 message AddressAssociation {
-  string sei_address = 1;    // Sei address
+  string eni_address = 1;    // Eni address
   string eth_address = 2;    // Ethereum address
 }
 

@@ -2,14 +2,19 @@ package evm
 
 import (
 	"context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	"github.com/eni-chain/go-eni/precompiles/ed25519Verify"
+	ContractNodeLog "github.com/eni-chain/go-eni/precompiles/nodeLog"
+	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
+	"github.com/eni-chain/go-eni/x/evm/exported"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
-	cosmossdk_io_math "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -19,13 +24,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/x/evm/client/cli"
-	"github.com/eni-chain/go-eni/x/evm/state"
 	"github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	// this line is used by starport scaffolding # 1
@@ -46,6 +47,9 @@ var (
 	_ appmodule.HasBeginBlocker = (*AppModule)(nil)
 	_ appmodule.HasEndBlocker   = (*AppModule)(nil)
 )
+
+var _ = ed25519Verify.AddEd25519VerifyToVM()
+var _ = ContractNodeLog.AddNodeLogToVM()
 
 // ----------------------------------------------------------------------------
 // AppModuleBasic
@@ -113,6 +117,8 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	// legacySubspace is used solely for migration of x/params managed parameters
+	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
@@ -120,12 +126,14 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	ls exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
+		legacySubspace: ls,
 	}
 }
 
@@ -175,60 +183,91 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 	//if newBaseFee != nil {
 	//	metrics.GaugeEvmBlockBaseFee(newBaseFee.TruncateInt().BigInt(), req.Height)
 	//}
-	var _ sdk.AccAddress // to avoid unused error
-	if am.keeper.EthBlockTestConfig.Enabled {
-		blocks := am.keeper.BlockTest.Json.Blocks
-		block, err := blocks[ctx.BlockHeight()-1].Decode()
-		if err != nil {
-			panic(err)
-		}
-		_ = am.keeper.GetEniAddressOrDefault(ctx, block.Header().Coinbase)
-	} else {
-		_ = am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+
+	//var _ sdk.AccAddress // to avoid unused error
+	//if am.keeper.EthBlockTestConfig.Enabled {
+	//	blocks := am.keeper.BlockTest.Json.Blocks
+	//	block, err := blocks[ctx.BlockHeight()-1].Decode()
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	_ = am.keeper.GetEniAddressOrDefault(ctx, block.Header().Coinbase)
+	//} else {
+	//	_ = am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	//}
+	//evmTxDeferredInfoList := am.keeper.GetAllEVMTxDeferredInfo(ctx)
+	//denom := am.keeper.GetBaseDenom(ctx)
+	//surplus := am.keeper.GetAnteSurplusSum(ctx)
+	//for _, deferredInfo := range evmTxDeferredInfoList {
+	//	txHash := common.BytesToHash(deferredInfo.TxHash)
+	//	if deferredInfo.Error != "" && txHash.Cmp(ethtypes.EmptyTxsHash) != 0 {
+	//		_ = am.keeper.SetReceipt(ctx, txHash, &types.Receipt{
+	//			TxHashHex:        txHash.Hex(),
+	//			TransactionIndex: deferredInfo.TxIndex,
+	//			VmError:          deferredInfo.Error,
+	//			BlockNumber:      uint64(ctx.BlockHeight()),
+	//		})
+	//		continue
+	//	}
+	//	idx := int(deferredInfo.TxIndex)
+	//	coinbaseAddress := state.GetCoinbaseAddress(idx)
+	//	balance := am.keeper.BankKeeper().SpendableCoins(ctx, coinbaseAddress).AmountOf(denom)
+	//	//weiBalance := am.keeper.BankKeeper().GetWeiBalance(ctx, coinbaseAddress)
+	//	weiBalance := am.keeper.BankKeeper().GetBalance(ctx, coinbaseAddress, denom)
+	//	if !balance.IsZero() || !weiBalance.IsZero() {
+	//		// todo  check code correct
+	//		//if err := am.keeper.BankKeeper().SendCoinsAndWei(ctx, coinbaseAddress, coinbase, balance, weiBalance); err != nil {
+	//		//	ctx.Logger().Error(fmt.Sprintf("failed to send ueni surplus from %s to coinbase account due to %s", coinbaseAddress.String(), err))
+	//		//}
+	//	}
+	//	surplus = surplus.Add(deferredInfo.Surplus)
+	//}
+	//if surplus.IsPositive() {
+	//	surplusUeni, surplusWei := state.SplitUeniWeiAmount(surplus.BigInt())
+	//	if surplusUeni.GT(cosmossdk_io_math.ZeroInt()) {
+	//		// todo  check code correct
+	//		//if err := am.keeper.BankKeeper().AddCoins(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), sdk.NewCoins(sdk.NewCoin(am.keeper.GetBaseDenom(ctx), surplusUeni)), true); err != nil {
+	//		//	ctx.Logger().Error("failed to send ueni surplus of %s to EVM module account", surplusUeni)
+	//		//}
+	//	}
+	//	if surplusWei.GT(cosmossdk_io_math.ZeroInt()) {
+	//		// todo  check code correct
+	//		//if err := am.keeper.BankKeeper().AddWei(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), surplusWei); err != nil {
+	//		//	ctx.Logger().Error("failed to send wei surplus of %s to EVM module account", surplusWei)
+	//		//}
+	//	}
+	//}
+
+	//am.keeper.SetBlockBloom(ctx, utils.Map(evmTxDeferredInfoList, func(i *types.DeferredInfo) ethtypes.Bloom { return ethtypes.BytesToBloom(i.TxBloom) }))
+
+	hub, err := syscontractSdk.NewHub(&am.keeper)
+	if err != nil {
+		return err
 	}
-	evmTxDeferredInfoList := am.keeper.GetAllEVMTxDeferredInfo(ctx)
+
+	header := ctx.BlockHeader()
+	proposerBytes := header.GetProposerAddress()
+	node := common.Address(proposerBytes)
+
+	moduleAddr := am.keeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	caller := common.Address(moduleAddr)
+	operator, reward, err := hub.BlockReward(ctx, caller, node)
+	if err != nil {
+		return err
+	}
+	if reward.Uint64() == 0 {
+		return nil
+	}
+
+	logger := ctx.Logger().With("module", types.ModuleName)
+	logger.Info(fmt.Sprintf("Block reward for %x is %v", operator, reward.Uint64()))
+
+	eniOpe := am.keeper.GetEniAddressOrDefault(ctx, operator)
+
 	denom := am.keeper.GetBaseDenom(ctx)
-	surplus := am.keeper.GetAnteSurplusSum(ctx)
-	for _, deferredInfo := range evmTxDeferredInfoList {
-		txHash := common.BytesToHash(deferredInfo.TxHash)
-		if deferredInfo.Error != "" && txHash.Cmp(ethtypes.EmptyTxsHash) != 0 {
-			_ = am.keeper.SetTransientReceipt(ctx, txHash, &types.Receipt{
-				TxHashHex:        txHash.Hex(),
-				TransactionIndex: deferredInfo.TxIndex,
-				VmError:          deferredInfo.Error,
-				BlockNumber:      uint64(ctx.BlockHeight()),
-			})
-			continue
-		}
-		idx := int(deferredInfo.TxIndex)
-		coinbaseAddress := state.GetCoinbaseAddress(idx)
-		balance := am.keeper.BankKeeper().SpendableCoins(ctx, coinbaseAddress).AmountOf(denom)
-		//weiBalance := am.keeper.BankKeeper().GetWeiBalance(ctx, coinbaseAddress)
-		weiBalance := am.keeper.BankKeeper().GetBalance(ctx, coinbaseAddress, denom)
-		if !balance.IsZero() || !weiBalance.IsZero() {
-			// todo  check code correct
-			//if err := am.keeper.BankKeeper().SendCoinsAndWei(ctx, coinbaseAddress, coinbase, balance, weiBalance); err != nil {
-			//	ctx.Logger().Error(fmt.Sprintf("failed to send ueni surplus from %s to coinbase account due to %s", coinbaseAddress.String(), err))
-			//}
-		}
-		surplus = surplus.Add(deferredInfo.Surplus)
-	}
-	if surplus.IsPositive() {
-		surplusUeni, surplusWei := state.SplitUeniWeiAmount(surplus.BigInt())
-		if surplusUeni.GT(cosmossdk_io_math.ZeroInt()) {
-			// todo  check code correct
-			//if err := am.keeper.BankKeeper().AddCoins(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), sdk.NewCoins(sdk.NewCoin(am.keeper.GetBaseDenom(ctx), surplusUeni)), true); err != nil {
-			//	ctx.Logger().Error("failed to send ueni surplus of %s to EVM module account", surplusUeni)
-			//}
-		}
-		if surplusWei.GT(cosmossdk_io_math.ZeroInt()) {
-			// todo  check code correct
-			//if err := am.keeper.BankKeeper().AddWei(ctx, am.keeper.AccountKeeper().GetModuleAddress(types.ModuleName), surplusWei); err != nil {
-			//	ctx.Logger().Error("failed to send wei surplus of %s to EVM module account", surplusWei)
-			//}
-		}
-	}
-	am.keeper.SetBlockBloom(ctx, utils.Map(evmTxDeferredInfoList, func(i *types.DeferredInfo) ethtypes.Bloom { return ethtypes.BytesToBloom(i.TxBloom) }))
+	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
+	am.keeper.BankKeeper().AddCoins(ctx, eniOpe, sdk.NewCoins(coin))
+
 	return nil
 }
 
@@ -259,9 +298,12 @@ type ModuleInputs struct {
 	Logger log.Logger
 
 	// todo  check code correct
-	AccountKeeper types.AccountKeeper
+	AccountKeeper authkeeper.AccountKeeper
 	BankKeeper    bankkeeper.Keeper
 	StakingKeeper *stakingkeeper.Keeper
+	//ParamsKeeper  *paramskeeper.Keeper
+
+	LegacySubspace exported.Subspace `optional:"true"`
 }
 
 type ModuleOutputs struct {
@@ -273,28 +315,32 @@ type ModuleOutputs struct {
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
 	// default to governance authority if not provided
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-	if in.Config.Authority != "" {
-		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
-	}
+	//authority := authtypes.NewModuleAddress(govtypes.ModuleName)
+	//if in.Config.Authority != "" {
+	//	authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
+	//}
+	//subspace, _ := in.ParamsKeeper.GetSubspace(types.ModuleName)
 
 	k := keeper.NewKeeper(
 		in.KvStoreKey,
 		in.TransientStoreKey,
-		in.Cdc,
+		in.LegacySubspace,
 		//in.StoreService,
-		in.Logger,
-		authority.String(),
-		in.AccountKeeper,
 		in.BankKeeper,
+		&in.AccountKeeper,
 		in.StakingKeeper,
+		in.Cdc,
+		in.Logger,
+		//authority.String(),
+
 	)
 	m := NewAppModule(
 		in.Cdc,
-		k,
+		*k,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.LegacySubspace,
 	)
 
-	return ModuleOutputs{EvmKeeper: k, Module: m}
+	return ModuleOutputs{EvmKeeper: *k, Module: m}
 }

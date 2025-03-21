@@ -1,113 +1,85 @@
 package app
 
-//
-//import (
-//	sdk "github.com/cosmos/cosmos-sdk/types"
-//	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-//	"github.com/cosmos/cosmos-sdk/utils/tracing"
-//	aclkeeper "github.com/cosmos/cosmos-sdk/x/accesscontrol/keeper"
-//	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-//	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
-//	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
-//	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
-//	"github.com/eni-chain/go-eni/app/antedecorators"
-//	"github.com/eni-chain/go-eni/app/antedecorators/depdecorators"
-//	evmante "github.com/eni-chain/go-eni/x/evm/ante"
-//	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
-//	//"github.com/eni-chain/go-eni/x/oracle"
-//	//oraclekeeper "github.com/eni-chain/go-eni/x/oracle/keeper"
-//)
-//
-//// HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
-//// channel keeper.
-//type HandlerOptions struct {
-//	ante.HandlerOptions
-//
-//	IBCKeeper *ibckeeper.Keeper
-//
-//	//OracleKeeper        *oraclekeeper.Keeper
-//	AccessControlKeeper *aclkeeper.Keeper
-//	EVMKeeper           *evmkeeper.Keeper
-//	TXCounterStoreKey   sdk.StoreKey
-//	LatestCtxGetter     func() sdk.Context
-//
-//	TracingInfo *tracing.Info
-//}
-//
-//func NewAnteHandlerAndDepGenerator(options HandlerOptions) (sdk.AnteHandler, sdk.AnteDepGenerator, error) {
-//	if options.AccountKeeper == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "account keeper is required for AnteHandler")
-//	}
-//	if options.BankKeeper == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "bank keeper is required for AnteHandler")
-//	}
-//	if options.SignModeHandler == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
-//	}
-//
-//	//if options.OracleKeeper == nil {
-//	//	return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "oracle keeper is required for ante builder")
-//	//}
-//	if options.AccessControlKeeper == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "accesscontrol keeper is required for ante builder")
-//	}
-//	if options.ParamsKeeper == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "params keeper is required for ante builder")
-//	}
-//	if options.TracingInfo == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "tracing info is required for ante builder")
-//	}
-//	if options.EVMKeeper == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "evm keeper is required for ante builder")
-//	}
-//	if options.LatestCtxGetter == nil {
-//		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "latest context getter is required for ante builder")
-//	}
-//
-//	sigGasConsumer := options.SigGasConsumer
-//	if sigGasConsumer == nil {
-//		sigGasConsumer = ante.DefaultSigVerificationGasConsumer
-//	}
-//
-//	sequentialVerifyDecorator := ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler)
-//
-//	anteDecorators := []sdk.AnteFullDecorator{
-//		sdk.DefaultWrappedAnteDecorator(ante.NewSetUpContextDecorator(antedecorators.GetGasMeterSetter(options.ParamsKeeper.(paramskeeper.Keeper)))), // outermost AnteDecorator. SetUpContext must be called first
-//		antedecorators.NewGaslessDecorator([]sdk.AnteFullDecorator{ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.ParamsKeeper.(paramskeeper.Keeper), options.TxFeeChecker)}, *options.OracleKeeper, options.EVMKeeper),
-//		//sdk.DefaultWrappedAnteDecorator(wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit, antedecorators.GetGasMeterSetter(options.ParamsKeeper.(paramskeeper.Keeper)))), // after setup context to enforce limits early
-//		sdk.DefaultWrappedAnteDecorator(ante.NewRejectExtensionOptionsDecorator()),
-//		oracle.NewSpammingPreventionDecorator(*options.OracleKeeper),
-//		oracle.NewOracleVoteAloneDecorator(),
-//		sdk.DefaultWrappedAnteDecorator(ante.NewValidateBasicDecorator()),
-//		sdk.DefaultWrappedAnteDecorator(ante.NewTxTimeoutHeightDecorator()),
-//		sdk.DefaultWrappedAnteDecorator(ante.NewValidateMemoDecorator(options.AccountKeeper)),
-//		ante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-//		// PriorityDecorator must be called after DeductFeeDecorator which sets tx priority based on tx fees
-//		sdk.DefaultWrappedAnteDecorator(antedecorators.NewPriorityDecorator()),
-//		// SetPubKeyDecorator must be called before all signature verification decorators
-//		sdk.CustomDepWrappedAnteDecorator(ante.NewSetPubKeyDecorator(options.AccountKeeper), depdecorators.SignerDepDecorator{ReadOnly: false}),
-//		sdk.DefaultWrappedAnteDecorator(ante.NewValidateSigCountDecorator(options.AccountKeeper)),
-//		sdk.CustomDepWrappedAnteDecorator(ante.NewSigGasConsumeDecorator(options.AccountKeeper, sigGasConsumer), depdecorators.SignerDepDecorator{ReadOnly: true}),
-//		sdk.CustomDepWrappedAnteDecorator(sequentialVerifyDecorator, depdecorators.SignerDepDecorator{ReadOnly: true}),
-//		sdk.CustomDepWrappedAnteDecorator(ante.NewIncrementSequenceDecorator(options.AccountKeeper), depdecorators.SignerDepDecorator{ReadOnly: false}),
-//		sdk.DefaultWrappedAnteDecorator(evmante.NewEVMAddressDecorator(options.EVMKeeper, options.EVMKeeper.AccountKeeper())),
-//		sdk.DefaultWrappedAnteDecorator(antedecorators.NewAuthzNestedMessageDecorator()),
-//		sdk.DefaultWrappedAnteDecorator(ibcante.NewAnteDecorator(options.IBCKeeper)),
-//		//antedecorators.NewACLWasmDependencyDecorator(*options.AccessControlKeeper, *options.WasmKeeper),
-//	}
-//
-//	anteHandler, anteDepGenerator := sdk.ChainAnteDecorators(anteDecorators...)
-//
-//	evmAnteDecorators := []sdk.AnteFullDecorator{
-//		evmante.NewEVMPreprocessDecorator(options.EVMKeeper, options.EVMKeeper.AccountKeeper()),
-//		sdk.DefaultWrappedAnteDecorator(evmante.NewBasicDecorator(options.EVMKeeper)),
-//		sdk.DefaultWrappedAnteDecorator(evmante.NewEVMFeeCheckDecorator(options.EVMKeeper)),
-//		sdk.DefaultWrappedAnteDecorator(evmante.NewEVMSigVerifyDecorator(options.EVMKeeper, options.LatestCtxGetter)),
-//		sdk.DefaultWrappedAnteDecorator(evmante.NewGasLimitDecorator(options.EVMKeeper)),
-//	}
-//	evmAnteHandler, evmAnteDepGenerator := sdk.ChainAnteDecorators(evmAnteDecorators...)
-//
-//	router := evmante.NewEVMRouterDecorator(anteHandler, evmAnteHandler, anteDepGenerator, evmAnteDepGenerator)
-//
-//	return router.AnteHandle, router.AnteDeps, nil
-//}
+import (
+	errorsmod "cosmossdk.io/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	//ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
+	//ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
+
+	evmante "github.com/eni-chain/go-eni/x/evm/ante"
+	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	//"github.com/eni-chain/go-eni/x/oracle"
+	//oraclekeeper "github.com/eni-chain/go-eni/x/oracle/keeper"
+)
+
+// HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
+// channel keeper.
+type HandlerOptions struct {
+	ante.HandlerOptions
+
+	EVMKeeper        *evmkeeper.Keeper
+	AppAccountKeeper *authkeeper.AccountKeeper
+	LatestCtxGetter  func() sdk.Context
+}
+
+func NewAnteHandlerAndDepGenerator(options HandlerOptions) (sdk.AnteHandler, error) {
+	if options.AccountKeeper == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "account keeper is required for ante builder")
+	}
+
+	if options.BankKeeper == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "bank keeper is required for ante builder")
+	}
+
+	if options.SignModeHandler == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
+	}
+
+	if options.EVMKeeper == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "evm keeper is required for ante builder")
+	}
+	if options.LatestCtxGetter == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "latest context getter is required for ante builder")
+	}
+	if options.AppAccountKeeper == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "account keeper is required for ante builder")
+	}
+	sigGasConsumer := options.SigGasConsumer
+	if sigGasConsumer == nil {
+		sigGasConsumer = ante.DefaultSigVerificationGasConsumer
+	}
+
+	anteDecorators := []sdk.AnteDecorator{
+		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		ante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
+		ante.NewValidateBasicDecorator(),
+		ante.NewTxTimeoutHeightDecorator(),
+		ante.NewValidateMemoDecorator(options.AccountKeeper),
+		ante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
+		ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.TxFeeChecker),
+		ante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
+		ante.NewValidateSigCountDecorator(options.AccountKeeper),
+		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
+		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
+		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
+		evmante.NewEVMAddressDecorator(options.EVMKeeper, options.AppAccountKeeper),
+	}
+
+	anteHandler := sdk.ChainAnteDecorators(anteDecorators...)
+	evmAnteDecorators := []sdk.AnteDecorator{
+		evmante.NewEVMPreprocessDecorator(options.EVMKeeper, options.AppAccountKeeper),
+		evmante.NewBasicDecorator(options.EVMKeeper),
+		evmante.NewEVMFeeCheckDecorator(options.EVMKeeper),
+		evmante.NewEVMSigVerifyDecorator(options.EVMKeeper, options.LatestCtxGetter),
+		evmante.NewGasLimitDecorator(options.EVMKeeper),
+	}
+	evmAnteHandler := sdk.ChainAnteDecorators(evmAnteDecorators...)
+
+	router := evmante.NewEVMRouterDecorator(anteHandler, evmAnteHandler)
+
+	return router.AnteHandle, nil
+}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+package goeni.epoch;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/eni-chain/go-eni/x/epoch/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "goeni/x/epoch/Params";
+  option (gogoproto.goproto_stringer) = true;
+  option (gogoproto.equal) = true;
+
+  
+}

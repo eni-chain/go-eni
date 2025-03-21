@@ -8,11 +8,11 @@ option go_package = "github.com/eni-chain/go-eni/x/evm/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  rpc EniAddressByEVMAddress(QuerySeiAddressByEVMAddressRequest) returns (QuerySeiAddressByEVMAddressResponse) {
-    option (google.api.http).get = "/enichain/evm/sei_address";
+  rpc EniAddressByEVMAddress(QueryEniAddressByEVMAddressRequest) returns (QueryEniAddressByEVMAddressResponse) {
+    option (google.api.http).get = "/enichain/evm/eni_address";
   }
 
-  rpc EVMAddressBySeiAddress(QueryEVMAddressBySeiAddressRequest) returns (QueryEVMAddressBySeiAddressResponse) {
+  rpc EVMAddressByEniAddress(QueryEVMAddressByEniAddressRequest) returns (QueryEVMAddressByEniAddressResponse) {
     option (google.api.http).get = "/enichain/evm/evm_address";
   }
 
@@ -33,20 +33,20 @@ service Query {
   }
 }
 
-message QuerySeiAddressByEVMAddressRequest {
+message QueryEniAddressByEVMAddressRequest {
   string evm_address = 1;
 }
 
-message QuerySeiAddressByEVMAddressResponse {
-  string sei_address = 1;
+message QueryEniAddressByEVMAddressResponse {
+  string eni_address = 1;
   bool associated = 2;
 }
 
-message QueryEVMAddressBySeiAddressRequest {
-  string sei_address = 1;
+message QueryEVMAddressByEniAddressRequest {
+  string eni_address = 1;
 }
 
-message QueryEVMAddressBySeiAddressResponse {
+message QueryEVMAddressByEniAddressResponse {
   string evm_address = 1;
   bool associated = 2;
 }

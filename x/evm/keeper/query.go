@@ -2,21 +2,28 @@ package keeper
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) EniAddressByEVMAddress(goCtx context.Context, req *types.QuerySeiAddressByEVMAddressRequest) (res *types.QuerySeiAddressByEVMAddressResponse, err error) {
+func (k Keeper) EniAddressByEVMAddress(goCtx context.Context, req *types.QueryEniAddressByEVMAddressRequest) (res *types.QueryEniAddressByEVMAddressResponse, err error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-	return
+	addr := common.HexToAddress(req.EvmAddress)
+	eniAddr := k.GetEniAddressOrDefault(ctx, addr)
+	return &types.QueryEniAddressByEVMAddressResponse{EniAddress: eniAddr.String()}, nil
 }
-func (k Keeper) EVMAddressBySeiAddress(goCtx context.Context, req *types.QueryEVMAddressBySeiAddressRequest) (res *types.QueryEVMAddressBySeiAddressResponse, err error) {
+func (k Keeper) EVMAddressByEniAddress(goCtx context.Context, req *types.QueryEVMAddressByEniAddressRequest) (res *types.QueryEVMAddressByEniAddressResponse, err error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-	return
+	addr, err := sdk.AccAddressFromBech32(req.EniAddress)
+	if err != nil {
+		return nil, err
+	}
+	evmAddr := k.GetEVMAddressOrDefault(ctx, addr)
+	return &types.QueryEVMAddressByEniAddressResponse{EvmAddress: evmAddr.Hex()}, nil
 }
 func (k Keeper) StaticCall(goCtx context.Context, req *types.QueryStaticCallRequest) (res *types.QueryStaticCallResponse, err error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

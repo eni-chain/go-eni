@@ -6,6 +6,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/eni-chain/go-eni/utils"
+	"github.com/eni-chain/go-eni/x/evm/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/tracing"
 	"github.com/holiman/uint256"
@@ -91,6 +92,7 @@ func (s *DBImpl) HasSelfDestructed(acc common.Address) bool {
 }
 
 func (s *DBImpl) Snapshot() int {
+	//s.snapshotKVStores = append(s.snapshotKVStores, s.ctx.MultiStore())
 	newCtx := s.ctx.WithMultiStore(s.ctx.MultiStore().CacheMultiStore()).WithEventManager(sdk.NewEventManager())
 	s.snapshottedCtxs = append(s.snapshottedCtxs, s.ctx)
 	s.ctx = newCtx
@@ -102,6 +104,7 @@ func (s *DBImpl) Snapshot() int {
 func (s *DBImpl) RevertToSnapshot(rev int) {
 	s.ctx = s.snapshottedCtxs[rev]
 	s.snapshottedCtxs = s.snapshottedCtxs[:rev]
+	//s.snapshotKVStores = s.snapshotKVStores[:rev]
 	s.tempStateCurrent = s.tempStatesHist[rev]
 	s.tempStatesHist = s.tempStatesHist[:rev]
 	s.Snapshot()
@@ -134,11 +137,11 @@ func (s *DBImpl) clearAccountStateIfDestructed(st *TemporaryState) {
 }
 
 func (s *DBImpl) clearAccountState(acc common.Address) {
-	//s.k.PurgePrefix(s.ctx, types.StateKey(acc))
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeKeyPrefix), acc[:])
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeSizeKeyPrefix), acc[:])
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeHashKeyPrefix), acc[:])
-	//deleteIfExists(s.k.PrefixStore(s.ctx, types.NonceKeyPrefix), acc[:])
+	s.k.PurgePrefix(s.ctx, types.StateKey(acc))
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeKeyPrefix), acc[:])
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeSizeKeyPrefix), acc[:])
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.CodeHashKeyPrefix), acc[:])
+	deleteIfExists(s.k.PrefixStore(s.ctx, types.NonceKeyPrefix), acc[:])
 }
 
 func (s *DBImpl) MarkAccount(acc common.Address, status []byte) {

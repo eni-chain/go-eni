@@ -43,12 +43,12 @@ message Params {
   //   (gogoproto.moretags)   = "yaml:\"whitelisted_codehashes_bank_send\"",
   //   (gogoproto.jsontag) = "whitelisted_codehashes_bank_send"
   // ];
-  repeated bytes whitelisted_cw_code_hashes_for_delegate_call = 8 [
-    (gogoproto.moretags)   = "yaml:\"whitelisted_cw_code_hashes_for_delegate_call\"",
-    (gogoproto.jsontag) = "whitelisted_cw_code_hashes_for_delegate_call"
-  ];
-
-  uint64 deliver_tx_hook_wasm_gas_limit = 9;
+//  repeated bytes whitelisted_cw_code_hashes_for_delegate_call = 8 [
+//    (gogoproto.moretags)   = "yaml:\"whitelisted_cw_code_hashes_for_delegate_call\"",
+//    (gogoproto.jsontag) = "whitelisted_cw_code_hashes_for_delegate_call"
+//  ];
+//
+//  uint64 deliver_tx_hook_wasm_gas_limit = 9;
 
   string max_dynamic_base_fee_upward_adjustment = 10 [
     (gogoproto.moretags)   = "yaml:\"max_dynamic_base_fee_upward_adjustment\"",
