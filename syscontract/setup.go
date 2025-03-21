@@ -43,7 +43,7 @@ func init() {
 	}
 }
 
-func SetupSystemContracts(ctx sdk.Context, evmKeeper evmKeeper.Keeper) {
+func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 	if contracts == nil {
 		evmKeeper.Logger().Info("empty contracts config", "height", ctx.BlockHeight())
 		return
