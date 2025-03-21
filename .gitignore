@@ -11,3 +11,4 @@ build
 eni-node/data/
 ethtests
 nohup.out
+*.pprof
