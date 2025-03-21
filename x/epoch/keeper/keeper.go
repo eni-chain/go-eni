@@ -1,13 +1,15 @@
 package keeper
 
 import (
+	"context"
+	"fmt"
+
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/eni-chain/go-eni/x/goeni/types"
+	"github.com/eni-chain/go-eni/x/epoch/types"
 )
 
 type (
@@ -15,7 +17,6 @@ type (
 		cdc          codec.BinaryCodec
 		storeService store.KVStoreService
 		logger       log.Logger
-		//AuthAccountKeeper *authkeeper.AccountKeeper
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
@@ -23,12 +24,18 @@ type (
 	}
 )
 
+func (k Keeper) Epoch(ctx context.Context, request *types.QueryEpochRequest) (*types.QueryEpochResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	epoch := k.GetEpoch(sdkContext)
+	return &types.QueryEpochResponse{Epoch: epoch}, nil
+}
+
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
-	// authAccountKeeper *authkeeper.AccountKeeper,
+
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
@@ -39,7 +46,6 @@ func NewKeeper(
 		storeService: storeService,
 		authority:    authority,
 		logger:       logger,
-		//AuthAccountKeeper: authAccountKeeper,
 	}
 }
 
