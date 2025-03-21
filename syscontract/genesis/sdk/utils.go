@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/eni-chain/go-eni/x/evm/keeper"
-	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
 )
 
 func GetEVMKeeper() (*keeper.Keeper, sdk.Context) {

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/eni-chain/go-eni/syscontract"
-	evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 )

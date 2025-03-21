@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"github.com/eni-chain/go-eni/evmrpc"
 	"io"
 
 	"cosmossdk.io/log"
@@ -20,8 +21,8 @@ import (
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
+	evmcli "github.com/cosmos/cosmos-sdk/x/evm/client/cli"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
-	evmcli "github.com/eni-chain/go-eni/x/evm/client/cli"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -52,11 +53,13 @@ func initRootCmd(
 		queryCommand(),
 		txCommand(basicManager),
 		keys.Commands(),
+		BlocktestCmd(app.DefaultNodeHome),
 	)
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
 	crisis.AddModuleInitFlags(startCmd)
+	evmrpc.AddEvmRpcFlagsToCmd(startCmd)
 }
 
 // genesisCommand builds genesis-related `go-enid genesis` command. Users may provide application specific commands as a parameter

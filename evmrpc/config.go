@@ -1,6 +1,7 @@
 package evmrpc
 
 import (
+	"github.com/spf13/cobra"
 	"time"
 
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -244,4 +245,10 @@ func ReadConfig(opts servertypes.AppOptions) (Config, error) {
 		}
 	}
 	return cfg, nil
+}
+
+// AddEvmRpcFlagsToCmd adds common flags to a module query command.
+func AddEvmRpcFlagsToCmd(cmd *cobra.Command) {
+	cmd.Flags().String(flagHTTPPort, "8545", "<port> to Evm RPC interface for this chain")
+	cmd.Flags().String(flagWSPort, "8546", "<port> to Evm Ws RPC interface for this chain")
 }

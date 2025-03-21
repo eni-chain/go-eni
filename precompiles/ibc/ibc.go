@@ -16,7 +16,7 @@ package ibc
 //	"github.com/ethereum/go-ethereum/core/vm"
 //
 //	pcommon "github.com/eni-chain/go-eni/precompiles/common"
-//	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
+//	evmtypes "github.com/cosmos/cosmos-sdk/x/evm/types"
 //)
 //
 //const (

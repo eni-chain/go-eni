@@ -25,7 +25,7 @@ package addr
 //	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 //	pcommon "github.com/eni-chain/go-eni/precompiles/common"
 //	"github.com/eni-chain/go-eni/utils/metrics"
-//	"github.com/eni-chain/go-eni/x/evm/types"
+//	"github.com/cosmos/cosmos-sdk/x/evm/types"
 //)
 //
 //const (

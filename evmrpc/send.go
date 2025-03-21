@@ -4,17 +4,18 @@ import (
 	"context"
 	"errors"
 
-	"github.com/eni-chain/go-eni/x/evm/ante"
 	"time"
 
+	sdkerrors "cosmossdk.io/errors"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	sdkerrors "cosmossdk.io/errors"
+	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
+	evmante "github.com/cosmos/cosmos-sdk/x/evm/ante"
+	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/types/ethtx"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi"
-	"github.com/eni-chain/go-eni/x/evm/keeper"
-	"github.com/eni-chain/go-eni/x/evm/types"
-	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
@@ -32,13 +33,16 @@ type SendAPI struct {
 	homeDir        string
 	backend        *Backend
 	connectionType ConnectionType
+	logger         log.Logger
 }
 
 type SendConfig struct {
 	slow bool
 }
 
-func NewSendAPI(tmClient rpcclient.Client, txConfig client.TxConfig, sendConfig *SendConfig, k *keeper.Keeper, ctxProvider func(int64) sdk.Context, homeDir string, simulateConfig *SimulateConfig, connectionType ConnectionType) *SendAPI {
+func NewSendAPI(tmClient rpcclient.Client, txConfig client.TxConfig, sendConfig *SendConfig, k *keeper.Keeper,
+	ctxProvider func(int64) sdk.Context, homeDir string, simulateConfig *SimulateConfig,
+	connectionType ConnectionType, logger log.Logger) *SendAPI {
 	return &SendAPI{
 		tmClient:       tmClient,
 		txConfig:       txConfig,
@@ -48,6 +52,7 @@ func NewSendAPI(tmClient rpcclient.Client, txConfig client.TxConfig, sendConfig 
 		homeDir:        homeDir,
 		backend:        NewBackend(ctxProvider, k, txConfig.TxDecoder(), tmClient, simulateConfig),
 		connectionType: connectionType,
+		logger:         logger,
 	}
 }
 
@@ -58,22 +63,26 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if err = tx.UnmarshalBinary(input); err != nil {
 		return
 	}
-
 	hash = tx.Hash()
 	txData, err := ethtx.NewTxDataFromTx(tx)
 	if err != nil {
+		s.logger.Error("failed to convert tx to tx data", "err", err)
 		return
 	}
 	msg, err := types.NewMsgEVMTransaction(txData)
 	if err != nil {
+		s.logger.Error("failed to convert tx to MsgEVMTransaction", "err", err)
 		return
 	}
-	ante.Preprocess2(msg)
+	err = evmante.PreprocessMsgSender(msg)
+	if err != nil {
+		s.logger.Error("failed to convert MsgEVMTransaction to evmante.PreprocessMsgSender", "err", err)
+		return
+	}
 	txBuilder := s.txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return
 	}
-
 	txbz, encodeErr := s.txConfig.TxEncoder()(txBuilder.GetTx())
 	if encodeErr != nil {
 		return hash, encodeErr
@@ -86,9 +95,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		} else if res == nil {
 			err = errors.New("missing broadcast response")
 		} else if res.CheckTx.Code != 0 {
-			//err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.CheckTx.Code, "")
-			//todo: need to confirm the codespace
-			err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.CheckTx.Code, "")
+			err = sdkerrors.ABCIError(coserrors.RootCodespace, res.CheckTx.Code, "")
 		}
 	} else {
 		res, broadcastError := s.tmClient.BroadcastTxSync(ctx, txbz)
@@ -97,9 +104,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		} else if res == nil {
 			err = errors.New("missing broadcast response")
 		} else if res.Code != 0 {
-			//err = sdkerrors.ABCIError(sdkerrors.RootCodespace, res.Code, "")
-			//todo: need to confirm the codespace
-			err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.Code, "")
+			err = sdkerrors.ABCIError(coserrors.RootCodespace, res.Code, "")
 		}
 	}
 	return

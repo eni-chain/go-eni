@@ -3,8 +3,8 @@ package antedecorators
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
-	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
+	evmkeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
+	evmtypes "github.com/cosmos/cosmos-sdk/x/evm/types"
 	//oraclekeeper "github.com/eni-chain/go-eni/x/oracle/keeper"
 	//oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 )

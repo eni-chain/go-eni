@@ -2,8 +2,9 @@ package app
 
 import (
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"io"
+
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	"github.com/eni-chain/go-eni/evmrpc"
@@ -19,9 +20,7 @@ import (
 	evidencekeeper "cosmossdk.io/x/evidence/keeper"
 	feegrantkeeper "cosmossdk.io/x/feegrant/keeper"
 	_ "cosmossdk.io/x/feegrant/module" // import for side-effects
-	nftkeeper "cosmossdk.io/x/nft/keeper"
-	_ "cosmossdk.io/x/nft/module" // import for side-effects
-	_ "cosmossdk.io/x/upgrade"    // import for side-effects
+	_ "cosmossdk.io/x/upgrade"         // import for side-effects
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -81,8 +80,8 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
+	evmmodulekeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	epochmodulekeeper "github.com/eni-chain/go-eni/x/epoch/keeper"
-	evmmodulekeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	goenimodulekeeper "github.com/eni-chain/go-eni/x/goeni/keeper"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
@@ -133,7 +132,6 @@ type App struct {
 	EvidenceKeeper       evidencekeeper.Keeper
 	FeeGrantKeeper       feegrantkeeper.Keeper
 	GroupKeeper          groupkeeper.Keeper
-	NFTKeeper            nftkeeper.Keeper
 	CircuitBreakerKeeper circuitkeeper.Keeper
 
 	// IBC
@@ -152,7 +150,7 @@ type App struct {
 	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
 
 	GoeniKeeper goenimodulekeeper.Keeper
-	EvmKeeper   evmmodulekeeper.Keeper
+	EvmKeeper   *evmmodulekeeper.Keeper
 	EpochKeeper epochmodulekeeper.Keeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
@@ -257,7 +255,6 @@ func New(
 		&app.AuthzKeeper,
 		&app.EvidenceKeeper,
 		&app.FeeGrantKeeper,
-		&app.NFTKeeper,
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.GoeniKeeper,
@@ -325,7 +322,7 @@ func New(
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
 			AppAccountKeeper: &app.AccountKeeper,
-			EVMKeeper:        &app.EvmKeeper,
+			EVMKeeper:        app.EvmKeeper,
 			LatestCtxGetter: func() sdk.Context {
 				return app.NewContext(false)
 			},
@@ -464,7 +461,7 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 	}
 
 	if app.evmRPCConfig.HTTPEnabled {
-		evmHTTPServer, err := evmrpc.NewEVMHTTPServer(app.Logger(), app.evmRPCConfig, rpcClient, &app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome, nil)
+		evmHTTPServer, err := evmrpc.NewEVMHTTPServer(app.Logger(), app.evmRPCConfig, rpcClient, app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome, nil)
 		if err != nil {
 			panic(err)
 		}
@@ -474,7 +471,7 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 	}
 
 	if app.evmRPCConfig.WSEnabled {
-		evmWSServer, err := evmrpc.NewEVMWebSocketServer(app.Logger(), app.evmRPCConfig, rpcClient, &app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome)
+		evmWSServer, err := evmrpc.NewEVMWebSocketServer(app.Logger(), app.evmRPCConfig, rpcClient, app.EvmKeeper, ctxProvider, app.txConfig, DefaultNodeHome)
 		if err != nil {
 			panic(err)
 		}

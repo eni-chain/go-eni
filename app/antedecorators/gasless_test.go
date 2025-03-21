@@ -9,7 +9,7 @@ package antedecorators_test
 //	"github.com/cosmos/cosmos-sdk/types/accesscontrol"
 //	"github.com/cosmos/cosmos-sdk/x/staking"
 //	"github.com/eni-chain/go-eni/app/antedecorators"
-//	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+//	evmkeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 //	oraclekeeper "github.com/eni-chain/go-eni/x/oracle/keeper"
 //	oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 //	"github.com/stretchr/testify/require"
