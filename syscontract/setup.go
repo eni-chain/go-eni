@@ -5,11 +5,10 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/eni-chain/go-eni/syscontract/genesis"
 	"github.com/ethereum/go-ethereum/common"
 	"strings"
-
-	evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 )
 
 var contracts *contractsConfig

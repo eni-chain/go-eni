@@ -7,9 +7,9 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
 	"github.com/eni-chain/go-eni/evmrpc/ethapi"
-	"github.com/eni-chain/go-eni/x/evm/keeper"
-	"github.com/eni-chain/go-eni/x/evm/types"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
 	rpcclient "github.com/cometbft/cometbft/rpc/client"

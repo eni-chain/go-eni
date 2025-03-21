@@ -6,8 +6,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	evmCfg "github.com/eni-chain/go-eni/x/evm/config"
-	"github.com/eni-chain/go-eni/x/evm/keeper"
+	evmCfg "github.com/cosmos/cosmos-sdk/x/evm/config"
+	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rpc"
 	//"github.com/tendermint/tendermint/libs/log"
@@ -48,7 +48,8 @@ func NewEVMHTTPServer(
 		return nil, err
 	}
 	simulateConfig := &SimulateConfig{GasCap: config.SimulationGasLimit, EVMTimeout: config.SimulationEVMTimeout}
-	sendAPI := NewSendAPI(tmClient, txConfig, &SendConfig{slow: config.Slow}, k, ctxProvider, homeDir, simulateConfig, ConnectionTypeHTTP)
+	sendAPI := NewSendAPI(tmClient, txConfig, &SendConfig{slow: config.Slow}, k, ctxProvider, homeDir,
+		simulateConfig, ConnectionTypeHTTP, logger)
 	ctx := ctxProvider(LatestCtxHeight)
 
 	txAPI := NewTransactionAPI(tmClient, k, ctxProvider, txConfig, homeDir, ConnectionTypeHTTP)
@@ -195,7 +196,8 @@ func NewEVMWebSocketServer(
 		},
 		{
 			Namespace: "eth",
-			Service:   NewSendAPI(tmClient, txConfig, &SendConfig{slow: config.Slow}, k, ctxProvider, homeDir, simulateConfig, ConnectionTypeWS),
+			Service: NewSendAPI(tmClient, txConfig, &SendConfig{slow: config.Slow}, k, ctxProvider, homeDir,
+				simulateConfig, ConnectionTypeWS, logger),
 		},
 		{
 			Namespace: "eth",

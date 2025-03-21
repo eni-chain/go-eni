@@ -6,12 +6,20 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/log"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/libs/log"
 )
 
 type mockLogger struct {
 	lastError string
+}
+
+func (l *mockLogger) Warn(msg string, keyVals ...any) {
+
+}
+
+func (l *mockLogger) Impl() any {
+	return l
 }
 
 func (l *mockLogger) Debug(msg string, keyVals ...interface{}) {}

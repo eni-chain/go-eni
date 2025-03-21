@@ -10,7 +10,7 @@ package staking
 //	sdk "github.com/cosmos/cosmos-sdk/types"
 //	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 //	pcommon "github.com/eni-chain/go-eni/precompiles/common"
-//	"github.com/eni-chain/go-eni/x/evm/types"
+//	"github.com/cosmos/cosmos-sdk/x/evm/types"
 //	"github.com/ethereum/go-ethereum/accounts/abi"
 //	"github.com/ethereum/go-ethereum/common"
 //	"github.com/ethereum/go-ethereum/core/vm"

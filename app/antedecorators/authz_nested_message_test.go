@@ -8,7 +8,7 @@ package antedecorators_test
 //	"github.com/cosmos/cosmos-sdk/x/authz"
 //	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 //	"github.com/eni-chain/go-eni/app/antedecorators"
-//	evmtypes "github.com/eni-chain/go-eni/x/evm/types"
+//	evmtypes "github.com/cosmos/cosmos-sdk/x/evm/types"
 //	"github.com/stretchr/testify/require"
 //	"github.com/tendermint/tendermint/crypto/secp256k1"
 //	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"

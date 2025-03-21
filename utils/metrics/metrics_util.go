@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/telemetry"
-	"github.com/eni-chain/go-eni/x/evm/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
 	metrics "github.com/hashicorp/go-metrics"
 )
 

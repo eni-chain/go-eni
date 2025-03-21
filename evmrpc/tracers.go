@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/eni-chain/go-eni/x/evm/keeper"
+	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/eth/tracers"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"     // run init()s to register JS tracers

@@ -6,9 +6,9 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/state"
 	"github.com/eni-chain/go-eni/precompiles/oracle"
 	testkeeper "github.com/eni-chain/go-eni/testutil/keeper"
-	"github.com/eni-chain/go-eni/x/evm/state"
 	//"github.com/eni-chain/go-eni/x/oracle/types"
 	//"github.com/eni-chain/go-eni/x/oracle/utils"
 	"github.com/ethereum/go-ethereum/common"

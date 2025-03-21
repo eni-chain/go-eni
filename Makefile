@@ -124,3 +124,22 @@ govulncheck:
 reset-eni-node:
 	@echo Resetting eni node...
 	rm -rf eni-node && git checkout  eni-node
+
+
+# build target
+build-loadtest:
+	@echo Building loadtest...
+	go build -o loadtest/loadtest loadtest/*.go
+	@echo Done building loadtest.
+# run target
+run-loadtest: build
+	@echo Running loadtest...
+	./loadtest/loadtest
+
+# clean target
+clean-loadtest:
+	@echo Cleaning loadtest...
+	rm -rf loadtest/loadtest
+	@echo Done cleaning loadtest.
+
+.PHONY: all build run clean

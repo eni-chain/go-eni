@@ -5,16 +5,16 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/eni-chain/go-eni/x/evm/ante"
 	"strings"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	//sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "cosmossdk.io/errors"
-	"github.com/eni-chain/go-eni/x/evm/keeper"
-	"github.com/eni-chain/go-eni/x/evm/types"
-	"github.com/eni-chain/go-eni/x/evm/types/ethtx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	coserrors "github.com/cosmos/cosmos-sdk/types/errors"
+	evmante "github.com/cosmos/cosmos-sdk/x/evm/ante"
+	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
+	"github.com/cosmos/cosmos-sdk/x/evm/types/ethtx"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rpc"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
@@ -68,7 +68,10 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 	if err != nil {
 		return err
 	}
-	ante.Preprocess2(msg)
+	err = evmante.PreprocessMsgSender(msg)
+	if err != nil {
+		return err
+	}
 	txBuilder := t.sendAPI.txConfig.NewTxBuilder()
 	if err = txBuilder.SetMsgs(msg); err != nil {
 		return err
@@ -85,8 +88,7 @@ func (t *AssociationAPI) Associate(ctx context.Context, req *AssociateRequest) (
 	} else if res == nil {
 		err = errors.New("missing broadcast response")
 	} else if res.Code != 0 {
-		//todo: need to confirm the codespace
-		err = sdkerrors.ABCIError(sdkerrors.UndefinedCodespace, res.Code, res.Log)
+		err = sdkerrors.ABCIError(coserrors.RootCodespace, res.Code, res.Log)
 	}
 
 	return err

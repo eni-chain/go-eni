@@ -2,6 +2,7 @@ package goeni
 
 import (
 	"context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
 	"github.com/cometbft/cometbft/proto/tendermint/crypto"
@@ -22,7 +23,8 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	epochtypes "github.com/eni-chain/go-eni/x/epoch/keeper"
-	evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	//evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	// this line is used by starport scaffolding # 1
@@ -110,7 +112,7 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-	EvmKeeper     evmKeeper.Keeper
+	EvmKeeper     *evmKeeper.Keeper
 	EpochKeeper   epochtypes.Keeper
 }
 
@@ -119,7 +121,7 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	EvmKeeper evmKeeper.Keeper,
+	EvmKeeper *evmKeeper.Keeper,
 	EpochKeeper epochtypes.Keeper,
 ) AppModule {
 	return AppModule{
@@ -176,7 +178,35 @@ func (am AppModule) BeginBlock(_ context.Context) error {
 
 func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	hub, err := syscontractSdk.NewHub(am.EvmKeeper)
+	if err != nil {
+		return nil, err
+	}
 
+	header := ctx.BlockHeader()
+	proposerBytes := header.GetProposerAddress()
+	node := common.Address(proposerBytes)
+
+	moduleAddr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	caller := common.Address(moduleAddr)
+	operator, reward, err := hub.BlockReward(ctx, caller, node)
+	if err != nil {
+		return nil, err
+	}
+	if reward.Uint64() == 0 {
+		return nil, nil
+	}
+
+	logger := ctx.Logger().With("module", types.ModuleName)
+	logger.Info(fmt.Sprintf("Block reward for %x is %v", operator, reward.Uint64()))
+
+	eniOpe := am.EvmKeeper.GetEniAddressOrDefault(ctx, operator)
+
+	denom := am.EvmKeeper.GetBaseDenom(ctx)
+	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
+	am.EvmKeeper.BankKeeper().AddCoins(ctx, eniOpe, sdk.NewCoins(coin))
+
+	/************************consensus node update**********************************/
 	//The last block of the epoch updates the consensus set for the next epoch
 	epoch := am.EpochKeeper.GetEpoch(ctx)
 	if epoch.EpochInterval == 0 {
@@ -187,13 +217,13 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		return nil, nil
 	}
 
-	vrf, err := syscontractSdk.NewVRF(&am.EvmKeeper)
+	vrf, err := syscontractSdk.NewVRF(am.EvmKeeper)
 	if err != nil {
 		return nil, err
 	}
 
-	addr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
-	caller := common.Address(addr)
+	//addr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	//caller := common.Address(addr)
 	//epoch := big.NewInt(ctx.BlockHeight() / EpochPeriod)
 	epochNum := big.NewInt(int64(epoch.CurrentEpoch))
 
@@ -202,7 +232,7 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		return nil, err
 	}
 
-	valSet, err := syscontractSdk.NewValidatorManager(&am.EvmKeeper)
+	valSet, err := syscontractSdk.NewValidatorManager(am.EvmKeeper)
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +282,7 @@ type ModuleInputs struct {
 
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
-	EvmKeeper     evmKeeper.Keeper
+	EvmKeeper     *evmKeeper.Keeper
 	EpochKeeper   epochtypes.Keeper
 	//authAccountKeeper *authkeeper.AccountKeeper
 }

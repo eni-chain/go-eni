@@ -15,7 +15,7 @@ package evmrpc_test
 //	sdk "github.com/cosmos/cosmos-sdk/types"
 //	"github.com/cosmos/go-bip39"
 //	"github.com/eni-chain/go-eni/evmrpc"
-//	"github.com/eni-chain/go-eni/x/evm/types"
+//	"github.com/cosmos/cosmos-sdk/x/evm/types"
 //	"github.com/ethereum/go-ethereum/common"
 //	"github.com/stretchr/testify/require"
 //)

@@ -10,8 +10,8 @@ import (
 	//ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
 	//ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
 
-	evmante "github.com/eni-chain/go-eni/x/evm/ante"
-	evmkeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	evmante "github.com/cosmos/cosmos-sdk/x/evm/ante"
+	evmkeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	//"github.com/eni-chain/go-eni/x/oracle"
 	//oraclekeeper "github.com/eni-chain/go-eni/x/oracle/keeper"
 )
