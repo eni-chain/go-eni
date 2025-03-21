@@ -313,12 +313,12 @@ require (
 )
 
 replace (
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250319165613-bfb1e4975a11
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250321100326-662833ec62b4
 	//cosmossdk.io/api => ../eni-cosmos/api
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250319165613-bfb1e4975a11
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250321100326-662833ec62b4
 	//github.com/cometbft/cometbft => ../eni-cometbft
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250303150538-69632da53c65
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250319165613-bfb1e4975a11
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250321100326-662833ec62b4
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	//github.com/eni-chain/eni-db => github.com/sei-protocol/sei-db v0.0.1
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
