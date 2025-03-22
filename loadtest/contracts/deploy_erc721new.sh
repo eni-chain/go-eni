@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 # This script is used to deploy the NoopToken contract to the target network
 # This avoids trying to predict what address it might be deployed to
 

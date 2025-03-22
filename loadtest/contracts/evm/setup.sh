@@ -8,7 +8,7 @@ then
     /root/.foundry/bin/foundryup
 fi
 
-sudo apt-get install jq -y
+#sudo apt-get install jq -y
 
 # Install OpenZeppelin contracts
 forge install OpenZeppelin/openzeppelin-contracts --no-commit &> /dev/null

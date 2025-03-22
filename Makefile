@@ -142,4 +142,14 @@ clean-loadtest:
 	rm -rf loadtest/loadtest
 	@echo Done cleaning loadtest.
 
+#deploy erc20
+deploy_erc20:
+	@echo deploy erc20 contract to  to local nodes...
+	./loadtest/contracts/deploy_erc20new.sh http://localhost:8545
+
+#deploy erc721
+deploy_erc721:
+	@echo deploy erc20 contract to  to local nodes...
+	./loadtest/contracts/deploy_erc721new.sh http://localhost:8545
+
 .PHONY: all build run clean
