@@ -149,7 +149,7 @@ deploy_erc20:
 
 #deploy erc721
 deploy_erc721:
-	@echo deploy erc20 contract to  to local nodes...
+	@echo deploy erc721 contract to  to local nodes...
 	./loadtest/contracts/deploy_erc721new.sh http://localhost:8545
 
 .PHONY: all build run clean

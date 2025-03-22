@@ -18,7 +18,7 @@ fi
 cd loadtest/contracts/evm || exit 1
 
 ./setup.sh > /dev/null
-ownerOf
+
 git submodule update --init --recursive > /dev/null
 
 INPUT=$(forge create -r "$evm_endpoint" --private-key dc9bb398d00f7778a61dcbb7e90cfe527b7e7b69ce9d557a08d5e32ea8d3eac0 src/ERC721.sol:MyNFT --json | jq -r '.transaction.input')
