@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -32,7 +31,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
-	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"golang.org/x/sync/semaphore"
 	"golang.org/x/time/rate"
@@ -158,32 +156,6 @@ func run(config *Config, txFilePath string) {
 	runEvmQueries(*config)
 }
 
-func readTransactionsFromFile(client *LoadTestClient, filePath string) (int, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return 0, err
-	}
-	defer file.Close()
-	count := 0
-	provider := client.EvmTxClients[0]
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if len(line) == 0 {
-			break
-		}
-		tx := &ethtypes.Transaction{}
-		tx.UnmarshalBinary(common.FromHex(line))
-		go provider.SendEvmTx(tx, func() {
-			count++
-		})
-	}
-	if err := scanner.Err(); err != nil {
-		return count, err
-	}
-	return count, nil
-}
-
 // starts loadtest workers. If config.Constant is true, then we don't gather loadtest results and let producer/consumer
 // workers continue running. If config.Constant is false, then we will gather load test results in a file
 func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string) {
@@ -203,20 +175,18 @@ func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string
 	var wg sync.WaitGroup
 	txQueues := make([]chan SignedTx, len(keys))
 	// Create producers and consumers
+
+	fmt.Printf("Starting loadtest producers and consumers\n")
+	for i := range txQueues {
+		txQueues[i] = make(chan SignedTx, 10)
+	}
+
+	producerRateLimiter := rate.NewLimiter(rate.Limit(config.TargetTps), int(config.TargetTps))
+	consumerSemaphore := semaphore.NewWeighted(int64(config.TargetTps))
 	if len(filePath) > 0 {
-		go func() {
-			readTransactionsFromFile(client, filePath)
-			done <- struct{}{}
-		}()
+		go client.ReadFileTxs(txQueues[0], &wg, done, producerRateLimiter, filePath)
+		go client.SendTxs(txQueues[0], 0, done, sentCountPerMsgType, consumerSemaphore, &wg)
 	} else {
-		fmt.Printf("Starting loadtest producers and consumers\n")
-		for i := range txQueues {
-			txQueues[i] = make(chan SignedTx, 10)
-		}
-
-		producerRateLimiter := rate.NewLimiter(rate.Limit(config.TargetTps), int(config.TargetTps))
-		consumerSemaphore := semaphore.NewWeighted(int64(config.TargetTps))
-
 		for i := 0; i < len(keys); i++ {
 			go client.BuildTxs(txQueues[i], i, &wg, done, producerRateLimiter, producedCountPerMsgType)
 			go client.SendTxs(txQueues[i], i, done, sentCountPerMsgType, consumerSemaphore, &wg)
