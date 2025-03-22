@@ -152,11 +152,9 @@ func run(config *Config, txFilePath string) {
 	client.SetValidators()
 	deployEvmContracts(config)
 	//deployUniswapContracts(client, config)
-	if txFilePath != "" {
-		go readTransactionsFromFile(client, txFilePath)
-	} else {
-		startLoadtestWorkers(client, *config)
-	}
+
+	startLoadtestWorkers(client, *config, txFilePath)
+
 	runEvmQueries(*config)
 }
 
@@ -171,8 +169,11 @@ func readTransactionsFromFile(client *LoadTestClient, filePath string) (int, err
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
+		if len(line) == 0 {
+			break
+		}
 		tx := &ethtypes.Transaction{}
-		tx.UnmarshalBinary(common.Hex2Bytes(line))
+		tx.UnmarshalBinary(common.FromHex(line))
 		go provider.SendEvmTx(tx, func() {
 			count++
 		})
@@ -185,7 +186,7 @@ func readTransactionsFromFile(client *LoadTestClient, filePath string) (int, err
 
 // starts loadtest workers. If config.Constant is true, then we don't gather loadtest results and let producer/consumer
 // workers continue running. If config.Constant is false, then we will gather load test results in a file
-func startLoadtestWorkers(client *LoadTestClient, config Config) {
+func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string) {
 	fmt.Printf("Starting loadtest workers\n")
 	configString, _ := json.Marshal(config)
 	fmt.Printf("Running with \n %s \n", string(configString))
@@ -198,22 +199,29 @@ func startLoadtestWorkers(client *LoadTestClient, config Config) {
 	var blockTimes []string
 	var startHeight = getLastHeight(config.BlockchainEndpoint)
 	keys := client.AccountKeys
-
-	// Create producers and consumers
-	fmt.Printf("Starting loadtest producers and consumers\n")
-	txQueues := make([]chan SignedTx, len(keys))
-	for i := range txQueues {
-		txQueues[i] = make(chan SignedTx, 10)
-	}
 	done := make(chan struct{})
-	producerRateLimiter := rate.NewLimiter(rate.Limit(config.TargetTps), int(config.TargetTps))
-	consumerSemaphore := semaphore.NewWeighted(int64(config.TargetTps))
 	var wg sync.WaitGroup
-	for i := 0; i < len(keys); i++ {
-		go client.BuildTxs(txQueues[i], i, &wg, done, producerRateLimiter, producedCountPerMsgType)
-		go client.SendTxs(txQueues[i], i, done, sentCountPerMsgType, consumerSemaphore, &wg)
-	}
+	txQueues := make([]chan SignedTx, len(keys))
+	// Create producers and consumers
+	if len(filePath) > 0 {
+		go func() {
+			readTransactionsFromFile(client, filePath)
+			done <- struct{}{}
+		}()
+	} else {
+		fmt.Printf("Starting loadtest producers and consumers\n")
+		for i := range txQueues {
+			txQueues[i] = make(chan SignedTx, 10)
+		}
 
+		producerRateLimiter := rate.NewLimiter(rate.Limit(config.TargetTps), int(config.TargetTps))
+		consumerSemaphore := semaphore.NewWeighted(int64(config.TargetTps))
+
+		for i := 0; i < len(keys); i++ {
+			go client.BuildTxs(txQueues[i], i, &wg, done, producerRateLimiter, producedCountPerMsgType)
+			go client.SendTxs(txQueues[i], i, done, sentCountPerMsgType, consumerSemaphore, &wg)
+		}
+	}
 	// Statistics reporting goroutine
 	ticker := time.NewTicker(10 * time.Second)
 	ticks := 0
