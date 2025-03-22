@@ -1,6 +1,6 @@
 ## 1.如何生成离线转账交易
 
-node gen_account.js
+node gentx.js
 
 即可生成离线转账交易。其中包括
 
