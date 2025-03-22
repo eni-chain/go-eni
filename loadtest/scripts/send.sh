@@ -1,53 +1,53 @@
 #!/bin/bash
 
-# 检查文件参数是否存在
+# Check if file parameter exists
 if [ $# -lt 1 ]; then
-    echo "用法: $0 <交易文件.txt> [rpc-url]"
-    echo "默认 rpc-url: http://localhost:8545"
+    echo "Usage: $0 <transactions_file.txt> [rpc-url]"
+    echo "Default rpc-url: http://localhost:8545"
     exit 1
 fi
 
 TX_FILE="$1"
 RPC_URL="${2:-http://localhost:8545}"
 
-# 验证文件是否存在
+# Verify if the file exists
 if [ ! -f "$TX_FILE" ]; then
-    echo "错误：文件 $TX_FILE 未找到"
+    echo "Error: File $TX_FILE not found"
     exit 1
 fi
 
-# 设置失败计数器
+# Set failure counter
 fail_count=0
 success_count=0
-total=$(wc -l < "$TX_FILE")
+total=$(grep -cve '^\s*$' "$TX_FILE")
 
-# 逐行处理交易
-while IFS= read -r raw_tx; do
-    # 清理交易数据
+# Process transactions line by line
+while IFS= read -r raw_tx || [[ -n "$raw_tx" ]]; do
+    # Clean transaction data
     tx=$(echo "$raw_tx" | tr -d '[:space:]')
 
-    # 基础格式验证
+    # Basic format validation
     if [[ ! $tx =~ ^0x[0-9a-fA-F]+$ ]]; then
-        echo "跳过无效交易: ${tx:0:20}..."
+        echo "Skipping invalid transaction: ${tx:0:20}..."
         ((fail_count++))
         continue
     fi
 
-    # 发送原始交易
-    echo "正在发送交易 (${success_count}/${total}): ${tx:0:20}..."
+    # Send raw transaction
+    echo "Sending transaction (${success_count}/${total}): ${tx:0:20}..."
 
     if output=$(cast rpc eth_sendRawTransaction "$tx" --rpc-url "$RPC_URL" 2>&1); then
-        echo "成功 | 哈希: $output"
+        echo "Success | Hash: $output"
         ((success_count++))
     else
-        echo "失败 | 错误: $output"
+        echo "Failure | Error: $output"
         ((fail_count++))
     fi
 
 done < "$TX_FILE"
 
-# 输出统计结果
-echo "发送完成"
-echo "成功: $success_count"
-echo "失败: $fail_count"
-echo "总计: $total"
+# Output statistics
+echo "Sending completed"
+echo "Success: $success_count"
+echo "Failure: $fail_count"
+echo "Total: $total"
