@@ -129,7 +129,8 @@ reset-eni-node:
 # build target
 build-loadtest:
 	@echo Building loadtest...
-	go build -o loadtest/loadtest loadtest/*.go
+	go build -o build/loadtest loadtest/*.go
+	@cp loadtest/config.json build/config.json
 	@echo Done building loadtest.
 # run target
 run-loadtest: build

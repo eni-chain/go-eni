@@ -1,15 +1,19 @@
 package main
 
 import (
+	"bufio"
 	"context"
-	"cosmossdk.io/math"
 	"crypto/tls"
 	"fmt"
 	"math/rand"
+	"os"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"cosmossdk.io/math"
+	"github.com/ethereum/go-ethereum/common"
 
 	"golang.org/x/exp/slices"
 	"golang.org/x/time/rate"
@@ -208,6 +212,54 @@ func (c *LoadTestClient) BuildTxs(
 				msgTypeCount := atomic.LoadInt64(producedCountPerMsgType[messageType])
 				signedTx = SignedTx{TxBytes: c.generateSignedCosmosTxs(keyIndex, messageType, msgTypeCount), MsgType: messageType}
 			}
+
+			select {
+			case txQueue <- signedTx:
+				atomic.AddInt64(producedCountPerMsgType[messageType], 1)
+			case <-done:
+				return
+			}
+		}
+	}
+}
+
+func (c *LoadTestClient) ReadFileTxs(
+	txQueue chan SignedTx,
+	wg *sync.WaitGroup,
+	done <-chan struct{},
+	rateLimiter *rate.Limiter,
+	filePath string,
+) {
+	wg.Add(1)
+	defer wg.Done()
+	config := c.LoadTestConfig
+	file, err := os.Open(filePath)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		select {
+		case <-done:
+			return
+		default:
+			//if !rateLimiter.Allow() {
+			//	continue
+			//}
+			// Generate a message type first
+			messageType := c.getRandomMessageType(config.MessageTypes)
+			metrics.IncrProducerEventCount(messageType)
+			var signedTx SignedTx
+			// Sign EVM and Cosmos TX differently
+			line := scanner.Text()
+			if len(line) == 0 {
+				break
+			}
+			tx := &ethtypes.Transaction{}
+			tx.UnmarshalBinary(common.FromHex(line))
+			signedTx = SignedTx{EvmTx: tx, MsgType: messageType}
+			EvmTxHashes = append(EvmTxHashes, signedTx.EvmTx.Hash())
 
 			select {
 			case txQueue <- signedTx:
