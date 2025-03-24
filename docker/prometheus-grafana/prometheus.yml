@@ -4,10 +4,10 @@ global:
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: ['localhost:9090']  # 监控自身
+      - targets: ['localhost:9090']  # monitoring prometheus itself
   - job_name: 'node'
     static_configs:
-      - targets: ['node-exporter:9100']  # 监控 Node Exporter
+      - targets: ['node-exporter:9100']  # monitoring node exporter
   - job_name: 'cosmos-tendermint'
     static_configs:
-      - targets: ['172.21.117.51:26660']  # Tendermint 默认指标端点
+      - targets: ['localhost:26660']  # cometbft default port
