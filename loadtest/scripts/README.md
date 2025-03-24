@@ -1,35 +1,42 @@
-## 1.如何生成离线转账交易
+## 1. How to Generate Offline Transfer Transactions
 
+Run the following command to generate offline transfer transactions:
+
+```bash
 node gentx.js
+```
 
-即可生成离线转账交易。其中包括
+This will generate offline transfer transactions, including a transaction from:
 
 ```
 0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52
 ```
 
-转账给新账号1ENI的交易，存放在init.txt中，这些交易都是串行的。这些新账号都是通过助记词：
+to a new account `1ENI`, stored in `init.txt`. These transactions are serialized. These new accounts are derived from the mnemonic:
 
 ```
-    mnemonic: "party two quit over jaguar carry episode naive machine nothing borrow sell", // 替换为实际助记词
+mnemonic: "party two quit over jaguar carry episode naive machine nothing borrow sell" // Replace with the actual mnemonic
 ```
 
-派生出来的。所以你也可以将这个助记词导入Metamask查看对应账号。
+You can also import this mnemonic into Metamask to view the corresponding accounts.
 
-生成完成init.txt后，脚本又生成了从新账号转账0.1ENI给随机地址的交易，存放在transfer.txt中，这些交易都是并行的。
+After generating `init.txt`, the script will generate transactions from the new accounts transferring `0.1ENI` to random addresses, stored in `transfer.txt`. These transactions are parallel.
 
-如果要设定生成交易的数量，请修改gen_account.js中的
+To set the number of transactions to generate, modify the following in `gen_account.js`:
 
-```
+```javascript
 numAddresses: 10000
 ```
 
-改为想要的值即可。
+Change it to the desired value.
 
-## 2.如何发送离线交易
+## 2. How to Send Offline Transactions
 
-在当前文件夹有send.sh脚本。要发送离线交易，请指定离线交易文件名即可。比如：
+In the current folder, there is a `send.sh` script. To send offline transactions, specify the offline transaction file name. For example:
 
 ```bash
 ./send.sh ./init.txt
+```
+
+
 ```
