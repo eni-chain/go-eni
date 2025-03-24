@@ -8,6 +8,7 @@ import (
 	"github.com/cometbft/cometbft/proto/tendermint/crypto"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
+	"github.com/eni-chain/go-eni/syscontract"
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
@@ -138,11 +139,39 @@ func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
+
+	/******************init system contract*************************/
+	if ctx.BlockHeight() == 0 {
+		syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
+	}
+
+	/******************init epoch****************************/
 	var genState types.GenesisState
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
-	InitGenesis(ctx, am.keeper, genState)
+	if genState.GetEpoch() == nil {
+		epoch := types.Epoch{
+			GenesisTime:             ctx.BlockTime(),
+			EpochInterval:           50,
+			CurrentEpoch:            1,
+			CurrentEpochStartHeight: 1,
+			CurrentEpochHeight:      1,
+		}
+		am.keeper.SetEpoch(ctx, epoch)
+
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(types.EventTypeNewEpoch,
+				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(epoch.CurrentEpoch)),
+				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(epoch.CurrentEpochStartHeight)),
+				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(epoch.CurrentEpochHeight)),
+			),
+		)
+
+		telemetry.SetGauge(float32(epoch.CurrentEpoch), "epoch", "current")
+	} else {
+		InitGenesis(ctx, am.keeper, genState)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis state as raw JSON bytes.
@@ -162,26 +191,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	lastEpoch := am.keeper.GetEpoch(sdkCtx)
 
-	if lastEpoch.EpochInterval == 0 && lastEpoch.CurrentEpoch == 0 {
-		newEpoch := types.Epoch{
-			GenesisTime:             sdkCtx.BlockTime(),
-			EpochInterval:           50,
-			CurrentEpoch:            1,
-			CurrentEpochStartHeight: uint64(sdkCtx.BlockHeight()),
-			CurrentEpochHeight:      sdkCtx.BlockHeight(),
-		}
-		am.keeper.SetEpoch(sdkCtx, newEpoch)
-
-		sdkCtx.EventManager().EmitEvent(
-			sdk.NewEvent(types.EventTypeNewEpoch,
-				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(newEpoch.CurrentEpoch)),
-				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(newEpoch.CurrentEpochStartHeight)),
-				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(newEpoch.CurrentEpochHeight)),
-			),
-		)
-
-		telemetry.SetGauge(float32(newEpoch.CurrentEpoch), "epoch", "current")
-	} else if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) >= lastEpoch.EpochInterval {
+	if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) >= lastEpoch.EpochInterval {
 		//am.keeper.AfterEpochEnd(ctx, lastEpoch)
 		newEpoch := types.Epoch{
 			GenesisTime:             lastEpoch.GenesisTime,
