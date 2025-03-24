@@ -154,3 +154,13 @@ deploy_erc721:
 	./loadtest/contracts/deploy_erc721new.sh http://localhost:8545
 
 .PHONY: all build run clean
+
+start-prometheus-grafana-dashboard:
+	@echo Starting prometheus and grafana dashboard...
+	docker-compose -f docker/prometheus-grafana/docker-compose.yml up -d
+	@echo Done starting prometheus and grafana dashboard.
+
+stop-prometheus-grafana-dashboard:
+	@echo Stopping prometheus and grafana dashboard...
+	docker-compose -f docker/prometheus-grafana/docker-compose.yml down
+	@echo Done stopping prometheus and grafana dashboard.
