@@ -238,7 +238,7 @@ package bank_test
 //		Denom  string   `json:"denom"`
 //	})
 //
-//	// todo 目前不太清楚为什么修改关键字后导致这个index发生变化
+//	// TODO: Not sure why changing the keyword causes this index to change
 //	require.Equal(t, 2, len(parsedBalances))
 //	require.Equal(t, bank.CoinBalance{
 //		Amount: big.NewInt(10000000),
