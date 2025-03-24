@@ -6,6 +6,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"math"
+	"os"
+	"path/filepath"
+	"sync"
+	"time"
+
 	cryptokeys "github.com/cometbft/cometbft/crypto"
 	"github.com/cometbft/cometbft/crypto/sr25519"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -15,12 +22,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
-	"io"
-	"math"
-	"os"
-	"path/filepath"
-	"sync"
-	"time"
 	//"github.com/cosmos/cosmos-sdk/crypto/keys/sr25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -72,7 +73,7 @@ func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivK
 	//userHomeDir, _ := os.UserHomeDir()
 	// todo check code
 	userHomeDir, _ := os.Getwd()
-	files, _ := os.ReadDir(filepath.Join(userHomeDir, "loadtest/test_accounts"))
+	files, _ := os.ReadDir(filepath.Join(userHomeDir, "./test_accounts"))
 	var testAccountsKeys = make([]cryptotypes.PrivKey, int(math.Min(float64(len(files)), float64(maxAccounts))))
 	var wg sync.WaitGroup
 	fmt.Printf("Loading accounts\n")
@@ -83,7 +84,7 @@ func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivK
 		wg.Add(1)
 		go func(i int, fileName string) {
 			defer wg.Done()
-			key := sc.GetKey(fmt.Sprint(i), "test", filepath.Join(userHomeDir, "loadtest/test_accounts", fileName))
+			key := sc.GetKey(fmt.Sprint(i), "test", filepath.Join(userHomeDir, "./test_accounts", fileName))
 			testAccountsKeys[i] = key
 		}(i, file.Name())
 	}

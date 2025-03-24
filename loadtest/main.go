@@ -141,7 +141,7 @@ func deployUniswapContracts(client *LoadTestClient, config *Config) {
 	}
 }
 
-func run(config *Config) {
+func run(config *Config, txFilePath string) {
 	// Start metrics collector in another thread
 	metricsServer := MetricsServer{}
 	go metricsServer.StartMetricsClient(*config)
@@ -150,13 +150,15 @@ func run(config *Config) {
 	client.SetValidators()
 	deployEvmContracts(config)
 	//deployUniswapContracts(client, config)
-	startLoadtestWorkers(client, *config)
+
+	startLoadtestWorkers(client, *config, txFilePath)
+
 	runEvmQueries(*config)
 }
 
 // starts loadtest workers. If config.Constant is true, then we don't gather loadtest results and let producer/consumer
 // workers continue running. If config.Constant is false, then we will gather load test results in a file
-func startLoadtestWorkers(client *LoadTestClient, config Config) {
+func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string) {
 	fmt.Printf("Starting loadtest workers\n")
 	configString, _ := json.Marshal(config)
 	fmt.Printf("Running with \n %s \n", string(configString))
@@ -169,22 +171,27 @@ func startLoadtestWorkers(client *LoadTestClient, config Config) {
 	var blockTimes []string
 	var startHeight = getLastHeight(config.BlockchainEndpoint)
 	keys := client.AccountKeys
-
-	// Create producers and consumers
-	fmt.Printf("Starting loadtest producers and consumers\n")
+	done := make(chan struct{})
+	var wg sync.WaitGroup
 	txQueues := make([]chan SignedTx, len(keys))
+	// Create producers and consumers
+
+	fmt.Printf("Starting loadtest producers and consumers\n")
 	for i := range txQueues {
 		txQueues[i] = make(chan SignedTx, 10)
 	}
-	done := make(chan struct{})
+
 	producerRateLimiter := rate.NewLimiter(rate.Limit(config.TargetTps), int(config.TargetTps))
 	consumerSemaphore := semaphore.NewWeighted(int64(config.TargetTps))
-	var wg sync.WaitGroup
-	for i := 0; i < len(keys); i++ {
-		go client.BuildTxs(txQueues[i], i, &wg, done, producerRateLimiter, producedCountPerMsgType)
-		go client.SendTxs(txQueues[i], i, done, sentCountPerMsgType, consumerSemaphore, &wg)
+	if len(filePath) > 0 {
+		go client.ReadFileTxs(txQueues[0], &wg, done, producerRateLimiter, filePath)
+		go client.SendTxs(txQueues[0], 0, done, sentCountPerMsgType, consumerSemaphore, &wg)
+	} else {
+		for i := 0; i < len(keys); i++ {
+			go client.BuildTxs(txQueues[i], i, &wg, done, producerRateLimiter, producedCountPerMsgType)
+			go client.SendTxs(txQueues[i], i, done, sentCountPerMsgType, consumerSemaphore, &wg)
+		}
 	}
-
 	// Statistics reporting goroutine
 	ticker := time.NewTicker(10 * time.Second)
 	ticks := 0
@@ -622,9 +629,10 @@ func ReadConfig(path string) Config {
 
 func main() {
 	configFilePath := flag.String("config-file", GetDefaultConfigFilePath(), "Path to the config.json file to use for this run")
+	txFilePath := flag.String("tx", "", "Path to the file containing Ethereum transactions")
 	flag.Parse()
 
 	config := ReadConfig(*configFilePath)
 	fmt.Printf("Using config file: %s\n", *configFilePath)
-	run(&config)
+	run(&config, *txFilePath)
 }

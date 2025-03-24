@@ -2,13 +2,21 @@ package goeni
 
 import (
 	"context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
+	"github.com/cometbft/cometbft/proto/tendermint/crypto"
+	"github.com/eni-chain/go-eni/precompiles/ed25519Verify"
+	ContractNodeLog "github.com/eni-chain/go-eni/precompiles/nodeLog"
+	"github.com/eni-chain/go-eni/syscontract"
+	"github.com/ethereum/go-ethereum/common"
+	"math/big"
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -16,6 +24,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
+	epochtypes "github.com/eni-chain/go-eni/x/epoch/keeper"
+	//evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
+	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	// this line is used by starport scaffolding # 1
@@ -31,11 +43,17 @@ var (
 	_ module.HasGenesis          = (*AppModule)(nil)
 	_ module.HasInvariants       = (*AppModule)(nil)
 	_ module.HasConsensusVersion = (*AppModule)(nil)
+	_ module.HasABCIEndBlock     = (*AppModule)(nil)
 
 	_ appmodule.AppModule       = (*AppModule)(nil)
 	_ appmodule.HasBeginBlocker = (*AppModule)(nil)
-	_ appmodule.HasEndBlocker   = (*AppModule)(nil)
+	//_ appmodule.HasEndBlocker   = (*AppModule)(nil)
 )
+
+var _ = ed25519Verify.AddEd25519VerifyToVM()
+var _ = ContractNodeLog.AddNodeLogToVM()
+
+//var EpochNum uint64 = 1
 
 // ----------------------------------------------------------------------------
 // AppModuleBasic
@@ -98,6 +116,8 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	EvmKeeper     *evmKeeper.Keeper
+	EpochKeeper   epochtypes.Keeper
 }
 
 func NewAppModule(
@@ -105,12 +125,16 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	EvmKeeper *evmKeeper.Keeper,
+	EpochKeeper epochtypes.Keeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
+		EvmKeeper:      EvmKeeper,
+		EpochKeeper:    EpochKeeper,
 	}
 }
 
@@ -145,14 +169,99 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
-func (am AppModule) BeginBlock(_ context.Context) error {
+func (am AppModule) BeginBlock(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	if ctx.BlockHeight() == 1 {
+		syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
+	}
+
 	return nil
 }
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(_ context.Context) error {
-	return nil
+//
+//	func (am AppModule) EndBlock(_ context.Context) error {
+//		return nil
+//	}
+
+func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	hub, err := syscontractSdk.NewHub(am.EvmKeeper)
+	if err != nil {
+		return nil, err
+	}
+
+	header := ctx.BlockHeader()
+	proposerBytes := header.GetProposerAddress()
+	node := common.Address(proposerBytes)
+
+	moduleAddr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	caller := common.Address(moduleAddr)
+	operator, reward, err := hub.BlockReward(ctx, caller, node)
+	if err != nil {
+		return nil, err
+	}
+	if reward.Uint64() == 0 {
+		return nil, nil
+	}
+
+	logger := ctx.Logger().With("module", types.ModuleName)
+	logger.Info(fmt.Sprintf("Block reward for %x is %v", operator, reward.Uint64()))
+
+	eniOpe := am.EvmKeeper.GetEniAddressOrDefault(ctx, operator)
+
+	denom := am.EvmKeeper.GetBaseDenom(ctx)
+	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
+	am.EvmKeeper.BankKeeper().AddCoins(ctx, eniOpe, sdk.NewCoins(coin))
+
+	/************************consensus node update**********************************/
+	//The last block of the epoch updates the consensus set for the next epoch
+	epoch := am.EpochKeeper.GetEpoch(ctx)
+	if epoch.EpochInterval == 0 {
+		return nil, nil
+	}
+
+	if uint64(ctx.BlockHeight())%epoch.EpochInterval != 0 {
+		return nil, nil
+	}
+
+	vrf, err := syscontractSdk.NewVRF(am.EvmKeeper)
+	if err != nil {
+		return nil, err
+	}
+
+	//addr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	//caller := common.Address(addr)
+	//epoch := big.NewInt(ctx.BlockHeight() / EpochPeriod)
+	epochNum := big.NewInt(int64(epoch.CurrentEpoch))
+
+	addrs, err := vrf.UpdateConsensusSet(ctx, caller, epochNum)
+	if err != nil {
+		return nil, err
+	}
+
+	valSet, err := syscontractSdk.NewValidatorManager(am.EvmKeeper)
+	if err != nil {
+		return nil, err
+	}
+
+	pubKeys, err := valSet.GetPubKeysBySequence(ctx, caller, addrs)
+	if err != nil {
+		return nil, err
+	}
+
+	validatorSet := make([]abci.ValidatorUpdate, len(pubKeys))
+	for i := 0; i < len(pubKeys); i++ {
+		//innerPk := crypto.PublicKey_Ed25519{Ed25519: pkBytes}
+		//pubKey := crypto.PublicKey{Sum: &innerPk}
+		pk := crypto.PublicKey_Ed25519{Ed25519: pubKeys[i]}
+		pubKey := crypto.PublicKey{Sum: &pk}
+		validatorSet[i].PubKey = pubKey
+		validatorSet[i].Power = 1
+	}
+
+	return validatorSet, nil
 }
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
@@ -182,6 +291,9 @@ type ModuleInputs struct {
 
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
+	EvmKeeper     *evmKeeper.Keeper
+	EpochKeeper   epochtypes.Keeper
+	//authAccountKeeper *authkeeper.AccountKeeper
 }
 
 type ModuleOutputs struct {
@@ -202,12 +314,15 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.StoreService,
 		in.Logger,
 		authority.String(),
+		//in.authAccountKeeper,
 	)
 	m := NewAppModule(
 		in.Cdc,
 		k,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.EvmKeeper,
+		in.EpochKeeper,
 	)
 
 	return ModuleOutputs{GoeniKeeper: k, Module: m}

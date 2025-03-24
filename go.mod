@@ -313,18 +313,15 @@ require (
 )
 
 replace (
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250321020741-14aa822bdcc8
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250321131718-9de2e43b0d36
 	//cosmossdk.io/api => ../eni-cosmos/api
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250321020741-14aa822bdcc8
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250321131718-9de2e43b0d36
 	//github.com/cometbft/cometbft => ../eni-cometbft
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250303150538-69632da53c65
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250321020741-14aa822bdcc8
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250323162144-598e5819de91
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
-	//github.com/eni-chain/eni-db => github.com/sei-protocol/sei-db v0.0.1
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
-//github.com/cosmos/cosmos-sdk/store => cosmossdk.io/store/prefix v1.1.1
-//github.com/eni-chain/eni-db => github.com/eni-chain/eni-db/proto v0.0.1
 )
 
 //replace (

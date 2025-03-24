@@ -63,6 +63,11 @@ contract ERC721 is IERC721 {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) public isApprovedForAll;
 
+   function getFixedString() public pure returns (string memory) {
+        return "Hello, World!";
+    }
+
+
     function supportsInterface(bytes4 interfaceId) external pure returns (bool) {
         return
             interfaceId == type(IERC721).interfaceId ||
