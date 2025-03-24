@@ -163,7 +163,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(types.EventTypeNewEpoch,
 				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(epoch.CurrentEpoch)),
-				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(epoch.CurrentEpochStartHeight)),
+				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(ctx.BlockTime())),
 				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(epoch.CurrentEpochHeight)),
 			),
 		)
@@ -205,7 +205,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 		sdkCtx.EventManager().EmitEvent(
 			sdk.NewEvent(types.EventTypeNewEpoch,
 				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(newEpoch.CurrentEpoch)),
-				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(newEpoch.CurrentEpochStartHeight)),
+				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(sdkCtx.BlockTime())),
 				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(newEpoch.CurrentEpochHeight)),
 			),
 		)
@@ -228,6 +228,7 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 	}
 
 	if uint64(ctx.BlockHeight())%epoch.EpochInterval != 0 {
+		//not the last block of current epoch, do nothing
 		return nil, nil
 	}
 
