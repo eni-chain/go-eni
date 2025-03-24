@@ -133,14 +133,14 @@ build-loadtest:
 	@cp loadtest/config.json build/config.json
 	@echo Done building loadtest.
 # run target
-run-loadtest: build
+run-loadtest: build-loadtest
 	@echo Running loadtest...
-	./loadtest/loadtest
+	build/loadtest
 
 # clean target
 clean-loadtest:
 	@echo Cleaning loadtest...
-	rm -rf loadtest/loadtest
+	rm -rf build/loadtest
 	@echo Done cleaning loadtest.
 
 #deploy erc20
