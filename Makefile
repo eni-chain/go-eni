@@ -129,7 +129,8 @@ reset-eni-node:
 # build target
 build-loadtest:
 	@echo Building loadtest...
-	go build -o loadtest/loadtest loadtest/*.go
+	go build -o build/loadtest loadtest/*.go
+	@cp loadtest/config.json build/config.json
 	@echo Done building loadtest.
 # run target
 run-loadtest: build
@@ -141,5 +142,15 @@ clean-loadtest:
 	@echo Cleaning loadtest...
 	rm -rf loadtest/loadtest
 	@echo Done cleaning loadtest.
+
+#deploy erc20
+deploy_erc20:
+	@echo deploy erc20 contract to  to local nodes...
+	./loadtest/contracts/deploy_erc20new.sh http://localhost:8545
+
+#deploy erc721
+deploy_erc721:
+	@echo deploy erc721 contract to  to local nodes...
+	./loadtest/contracts/deploy_erc721new.sh http://localhost:8545
 
 .PHONY: all build run clean
