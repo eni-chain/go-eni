@@ -312,6 +312,8 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
+require github.com/btcsuite/btcd/btcec/v2 v2.3.4
+
 replace (
 	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250325131846-aa0a3adc894c
 	//cosmossdk.io/api => ../eni-cosmos/api

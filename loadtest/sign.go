@@ -6,13 +6,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	evmcrypto "github.com/ethereum/go-ethereum/crypto"
 	"io"
 	"math"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/btcsuite/btcd/btcec/v2"
 	cryptokeys "github.com/cometbft/cometbft/crypto"
 	"github.com/cometbft/cometbft/crypto/sr25519"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -22,6 +25,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
+	"github.com/ethereum/go-ethereum/common"
+
 	//"github.com/cosmos/cosmos-sdk/crypto/keys/sr25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -90,8 +95,28 @@ func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivK
 	}
 	wg.Wait()
 	fmt.Printf("Finished loading %d accounts \n", len(testAccountsKeys))
-
+	printEvmAddress(testAccountsKeys)
 	return testAccountsKeys
+}
+
+func printEvmAddress(keys []cryptotypes.PrivKey) {
+	for _, key := range keys {
+		//Calculate EVM address
+		evmAddress := common.Address{}
+		if strings.Contains(key.PubKey().Type(), "secp256k1") {
+			pubKey := key.PubKey().Bytes()
+			if len(pubKey) == 33 {
+				pubK, err1 := btcec.ParsePubKey(pubKey)
+				if err1 != nil {
+					panic(err1)
+				}
+				pubKey = pubK.SerializeUncompressed()
+			}
+			hash := evmcrypto.Keccak256(pubKey[1:])
+			evmAddress = common.BytesToAddress(hash[len(hash)-20:])
+		}
+		fmt.Printf("EVM Address: %s\n", evmAddress.Hex())
+	}
 }
 
 func (sc *SignerClient) GetAdminAccountKeyPath() string {
