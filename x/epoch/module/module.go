@@ -8,7 +8,6 @@ import (
 	"github.com/cometbft/cometbft/proto/tendermint/crypto"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
-	"github.com/eni-chain/go-eni/syscontract"
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
@@ -139,13 +138,6 @@ func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
-
-	/******************init system contract*************************/
-	if ctx.BlockHeight() == 0 {
-		syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
-	}
-
-	/******************init epoch****************************/
 	var genState types.GenesisState
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
