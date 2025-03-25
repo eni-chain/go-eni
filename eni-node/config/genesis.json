@@ -256,8 +256,8 @@
             "nonces": [],
             "params": {
                 "base_fee_per_gas": "0",
-                "init_eni_amount": "",
-                "init_eni_address": "",
+                "init_eni_amount": "1000000000000000000000000,1000000000000000000000000,1000000000000000000000000,1000000000000000000000000,1000000000000000000000000",
+                "init_eni_address": "0x83C52D1F22466D95642F4E3019cC0B4676f9008a,0xEE21aCFd9E2401052B0545c91d43Aa4E5f2A745f,0xa0D8E1E89eE9Bd68FBe684dB711C31D60ecbA797,0xa02b2B4DA507d4ea70258437153848BEe06b0aB5,0xA936B2873EB8EAE83870221eB72800bAFC8E05D0",
                 "max_dynamic_base_fee_downward_adjustment": "0",
                 "max_dynamic_base_fee_upward_adjustment": "0",
                 "maximum_fee_per_gas": "0",
