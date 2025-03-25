@@ -313,12 +313,12 @@ require (
 )
 
 replace (
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250321131718-9de2e43b0d36
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250325131846-aa0a3adc894c
 	//cosmossdk.io/api => ../eni-cosmos/api
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250321131718-9de2e43b0d36
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250325131846-aa0a3adc894c
 	//github.com/cometbft/cometbft => ../eni-cometbft
-	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250303150538-69632da53c65
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250323162144-598e5819de91
+	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250324065541-31a471659347
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250325131846-aa0a3adc894c
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
