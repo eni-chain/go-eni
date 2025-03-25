@@ -129,6 +129,15 @@ def main():
     genesis_file["app_state"]["bank"]["balances"] = genesis_file["app_state"]["bank"]["balances"] + balances
     genesis_file["app_state"]["auth"]["accounts"] = genesis_file["app_state"]["auth"]["accounts"] + account_info
 
+    # 遍历并修改 "supply" 字段
+    additional_stake = 100000000 * number_of_accounts
+    additional_ueni = 1000000000000000000000 * number_of_accounts
+    for supply_entry in genesis_file["app_state"]["bank"]["supply"]:
+        if supply_entry["denom"] == "stake":
+            supply_entry["amount"] = str(int(supply_entry["amount"]) + additional_stake)
+        elif supply_entry["denom"] == "ueni":
+            supply_entry["amount"] = str(int(supply_entry["amount"]) + additional_ueni)
+
     num_accounts_created = len([account for account in account_info if account != 0])
     print(f'Created {num_accounts_created} accounts')
 

@@ -133,14 +133,14 @@ build-loadtest:
 	@cp loadtest/config.json build/config.json
 	@echo Done building loadtest.
 # run target
-run-loadtest: build
+run-loadtest: build-loadtest
 	@echo Running loadtest...
-	./loadtest/loadtest
+	build/loadtest
 
 # clean target
 clean-loadtest:
 	@echo Cleaning loadtest...
-	rm -rf loadtest/loadtest
+	rm -rf build/loadtest
 	@echo Done cleaning loadtest.
 
 #deploy erc20
@@ -154,3 +154,13 @@ deploy_erc721:
 	./loadtest/contracts/deploy_erc721new.sh http://localhost:8545
 
 .PHONY: all build run clean
+
+start-prometheus-grafana-dashboard:
+	@echo Starting prometheus and grafana dashboard...
+	docker-compose -f docker/prometheus-grafana/docker-compose.yml up -d
+	@echo Done starting prometheus and grafana dashboard.
+
+stop-prometheus-grafana-dashboard:
+	@echo Stopping prometheus and grafana dashboard...
+	docker-compose -f docker/prometheus-grafana/docker-compose.yml down
+	@echo Done stopping prometheus and grafana dashboard.

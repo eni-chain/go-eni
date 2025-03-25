@@ -6,6 +6,7 @@ import (
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+	_ "net/http/pprof"
 
 	"github.com/eni-chain/go-eni/app"
 	"github.com/eni-chain/go-eni/cmd/enid/cmd"
