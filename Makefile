@@ -125,6 +125,9 @@ reset-eni-node:
 	@echo Resetting eni node...
 	rm -rf eni-node && git checkout  eni-node
 
+reset-multi-node:
+	@echo Resetting multi eni node...
+	rm -rf eni-nodes && git checkout eni-nodes
 
 # build target
 build-loadtest:
