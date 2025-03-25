@@ -2,14 +2,14 @@
 
 pragma solidity >= 0.8.0;
 
-uint constant consensusSize = 2;
+uint constant consensusSize = 40;
 
 uint constant MIN_PLEDGE_AMOUNT = 10000;
 
 uint constant ED25519_VERIFY_PRECOMPILED = 0xa1;
 uint constant LOCAL_NODE_LOG_PRECOMPILED = 0xa2;
 
-address constant ADMIN_ADDR = 0x251604eBfD1ddeef1F4f40b8F9Fc425538BE1339;
+address constant ADMIN_ADDR = 0x3140aedbf686A3150060Cb946893b0598b266f5C;
 address constant HUB_ADDR = 0x0000000000000000000000000000000000001001;
 address constant VALIDATOR_MANAGER_ADDR = 0x0000000000000000000000000000000000001002;
 address constant VRF_ADDR = 0x0000000000000000000000000000000000001003;

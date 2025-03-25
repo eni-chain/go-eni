@@ -113,54 +113,61 @@ func getAddrAndSecKeys() (addr Address, pubKey ed25519.PublicKey, priKey ed25519
 	return addr, pubKey, priKey
 }
 
-//alice
-//addr：0xD5dd01FFCC547734bCe4Df0F5acf4A5407c275d3
-//priKey： dc9bb398d00f7778a61dcbb7e90cfe527b7e7b69ce9d557a08d5e32ea8d3eac0
-
-//bob
-//addr：0x89b7145BeF43EfAfaf076C181b124d22f9D218e5
-//priKey：d731aab93f2ba8503c351bf67eea13277cf2c35075ff6d9ae1bfa23d40c26501
-
-//clare
-//addr：0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52
-//priKey：0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e
-
 func main() {
-	//get default validator addr, pubKey, and priKey, bond alice
-	alice := "251604eBfD1ddeef1F4f40b8F9Fc425538BE1339"
-	valAddr, valPubKey, valPriKey := getAddrByBase64PriKey("ooX0ThgTQSWWrH+gVy1w1esHCbLmi9+FyPWPn140F9iIujcEkgvQ9s4XJyoq99AHfqn3DCvRNCO8auNrpn0AEQ==")
-	fmt.Printf("\naddr:%x\npubKey:%x\npriKey:%x\n", valAddr, valPubKey, valPriKey)
-
 	////generate ed25519 secret key and addr
-	//addr1, pubKey1, priKey1 := getAddrAndSecKeys()
-	//fmt.Printf("addr1:%x\npubKey1:%x\npriKey1:%x\n", addr1, pubKey1, priKey1)
+	//addr, pubKey, priKey := getAddrAndSecKeys()
+	//fmt.Printf("addr:%x\npubKey:%x\npriKey:%x\n", addr, pubKey, priKey)
 
-	//bond clare
-	clare := "F87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
-	addr2, pubKey2, priKey2 := getAddrByHexPriKey("b7cef85c61f7a973896d5b12f7de5020453dde51c19e4693fb6a55dfa8e3e64080f123e970b41abe1709ff176fc6bcd673afd41456e064e337f8713f8bcd068e")
-	fmt.Printf("\naddr2:%x\npubKey2:%x\npriKey:%x\n", addr2, pubKey2, priKey2)
+	//get default validator1 addr, pubKey, and priKey
+	validator1 := "3140aedbf686A3150060Cb946893b0598b266f5C"
+	v1Addr, v1PubKey, v1PriKey := getAddrByBase64PriKey("OVd/AbN5k5xJxE6XFfQwnzvKZw6BDOYPZfuyHmsBcBsM0r5RCbInFMqmNESJn3xZh4S2S18BChhmijAvT9b7Rg==")
+	fmt.Printf("\naddr1:%x\npubKey1:%x\npriKey1:%x\n", v1Addr, v1PubKey, v1PriKey)
+
+	validator2 := "B680152a597c937164941e77cbF4a6b2F866675c"
+	v2Addr, v2PubKey, v2PriKey := getAddrByBase64PriKey("jo+5N22PB1zAUuW3110Bq8VJlfPpB92innuusH+6AR5wZe3gwp5jWWn1TQ5XTfbr6oV5dNrahgJh52NWgMrCug==")
+	fmt.Printf("\naddr2:%x\npubKey2:%x\npriKey2:%x\n", v2Addr, v2PubKey, v2PriKey)
+
+	validator3 := "5746036C781851B9eF234219e770E1591104561f"
+	v3Addr, v3PubKey, v3PriKey := getAddrByBase64PriKey("Yqi/ZY6fxJ8udJCYdpZVa0VNDA/eSKVbFw9jeXRTtrkU5so5K4o+2hTwqero4AmjhHssugtGnmRVvPKPOgy5pw==")
+	fmt.Printf("\naddr3:%x\npubKey3:%x\npriKey3:%x\n", v3Addr, v3PubKey, v3PriKey)
+
+	validator4 := "7B6ba0Fe2610BF3c69Fc571C37aeC7bB87A281D2"
+	v4Addr, v4PubKey, v4PriKey := getAddrByBase64PriKey("nBFy2Dyurr7ccYnuqkJz16082sH+jUJxAleG/i209myhEGVNVrSQ5j37paTe3H/wiawk+PAaR99TOmREQSYCaA==")
+	fmt.Printf("\naddr4:%x\npubKey4:%x\npriKey4:%x\n", v4Addr, v4PubKey, v4PriKey)
 
 	//calldata for apply for validator
-	calldataF(alice, "hub", "applyForValidator", valAddr, valAddr, "node1", "node1 apply for validator", []byte(valPubKey))
-	calldataF(clare, "hub", "applyForValidator", addr2, addr2, "node2", "node2 apply for validator", []byte(pubKey2))
+	calldataF(validator1, "hub", "applyForValidator", v1Addr, v1Addr, "node1", "node1 apply for validator", []byte(v1PubKey))
+	calldataF(validator2, "hub", "applyForValidator", v2Addr, v2Addr, "node2", "node2 apply for validator", []byte(v2PubKey))
+	calldataF(validator3, "hub", "applyForValidator", v3Addr, v3Addr, "node3", "node3 apply for validator", []byte(v3PubKey))
+	calldataF(validator4, "hub", "applyForValidator", v4Addr, v4Addr, "node4", "node4 apply for validator", []byte(v4PubKey))
 
-	//admin(alice) audit
-	calldataF(alice, "hub", "auditPass", getAddrByHexStr(alice)) //alice
-	calldataF(clare, "hub", "auditPass", getAddrByHexStr(clare)) //clare
+	//admin(validator1) audit
+	calldataF(validator1, "hub", "auditPass", getAddrByHexStr(validator1))
+	calldataF(validator2, "hub", "auditPass", getAddrByHexStr(validator2))
+	calldataF(validator3, "hub", "auditPass", getAddrByHexStr(validator3))
+	calldataF(validator4, "hub", "auditPass", getAddrByHexStr(validator4))
 
-	//admin(alice) set init seed
+	//admin(validator1) set init seed
 	hexInitSeed := "ba1aa46438a7b446c0a6f1ca54d04eccda80fed5f1460be9e17cd6931eaef64c1f1cbe714c603521c2f06a4a39cd8d50015068890aaaf04d92d9ed997f9c0689"
 	initSeed, _ := hex.DecodeString(hexInitSeed)
-	calldataF(alice, "vrf", "init", initSeed, big.NewInt(1))
+	calldataF(validator1, "vrf", "init", initSeed, big.NewInt(1))
 
-	//alice send random
-	valSignature := ed25519.Sign(valPriKey, initSeed)
-	calldataF(alice, "vrf", "sendRandom", valSignature, big.NewInt(2))
+	//validator1 send random
+	valSignature1 := ed25519.Sign(v1PriKey, initSeed)
+	calldataF(validator1, "vrf", "sendRandom", valSignature1, big.NewInt(2))
 
-	//clare send random
-	valSignature2 := ed25519.Sign(priKey2, initSeed)
-	calldataF(clare, "vrf", "sendRandom", valSignature2, big.NewInt(2))
+	//validator2 send random
+	valSignature2 := ed25519.Sign(v2PriKey, initSeed)
+	calldataF(validator2, "vrf", "sendRandom", valSignature2, big.NewInt(2))
 
-	//test verifyEd25519Sign method
-	calldataF(clare, "vrf", "verifyEd25519Sign", []byte(pubKey2), valSignature2, initSeed)
+	//validator3 send random
+	valSignature3 := ed25519.Sign(v3PriKey, initSeed)
+	calldataF(validator3, "vrf", "sendRandom", valSignature3, big.NewInt(2))
+
+	//validator4 send random
+	valSignature4 := ed25519.Sign(v4PriKey, initSeed)
+	calldataF(validator4, "vrf", "sendRandom", valSignature4, big.NewInt(2))
+
+	////test verifyEd25519Sign method
+	//calldataF(validator1, "vrf", "verifyEd25519Sign", []byte(v1PubKey), valSignature1, initSeed)
 }
