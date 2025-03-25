@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"context"
 	"crypto/tls"
+	"encoding/hex"
 	"fmt"
 	"math/rand"
 	"os"
+	"os/exec"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -168,8 +170,18 @@ func BuildEvmTxClients(config *Config, keys []cryptotypes.PrivKey) []*EvmTxClien
 		panic(fmt.Sprintf("Failed to suggest gas price: %v\n", err))
 	}
 	// Build one client per key
+	args := []string{
+		"./build/enid", "tx", "evm", "associate-address", "--evm-rpc", config.EvmRpcEndpoints,
+	}
 	for i, key := range keys {
+		cmd := exec.Command("./build/enid")
 		clients[i] = NewEvmTxClient(key, chainID, gasPrice, ethClients, config.EVMAddresses, config.EvmUseEip1559Txs)
+		keyHex := hex.EncodeToString(key.Bytes())
+		cmd.Args = append(args, keyHex)
+		err = cmd.Run()
+		if err != nil {
+			panic(err)
+		}
 	}
 	return clients
 }
