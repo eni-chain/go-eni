@@ -638,9 +638,16 @@ func ReadConfig(path string) Config {
 func main() {
 	configFilePath := flag.String("config-file", GetDefaultConfigFilePath(), "Path to the config.json file to use for this run")
 	txFilePath := flag.String("tx", "", "Path to the file containing Ethereum transactions")
+	accountFlag := flag.Bool("account", false, "Initialize the evm account address to genesis")
 	flag.Parse()
 
 	config := ReadConfig(*configFilePath)
 	fmt.Printf("Using config file: %s\n", *configFilePath)
+
+	if *accountFlag {
+		InitTestAccountToGenesis(int(config.MaxAccounts))
+		return
+	}
+
 	run(&config, *txFilePath)
 }

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	evmcrypto "github.com/ethereum/go-ethereum/crypto"
 	"io"
-	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -75,14 +74,19 @@ func NewSignerClient(nodeURI string) *SignerClient {
 }
 
 func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivKey {
-	//userHomeDir, _ := os.UserHomeDir()
-	// todo check code
 	userHomeDir, _ := os.Getwd()
 	files, _ := os.ReadDir(filepath.Join(userHomeDir, "loadtest/test_accounts"))
-	var testAccountsKeys = make([]cryptotypes.PrivKey, int(math.Min(float64(len(files)), float64(maxAccounts))))
+	var testAccountsKeys []cryptotypes.PrivKey
 	var wg sync.WaitGroup
-	fmt.Printf("Loading accounts\n")
-	for i, file := range files {
+	fmt.Println("Loading accounts", filepath.Join(userHomeDir, "loadtest/test_accounts"))
+
+	// Ignore hidden files that start with a dot
+	fmt.Println(len(files))
+	i := 0
+	for _, file := range files {
+		if strings.HasPrefix(file.Name(), ".") {
+			continue
+		}
 		if i >= maxAccounts {
 			break
 		}
@@ -90,13 +94,52 @@ func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivK
 		go func(i int, fileName string) {
 			defer wg.Done()
 			key := sc.GetKey(fmt.Sprint(i), "test", filepath.Join(userHomeDir, "loadtest/test_accounts", fileName))
-			testAccountsKeys[i] = key
+			testAccountsKeys = append(testAccountsKeys, key)
 		}(i, file.Name())
+		i++
 	}
 	wg.Wait()
+
 	fmt.Printf("Finished loading %d accounts \n", len(testAccountsKeys))
-	printEvmAddress(testAccountsKeys)
+
 	return testAccountsKeys
+}
+
+func InitTestAccountToGenesis(maxAccounts int) {
+	sc := NewSignerClient("")
+	testAccountsKeys := sc.GetTestAccountsKeys(maxAccounts)
+
+	genesisPath := "./eni-node/config/genesis.json"
+	allEvmAddress, allAmounts := getAllEvmAddressAndAmount(testAccountsKeys)
+	fileBytes, err := os.ReadFile(genesisPath)
+	if err != nil {
+		panic("Failed to read ./eni-node/config/genesis.json file")
+	}
+	var genesis map[string]interface{}
+	if err = json.Unmarshal(fileBytes, &genesis); err != nil {
+		panic(fmt.Sprintf("genesis unmarshal error: %v", err))
+	}
+
+	joinedAddrs := strings.Join(allEvmAddress, ",")
+	joinedAmounts := strings.Join(allAmounts, ",")
+
+	appState := genesis["app_state"].(map[string]interface{})
+	evm := appState["evm"].(map[string]interface{})
+	params := evm["params"].(map[string]interface{})
+
+	params["init_eni_address"] = joinedAddrs
+	params["init_eni_amount"] = joinedAmounts
+
+	output, err := json.MarshalIndent(genesis, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	if err = os.WriteFile(genesisPath, output, 0644); err != nil {
+		panic(err)
+	}
+	fmt.Printf("Write %d EVM addresses to the %s\n", len(testAccountsKeys), genesisPath)
+	return
 }
 
 func printEvmAddress(keys []cryptotypes.PrivKey) {
@@ -117,6 +160,32 @@ func printEvmAddress(keys []cryptotypes.PrivKey) {
 		}
 		fmt.Printf("EVM Address: %s\n", evmAddress.Hex())
 	}
+}
+
+func getAllEvmAddressAndAmount(keys []cryptotypes.PrivKey) ([]string, []string) {
+	var (
+		allEvmAddress []string
+		amounts       []string
+	)
+	for _, key := range keys {
+		//Calculate EVM address
+		evmAddress := common.Address{}
+		if strings.Contains(key.PubKey().Type(), "secp256k1") {
+			pubKey := key.PubKey().Bytes()
+			if len(pubKey) == 33 {
+				pubK, err1 := btcec.ParsePubKey(pubKey)
+				if err1 != nil {
+					panic(err1)
+				}
+				pubKey = pubK.SerializeUncompressed()
+			}
+			hash := evmcrypto.Keccak256(pubKey[1:])
+			evmAddress = common.BytesToAddress(hash[len(hash)-20:])
+			allEvmAddress = append(allEvmAddress, evmAddress.Hex())
+			amounts = append(amounts, "1000000000000000000000000")
+		}
+	}
+	return allEvmAddress, amounts
 }
 
 func (sc *SignerClient) GetAdminAccountKeyPath() string {

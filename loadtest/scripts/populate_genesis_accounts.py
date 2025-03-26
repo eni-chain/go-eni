@@ -103,33 +103,52 @@ def main():
     genesis_file = read_genesis_file(genesis_json_file_path)
 
     print("Work root dir", script_dir)
-    num_threads = max(1, number_of_accounts // PARALLEISM)
-    threads = []
-    for i in range(0, number_of_accounts, num_threads):
-        threads.append(threading.Thread(target=bulk_create_genesis_accounts, args=(num_threads, i, is_local)))
 
-    print("Starting threads account")
+    # Compute thread count
+    num_threads = min(number_of_accounts, PARALLEISM)
+    threads = []
+
+    # Average the number of accounts allocated to each thread
+    accounts_per_thread = number_of_accounts // num_threads
+    remainder = number_of_accounts % num_threads
+
+    start = 0
+    for t in range(num_threads):
+        end = start + accounts_per_thread
+        if t < remainder:
+            end += 1
+
+        thread = threading.Thread(
+            target=bulk_create_genesis_accounts,
+            args=(end - start, start, is_local)
+        )
+        threads.append(thread)
+        print(f"Thread-{t} will create accounts from {start} to {end - 1}")
+        start = end
+
+    print("Starting threads for account creation")
     for t in threads:
         t.start()
 
-    print("Waiting for threads")
+    print("Waiting for threads to complete")
     for t in threads:
         try:
             t.join()
         except Exception as error:
             print(f"Error waiting for thread, skipping: {error}")
 
-    sorted_keys = sorted(list(global_accounts_mapping.keys()))
+    # Aggregate account data
+    sorted_keys = sorted(global_accounts_mapping.keys())
     account_info = [0] * len(sorted_keys)
     balances = [0] * len(sorted_keys)
     for key in sorted_keys:
         balances[key] = global_accounts_mapping[key]["balance"]
         account_info[key] = global_accounts_mapping[key]["account"]
 
-    genesis_file["app_state"]["bank"]["balances"] = genesis_file["app_state"]["bank"]["balances"] + balances
-    genesis_file["app_state"]["auth"]["accounts"] = genesis_file["app_state"]["auth"]["accounts"] + account_info
+    genesis_file["app_state"]["bank"]["balances"].extend(balances)
+    genesis_file["app_state"]["auth"]["accounts"].extend(account_info)
 
-    # Iterate through and modify the "supply" field
+    # Modify total supply quantity
     additional_stake = 100000000 * number_of_accounts
     additional_ueni = 1000000000000000000000 * number_of_accounts
     for supply_entry in genesis_file["app_state"]["bank"]["supply"]:
@@ -141,7 +160,7 @@ def main():
     num_accounts_created = len([account for account in account_info if account != 0])
     print(f'Created {num_accounts_created} accounts')
 
-    assert num_accounts_created >= number_of_accounts
+    assert num_accounts_created == number_of_accounts
     write_genesis_file(genesis_json_file_path, genesis_file)
 
 if __name__ == "__main__":
