@@ -140,7 +140,7 @@ do
     perl -pi -e  's|minimum-gas-prices = ""|minimum-gas-prices = "0ueni"|' ./eni-nodes/node$i/config/app.toml
     perl -pi -e  's|allow_duplicate_ip = false|allow_duplicate_ip = true|' ./eni-nodes/node$i/config/config.toml
     perl -pi -e  's|laddr = "tcp://127.0.0.1:26657"|laddr = "tcp://0.0.0.0:26657"|' ./eni-nodes/node$i/config/config.toml
-    perl -pi -e  "s|persistent_peers = \".*\"|persistent_peers = \"$peers\"|" ./eni-nodes/node$i/config/config.toml
+    perl -pi -e  "s|persistent_peers = \".*\"|persistent_peers = \"${peers//@/\\@}\"|" ./eni-nodes/node$i/config/config.toml
     perl -pi -e  's|keyring-backend = "os"|keyring-backend = "test"|' ./eni-nodes/node$i/config/client.toml
     perl -pi -e  's|chain-id = ""|chain-id = "mychain"|' ./eni-nodes/node$i/config/client.toml
 done
