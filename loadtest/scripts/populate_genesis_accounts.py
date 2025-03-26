@@ -129,7 +129,7 @@ def main():
     genesis_file["app_state"]["bank"]["balances"] = genesis_file["app_state"]["bank"]["balances"] + balances
     genesis_file["app_state"]["auth"]["accounts"] = genesis_file["app_state"]["auth"]["accounts"] + account_info
 
-    # 遍历并修改 "supply" 字段
+    # Iterate through and modify the "supply" field
     additional_stake = 100000000 * number_of_accounts
     additional_ueni = 1000000000000000000000 * number_of_accounts
     for supply_entry in genesis_file["app_state"]["bank"]["supply"]:
