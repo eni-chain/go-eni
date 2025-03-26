@@ -115,7 +115,7 @@ func printEvmAddress(keys []cryptotypes.PrivKey) {
 			hash := evmcrypto.Keccak256(pubKey[1:])
 			evmAddress = common.BytesToAddress(hash[len(hash)-20:])
 		}
-		fmt.Printf("EVM Address: %s\n", evmAddress.Hex())
+		fmt.Printf("EVM Address: %s Private Key: %x\n", evmAddress.Hex(), key.Bytes())
 	}
 }
 
