@@ -73,7 +73,9 @@ func NewLoadTestClient(config Config) *LoadTestClient {
 		sentCountPerMsgType[messageType] = new(int64)
 		prevSentCounterPerMsgType[messageType] = new(int64)
 	}
-
+	producedCountPerMsgType["offlineTx"] = new(int64)
+	sentCountPerMsgType["offlineTx"] = new(int64)
+	prevSentCounterPerMsgType["offlineTx"] = new(int64)
 	return &LoadTestClient{
 		LoadTestConfig:                config,
 		AccountKeys:                   keys,
@@ -244,7 +246,6 @@ func (c *LoadTestClient) ReadFileTxs(
 ) {
 	wg.Add(1)
 	defer wg.Done()
-	config := c.LoadTestConfig
 	file, err := os.Open(filePath)
 	if err != nil {
 		panic(err.Error())
@@ -260,7 +261,7 @@ func (c *LoadTestClient) ReadFileTxs(
 			//	continue
 			//}
 			// Generate a message type first
-			messageType := c.getRandomMessageType(config.MessageTypes)
+			messageType := "offlineTx"
 			metrics.IncrProducerEventCount(messageType)
 			var signedTx SignedTx
 			// Sign EVM and Cosmos TX differently
@@ -272,7 +273,7 @@ func (c *LoadTestClient) ReadFileTxs(
 			tx.UnmarshalBinary(common.FromHex(line))
 			signedTx = SignedTx{EvmTx: tx, MsgType: messageType}
 			EvmTxHashes = append(EvmTxHashes, signedTx.EvmTx.Hash())
-
+			atomic.AddInt64(ReadTxCount, 1)
 			select {
 			case txQueue <- signedTx:
 				atomic.AddInt64(producedCountPerMsgType[messageType], 1)
@@ -339,6 +340,7 @@ func (c *LoadTestClient) SendTxs(
 				// Send EVM Transactions
 				c.EvmTxClients[keyIndex].SendEvmTx(tx.EvmTx, func() {
 					atomic.AddInt64(producedCountPerMsgType[tx.MsgType], 1)
+					atomic.AddInt64(SendTxCount, 1)
 				})
 			}
 			// Release the semaphore
