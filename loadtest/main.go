@@ -54,6 +54,8 @@ var (
 	BlockHeightsWithTxs = []int{}
 	EvmTxHashes         = []common.Hash{}
 )
+var ReadTxCount *int64
+var SendTxCount *int64
 
 type BlockData struct {
 	Txs []string `json:"txs"`
@@ -80,6 +82,8 @@ func init() {
 	//app.ModuleBasics.RegisterInterfaces(TestConfig.InterfaceRegistry)
 	// Add this so that we don't end up getting disconnected for EVM client
 	http.DefaultTransport.(*http.Transport).MaxIdleConnsPerHost = 100
+	ReadTxCount = new(int64)
+	SendTxCount = new(int64)
 }
 
 // deployEvmContract executes a bash script and returns its output as a string.
@@ -215,6 +219,10 @@ func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string
 				}
 
 				printStats(start, producedCountPerMsgType, sentCountPerMsgType, prevSentCounterPerMsgType, blockHeights, blockTimes)
+				if *ReadTxCount != 0 && *SendTxCount == *ReadTxCount {
+					fmt.Printf("All transactions[%d] have been sent\n", *SendTxCount)
+					signals <- syscall.SIGINT
+				}
 				startHeight = currHeight
 				blockHeights, blockTimes = nil, nil
 				start = time.Now()

@@ -7,7 +7,7 @@ const { ethers } = require("ethers");
     mnemonic: "party two quit over jaguar carry episode naive machine nothing borrow sell",
     senderPrivKey: "0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e",
     senderAddress: "0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
-    numAddresses: 100,
+    numAddresses: 10000,
     amountEth: 1,            // Initial ENI transfer amount
     transferAmountEth: 0.1,  // Secondary ENI transfer amount
     amountToken: 100,        // Initial ERC20 transfer amount
@@ -39,13 +39,31 @@ const { ethers } = require("ethers");
     const receivers = Array.from({ length: CONFIG.numAddresses }, (_, i) =>
         rootNode.derivePath(`m/44'/60'/0'/0/${i}`).address
     );
-
+    let mainNonce = 0;  // Main account nonce starts from 0
+    // ----------------------------------
+    // 1.1 Deploy ERC20 contract
+    // ----------------------------------
+    console.log("\nGenerating ERC20 contract deployment...");
+    // a. Calculate contract address (using the next nonce of the main account)
+    const erc20Address = ethers.getCreateAddress({
+      from: CONFIG.senderAddress,
+      nonce: mainNonce
+    });
+    CONFIG.erc20Address = erc20Address;
+    const initialEthTxs = [];
+    // b. Deployment transaction (using the current nonce of the main account)
+    const deployTx = {
+      data: CONFIG.erc20Bytecode,
+      nonce: mainNonce++,
+      gasLimit: 6000000,
+      gasPrice,
+      chainId
+    };
+    initialEthTxs.push(await senderWallet.signTransaction(deployTx));
     // ----------------------------------
     // 1. Generate initial ENI transfer transactions (main account → receiving addresses)
     // ----------------------------------
     console.log("\nGenerating initial ENI transactions...");
-    const initialEthTxs = [];
-    let mainNonce = 0;  // Main account nonce starts from 0
 
     for (const receiver of receivers) {
       const txData = {
@@ -62,29 +80,11 @@ const { ethers } = require("ethers");
     fs.writeFileSync(CONFIG.outputFile, initialEthTxs.join("\n"));
 
     // ----------------------------------
-    // 2. Deploy ERC20 contract and generate initial transfer transactions
+    // 2. generate initial ERC20 transactions
     // ----------------------------------
-    console.log("\nGenerating ERC20 contract deployment + initial transfers...");
+    console.log("\nGenerating ERC20 init transfers...");
     const initErc20Txs = [];
 
-    // a. Calculate contract address (using the next nonce of the main account)
-    const erc20Address = ethers.getCreateAddress({
-      from: CONFIG.senderAddress,
-      nonce: mainNonce
-    });
-    CONFIG.erc20Address = erc20Address;
-
-    // b. Deployment transaction (using the current nonce of the main account)
-    const deployTx = {
-      data: CONFIG.erc20Bytecode,
-      nonce: mainNonce++,
-      gasLimit: 6000000,
-      gasPrice,
-      chainId
-    };
-    initErc20Txs.push(await senderWallet.signTransaction(deployTx));
-
-    // c. Construct ERC20 transfer transactions (continuous nonce of the main account)
     const erc20Interface = new ethers.Interface(ERC20_ABI);
     for (const receiver of receivers) {
       const data = erc20Interface.encodeFunctionData("transfer", [
