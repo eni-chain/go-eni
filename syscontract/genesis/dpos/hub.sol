@@ -51,6 +51,7 @@ contract Hub is DelegateCallBase, administrationBase{
     ) payable external {
         require(msg.value >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_applicants[msg.sender].amount == 0, "applicant already exsit");
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
 
         applicant storage a = _applicants[msg.sender];
         a.operator = msg.sender;
@@ -61,11 +62,15 @@ contract Hub is DelegateCallBase, administrationBase{
         a.name = name;
         a.description = description;
         a.enterTime = block.timestamp;
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator finished, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
     }
 
     function auditPass(address operator) external onlyAdmin {
+        llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass start."));
         applicant storage a = _applicants[operator];
         require(a.amount > 0, "applicant not exists");
+        llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass ", a.name, ", amount: ", S(a.amount)));
+
 
         IValidatorManager(VALIDATOR_MANAGER_ADDR).addValidator(
             a.operator,
@@ -77,6 +82,8 @@ contract Hub is DelegateCallBase, administrationBase{
             a.description,
             a.pubKey
         );
+
+        //llog(DEBUG, abi.encodePacked(H(msg.sender), " addValidator finished."));
 
         delete _applicants[operator];
     }

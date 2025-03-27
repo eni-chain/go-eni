@@ -12,7 +12,7 @@ contract Common {
     uint constant LOCAL_NODE_LOG_PRECOMPILED = 0xa2;
 
     //initial address of the system administrator
-    address constant INIT_ADMIN_ADDR = 0x3140aedbf686A3150060Cb946893b0598b266f5C;
+    address constant INIT_ADMIN_ADDR = 0x251604eBfD1ddeef1F4f40b8F9Fc425538BE1339;
 
     //system contract address
     address constant HUB_ADDR = 0x0000000000000000000000000000000000001001;

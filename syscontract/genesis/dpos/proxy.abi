@@ -1,6 +1,6 @@
 [
 	{
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "fallback"
 	},
 	{

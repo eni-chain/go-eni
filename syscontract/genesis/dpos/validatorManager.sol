@@ -108,6 +108,7 @@ contract ValidatorManager is DelegateCallBase, administrationBase {
     ) external onlyHub {
         require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_infos[operator].amount == 0, "validator already exist");
+        llog(DEBUG, abi.encodePacked("addValidator ", name, " start."));
 
         validator storage v = _infos[operator];
         v.operator = operator;
@@ -125,6 +126,7 @@ contract ValidatorManager is DelegateCallBase, administrationBase {
         _names[name] = operator;
         _node2operator[node] = operator;
         _agent2operator[agent] = operator;
+        //llog(DEBUG, abi.encodePacked("addValidator ", name, " succeed."));
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {

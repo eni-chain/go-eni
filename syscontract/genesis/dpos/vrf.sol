@@ -10,7 +10,7 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf is DelegateCallBase, administrationBase, LocalLog {
+contract Vrf is DelegateCallBase, administrationBase {
     //todo: add event and emit for every method
 
     //init rand seed, will be init by administrator

@@ -73,14 +73,14 @@ contract ProxyContract is DelegateCallBase, LocalLog {
     // }
 
     // captures all calls and forwards them to the logical contract
-    fallback(bytes calldata data) external returns (bytes memory) {
+    fallback(bytes calldata data) external payable returns (bytes memory) {
         address impl = _getImpl();
-        llog(DEBUG, abi.encodePacked("delegate call address:", H(impl), ", calldata:", H(data)));
+        llog(DEBUG, abi.encodePacked(H(msg.sender), " delegate call address:", H(impl), ", calldata:", H(data)));
         require(impl.code.length > 0, "Invalid implementation address");
 
         (bool success, bytes memory result) = impl.delegatecall(data);
+        //llog(DEBUG, abi.encodePacked("delegate call implementation contract[", H(impl), "] succeed:", S(success), ", result: ", H(result)));
         require(success, "DelegateCall failed");
-        llog(DEBUG, abi.encodePacked("delegate call implementation contract[", H(impl), "] succeed."));
 
         return result;
     }
