@@ -10,14 +10,11 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf is LocalLog {
+contract Vrf is DelegateCallBase, administrationBase, LocalLog {
     //todo: add event and emit for every method
 
     //init rand seed, will be init by administrator
     bytes _initSeed;
-
-    //administrator address
-    address public _admin;
 
     //epoch => random seed
     mapping(uint256 => bytes)internal _seeds;
@@ -34,27 +31,26 @@ contract Vrf is LocalLog {
     //valid validator[]
     address[] private _validNodes;
 
-    modifier onlyAdmin() {
-        require(msg.sender == _admin, "The message sender must be administrator");
-        _;
-    }
-
-   modifier needInited() {
+    modifier needInited() {
         require(_initSeed.length != 0, "The initial seed has not been initialized and dpos has not been started");
         _;
     }
 
-    function initAdmin() external {
-        require(msg.sender == ADMIN_ADDR, "The message sender must be administrator");
-        _admin = msg.sender;
+    function init(address admin) external onlyNotInited {
+        _init(admin);
     }
 
     function updateAdmin(address admin) external onlyAdmin {
-        //require(msg.sender == _admin, "Msg sender is not administrator");
-        _admin = admin;
+        _updateAdmin(admin);
     }
 
-    function init(bytes calldata rnd, uint256 epoch) external onlyAdmin {
+    //This method is called by proxy contract to update the address of the new implementation contract by the current implementation contract
+    function updateImpl(address impl) external onlyAdmin {
+        //require(msg.sender == _admin, "Msg sender is not administrator");
+        _setImpl(impl);
+    }
+
+    function initRandomSeed(bytes calldata rnd, uint256 epoch) external onlyAdmin {
         //require(msg.sender == _admin, "Msg sender is not administrator");
         require(_initSeed.length == 0, "vrf has been init!");
 
@@ -141,7 +137,7 @@ contract Vrf is LocalLog {
         //ISlash(SLASH_ADDR).penaltyUnsendRandomValidator(_unSendRandNodes);
 
         address[] memory sorted = sortAddrs(_validNodes, epoch);
-        address[] memory topN = getTopNAddresses(sorted, consensusSize);
+        address[] memory topN = getTopNAddresses(sorted, CONSENSUS_SIZE);
 
         //The seed of this epoch are generated for the next epoch to generate random values
         _seeds[epoch] = _seeds[epoch-1];
