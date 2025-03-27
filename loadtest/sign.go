@@ -95,7 +95,7 @@ func (sc *SignerClient) GetTestAccountsKeys(maxAccounts int) []cryptotypes.PrivK
 	}
 	wg.Wait()
 	fmt.Printf("Finished loading %d accounts \n", len(testAccountsKeys))
-	printEvmAddress(testAccountsKeys)
+	//printEvmAddress(testAccountsKeys)
 	return testAccountsKeys
 }
 
