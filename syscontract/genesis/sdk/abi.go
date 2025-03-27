@@ -3,7 +3,7 @@ package sdk
 const PROXYABI = `
 [
 	{
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "fallback"
 	},
 	{
