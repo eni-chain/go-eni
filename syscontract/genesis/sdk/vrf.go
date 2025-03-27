@@ -10,7 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
-	"github.com/eni-chain/go-eni/syscontract"
+	//"github.com/eni-chain/go-eni/syscontract"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -47,7 +47,7 @@ func (v *VRF) GetRandomSeed(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.VRFAddr)
+	address := common.HexToAddress(VRFAddr)
 	to := &address
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -74,7 +74,7 @@ func (v *VRF) Init(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.VRFAddr)
+	address := common.HexToAddress(VRFAddr)
 	to := &address
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -96,7 +96,7 @@ func (v *VRF) SendRandom(
 		return false, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.VRFAddr)
+	address := common.HexToAddress(VRFAddr)
 	to := &address
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -123,7 +123,7 @@ func (v *VRF) UpdateAdmin(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.VRFAddr)
+	address := common.HexToAddress(VRFAddr)
 	to := &address
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -158,7 +158,7 @@ func (v *VRF) UpdateConsensusSet(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.VRFAddr)
+	address := common.HexToAddress(VRFAddr)
 	to := &address
 	retData, err := v.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {

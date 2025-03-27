@@ -89,6 +89,32 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "_alreadyInit",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -110,6 +136,19 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "admin",
+				"type": "address"
+			}
+		],
+		"name": "init",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "bytes",
 				"name": "rnd",
 				"type": "bytes"
@@ -120,14 +159,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "initAdmin",
+		"name": "initRandomSeed",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -203,6 +235,19 @@
 				"type": "address[]"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "impl",
+				"type": "address"
+			}
+		],
+		"name": "updateImpl",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
