@@ -7,7 +7,7 @@
   "msgs_per_tx": 1,
   "chain_id": "eni",
   "target_tps": 5000,
-  "max_accounts": 5000,
+  "max_accounts": 500,
   "price_distribution": {
     "min": "45",
     "max": "55",

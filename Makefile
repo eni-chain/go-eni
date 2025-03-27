@@ -138,7 +138,7 @@ build-loadtest:
 
 create-accounts: build build-loadtest
 	@echo Creating accounts...
-	python3 ./loadtest/scripts/populate_genesis_accounts.py 5000 loc
+	python3 ./loadtest/scripts/populate_genesis_accounts.py 500 loc
 	./loadtest/loadtest --account
 
 create-accounts-nobuild:
