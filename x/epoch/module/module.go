@@ -145,7 +145,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 	if genState.GetEpoch() == nil {
 		epoch := types.Epoch{
 			GenesisTime:             ctx.BlockTime(),
-			EpochInterval:           20,
+			EpochInterval:           40,
 			CurrentEpoch:            1,
 			CurrentEpochStartHeight: 1,
 			CurrentEpochHeight:      1,
