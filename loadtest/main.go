@@ -3,9 +3,24 @@ package main
 import (
 	"bytes"
 	"context"
+	"cosmossdk.io/math"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/btcsuite/btcd/btcec/v2"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cosmos/cosmos-sdk/std"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/common"
+	evmcrypto "github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"golang.org/x/sync/semaphore"
+	"golang.org/x/time/rate"
 	"io"
 	"math/big"
 	"math/rand"
@@ -20,20 +35,6 @@ import (
 	"sync/atomic"
 	"syscall"
 	"time"
-
-	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/std"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/tx"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"golang.org/x/sync/semaphore"
-	"golang.org/x/time/rate"
 
 	"github.com/eni-chain/go-eni/utils/metrics"
 	//tokenfactorytypes "github.com/eni-chain/go-eni/x/tokenfactory/types"
@@ -635,12 +636,81 @@ func ReadConfig(path string) Config {
 	return config
 }
 
+func InitTestAccountToGenesis(maxAccounts int) {
+	sc := NewSignerClient("")
+	testAccountsKeys := sc.GetTestAccountsKeys(maxAccounts)
+
+	genesisPath := "./eni-node/config/genesis.json"
+	allEvmAddress, allAmounts := getAllEvmAddressAndAmount(testAccountsKeys)
+	fileBytes, err := os.ReadFile(genesisPath)
+	if err != nil {
+		panic("Failed to read ./eni-node/config/genesis.json file")
+	}
+	var genesis map[string]interface{}
+	if err = json.Unmarshal(fileBytes, &genesis); err != nil {
+		panic(fmt.Sprintf("genesis unmarshal error: %v", err))
+	}
+
+	joinedAddrs := strings.Join(allEvmAddress, ",")
+	joinedAmounts := strings.Join(allAmounts, ",")
+
+	appState := genesis["app_state"].(map[string]interface{})
+	evm := appState["evm"].(map[string]interface{})
+	params := evm["params"].(map[string]interface{})
+
+	params["init_eni_address"] = joinedAddrs
+	params["init_eni_amount"] = joinedAmounts
+
+	output, err := json.MarshalIndent(genesis, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	if err = os.WriteFile(genesisPath, output, 0644); err != nil {
+		panic(err)
+	}
+	fmt.Printf("Write %d EVM addresses to the %s\n", len(testAccountsKeys), genesisPath)
+	return
+}
+
+func getAllEvmAddressAndAmount(keys []cryptotypes.PrivKey) ([]string, []string) {
+	var (
+		allEvmAddress []string
+		amounts       []string
+	)
+	for _, key := range keys {
+		//Calculate EVM address
+		evmAddress := common.Address{}
+		if strings.Contains(key.PubKey().Type(), "secp256k1") {
+			pubKey := key.PubKey().Bytes()
+			if len(pubKey) == 33 {
+				pubK, err1 := btcec.ParsePubKey(pubKey)
+				if err1 != nil {
+					panic(err1)
+				}
+				pubKey = pubK.SerializeUncompressed()
+			}
+			hash := evmcrypto.Keccak256(pubKey[1:])
+			evmAddress = common.BytesToAddress(hash[len(hash)-20:])
+			allEvmAddress = append(allEvmAddress, evmAddress.Hex())
+			amounts = append(amounts, "1000000000000000000000000")
+		}
+	}
+	return allEvmAddress, amounts
+}
+
 func main() {
 	configFilePath := flag.String("config-file", GetDefaultConfigFilePath(), "Path to the config.json file to use for this run")
 	txFilePath := flag.String("tx", "", "Path to the file containing Ethereum transactions")
+	accountFlag := flag.Bool("account", false, "Initialize the evm account address to genesis")
 	flag.Parse()
 
 	config := ReadConfig(*configFilePath)
 	fmt.Printf("Using config file: %s\n", *configFilePath)
+
+	if *accountFlag {
+		InitTestAccountToGenesis(int(config.MaxAccounts))
+		return
+	}
 	run(&config, *txFilePath)
 }

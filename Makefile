@@ -129,13 +129,29 @@ reset-eni-node:
 # build target
 build-loadtest:
 	@echo Building loadtest...
-	go build -o build/loadtest loadtest/*.go
-	@cp loadtest/config.json build/config.json
+	#go build -o build/loadtest loadtest/*.go
+	go build -o loadtest/loadtest loadtest/*.go
+	@#cp build/loadtest loadtest/loadtest
+	@#cp loadtest/config.json build/config.json
+	@#cp loadtest/test_accounts/*.json build/test_accounts/
 	@echo Done building loadtest.
+
+create-accounts: build build-loadtest
+	@echo Creating accounts...
+	python3 ./loadtest/scripts/populate_genesis_accounts.py 5000 loc
+	./loadtest/loadtest --account
+
+create-accounts-nobuild:
+	@echo Creating accounts...
+	python3 ./loadtest/scripts/populate_genesis_accounts.py 100 loc
+	./loadtest/loadtest --account
+
+
 # run target
 run-loadtest: build-loadtest
 	@echo Running loadtest...
-	build/loadtest
+	#build/loadtest
+	loadtest/loadtest
 
 # clean target
 clean-loadtest:

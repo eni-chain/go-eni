@@ -181,11 +181,11 @@
             "supply": [
                 {
                     "denom": "stake",
-                    "amount": "800000000"
+                    "amount": "507800000000"
                 },
                 {
                     "denom": "ueni",
-                    "amount": "131000000000000000000000"
+                    "amount": "5201000000000000000000000"
                 }
             ],
             "denom_metadata": [
