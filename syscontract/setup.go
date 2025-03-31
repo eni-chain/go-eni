@@ -1,21 +1,28 @@
 package syscontract
 
 import (
+	"cosmossdk.io/log"
 	"encoding/hex"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/eni-chain/go-eni/syscontract/genesis"
+	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
+	"os"
 	"strings"
 )
 
 var contracts *contractsConfig
 
+var logger = log.NewLogger(os.Stdout)
+
 type Config struct {
 	Addr common.Address
 	Code string
+	Abi  abi.ABI
 }
 
 type contractsConfig struct {
@@ -24,20 +31,48 @@ type contractsConfig struct {
 }
 
 func init() {
+	proxyABI, err := abi.JSON(strings.NewReader(syscontractSdk.PROXYABI))
+	if err != nil {
+		logger.Error(fmt.Sprintf("parse proxy contract abi failed:%v", err.Error()))
+	}
+
+	hubABI, err := abi.JSON(strings.NewReader(syscontractSdk.HubABI))
+	if err != nil {
+		logger.Error(fmt.Sprintf("parse hub abi contract failed:%v", err.Error()))
+	}
+
+	vrfABI, err := abi.JSON(strings.NewReader(syscontractSdk.VRFABI))
+	if err != nil {
+		logger.Error(fmt.Sprintf("parse vrf contract abi failed:%v", err.Error()))
+	}
+
+	validatorManagerABI, err := abi.JSON(strings.NewReader(syscontractSdk.ValidatorManagerABI))
+	if err != nil {
+		logger.Error(fmt.Sprintf("parse validator manager abi failed:%v", err.Error()))
+	}
+
 	contracts = &contractsConfig{
 		Name: "syscontract",
 		Configs: []*Config{
 			{
-				Addr: common.HexToAddress(HubAddr),
+				Addr: common.HexToAddress(syscontractSdk.ProxyAddr),
+				Code: genesis.ProxyContract,
+				Abi:  proxyABI,
+			},
+			{
+				Addr: common.HexToAddress(syscontractSdk.HubAddr),
 				Code: genesis.HubContract,
+				Abi:  hubABI,
 			},
 			{
-				Addr: common.HexToAddress(ValidatorManagerAddr),
+				Addr: common.HexToAddress(syscontractSdk.ValidatorManagerAddr),
 				Code: genesis.ValidatorManagerContract,
+				Abi:  validatorManagerABI,
 			},
 			{
-				Addr: common.HexToAddress(VRFAddr),
+				Addr: common.HexToAddress(syscontractSdk.VRFAddr),
 				Code: genesis.VRFContract,
+				Abi:  vrfABI,
 			},
 		},
 	}
@@ -50,6 +85,9 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 	}
 
 	evmKeeper.Logger().Info(fmt.Sprintf("apply contracts %s at height %d", contracts.Name, ctx.BlockHeight()))
+
+	var proxyBody []byte
+	var proxyAbi abi.ABI
 	for _, cfg := range contracts.Configs {
 		evmKeeper.Logger().Info(fmt.Sprintf("contractsConfig contract %s", cfg.Addr.String()))
 
@@ -62,10 +100,26 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 		//addr0 := common.Address{0}
 		body, err := evmKeeper.CallEVM(ctx, common.Address(caller), nil, nil, newContractCode)
 		if err != nil {
-			panic(err)
 			panic(fmt.Errorf("failed to execute contract constructor: %s", err.Error()))
 		}
+		//再统一调用一下init方法
+		//data, err := cfg.abi.Pack("init")
 
-		evmKeeper.SetCode(ctx, cfg.Addr, body)
+		if cfg.Addr == common.HexToAddress(syscontractSdk.ProxyAddr) {
+			proxyAbi = cfg.Abi
+			proxyBody = body
+			continue
+		}
+
+		evmKeeper.SetCode(ctx, cfg.Addr, proxyBody)
+		calldata, err := proxyAbi.Pack("init0", newContractCode)
+		if err != nil {
+			panic(fmt.Errorf("failed to pack calldata: %s", err.Error()))
+		}
+
+		_, err = evmKeeper.CallEVM(ctx, common.Address(caller), &cfg.Addr, nil, calldata)
+		if err != nil {
+			panic(fmt.Errorf("failed to execute contract init: %s", err.Error()))
+		}
 	}
 }

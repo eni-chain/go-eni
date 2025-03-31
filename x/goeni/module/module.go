@@ -22,6 +22,7 @@ import (
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	epochtypes "github.com/eni-chain/go-eni/x/epoch/keeper"
 	"github.com/ethereum/go-ethereum/common"
+
 	//evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"

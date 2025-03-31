@@ -244,6 +244,9 @@
             "validator_historical_rewards": [],
             "validator_slash_events": []
         },
+        "epoch": {
+            "params": {}
+        },
         "evidence": {
             "evidence": []
         },
