@@ -2,28 +2,24 @@
 
 pragma solidity >= 0.8.0;
 
-uint constant consensusSize = 2;
-
-uint constant MIN_PLEDGE_AMOUNT = 10000;
-
-uint constant ED25519_VERIFY_PRECOMPILED = 0xa1;
-uint constant LOCAL_NODE_LOG_PRECOMPILED = 0xa2;
-
-address constant ADMIN_ADDR = 0x251604eBfD1ddeef1F4f40b8F9Fc425538BE1339;
-address constant HUB_ADDR = 0x0000000000000000000000000000000000001001;
-address constant VALIDATOR_MANAGER_ADDR = 0x0000000000000000000000000000000000001002;
-address constant VRF_ADDR = 0x0000000000000000000000000000000000001003;
-address constant VOTER_MANAGER_ADDR = 0x0000000000000000000000000000000000001004;
-address constant SLASH_ADDR = 0x0000000000000000000000000000000000001005;
-
-uint constant DEBUG = 1;
-uint constant INFO = 2;
-uint constant WARN = 3;
-uint constant ERROR = 4;
-
 contract Common {
-    bool public _alreadyInit = false;
+    //system contract parameters
+    uint constant CONSENSUS_SIZE = 40;
+    uint constant MIN_PLEDGE_AMOUNT = 10000;
 
+    //precompiled contract address
+    uint constant ED25519_VERIFY_PRECOMPILED = 0xa1;
+    uint constant LOCAL_NODE_LOG_PRECOMPILED = 0xa2;
+
+    //initial address of the system administrator
+    address constant INIT_ADMIN_ADDR = 0x251604eBfD1ddeef1F4f40b8F9Fc425538BE1339;
+
+    //system contract address
+    address constant HUB_ADDR = 0x0000000000000000000000000000000000001001;
+    address constant VALIDATOR_MANAGER_ADDR = 0x0000000000000000000000000000000000001002;
+    address constant VRF_ADDR = 0x0000000000000000000000000000000000001003;
+    address constant VOTER_MANAGER_ADDR = 0x0000000000000000000000000000000000001004;
+    address constant SLASH_ADDR = 0x0000000000000000000000000000000000001005;
 
     modifier onlyCoinbase() {
         require(msg.sender == block.coinbase, "the message sender must be the block producer");
@@ -35,13 +31,23 @@ contract Common {
         _;
     }
 
-    modifier onlyNotInit() {
-        require(!_alreadyInit, "the contract already init");
+    modifier onlyHub() {
+        require(msg.sender == HUB_ADDR, "the message sender must be hub contract");
         _;
     }
 
-    modifier onlyInit() {
-        require(_alreadyInit, "the contract not init yet");
+    modifier onlyValidatorManager() {
+        require(msg.sender == VALIDATOR_MANAGER_ADDR, "the message sender must be validator manager contract");
+        _;
+    }
+
+    modifier onlyVrf() {
+        require(msg.sender == VRF_ADDR, "the message sender must be vrf contract");
+        _;
+    }
+
+    modifier onlyVoteManager() {
+        require(msg.sender == VRF_ADDR, "the message sender must be vote manager contract");
         _;
     }
 
@@ -49,33 +55,14 @@ contract Common {
         require(msg.sender == SLASH_ADDR, "the message sender must be slash contract");
         _;
     }
-
-    modifier onlyHub() {
-        require(msg.sender == HUB_ADDR, "the message sender must be hub contract");
-        _;
-    }
 }
 
-interface IValidatorManager {
-    function getPubKey(address validator) external returns (bytes memory);
-
-    function getNodeAddrAndPubKey(address operator) external returns (address, bytes memory);
-
-    function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory);
-
-    function getValidatorSet() external  returns (address[] memory);
-
-    function addValidator(address operator, address node, address agent, uint256 amount, uint256 enterTime, string calldata name, string calldata description, bytes  calldata pubKey) external;
-
-    function undateConsensus(address[] calldata nodes)external;
-
-    function getPledgeAmount(address node) external returns (uint256);
-
-    function getOperatorAndPledgeAmount(address node) external returns (address, uint256);
-}
-
-
-contract LocalLog {
+contract LocalLog is Common {
+    //log level
+    uint constant DEBUG = 1;
+    uint constant INFO = 2;
+    uint constant WARN = 3;
+    uint constant ERROR = 4;
 
     function char2Hex(uint8 c) internal pure returns (bytes1) {
         if (c < 10) {
@@ -159,4 +146,105 @@ contract LocalLog {
             }
         }
     }
+}
+
+contract administrationBase is LocalLog {
+
+    //administrator address
+    address public _admin;
+
+    bool public _alreadyInit = false;
+
+    modifier onlyAdmin() {
+        require(msg.sender == _admin, "The message sender must be administrator");
+        _;
+    }
+
+    modifier onlyNotInited() {
+        require(!_alreadyInit, "The contract already init");
+        _;
+    }
+
+    modifier onlyInited() {
+        require(_alreadyInit, "The contract not init yet");
+        _;
+    }
+
+    function _init(address admin) internal onlyNotInited {
+        //require(_alreadyInit == false, "Already initialized.");
+
+        if(admin != address(0)){
+
+            llog(DEBUG, abi.encodePacked("Set admin with param[", H(admin), "]."));
+            _admin = admin;
+        }else{
+            llog(DEBUG, abi.encodePacked("Set admin with hardcode[", H(INIT_ADMIN_ADDR), "]."));
+            _admin = INIT_ADMIN_ADDR;
+        }
+
+        llog(DEBUG, abi.encodePacked("Set admin succeed."));
+
+        _alreadyInit = true;
+    }
+
+    function _updateAdmin(address admin) internal onlyAdmin {
+        _admin = admin;
+    }
+
+    function getAdmin() external view returns (address){
+        return _admin;
+    }
+}
+
+contract DelegateCallBase {
+    //A structured storage slot parameter that defines logical contract address
+    //value is hex("ImplContractAddrSlotBase")
+    uint256 private constant IMPL_SLOT_BASE = 0x496d706c436f6e747261637441646472536c6f7442617365;
+
+
+    //get delegate call's implementation contract address
+    function _getImpl() internal view returns (address impl) {
+        bytes memory bs = new bytes(32);
+        assembly {
+            //let offset := add(bs, 0x20)
+            mstore(add(bs, 0x20), IMPL_SLOT_BASE)
+
+            let slot := sub(keccak256(add(bs, 0x20), 0x20), 1)
+            impl := sload(slot)
+        }
+
+        return impl;
+    }
+
+    //set delegate call's implementation contract address
+    function _setImpl(address impl) internal  {
+        require(impl.code.length > 0, "Invalid implementation address");
+
+        bytes memory bs = new bytes(32);
+        assembly {
+            //let offset := add(bs, 0x20)
+            mstore(add(bs, 0x20), IMPL_SLOT_BASE)
+
+            let slot := sub(keccak256(add(bs, 0x20), 0x20), 1)
+            sstore(slot, impl)
+        }
+    }
+}
+
+interface IValidatorManager {
+    function getPubKey(address validator) external returns (bytes memory);
+
+    function getNodeAddrAndPubKey(address operator) external returns (address, bytes memory);
+
+    function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory);
+
+    function getValidatorSet() external  returns (address[] memory);
+
+    function addValidator(address operator, address node, address agent, uint256 amount, uint256 enterTime, string calldata name, string calldata description, bytes  calldata pubKey) external;
+
+    function undateConsensus(address[] calldata nodes)external;
+
+    function getPledgeAmount(address node) external returns (uint256);
+
+    function getOperatorAndPledgeAmount(address node) external returns (address, uint256);
 }

@@ -8,7 +8,6 @@ import (
 	cosmossdk_io_math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
-	"github.com/eni-chain/go-eni/syscontract"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -48,7 +47,7 @@ func (h *Hub) ApplyForValidator(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.HubAddr)
+	address := common.HexToAddress(HubAddr)
 	to := &address
 	retData, err := h.evmKeeper.CallEVM(ctx, caller, to, value, input)
 	if err != nil {
@@ -69,7 +68,7 @@ func (h *Hub) AuditPass(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.HubAddr)
+	address := common.HexToAddress(HubAddr)
 	to := &address
 	retData, err := h.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -90,7 +89,7 @@ func (h *Hub) BlockReward(
 		return common.Address{0}, nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.HubAddr)
+	address := common.HexToAddress(HubAddr)
 	to := &address
 	retData, err := h.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -122,7 +121,7 @@ func (h *Hub) UpdateAdmin(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.HubAddr)
+	address := common.HexToAddress(HubAddr)
 	to := &address
 	retData, err := h.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
-	"github.com/eni-chain/go-eni/syscontract"
+	//"github.com/eni-chain/go-eni/syscontract"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -21,7 +21,7 @@ type ValidatorManager struct {
 
 // NewValidatorManager creates a new instance of ValidatorManager
 func NewValidatorManager(evmKeeper *evmKeeper.Keeper) (*ValidatorManager, error) {
-	parsedABI, err := abi.JSON(strings.NewReader(validatorManagerABI))
+	parsedABI, err := abi.JSON(strings.NewReader(ValidatorManagerABI))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse ABI: %v", err)
 	}
@@ -43,7 +43,7 @@ func (vm *ValidatorManager) GetPubkey(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.ValidatorManagerAddr)
+	address := common.HexToAddress(ValidatorManagerAddr)
 	to := &address
 	retData, err := vm.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -70,7 +70,7 @@ func (vm *ValidatorManager) GetPubKeysBySequence(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.ValidatorManagerAddr)
+	address := common.HexToAddress(ValidatorManagerAddr)
 	to := &address
 	retData, err := vm.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -100,7 +100,7 @@ func (vm *ValidatorManager) GetValidatorSet(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.ValidatorManagerAddr)
+	address := common.HexToAddress(ValidatorManagerAddr)
 	to := &address
 	retData, err := vm.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -134,7 +134,7 @@ func (vm *ValidatorManager) AddValidator(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.ValidatorManagerAddr)
+	address := common.HexToAddress(ValidatorManagerAddr)
 	to := &address
 	retData, err := vm.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -157,7 +157,7 @@ func (vm *ValidatorManager) UpdateConsensus(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.ValidatorManagerAddr)
+	address := common.HexToAddress(ValidatorManagerAddr)
 	to := &address
 	retData, err := vm.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
@@ -178,7 +178,7 @@ func (vm *ValidatorManager) GetPledgeAmount(
 		return nil, fmt.Errorf("failed to pack ABI: %v", err)
 	}
 
-	address := common.HexToAddress(syscontract.ValidatorManagerAddr)
+	address := common.HexToAddress(ValidatorManagerAddr)
 	to := &address
 	retData, err := vm.evmKeeper.CallEVM(ctx, caller, to, nil, input)
 	if err != nil {
