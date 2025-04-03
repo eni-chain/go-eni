@@ -6,7 +6,7 @@
   "tls": false,
   "msgs_per_tx": 1,
   "chain_id": "eni",
-  "target_tps": 5000,
+  "target_tps": 50000,
   "max_accounts": 100,
   "price_distribution": {
     "min": "45",

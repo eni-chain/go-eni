@@ -7,7 +7,7 @@ const { ethers } = require("ethers");
     mnemonic: "party two quit over jaguar carry episode naive machine nothing borrow sell",
     senderPrivKey: "0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e",
     senderAddress: "0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
-    numAddresses: 10000,
+    numAddresses: 100000,
     amountEth: 1,            // Initial ENI transfer amount
     transferAmountEth: 0.1,  // Secondary ENI transfer amount
     amountToken: 100,        // Initial ERC20 transfer amount
