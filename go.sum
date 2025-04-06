@@ -500,8 +500,9 @@ github.com/eni-chain/eni-cosmos/core v0.0.0-20250405135342-547c30a4d4e6 h1:cRPNc
 github.com/eni-chain/eni-cosmos/core v0.0.0-20250405135342-547c30a4d4e6/go.mod h1:01u7jX5X4U/LlkPfEONgYGMTsHtyLPeFm1cPHeLce2Y=
 github.com/eni-chain/eni-cosmos/store v0.0.0-20250405135342-547c30a4d4e6 h1:E32PHb7dOQNseHq4oRJWVrfW7BudzbVDzsB9htZqMpE=
 github.com/eni-chain/eni-cosmos/store v0.0.0-20250405135342-547c30a4d4e6/go.mod h1:MmJZA7erUYQHn3useOFdPN2ch31DHA/UBtzkLH56je0=
-github.com/eni-chain/eni-db v0.0.2-0.20250402180148-c194e1a2b1d0 h1:BZr8yhpCMInyh7m3skiOLXeP5d8VrOIpCx73ZWSdsFg=
 github.com/eni-chain/eni-db v0.0.2-0.20250402180148-c194e1a2b1d0/go.mod h1:TCv1hKOEnheE5jUyP4S7Ow75UBeRt7A366KVooKlZ8I=
+github.com/eni-chain/eni-db v0.0.2-0.20250406174655-a3ed4eabc4f1 h1:9V+g3rTzXLPBBdlqeFJuVXs9ZmoIB4oXLgtjPz4eHsk=
+github.com/eni-chain/eni-db v0.0.2-0.20250406174655-a3ed4eabc4f1/go.mod h1:TCv1hKOEnheE5jUyP4S7Ow75UBeRt7A366KVooKlZ8I=
 github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd h1:YKPO4rHHYLqrJyo9858AGPa/eGofUhqOmB3j7if76qY=
 github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd/go.mod h1:4q+4t48P2C03sjqGvTXix5lEOplf5dz4CTosbjt5tGs=
 github.com/envoyproxy/go-control-plane v0.6.9/go.mod h1:SBwIajubJHhxtWwsL9s8ss4safvEdbitLhGGK48rN6g=
