@@ -167,3 +167,12 @@ stop-prometheus-grafana-dashboard:
 	@echo Stopping prometheus and grafana dashboard...
 	docker-compose -f docker/prometheus-grafana/docker-compose.yml down
 	@echo Done stopping prometheus and grafana dashboard.
+
+loadtest-mempool:build build-loadtest reset-eni-node
+	@echo Running loadtest-mempool...
+	nohup ./build/enid start --home=./eni-node &
+	sleep 12
+	./build/loadtest -tx ./loadtest/scripts/10000.txt
+	@pkill enid
+	@make reset-eni-node
+	@rm -rf ./nohup.out
