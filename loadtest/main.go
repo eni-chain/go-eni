@@ -56,6 +56,7 @@ var (
 )
 var ReadTxCount *int64
 var SendTxCount *int64
+var startSendTime *time.Time
 
 type BlockData struct {
 	Txs []string `json:"txs"`
@@ -189,7 +190,9 @@ func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string
 	consumerSemaphore := semaphore.NewWeighted(int64(config.TargetTps))
 	if len(filePath) > 0 {
 		go client.ReadFileTxs(txQueues[0], &wg, done, producerRateLimiter, filePath)
-		go client.SendTxs(txQueues[0], 0, done, sentCountPerMsgType, consumerSemaphore, &wg)
+		for i := 0; i < 20; i++ {
+			go client.SendTxs(txQueues[0], 0, done, sentCountPerMsgType, consumerSemaphore, &wg)
+		}
 	} else {
 		for i := 0; i < len(keys); i++ {
 			go client.BuildTxs(txQueues[i], i, &wg, done, producerRateLimiter, producedCountPerMsgType)
@@ -219,10 +222,7 @@ func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string
 				}
 
 				printStats(start, producedCountPerMsgType, sentCountPerMsgType, prevSentCounterPerMsgType, blockHeights, blockTimes)
-				if *ReadTxCount != 0 && *SendTxCount == *ReadTxCount {
-					fmt.Printf("All transactions[%d] have been sent\n", *SendTxCount)
-					signals <- syscall.SIGINT
-				}
+
 				startHeight = currHeight
 				blockHeights, blockTimes = nil, nil
 				start = time.Now()

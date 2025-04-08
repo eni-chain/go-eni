@@ -338,9 +338,18 @@ func (c *LoadTestClient) SendTxs(
 				}
 			} else if tx.EvmTx != nil {
 				// Send EVM Transactions
+				if startSendTime == nil {
+					now := time.Now()
+					startSendTime = &now
+				}
 				c.EvmTxClients[keyIndex].SendEvmTx(tx.EvmTx, func() {
 					atomic.AddInt64(producedCountPerMsgType[tx.MsgType], 1)
 					atomic.AddInt64(SendTxCount, 1)
+					if *ReadTxCount != 0 && *SendTxCount == *ReadTxCount {
+						fmt.Printf("All transactions[%d] have been sent, spend time:%d\n", *SendTxCount,
+							time.Since(*startSendTime).Milliseconds())
+						os.Exit(0)
+					}
 				})
 			}
 			// Release the semaphore
