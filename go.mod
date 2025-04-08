@@ -314,14 +314,21 @@ require (
 
 require github.com/btcsuite/btcd/btcec/v2 v2.3.4
 
+require (
+	github.com/cosmos/gorocksdb v1.2.0 // indirect
+	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
+)
+
 replace (
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250326034726-f1bcff44361d
-	//cosmossdk.io/api => ../eni-cosmos/api
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250326034726-f1bcff44361d
-	//github.com/cometbft/cometbft => ../eni-cometbft
-	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250331124307-b2fd5a5f03ff
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250327180429-374426ea95b2
-	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
+	//cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250326034726-f1bcff44361d
+	cosmossdk.io/api => ../eni-cosmos/api
+	//cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250326034726-f1bcff44361d
+	cosmossdk.io/store => ../eni-cosmos/store
+
+	github.com/cometbft/cometbft => ../eni-cometbft
+	//github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250331124307-b2fd5a5f03ff
+	//github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250327180429-374426ea95b2
+	github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
 )
