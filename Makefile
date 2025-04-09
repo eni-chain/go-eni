@@ -133,6 +133,7 @@ reset-multi-node:
 build-loadtest:
 	@echo Building loadtest...
 	go build -o build/loadtest loadtest/*.go
+	@cp build/loadtest loadtest/loadtest
 	@cp loadtest/config.json build/config.json
 	@echo Done building loadtest.
 # run target
@@ -144,6 +145,7 @@ run-loadtest: build-loadtest
 clean-loadtest:
 	@echo Cleaning loadtest...
 	rm -rf build/loadtest
+	rm -rf loadtest/loadtest
 	@echo Done cleaning loadtest.
 
 #deploy erc20
