@@ -172,7 +172,7 @@ loadtest-mempool:build build-loadtest reset-eni-node
 	@echo Running loadtest-mempool...
 	nohup ./build/enid start --home=./eni-node &
 	sleep 12
-	./build/loadtest -tx ./loadtest/scripts/10000.txt
+	./build/loadtest -tx ./loadtest/scripts/10000enitx.txt
 	@pkill enid
 	@make reset-eni-node
 	@rm -rf ./nohup.out

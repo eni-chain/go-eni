@@ -3,7 +3,6 @@ package evmrpc
 import (
 	"context"
 	"errors"
-
 	"time"
 
 	sdkerrors "cosmossdk.io/errors"
@@ -57,6 +56,7 @@ func NewSendAPI(tmClient rpcclient.Client, txConfig client.TxConfig, sendConfig 
 }
 
 func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (hash common.Hash, err error) {
+
 	startTime := time.Now()
 	defer recordMetrics("eth_sendRawTransaction", s.connectionType, startTime, err == nil)
 	tx := new(ethtypes.Transaction)
@@ -64,6 +64,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 		return
 	}
 	hash = tx.Hash()
+
 	txData, err := ethtx.NewTxDataFromTx(tx)
 	if err != nil {
 		s.logger.Error("failed to convert tx to tx data", "err", err)
@@ -87,6 +88,7 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 	if encodeErr != nil {
 		return hash, encodeErr
 	}
+	//write(txbz)
 
 	if s.sendConfig.slow {
 		res, broadcastError := s.tmClient.BroadcastTxCommit(ctx, txbz)
@@ -107,9 +109,33 @@ func (s *SendAPI) SendRawTransaction(ctx context.Context, input hexutil.Bytes) (
 			err = sdkerrors.ABCIError(coserrors.RootCodespace, res.Code, "")
 		}
 	}
+	if err != nil {
+		s.logger.Error("failed to broadcast tx", "err", err)
+		return
+	}
+
 	return
 }
 
+// var lock sync.Mutex
+//
+//	func write(tx []byte) {
+//		lock.Lock()
+//		defer lock.Unlock()
+//		// 1. 打开文件（不存在则创建，以追加模式写入）
+//		file, err := os.OpenFile("./tx.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+//		if err != nil {
+//			panic(err)
+//		}
+//		defer file.Close() // 确保函数退出时关闭文件
+//
+//		// 2. 写入一行字符串（自动追加到文件末尾）
+//		file.WriteString(hex.EncodeToString(tx))
+//		_, err = file.WriteString("\n") // 注意换行符 \n
+//		if err != nil {
+//			panic(err)
+//		}
+//	}
 func (s *SendAPI) SignTransaction(_ context.Context, args apitypes.SendTxArgs, _ *string) (result *ethapi.SignTransactionResult, returnErr error) {
 	startTime := time.Now()
 	defer recordMetrics("eth_signTransaction", s.connectionType, startTime, returnErr == nil)

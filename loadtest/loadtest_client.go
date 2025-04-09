@@ -269,10 +269,11 @@ func (c *LoadTestClient) ReadFileTxs(
 			if len(line) == 0 {
 				break
 			}
-			tx := &ethtypes.Transaction{}
-			tx.UnmarshalBinary(common.FromHex(line))
-			signedTx = SignedTx{EvmTx: tx, MsgType: messageType}
-			EvmTxHashes = append(EvmTxHashes, signedTx.EvmTx.Hash())
+			//tx := &ethtypes.Transaction{}
+			//tx.UnmarshalBinary(common.FromHex(line))
+			//signedTx = SignedTx{EvmTx: tx, MsgType: messageType}
+			signedTx = SignedTx{TxBytes: common.FromHex(line), MsgType: messageType}
+			//EvmTxHashes = append(EvmTxHashes, signedTx.EvmTx.Hash())
 			atomic.AddInt64(ReadTxCount, 1)
 			select {
 			case txQueue <- signedTx:
