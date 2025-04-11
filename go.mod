@@ -316,6 +316,7 @@ require github.com/btcsuite/btcd/btcec/v2 v2.3.4
 
 require (
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
+	github.com/puzpuzpuz/xsync v1.5.2 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 )
 
