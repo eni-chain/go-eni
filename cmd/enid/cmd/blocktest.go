@@ -62,6 +62,7 @@ func BlocktestCmd(defaultNodeHome string) *cobra.Command {
 				db,
 				nil,
 				true,
+				home,
 				sims.EmptyAppOptions{},
 				baseapp.SetPruning(pruningtypes.NewPruningOptions(pruningtypes.PruningEverything)),
 				baseapp.SetMinGasPrices(cast.ToString(serverCtx.Viper.Get(server.FlagMinGasPrices))),
