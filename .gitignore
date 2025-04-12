@@ -14,3 +14,5 @@ nohup.out
 *.pprof
 docker/prometheus-grafana/prometheus_data
 loadtest/scripts-test/node_modules
+node_modules/
+loadtest/loadtest
