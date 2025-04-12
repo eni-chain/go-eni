@@ -206,13 +206,13 @@ func New(
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
+	homePath string,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) (*App, error) {
 	var (
 		app        = &App{ScopedKeepers: make(map[string]capabilitykeeper.ScopedKeeper)}
 		appBuilder *runtime.AppBuilder
-
 		// merge the AppConfig and other configuration in one config
 		appConfig = depinject.Configs(
 			AppConfig(),
@@ -234,6 +234,7 @@ func New(
 			),
 		)
 	)
+	baseAppOptions, _ = SetupEniDB(logger, homePath, appOpts, baseAppOptions)
 
 	err := depinject.Inject(appConfig,
 		&appBuilder,
