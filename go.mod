@@ -1,6 +1,8 @@
 module github.com/eni-chain/go-eni
 
-go 1.23.6
+go 1.24
+
+toolchain go1.24.2
 
 replace (
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
@@ -343,7 +345,7 @@ require (
 
 require (
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
-	github.com/puzpuzpuz/xsync v1.5.2 // indirect
+	github.com/puzpuzpuz/xsync/v4 v4.0.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 )
 
