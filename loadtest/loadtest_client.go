@@ -180,7 +180,7 @@ func BuildEvmTxClients(config *Config, keys []cryptotypes.PrivKey) []*EvmTxClien
 		clients[i] = NewEvmTxClient(key, chainID, gasPrice, ethClients, config.EVMAddresses, config.EvmUseEip1559Txs)
 		keyHex := hex.EncodeToString(key.Bytes())
 		cmd.Args = append(args, keyHex)
-		err = cmd.Run()
+		//err = cmd.Run()
 		if err != nil {
 			panic(err)
 		}
