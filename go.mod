@@ -1,6 +1,8 @@
 module github.com/eni-chain/go-eni
 
-go 1.23.6
+go 1.24
+
+toolchain go1.24.2
 
 replace (
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
@@ -130,7 +132,6 @@ require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgraph-io/badger/v4 v4.5.1 // indirect
-	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/docker/cli v26.1.4+incompatible // indirect
@@ -312,24 +313,58 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
-require github.com/btcsuite/btcd/btcec/v2 v2.3.4
+require (
+	github.com/btcsuite/btcd/btcec/v2 v2.3.4
+	github.com/eni-chain/eni-db v0.0.2-0.20250406174655-a3ed4eabc4f1
+)
+
+require (
+	github.com/alitto/pond v1.8.3 // indirect
+	github.com/armon/go-metrics v0.4.1 // indirect
+	github.com/dgraph-io/ristretto/v2 v2.1.0 // indirect
+	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
+	github.com/ledgerwatch/erigon-lib v0.0.0-20230210071639-db0e7ed11263 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
+	github.com/tidwall/gjson v1.10.2 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/tidwall/tinylru v1.1.0 // indirect
+	github.com/tidwall/wal v1.1.7 // indirect
+	github.com/zbiljic/go-filelock v0.0.0-20170914061330-1dbf7103ab7d // indirect
+	lukechampine.com/uint128 v1.2.0 // indirect
+	modernc.org/cc/v3 v3.40.0 // indirect
+	modernc.org/ccgo/v3 v3.16.13 // indirect
+	modernc.org/libc v1.24.1 // indirect
+	modernc.org/mathutil v1.5.0 // indirect
+	modernc.org/memory v1.6.0 // indirect
+	modernc.org/opt v0.1.3 // indirect
+	modernc.org/sqlite v1.26.0 // indirect
+	modernc.org/strutil v1.1.3 // indirect
+	modernc.org/token v1.0.1 // indirect
+)
 
 require (
 	github.com/cosmos/gorocksdb v1.2.0 // indirect
+	github.com/puzpuzpuz/xsync/v4 v4.0.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 )
 
 replace (
-	//cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250326034726-f1bcff44361d
 	cosmossdk.io/api => ../eni-cosmos/api
-	//cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250326034726-f1bcff44361d
+	//cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250405135342-547c30a4d4e6
+	//cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250405135342-547c30a4d4e6
+	cosmossdk.io/core => ../eni-cosmos/core
+	//cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250405135342-547c30a4d4e6
 	cosmossdk.io/store => ../eni-cosmos/store
 
 	github.com/cometbft/cometbft => ../eni-cometbft
 	//github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250331124307-b2fd5a5f03ff
-	//github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250327180429-374426ea95b2
+	//github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250405135342-547c30a4d4e6
+	//cosmossdk.io/store => ../eni-cosmos/store
+	//github.com/eni-chain/eni-db => ../eni-db
 	github.com/cosmos/cosmos-sdk => ../eni-cosmos
-	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
+	//github.com/cosmos/iavl => ../eni-iavl
+	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250412064101-a6bcc327b474
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
 )
 
