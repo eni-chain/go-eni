@@ -3,7 +3,7 @@
 Run the following command to generate offline transfer transactions:
 
 ```bash
-node gentx.js
+node genEniTx.js
 ```
 
 This will generate offline transfer transactions, including a transaction from:
@@ -39,4 +39,6 @@ In the current folder, there is a `send.sh` script. To send offline transactions
 ```
 
 
+```
+./build/loadtest -tx ./loadtest/scripts/init.txt
 ```
