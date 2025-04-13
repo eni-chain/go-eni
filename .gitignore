@@ -13,3 +13,4 @@ ethtests
 nohup.out
 *.pprof
 docker/prometheus-grafana/prometheus_data
+node_modules/
