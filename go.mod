@@ -315,7 +315,7 @@ require (
 
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
-	github.com/eni-chain/eni-db v0.0.2-0.20250406174655-a3ed4eabc4f1
+	github.com/eni-chain/eni-db v0.0.2-0.20250408030021-4b6939bccb70
 )
 
 require (
@@ -344,7 +344,6 @@ require (
 )
 
 require (
-	github.com/cosmos/gorocksdb v1.2.0 // indirect
 	github.com/puzpuzpuz/xsync/v4 v4.0.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 )
