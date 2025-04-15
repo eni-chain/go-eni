@@ -248,6 +248,9 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		return nil, err
 	}
 
+	ctx.Logger().Info(fmt.Sprintf("Update validatorSet, block height:%d, epoch:%d, new set:\n",
+		ctx.BlockHeader().Height, epoch.CurrentEpoch))
+
 	validatorSet := make([]abci.ValidatorUpdate, len(pubKeys))
 	for i := 0; i < len(pubKeys); i++ {
 		//innerPk := crypto.PublicKey_Ed25519{Ed25519: pkBytes}
@@ -256,6 +259,7 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		pubKey := crypto.PublicKey{Sum: &pk}
 		validatorSet[i].PubKey = pubKey
 		validatorSet[i].Power = 1
+		ctx.Logger().Info(fmt.Sprintf("\tvalidator public key[%x], power:[%v]\n", pubKeys[i], validatorSet[i].Power))
 	}
 
 	return validatorSet, nil
