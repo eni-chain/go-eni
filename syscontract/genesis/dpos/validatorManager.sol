@@ -4,11 +4,14 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract ValidatorManager is DelegateCallBase, administrationBase {
+contract ValidatorManager{
     //todo: add event and emit for every external method
 
+    //administrator address
+    address _admin;
+
     //current consensus node set
-    address[CONSENSUS_SIZE] _consensusSet;
+    address[consensusSize] _consensusSet;
 
     //For traversal and retrieval, because the mapping type cannot be traversed
     address[] _validatorNodes;
@@ -50,18 +53,31 @@ contract ValidatorManager is DelegateCallBase, administrationBase {
     //validator name=>operator addr
     mapping (string=>address) _names;
 
-    function init(address admin) external onlyNotInited {
-        _init(admin);
+    modifier onlyHub() {
+        require(msg.sender == HUB_ADDR, "the message sender must be hub contract");
+        _;
+    }
+
+        modifier onlyVrf() {
+        require(msg.sender == VRF_ADDR, "the message sender must be vrf contract");
+        _;
+    }
+
+    modifier onlyAdmin() {
+        require(msg.sender == _admin, "The message sender must be administrator");
+        _;
+    }
+
+    function init() external {
+        _admin = ADMIN_ADDR;
     }
 
     function updateAdmin(address admin) external onlyAdmin {
-        _updateAdmin(admin);
+        _admin = admin;
     }
 
-
-    function updateImpl(address impl) external onlyAdmin {
-        //require(msg.sender == _admin, "Msg sender is not administrator");
-        _setImpl(impl);
+    function getAdmin() external  returns (address){
+        return _admin;
     }
 
     function getPubKey(address node) external returns (bytes memory){
@@ -108,7 +124,6 @@ contract ValidatorManager is DelegateCallBase, administrationBase {
     ) external onlyHub {
         require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_infos[operator].amount == 0, "validator already exist");
-        llog(DEBUG, abi.encodePacked("addValidator ", name, " start."));
 
         validator storage v = _infos[operator];
         v.operator = operator;
@@ -126,11 +141,10 @@ contract ValidatorManager is DelegateCallBase, administrationBase {
         _names[name] = operator;
         _node2operator[node] = operator;
         _agent2operator[agent] = operator;
-        //llog(DEBUG, abi.encodePacked("addValidator ", name, " succeed."));
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {
-        require(nodes.length <= CONSENSUS_SIZE, "The number of consensuses exceeds the maximum limit");
+        require(nodes.length <= consensusSize, "The number of consensuses exceeds the maximum limit");
 
         delete _consensusSet;
         for(uint i = 0; i < nodes.length; ++i){
@@ -148,12 +162,11 @@ contract ValidatorManager is DelegateCallBase, administrationBase {
     }
 
     function getOperatorAndPledgeAmount(address node) external returns (address, uint256) {
-        llog(DEBUG, abi.encodePacked("hub contract call getOperatorAndPledgeAmount, to node:", H(node)));
         address oper = _node2operator[node];
         if(oper != address(0) ){
             return (oper, _infos[oper].amount);
         }
-        llog(DEBUG, abi.encodePacked("hub contract call getOperatorAndPledgeAmount, to operator:", H(oper)));
+
         return (address(0), 0);
     }
 }
