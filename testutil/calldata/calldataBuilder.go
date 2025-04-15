@@ -190,7 +190,7 @@ func multi() {
 	//admin(validator1) set init seed
 	hexInitSeed := "ba1aa46438a7b446c0a6f1ca54d04eccda80fed5f1460be9e17cd6931eaef64c1f1cbe714c603521c2f06a4a39cd8d50015068890aaaf04d92d9ed997f9c0689"
 	initSeed, _ := hex.DecodeString(hexInitSeed)
-	calldataF(validator1, "vrf", "init", initSeed, big.NewInt(1))
+	calldataF(validator1, "vrf", "initRandomSeed", initSeed, big.NewInt(1))
 
 	//validator1 send random
 	valSignature1 := ed25519.Sign(v1PriKey, initSeed)
@@ -213,7 +213,7 @@ func multi() {
 }
 
 func main() {
-	solo()
-	//multi()
+	//solo()
+	multi()
 
 }

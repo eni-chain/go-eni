@@ -76,32 +76,6 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "_admin",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "_alreadyInit",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -181,17 +155,11 @@
 				"type": "address"
 			}
 		],
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "admin",
-				"type": "address"
-			}
-		],
+		"inputs": [],
 		"name": "init",
 		"outputs": [],
 		"stateMutability": "nonpayable",
@@ -224,19 +192,6 @@
 			}
 		],
 		"name": "updateAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "impl",
-				"type": "address"
-			}
-		],
-		"name": "updateImpl",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
