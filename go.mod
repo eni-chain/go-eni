@@ -363,7 +363,7 @@ replace (
 	//github.com/eni-chain/eni-db => ../eni-db
 	github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	//github.com/cosmos/iavl => ../eni-iavl
-	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
+	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250412064101-a6bcc327b474
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
 )
 
