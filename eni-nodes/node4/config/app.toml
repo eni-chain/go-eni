@@ -234,3 +234,8 @@ stop-node-on-err = true
 # Note, this configuration only applies to SDK built-in app-side mempool
 # implementations.
 max-txs = -1
+
+[evm]
+http_enabled = true
+http_port = 8575
+ws_enabled = false

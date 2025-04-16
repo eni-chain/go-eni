@@ -59,3 +59,9 @@ query-gas-limit = "0"
   prometheus-retention-time = 0
   service-name = ""
   statsd-addr = ""
+
+[evm]
+  http_enabled = true
+  http_port = 8545
+  ws_enabled = true
+  ws_port = 8546
