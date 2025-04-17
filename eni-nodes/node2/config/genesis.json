@@ -216,8 +216,8 @@
         "max_dynamic_base_fee_downward_adjustment": "0.003900000000000000",
         "target_gas_used_per_block": "250000",
         "maximum_fee_per_gas": "1000000000000.000000000000000000",
-        "init_eni_amount": "",
-        "init_eni_address": ""
+        "init_eni_amount": "123000000000000000000000",
+        "init_eni_address": "0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
       },
       "address_associations": [],
       "codes": [],
