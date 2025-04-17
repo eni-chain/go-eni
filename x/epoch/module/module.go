@@ -201,6 +201,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 		)
 
 		telemetry.SetGauge(float32(epoch.CurrentEpoch), "epoch", "current")
+		return nil
 	}
 
 	if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) >= lastEpoch.EpochInterval {
