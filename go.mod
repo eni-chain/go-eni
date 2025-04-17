@@ -15,28 +15,18 @@ replace (
 
 require (
 	cosmossdk.io/api v0.7.6
-	cosmossdk.io/client/v2 v2.0.0-beta.6
 	cosmossdk.io/core v0.12.1-0.20240725072823-6a2d039e1212
 	cosmossdk.io/depinject v1.1.0
 	cosmossdk.io/errors v1.0.1
 	cosmossdk.io/log v1.5.0
 	cosmossdk.io/math v1.5.0
-	cosmossdk.io/store v1.1.1
-	cosmossdk.io/tools/confix v0.1.2
-	cosmossdk.io/x/circuit v0.1.1
-	cosmossdk.io/x/evidence v0.1.1
-	cosmossdk.io/x/feegrant v0.1.1
-	cosmossdk.io/x/upgrade v0.1.4
 	github.com/btcsuite/btcd v0.22.1
 	github.com/bufbuild/buf v1.34.0
 	github.com/cometbft/cometbft v0.38.17
 	github.com/cosmos/cosmos-db v1.1.1
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.50.12
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.0
-	github.com/cosmos/ibc-go/modules/capability v1.0.1
-	github.com/cosmos/ibc-go/v8 v8.5.2
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/ethereum/go-ethereum v1.15.0
 	github.com/gogo/protobuf v1.3.3 // indirect
@@ -315,7 +305,7 @@ require (
 
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
-	github.com/eni-chain/eni-db v0.0.2-0.20250408030021-4b6939bccb70
+	github.com/eni-chain/eni-db v0.0.0-20250417072804-cd50b72160de
 )
 
 require (
@@ -354,12 +344,6 @@ replace (
 	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250417063310-a426f07613a9
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250416110654-231bd23f28f3
 	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250417063310-a426f07613a9
-	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250412064101-a6bcc327b474
+	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
 )
-
-//replace (
-//	github.com/cosmos/iavl => github.com/eni-chain/eni-iavl v0.0.1git
-//	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-//	github.com/tendermint/tm-db => github.com/eni-chain/tm-db v0.0.1
-//)

@@ -49,8 +49,5 @@ jobs:
       - name: Clone ETH Blocktests
         run: git clone https://github.com/ethereum/tests.git ethtests
 
-      - name: Configure git to use PAT
-        run: |
-          git config --global url."https://github.com".insteadOf "https://github.com"
       - name: "Run ETH Blocktest"
         run: ./run_blocktests.sh ./ethtests/BlockchainTests/ ${{ matrix.runner-index }} ${{ env.TOTAL_RUNNERS }}
