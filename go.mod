@@ -349,19 +349,19 @@ require (
 )
 
 replace (
-	cosmossdk.io/api => ../eni-cosmos/api
-	//cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250405135342-547c30a4d4e6
-	//cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250405135342-547c30a4d4e6
-	cosmossdk.io/core => ../eni-cosmos/core
-	//cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250405135342-547c30a4d4e6
-	cosmossdk.io/store => ../eni-cosmos/store
+	//cosmossdk.io/api => ../eni-cosmos/api
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250415023836-45b07496e67e
+	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250415023836-45b07496e67e
+	//cosmossdk.io/core => ../eni-cosmos/core
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250415023836-45b07496e67e
+	//cosmossdk.io/store => ../eni-cosmos/store
 
-	github.com/cometbft/cometbft => ../eni-cometbft
-	//github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250331124307-b2fd5a5f03ff
-	//github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250405135342-547c30a4d4e6
+	//github.com/cometbft/cometbft => ../eni-cometbft
+	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250412152000-47a56528cece
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250415023836-45b07496e67e
 	//cosmossdk.io/store => ../eni-cosmos/store
 	//github.com/eni-chain/eni-db => ../eni-db
-	github.com/cosmos/cosmos-sdk => ../eni-cosmos
+	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	//github.com/cosmos/iavl => ../eni-iavl
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250412064101-a6bcc327b474
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2

@@ -182,6 +182,27 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	lastEpoch := am.keeper.GetEpoch(sdkCtx)
+	if lastEpoch.EpochInterval == 0 && sdkCtx.BlockHeight() == 1 {
+		epoch := types.Epoch{
+			GenesisTime:             sdkCtx.BlockTime(),
+			EpochInterval:           40,
+			CurrentEpoch:            1,
+			CurrentEpochStartHeight: 1,
+			CurrentEpochHeight:      1,
+		}
+		am.keeper.SetEpoch(sdkCtx, epoch)
+
+		sdkCtx.EventManager().EmitEvent(
+			sdk.NewEvent(types.EventTypeNewEpoch,
+				sdk.NewAttribute(types.AttributeEpochNumber, fmt.Sprint(epoch.CurrentEpoch)),
+				sdk.NewAttribute(types.AttributeEpochTime, fmt.Sprint(sdkCtx.BlockTime())),
+				sdk.NewAttribute(types.AttributeEpochHeight, fmt.Sprint(epoch.CurrentEpochHeight)),
+			),
+		)
+
+		telemetry.SetGauge(float32(epoch.CurrentEpoch), "epoch", "current")
+		return nil
+	}
 
 	if uint64(sdkCtx.BlockHeight())-(lastEpoch.CurrentEpochStartHeight) >= lastEpoch.EpochInterval {
 		//am.keeper.AfterEpochEnd(ctx, lastEpoch)
@@ -248,6 +269,9 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		return nil, err
 	}
 
+	ctx.Logger().Info(fmt.Sprintf("Update validatorSet, block height:%d, epoch:%d, new set:\n",
+		ctx.BlockHeader().Height, epoch.CurrentEpoch))
+
 	validatorSet := make([]abci.ValidatorUpdate, len(pubKeys))
 	for i := 0; i < len(pubKeys); i++ {
 		//innerPk := crypto.PublicKey_Ed25519{Ed25519: pkBytes}
@@ -256,6 +280,7 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 		pubKey := crypto.PublicKey{Sum: &pk}
 		validatorSet[i].PubKey = pubKey
 		validatorSet[i].Power = 1
+		ctx.Logger().Info(fmt.Sprintf("\tvalidator public key[%x], power:[%v]\n", pubKeys[i], validatorSet[i].Power))
 	}
 
 	return validatorSet, nil
