@@ -129,7 +129,7 @@ reset-multi-node:
 	@echo Resetting multi eni node...
 	rm -rf eni-nodes && git checkout eni-nodes
 
-start4-node:
+start4-node: build
 	@echo Starting 4 eni nodes...
 	nohup ./build/enid start --home=./eni-nodes/node1 &> ./build/node1.log &
 	nohup ./build/enid start --home=./eni-nodes/node2 --evm.http_port 1856 --evm.ws_port 1859 &> ./build/node2.log &
