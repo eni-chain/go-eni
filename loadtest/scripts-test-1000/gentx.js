@@ -12,10 +12,10 @@ const CONFIG = {
     numToAccounts: 1000,      // Number of "to" accounts
     txsPerAccountPerBatch: 10, // Transactions per account per batch
     numBatches: 10,           // Number of batches
-    amountEth: 0.1,           // ENI transfer amount
+    amountEth: 0.0001,           // ENI transfer amount
     chainId: 6912115,         // Chain ID
-    gasPrice: 1000000000,     // Unified gas price
-    outputFilePrefix: "tx_batch1000_", // Output file prefix
+    gasPrice: 0,     // Unified gas price
+    outputFilePrefix: "newtx_batch1000_", // Output file prefix
     txsPerFile: 10000,        // Transactions per file (1,000 accounts × 10 txs)
 };
 

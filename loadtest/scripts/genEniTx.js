@@ -7,15 +7,15 @@ const { ethers } = require("ethers");
     mnemonic: "party two quit over jaguar carry episode naive machine nothing borrow sell",
     senderPrivKey: "0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e",
     senderAddress: "0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
-    numAddresses: 100000,
+    numAddresses: 1000,
     amountEth: 1,            // Initial ENI transfer amount
     transferAmountEth: 0.1,  // Secondary ENI transfer amount
     amountToken: 100,        // Initial ERC20 transfer amount
     transferAmountToken: 10, // Secondary ERC20 transfer amount
     chainId: 6912115,        // Chain ID parameterized
-    gasPrice: 1000000000,    // Unified gasPrice
-    outputFile: "init.txt",          // Initial ENI transfer
-    transferFile: "transfer.txt"    // Secondary ENI transfer
+    gasPrice: 0,    // Unified gasPrice
+    outputFile: "init1000.txt",          // Initial ENI transfer
+    transferFile: "transfer1000.txt"    // Secondary ENI transfer
 
   };
 
@@ -71,7 +71,7 @@ const { ethers } = require("ethers");
       initialEthTxs.push(await senderWallet.signTransaction(txData));
     }
     fs.writeFileSync(CONFIG.outputFile, initialEthTxs.join("\n"));
-
+    return
     // ----------------------------------
     // 2. generate initial ERC20 transactions
     // ----------------------------------
