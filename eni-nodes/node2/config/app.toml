@@ -235,6 +235,7 @@ stop-node-on-err = true
 # implementations.
 max-txs = -1
 
+
 #############################################################################
 ###                             EniDB Configuration                       ###
 #############################################################################
@@ -293,3 +294,9 @@ ss-prune-interval = 60
 # ImportNumWorkers defines the concurrency for state sync import
 # defaults to 1
 ss-import-num-workers = 1
+
+[evm]
+http_enabled = true
+http_port = 8555
+ws_enabled = false
+
