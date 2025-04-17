@@ -71,11 +71,11 @@ func NewAnteHandlerAndDepGenerator(options HandlerOptions) (sdk.AnteHandler, err
 
 	anteHandler := sdk.ChainAnteDecorators(anteDecorators...)
 	evmAnteDecorators := []sdk.AnteDecorator{
-		evmante.NewEVMPreprocessDecorator(options.EVMKeeper, options.AppAccountKeeper),
-		evmante.NewBasicDecorator(options.EVMKeeper),
-		evmante.NewEVMFeeCheckDecorator(options.EVMKeeper),
-		evmante.NewEVMSigVerifyDecorator(options.EVMKeeper, options.LatestCtxGetter),
-		evmante.NewGasLimitDecorator(options.EVMKeeper),
+		evmante.NewEVMPreprocessDecorator(options.EVMKeeper, options.AppAccountKeeper, options.LatestCtxGetter),
+		//evmante.NewBasicDecorator(options.EVMKeeper),
+		//evmante.NewEVMFeeCheckDecorator(options.EVMKeeper),
+		//evmante.NewEVMSigVerifyDecorator(options.EVMKeeper, options.LatestCtxGetter),
+		//evmante.NewGasLimitDecorator(options.EVMKeeper),
 	}
 	evmAnteHandler := sdk.ChainAnteDecorators(evmAnteDecorators...)
 
