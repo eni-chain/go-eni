@@ -114,8 +114,8 @@ func getAddrAndSecKeys() (addr Address, pubKey ed25519.PublicKey, priKey ed25519
 }
 
 func solo() {
-	//get default validator addr, pubKey, and priKey, bond alice
-	alice := "251604eBfD1ddeef1F4f40b8F9Fc425538BE1339"
+	//get default validator addr, pubKey, and priKey, bond validator1
+	validator1 := "3140aedbf686A3150060Cb946893b0598b266f5C"
 	valAddr, valPubKey, valPriKey := getAddrByBase64PriKey("ooX0ThgTQSWWrH+gVy1w1esHCbLmi9+FyPWPn140F9iIujcEkgvQ9s4XJyoq99AHfqn3DCvRNCO8auNrpn0AEQ==")
 	fmt.Printf("\naddr:%x\npubKey:%x\npriKey:%x\n", valAddr, valPubKey, valPriKey)
 
@@ -123,34 +123,34 @@ func solo() {
 	//addr1, pubKey1, priKey1 := getAddrAndSecKeys()
 	//fmt.Printf("addr1:%x\npubKey1:%x\npriKey1:%x\n", addr1, pubKey1, priKey1)
 
-	//bond clare
-	clare := "F87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
+	//bond validator2
+	validator2 := "B680152a597c937164941e77cbF4a6b2F866675c"
 	addr2, pubKey2, priKey2 := getAddrByHexPriKey("b7cef85c61f7a973896d5b12f7de5020453dde51c19e4693fb6a55dfa8e3e64080f123e970b41abe1709ff176fc6bcd673afd41456e064e337f8713f8bcd068e")
 	fmt.Printf("\naddr2:%x\npubKey2:%x\npriKey:%x\n", addr2, pubKey2, priKey2)
 
 	//calldata for apply for validator
-	calldataF(alice, "hub", "applyForValidator", valAddr, valAddr, "node1", "node1 apply for validator", []byte(valPubKey))
-	calldataF(clare, "hub", "applyForValidator", addr2, addr2, "node2", "node2 apply for validator", []byte(pubKey2))
+	calldataF(validator1, "hub", "applyForValidator", valAddr, valAddr, "node1", "node1 apply for validator", []byte(valPubKey))
+	calldataF(validator2, "hub", "applyForValidator", addr2, addr2, "node2", "node2 apply for validator", []byte(pubKey2))
 
-	//admin(alice) audit
-	calldataF(alice, "hub", "auditPass", getAddrByHexStr(alice)) //alice
-	calldataF(clare, "hub", "auditPass", getAddrByHexStr(clare)) //clare
+	//admin(validator1) audit
+	calldataF(validator1, "hub", "auditPass", getAddrByHexStr(validator1)) //validator1
+	calldataF(validator2, "hub", "auditPass", getAddrByHexStr(validator2)) //validator2
 
-	//admin(alice) set init seed
+	//admin(validator1) set init seed
 	hexInitSeed := "ba1aa46438a7b446c0a6f1ca54d04eccda80fed5f1460be9e17cd6931eaef64c1f1cbe714c603521c2f06a4a39cd8d50015068890aaaf04d92d9ed997f9c0689"
 	initSeed, _ := hex.DecodeString(hexInitSeed)
-	calldataF(alice, "vrf", "initRandomSeed", initSeed, big.NewInt(1))
+	calldataF(validator1, "vrf", "initRandomSeed", initSeed, big.NewInt(1))
 
-	//alice send random
+	//validator1 send random
 	valSignature := ed25519.Sign(valPriKey, initSeed)
-	calldataF(alice, "vrf", "sendRandom", valSignature, big.NewInt(2))
+	calldataF(validator1, "vrf", "sendRandom", valSignature, big.NewInt(2))
 
-	//clare send random
+	//validator2 send random
 	valSignature2 := ed25519.Sign(priKey2, initSeed)
-	calldataF(clare, "vrf", "sendRandom", valSignature2, big.NewInt(2))
+	calldataF(validator2, "vrf", "sendRandom", valSignature2, big.NewInt(2))
 
 	//test verifyEd25519Sign method
-	calldataF(clare, "vrf", "verifyEd25519Sign", []byte(pubKey2), valSignature2, initSeed)
+	calldataF(validator2, "vrf", "verifyEd25519Sign", []byte(pubKey2), valSignature2, initSeed)
 }
 
 func multi() {
@@ -213,7 +213,7 @@ func multi() {
 }
 
 func main() {
-	//solo()
-	multi()
+	solo()
+	//multi()
 
 }

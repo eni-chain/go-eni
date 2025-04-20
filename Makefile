@@ -132,9 +132,9 @@ reset-multi-node:
 start4-node: build
 	@echo Starting 4 eni nodes...
 	nohup ./build/enid start --home=./eni-nodes/node1 &> ./build/node1.log &
-	nohup ./build/enid start --home=./eni-nodes/node2 --evm.http_port 1856 --evm.ws_port 1859 &> ./build/node2.log &
-	nohup ./build/enid start --home=./eni-nodes/node3 --evm.http_port 1866 --evm.ws_port 1869 &> ./build/node3.log &
-	nohup ./build/enid start --home=./eni-nodes/node4 --evm.http_port 1876 --evm.ws_port 1879 &> ./build/node4.log &
+	nohup ./build/enid start --home=./eni-nodes/node2 &> ./build/node2.log &
+	nohup ./build/enid start --home=./eni-nodes/node3 &> ./build/node3.log &
+	nohup ./build/enid start --home=./eni-nodes/node4 &> ./build/node4.log &
 	@echo Done starting 4 eni nodes.
 
 stop4-node:
