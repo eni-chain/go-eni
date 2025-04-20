@@ -14,7 +14,7 @@ const { ethers } = require("ethers");
     transferAmountToken: 10, // Secondary ERC20 transfer amount
     chainId: 6912115,        // Chain ID parameterized
     gasPrice: 0,    // Unified gasPrice
-    outputFile: "init1000.txt",          // Initial ENI transfer
+    outputFile: "init.txt",          // Initial ENI transfer
     transferFile: "transfer1000.txt"    // Secondary ENI transfer
 
   };

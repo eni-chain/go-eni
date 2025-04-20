@@ -109,6 +109,7 @@ func BuildGrpcClients(config *Config) ([]typestx.ServiceClient, []*grpc.ClientCo
 	grpcEndpoints := strings.Split(config.GrpcEndpoints, ",")
 	txClients := make([]typestx.ServiceClient, len(grpcEndpoints))
 	grpcConns := make([]*grpc.ClientConn, len(grpcEndpoints))
+	return txClients, grpcConns
 	var dialOptions []grpc.DialOption
 	dialOptions = append(dialOptions, grpc.WithDefaultCallOptions(
 		grpc.MaxCallRecvMsgSize(20*1024*1024),
@@ -251,6 +252,60 @@ func (c *LoadTestClient) ReadFileTxs(
 		panic(err.Error())
 	}
 	defer file.Close()
+	defer func() {
+		close(txQueue)
+		fmt.Printf("read file txs finish, now time %s  ReadTxCount %d \n", time.Now().Format(time.StampMicro), atomic.LoadInt64(ReadTxCount))
+	}()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		select {
+		case <-done:
+			return
+		default:
+			//if !rateLimiter.Allow() {
+			//	continue
+			//}
+			// Generate a message type first
+			messageType := "offlineTx"
+			metrics.IncrProducerEventCount(messageType)
+			var signedTx SignedTx
+			// Sign EVM and Cosmos TX differently
+			line := scanner.Text()
+			if len(line) == 0 {
+				break
+			}
+			tx := &ethtypes.Transaction{}
+			tx.UnmarshalBinary(common.FromHex(line))
+			signedTx = SignedTx{EvmTx: tx, MsgType: messageType}
+			EvmTxHashes = append(EvmTxHashes, signedTx.EvmTx.Hash())
+			atomic.AddInt64(ReadTxCount, 1)
+			select {
+			case txQueue <- signedTx:
+				atomic.AddInt64(producedCountPerMsgType[messageType], 1)
+			case <-done:
+				return
+			}
+		}
+	}
+}
+
+func (c *LoadTestClient) SyncReadFileTxs(
+	txQueue chan SignedTx,
+	wg *sync.WaitGroup,
+	done <-chan struct{},
+	rateLimiter *rate.Limiter,
+	filePath string,
+) {
+	defer wg.Done()
+	file, err := os.Open(filePath)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer file.Close()
+	defer func() {
+		close(txQueue)
+		fmt.Printf("read file txs finish, now time %s  ReadTxCount %d \n", time.Now().Format(time.StampMicro), atomic.LoadInt64(ReadTxCount))
+	}()
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		select {
@@ -326,6 +381,7 @@ func (c *LoadTestClient) SendTxs(
 				fmt.Printf("Stopping consumers\n")
 				return
 			}
+
 			// Acquire a semaphore
 			if err := semaphore.Acquire(ctx, 1); err != nil {
 				fmt.Printf("Failed to acquire semaphore: %v", err)
@@ -343,10 +399,139 @@ func (c *LoadTestClient) SendTxs(
 					atomic.AddInt64(SendTxCount, 1)
 				})
 			}
+			if atomic.LoadInt64(SendTxCount) == 10000 {
+				fmt.Printf(" elapsed time  %s finish 1w tx send \n", time.Now().Format(time.StampMicro))
+			}
 			// Release the semaphore
 			semaphore.Release(1)
 		}
 	}
+}
+
+func (c *LoadTestClient) Start(txQueue chan SignedTx,
+	keyIndex int,
+	done <-chan struct{},
+	sentCountPerMsgType map[string]*int64,
+	semaphore *semaphore.Weighted,
+	wg *sync.WaitGroup, workers int) {
+
+	defer func() {
+		fmt.Printf(" elapsed time  %s finish %d tx send \n", time.Now().Format(time.StampMicro), atomic.LoadInt64(SendTxCount))
+	}()
+
+	newWg := &sync.WaitGroup{}
+	newWg.Add(workers)
+	ctx, _ := context.WithCancel(context.Background())
+	for i := 0; i < workers; i++ {
+		go func(keyIndex int) {
+			defer newWg.Done()
+			for {
+				select {
+				case <-done:
+					return
+				case tx, ok := <-txQueue:
+					if !ok {
+						fmt.Printf("Stopping consumers\n")
+						fmt.Printf("stop tx send, elapsed time  %s finish %d tx send \n", time.Now().Format(time.StampMicro), atomic.LoadInt64(SendTxCount))
+						return
+					}
+					atomic.AddInt64(sentCountPerMsgType[tx.MsgType], 1)
+					metrics.IncrConsumerEventCount(tx.MsgType)
+
+					// Acquire a semaphore
+					//if err := semaphore.Acquire(ctx, 1); err != nil {
+					//	fmt.Printf("Failed to acquire semaphore: %v", err)
+					//	break
+					//}
+					if len(tx.TxBytes) > 0 {
+						// Send Cosmos Transactions
+						if SendTx(ctx, tx.TxBytes, typestx.BroadcastMode_BROADCAST_MODE_BLOCK, *c) {
+							atomic.AddInt64(producedCountPerMsgType[tx.MsgType], 1)
+						}
+					} else if tx.EvmTx != nil {
+						// Send EVM Transactions
+						c.EvmTxClients[keyIndex].SendEvmTx(tx.EvmTx, func() {
+							atomic.AddInt64(producedCountPerMsgType[tx.MsgType], 1)
+							atomic.AddInt64(SendTxCount, 1)
+						})
+					}
+
+					if atomic.LoadInt64(SendTxCount) == 10000 {
+						fmt.Printf(" elapsed time  %s finish 1w tx send \n", time.Now().Format(time.StampMicro))
+						return
+					}
+					// Release the semaphore
+					//semaphore.Release(1)
+				}
+			}
+		}(i)
+	}
+	newWg.Wait()
+
+}
+
+func (c *LoadTestClient) SyncStart(txQueue chan SignedTx,
+	keyIndex int,
+	done <-chan struct{},
+	sentCountPerMsgType map[string]*int64,
+	semaphore *semaphore.Weighted,
+	wg *sync.WaitGroup, workers int) {
+
+	defer func() {
+		fmt.Printf("Sync send tx elapsed time  %s finish %d tx send \n", time.Now().Format(time.StampMicro), atomic.LoadInt64(SendTxCount))
+	}()
+
+	defer wg.Done()
+
+	newWg := &sync.WaitGroup{}
+	newWg.Add(workers)
+	ctx, _ := context.WithCancel(context.Background())
+	for i := 0; i < workers; i++ {
+		go func(keyIndex int) {
+			defer newWg.Done()
+			for {
+				select {
+				case <-done:
+					return
+				case tx, ok := <-txQueue:
+					if !ok {
+						fmt.Printf("Stopping consumers\n")
+						fmt.Printf("stop tx send, elapsed time  %s finish %d tx send \n", time.Now().Format(time.StampMicro), atomic.LoadInt64(SendTxCount))
+						return
+					}
+					atomic.AddInt64(sentCountPerMsgType[tx.MsgType], 1)
+					metrics.IncrConsumerEventCount(tx.MsgType)
+
+					// Acquire a semaphore
+					//if err := semaphore.Acquire(ctx, 1); err != nil {
+					//	fmt.Printf("Failed to acquire semaphore: %v", err)
+					//	break
+					//}
+					if len(tx.TxBytes) > 0 {
+						// Send Cosmos Transactions
+						if SendTx(ctx, tx.TxBytes, typestx.BroadcastMode_BROADCAST_MODE_BLOCK, *c) {
+							atomic.AddInt64(producedCountPerMsgType[tx.MsgType], 1)
+						}
+					} else if tx.EvmTx != nil {
+						// Send EVM Transactions
+						c.EvmTxClients[keyIndex].SendEvmTx(tx.EvmTx, func() {
+							atomic.AddInt64(producedCountPerMsgType[tx.MsgType], 1)
+							atomic.AddInt64(SendTxCount, 1)
+						})
+					}
+
+					if atomic.LoadInt64(SendTxCount) == 10000 {
+						fmt.Printf(" elapsed time  %s finish 1w tx send \n", time.Now().Format(time.StampMicro))
+						return
+					}
+					// Release the semaphore
+					//semaphore.Release(1)
+				}
+			}
+		}(i)
+	}
+	newWg.Wait()
+
 }
 
 //nolint:staticcheck

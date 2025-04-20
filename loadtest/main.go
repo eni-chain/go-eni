@@ -160,6 +160,78 @@ func run(config *Config, txFilePath string) {
 	runEvmQueries(*config)
 }
 
+// Continuous send tx
+func runContinuous(config *Config, txFilePath []string) {
+	client := NewLoadTestClient(*config)
+
+	startWorkersForConti(client, *config, txFilePath)
+}
+
+func startWorkersForConti(client *LoadTestClient, config Config, filePaths []string) {
+	fmt.Printf("Starting loadtest workers for continuous \n")
+	configString, _ := json.Marshal(config)
+	fmt.Printf("Running with \n %s \n", string(configString))
+
+	// Catch OS signals for graceful shutdown
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+
+	sendInterval := 10
+	endEpoch := 3 + 1
+
+	if len(filePaths) < endEpoch {
+		fmt.Printf("Expecting a list of %d files but getting %d\n", endEpoch, len(filePaths))
+		return
+	}
+	//keys := client.AccountKeys
+	done := make(chan struct{})
+
+	txQueues := make([]chan SignedTx, 1)
+	txQueues[0] = make(chan SignedTx, 1000)
+	// Create producers and consumers
+
+	startTime := time.Now()
+	startHeight := getLastHeight(config.BlockchainEndpoint)
+	fmt.Printf("getLastHeight elapsed time %d\n ", time.Since(startTime).Microseconds())
+	expected := startHeight
+	fileIndex := 0
+
+	for endEpoch > 0 {
+		startHeight = getLastHeight(config.BlockchainEndpoint)
+		if startHeight == expected {
+			var wg sync.WaitGroup
+			wg.Add(2)
+			fmt.Printf("  %s start 1w tx send \n", time.Now().Format(time.StampMicro))
+			filePath := filePaths[fileIndex]
+			go client.SyncReadFileTxs(txQueues[0], &wg, done, nil, filePath)
+			go client.SyncStart(txQueues[0], 0, done, sentCountPerMsgType, nil, &wg, 20)
+			wg.Wait()
+			expected = startHeight + sendInterval
+			fileIndex++
+			endEpoch--
+			txQueues = make([]chan SignedTx, 1)
+			txQueues[0] = make(chan SignedTx, 1000)
+		} else {
+			time.Sleep(100 * time.Millisecond)
+		}
+	}
+
+	fmt.Printf("finish loadtest workers for continuous \n")
+	// Wait for a termination signal
+	if config.Ticks == 0 {
+		<-signals
+		fmt.Println("SIGINT received, shutting down producers and consumers...")
+		close(done)
+	}
+
+	fmt.Println("Waiting for wait groups...")
+
+	fmt.Println("Closing channels...")
+	for i := range txQueues {
+		close(txQueues[i])
+	}
+}
+
 // starts loadtest workers. If config.Constant is true, then we don't gather loadtest results and let producer/consumer
 // workers continue running. If config.Constant is false, then we will gather load test results in a file
 func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string) {
@@ -182,14 +254,15 @@ func startLoadtestWorkers(client *LoadTestClient, config Config, filePath string
 
 	fmt.Printf("Starting loadtest producers and consumers\n")
 	for i := range txQueues {
-		txQueues[i] = make(chan SignedTx, 10)
+		txQueues[i] = make(chan SignedTx, 1000)
 	}
 
 	producerRateLimiter := rate.NewLimiter(rate.Limit(config.TargetTps), int(config.TargetTps))
 	consumerSemaphore := semaphore.NewWeighted(int64(config.TargetTps))
 	if len(filePath) > 0 {
+		fmt.Printf("  %s start 1w tx send \n", time.Now().Format(time.StampMicro))
 		go client.ReadFileTxs(txQueues[0], &wg, done, producerRateLimiter, filePath)
-		go client.SendTxs(txQueues[0], 0, done, sentCountPerMsgType, consumerSemaphore, &wg)
+		go client.Start(txQueues[0], 0, done, sentCountPerMsgType, consumerSemaphore, &wg, 20)
 	} else {
 		for i := 0; i < len(keys); i++ {
 			go client.BuildTxs(txQueues[i], i, &wg, done, producerRateLimiter, producedCountPerMsgType)
@@ -642,5 +715,11 @@ func main() {
 
 	config := ReadConfig(*configFilePath)
 	fmt.Printf("Using config file: %s\n", *configFilePath)
-	run(&config, *txFilePath)
+	txFilePaths := strings.Split(*txFilePath, ",")
+	if len(txFilePaths) > 1 {
+		runContinuous(&config, txFilePaths)
+	} else {
+		run(&config, *txFilePath)
+	}
+
 }
