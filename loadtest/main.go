@@ -161,13 +161,13 @@ func run(config *Config, txFilePath string) {
 }
 
 // Continuous send tx
-func runContinuous(config *Config, txFilePath []string) {
+func runContinuous(config *Config, txFilePath []string, height int) {
 	client := NewLoadTestClient(*config)
 
-	startWorkersForConti(client, *config, txFilePath)
+	startWorkersForConti(client, *config, txFilePath, height)
 }
 
-func startWorkersForConti(client *LoadTestClient, config Config, filePaths []string) {
+func startWorkersForConti(client *LoadTestClient, config Config, filePaths []string, height int) {
 	fmt.Printf("Starting loadtest workers for continuous \n")
 	configString, _ := json.Marshal(config)
 	fmt.Printf("Running with \n %s \n", string(configString))
@@ -189,11 +189,14 @@ func startWorkersForConti(client *LoadTestClient, config Config, filePaths []str
 	txQueues := make([]chan SignedTx, 1)
 	txQueues[0] = make(chan SignedTx, 1000)
 	// Create producers and consumers
-
+	expected := height
 	startTime := time.Now()
 	startHeight := getLastHeight(config.BlockchainEndpoint)
 	fmt.Printf("getLastHeight elapsed time %d\n ", time.Since(startTime).Microseconds())
-	expected := startHeight
+	if startHeight > expected {
+		fmt.Printf("now blockHeight is %d expected blockHeight is %d,It cannot be less than it \n", startHeight, expected)
+		return
+	}
 	fileIndex := 0
 
 	for endEpoch > 0 {
@@ -711,13 +714,14 @@ func ReadConfig(path string) Config {
 func main() {
 	configFilePath := flag.String("config-file", GetDefaultConfigFilePath(), "Path to the config.json file to use for this run")
 	txFilePath := flag.String("tx", "", "Path to the file containing Ethereum transactions")
+	txStartHeight := flag.Int("height", 20, "The starting height at which the transaction sending begins")
 	flag.Parse()
 
 	config := ReadConfig(*configFilePath)
 	fmt.Printf("Using config file: %s\n", *configFilePath)
 	txFilePaths := strings.Split(*txFilePath, ",")
 	if len(txFilePaths) > 1 {
-		runContinuous(&config, txFilePaths)
+		runContinuous(&config, txFilePaths, *txStartHeight)
 	} else {
 		run(&config, *txFilePath)
 	}
