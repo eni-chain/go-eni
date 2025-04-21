@@ -83,7 +83,7 @@ async function main() {
 
     //fromToMapping3
     // Assign a fixed "to" address to each "from" account
-    const fromToMapping3 = fromAccounts.map((fromAccount, index) => ({
+    const fromToMapping3 = fromAccounts3.map((fromAccount, index) => ({
         from: fromAccount,
         to: toAccounts[index % CONFIG.numToAccounts] // Cycle through "to" addresses
     }));

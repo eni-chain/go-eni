@@ -176,8 +176,8 @@ func startWorkersForConti(client *LoadTestClient, config Config, filePaths []str
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
-	sendInterval := 10
-	endEpoch := 3 + 1
+	sendInterval := 4
+	endEpoch := len(filePaths)
 
 	if len(filePaths) < endEpoch {
 		fmt.Printf("Expecting a list of %d files but getting %d\n", endEpoch, len(filePaths))
@@ -216,6 +216,7 @@ func startWorkersForConti(client *LoadTestClient, config Config, filePaths []str
 			txQueues[0] = make(chan SignedTx, 1000)
 		} else {
 			time.Sleep(100 * time.Millisecond)
+			fmt.Printf("now blockHeight is %d expected blockHeight is %d\n wait ", startHeight, expected)
 		}
 	}
 
