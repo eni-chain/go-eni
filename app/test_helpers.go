@@ -4,7 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	tmtypes "github.com/cometbft/cometbft/types"
+	"github.com/cosmos/cosmos-sdk/codec"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	genutilstypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -22,13 +26,17 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/suite"
 	//"github.com/tendermint/tendermint/libs/log"
-	"github.com/cometbft/cometbft/libs/log"
+	//"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	//tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	//dbm "github.com/tendermint/tm-db"
-	dbm "github.com/cometbft/cometbft-db"
+	//dbm "github.com/cometbft/cometbft-db"
+	dbm "github.com/cosmos/cosmos-db"
 
 	//minttypes "github.com/eni-chain/go-eni/x/mint/types"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/cosmos/cosmos-sdk/testutil/sims"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
@@ -207,40 +215,34 @@ func Setup(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...fu
 	encodingConfig := MakeEncodingConfig()
 	cdc := encodingConfig.Marshaler
 
-	options := []AppOption{
-		func(app *App) {
-			app.receiptStore = NewInMemoryStateStore()
-		},
-	}
+	//options := []servertypes.AppOptions{
+	//	func(app *App) {
+	//		app.receiptStore = NewInMemoryStateStore()
+	//	},
+	//}
 
-	res = New(
+	res, _ = New(
 		log.NewNopLogger(),
 		db,
 		nil,
 		true,
-		map[int64]bool{},
 		DefaultNodeHome,
-		1,
-		enableEVMCustomPrecompiles,
-		config.TestConfig(),
-		encodingConfig,
-		TestAppOpts{},
-		EmptyACLOpts,
-		options,
+		sims.EmptyAppOptions{},
 		baseAppOptions...,
 	)
 	if !isCheckTx {
-		genesisState := NewDefaultGenesisState(cdc)
-		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
-		if err != nil {
-			panic(err)
-		}
+		//genesisState := NewDefaultGenesisState(cdc)
+		//stateBytes, err := json.MarshalIndent(genesisState, "", " ")
+		//if err != nil {
+		//	panic(err)
+		//}
 
+		genDoc, err := genutilstypes.AppGenesisFromFile(filepath.Join(DefaultNodeHome, "config/genesis.json"))
 		_, err = res.InitChain(
-			context.Background(), &abci.RequestInitChain{
+			&abci.RequestInitChain{
 				Validators:      []abci.ValidatorUpdate{},
 				ConsensusParams: DefaultConsensusParams,
-				AppStateBytes:   stateBytes,
+				AppStateBytes:   genDoc.AppState,
 			},
 		)
 		if err != nil {
