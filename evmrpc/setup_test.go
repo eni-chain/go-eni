@@ -2,6 +2,7 @@ package evmrpc_test
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -11,13 +12,15 @@ import (
 	"math/big"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 	"testing"
 	"time"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/bytes"
-	"github.com/cometbft/cometbft/libs/log"
+	//"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
 	types2 "github.com/cometbft/cometbft/proto/tendermint/types"
 	cmtversion "github.com/cometbft/cometbft/proto/tendermint/version"
 	"github.com/cometbft/cometbft/rpc/client/mock"
@@ -507,23 +510,27 @@ var MultiTxCtx sdk.Context
 func init() {
 	types.RegisterInterfaces(EncodingConfig.InterfaceRegistry)
 	testApp := app.Setup(false, false)
-	Ctx = testApp.GetContextForDeliverTx([]byte{}).WithBlockHeight(8)
+	//Ctx = testApp.GetContextForDeliverTx([]byte{}).WithBlockHeight(8)
+	Ctx = testApp.GetContextForCheckTx([]byte{}).WithBlockHeight(8)
 	MultiTxCtx, _ = Ctx.CacheContext()
-	EVMKeeper = &testApp.EvmKeeper
+	EVMKeeper = testApp.EvmKeeper
 	EVMKeeper.InitGenesis(Ctx, *evmtypes.DefaultGenesis())
-	eniAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("eniAddr")))
+	//eniAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("eniAddr")))
+	eniAddr, err := sdk.AccAddressFromHexUnsafe(common.Bytes2Hex([]byte("eniAddr")))
 	if err != nil {
 		panic(err)
 	}
-	err = testApp.BankKeeper.MintCoins(Ctx, "evm", sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
+
+	err = testApp.BankKeeper.MintCoins(Ctx, "evm", sdk.NewCoins(sdk.NewCoin("ueni", math.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
-	err = testApp.BankKeeper.SendCoinsFromModuleToAccount(Ctx, "evm", eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", sdk.NewInt(10))))
+	err = testApp.BankKeeper.SendCoinsFromModuleToAccount(Ctx, "evm", eniAddr, sdk.NewCoins(sdk.NewCoin("ueni", math.NewInt(10))))
 	if err != nil {
 		panic(err)
 	}
-	testApp.Commit(context.Background())
+	//testApp.Commit(context.Background())
+	testApp.Commit()
 	ctxProvider := func(height int64) sdk.Context {
 		if height == MockHeight2 {
 			return MultiTxCtx
@@ -536,7 +543,8 @@ func init() {
 	goodConfig.WSPort = TestWSPort
 	goodConfig.FilterTimeout = 500 * time.Millisecond
 	goodConfig.MaxLogNoBlock = 4
-	infoLog, err := log.NewDefaultLogger("text", "info")
+	//infoLog, err := log.NewDefaultLogger("text", "info")
+	infoLog := log.NewLogger(os.Stdout)
 	if err != nil {
 		panic(err)
 	}
