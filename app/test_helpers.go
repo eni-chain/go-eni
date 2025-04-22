@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	crptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	//"github.com/cosmos/cosmos-sdk/simapp"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 
@@ -124,8 +125,9 @@ func (s *TestWrapper) FundAcc(acc sdk.AccAddress, amounts sdk.Coins) {
 
 func (s *TestWrapper) setupValidator(bondStatus stakingtypes.BondStatus, valPub crptotypes.PubKey) sdk.ValAddress {
 	valAddr := sdk.ValAddress(valPub.Address())
-	bondDenom := s.App.StakingKeeper.GetParams(s.Ctx).BondDenom
-	selfBond := sdk.NewCoins(sdk.Coin{Amount: sdk.NewInt(100), Denom: bondDenom})
+	//bondDenom := s.App.StakingKeeper.GetParams(s.Ctx).BondDenom
+	params, _ := s.App.StakingKeeper.GetParams(s.Ctx)
+	selfBond := sdk.NewCoins(sdk.Coin{Amount: math.NewInt(100), Denom: params.BondDenom})
 
 	s.FundAcc(sdk.AccAddress(valAddr), selfBond)
 
@@ -133,8 +135,8 @@ func (s *TestWrapper) setupValidator(bondStatus stakingtypes.BondStatus, valPub 
 	//msg := sh.CreateValidatorMsg(valAddr, valPub, selfBond[0].Amount)
 	//sh.Handle(msg, true)
 
-	val, found := s.App.StakingKeeper.GetValidator(s.Ctx, valAddr)
-	s.Require().True(found)
+	val, err := s.App.StakingKeeper.GetValidator(s.Ctx, valAddr)
+	s.Require().True(err == nil, "")
 
 	val = val.UpdateStatus(bondStatus)
 	s.App.StakingKeeper.SetValidator(s.Ctx, val)
