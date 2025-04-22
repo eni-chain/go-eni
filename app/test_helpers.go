@@ -242,7 +242,8 @@ func Setup(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...fu
 			&abci.RequestInitChain{
 				Validators:      []abci.ValidatorUpdate{},
 				ConsensusParams: DefaultConsensusParams,
-				AppStateBytes:   genDoc.AppState,
+				//AppStateBytes:   stateBytes,
+				AppStateBytes: genDoc.AppState,
 			},
 		)
 		if err != nil {
@@ -258,43 +259,38 @@ func SetupWithSc(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions
 	encodingConfig := MakeEncodingConfig()
 	cdc := encodingConfig.Marshaler
 
-	options := []AppOption{
-		func(app *App) {
-			app.receiptStore = NewInMemoryStateStore()
-		},
-	}
+	//options := []AppOption{
+	//	func(app *App) {
+	//		app.receiptStore = NewInMemoryStateStore()
+	//	},
+	//}
 
-	res = New(
+	res, _ = New(
 		log.NewNopLogger(),
 		db,
 		nil,
 		true,
-		map[int64]bool{},
 		DefaultNodeHome,
-		1,
-		enableEVMCustomPrecompiles,
-		config.TestConfig(),
-		encodingConfig,
-		TestAppOpts{true},
-		EmptyACLOpts,
-		options,
+		sims.EmptyAppOptions{},
 		baseAppOptions...,
 	)
 	if !isCheckTx {
-		genesisState := NewDefaultGenesisState(cdc)
-		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
-		if err != nil {
-			panic(err)
-		}
+		//genesisState := NewDefaultGenesisState(cdc)
+		//stateBytes, err := json.MarshalIndent(genesisState, "", " ")
+		//if err != nil {
+		//	panic(err)
+		//}
 
 		// TODO: remove once init chain works with SC
 		defer func() { _ = recover() }()
 
+		genDoc, err := genutilstypes.AppGenesisFromFile(filepath.Join(DefaultNodeHome, "config/genesis.json"))
 		_, err = res.InitChain(
-			context.Background(), &abci.RequestInitChain{
+			&abci.RequestInitChain{
 				Validators:      []abci.ValidatorUpdate{},
 				ConsensusParams: DefaultConsensusParams,
-				AppStateBytes:   stateBytes,
+				//AppStateBytes:   stateBytes,
+				AppStateBytes: genDoc.AppState,
 			},
 		)
 		if err != nil {
