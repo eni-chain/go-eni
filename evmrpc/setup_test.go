@@ -687,7 +687,7 @@ func generateTxData() {
 		Topics: []common.Hash{common.HexToHash("0x1111111111111111111111111111111111111111111111111111111111111111"),
 			common.HexToHash("0x1111111111111111111111111111111111111111111111111111111111111112")},
 	}}}})
-	if err := EVMKeeper.MockReceipt(Ctx, tx1.Hash(), &types.Receipt{
+	if err := EVMKeeper.SetReceipt(Ctx, tx1.Hash(), &types.Receipt{
 		From:              "0x1234567890123456789012345678901234567890",
 		To:                "0x1234567890123456789012345678901234567890",
 		TransactionIndex:  0,
@@ -707,7 +707,7 @@ func generateTxData() {
 	}); err != nil {
 		panic(err)
 	}
-	eniAddr, err := sdk.AccAddressFromHex(common.Bytes2Hex([]byte("eniAddr")))
+	eniAddr, err := sdk.AccAddressFromHexUnsafe(common.Bytes2Hex([]byte("eniAddr")))
 	if err != nil {
 		panic(err)
 	}
@@ -715,9 +715,9 @@ func generateTxData() {
 	EVMKeeper.SetAddressMapping(Ctx, eniAddr, evmAddr)
 	unassociatedAddr := common.HexToAddress("0x1234567890123456789023456789012345678901")
 	debugTraceAddr := common.HexToAddress("0x5B4eba929F3811980f5AE0c5D04fa200f837DF4E")
-	amts := sdk.NewCoins(sdk.NewCoin(EVMKeeper.GetBaseDenom(Ctx), sdk.NewInt(1000000)))
-	balanceAmts := sdk.NewCoins(sdk.NewCoin(EVMKeeper.GetBaseDenom(Ctx), sdk.NewInt(1000)))
-	debugTraceAmts := sdk.NewCoins(sdk.NewCoin(EVMKeeper.GetBaseDenom(Ctx), sdk.NewInt(100000)))
+	amts := sdk.NewCoins(sdk.NewCoin(EVMKeeper.GetBaseDenom(Ctx), math.NewInt(1000000)))
+	balanceAmts := sdk.NewCoins(sdk.NewCoin(EVMKeeper.GetBaseDenom(Ctx), math.NewInt(1000)))
+	debugTraceAmts := sdk.NewCoins(sdk.NewCoin(EVMKeeper.GetBaseDenom(Ctx), math.NewInt(100000)))
 
 	EVMKeeper.BankKeeper().MintCoins(Ctx, types.ModuleName, amts)
 	EVMKeeper.BankKeeper().SendCoinsFromModuleToAccount(Ctx, types.ModuleName, sdk.AccAddress(unassociatedAddr[:]), balanceAmts)
@@ -795,7 +795,7 @@ func setupLogs() {
 		},
 	}}}})
 	CtxMultiTx := Ctx.WithBlockHeight(MockHeight2)
-	EVMKeeper.MockReceipt(CtxMultiTx, multiTxBlockTx1.Hash(), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxMultiTx, multiTxBlockTx1.Hash(), &types.Receipt{
 		BlockNumber:      MockHeight2,
 		TransactionIndex: 1, // start at 1 bc 0 is the non-evm tx
 		TxHashHex:        multiTxBlockTx1.Hash().Hex(),
@@ -816,7 +816,7 @@ func setupLogs() {
 			common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000456"),
 		},
 	}}}})
-	EVMKeeper.MockReceipt(CtxMultiTx, multiTxBlockTx2.Hash(), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxMultiTx, multiTxBlockTx2.Hash(), &types.Receipt{
 		BlockNumber:      MockHeight2,
 		TransactionIndex: 3,
 		TxHashHex:        multiTxBlockTx2.Hash().Hex(),
@@ -834,7 +834,7 @@ func setupLogs() {
 			common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000456"),
 		},
 	}}}})
-	EVMKeeper.MockReceipt(CtxMultiTx, multiTxBlockTx3.Hash(), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxMultiTx, multiTxBlockTx3.Hash(), &types.Receipt{
 		BlockNumber:      MockHeight2,
 		TransactionIndex: 4,
 		TxHashHex:        multiTxBlockTx3.Hash().Hex(),
@@ -853,7 +853,7 @@ func setupLogs() {
 		},
 	}}}})
 	CtxMock := Ctx.WithBlockHeight(MockHeight8)
-	EVMKeeper.MockReceipt(CtxMock, multiTxBlockTx4.Hash(), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxMock, multiTxBlockTx4.Hash(), &types.Receipt{
 		BlockNumber:      MockHeight8,
 		TransactionIndex: 1,
 		TxHashHex:        multiTxBlockTx4.Hash().Hex(),
@@ -872,7 +872,7 @@ func setupLogs() {
 			common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000456"),
 		},
 	}}}})
-	EVMKeeper.MockReceipt(CtxMock, multiTxBlockSynthTx.Hash(), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxMock, multiTxBlockSynthTx.Hash(), &types.Receipt{
 		TxType:           evmrpc.ShellEVMTxType,
 		BlockNumber:      MockHeight100,
 		TransactionIndex: 0,
@@ -886,25 +886,25 @@ func setupLogs() {
 		EffectiveGasPrice: 0,
 	})
 	CtxDebugTrace := Ctx.WithBlockHeight(MockHeight101)
-	EVMKeeper.MockReceipt(CtxDebugTrace, common.HexToHash(DebugTraceHashHex), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxDebugTrace, common.HexToHash(DebugTraceHashHex), &types.Receipt{
 		BlockNumber:      MockHeight101,
 		TransactionIndex: 0,
 		TxHashHex:        DebugTraceHashHex,
 	})
 	CtxDebugTracePanic := Ctx.WithBlockHeight(MockHeight103)
-	EVMKeeper.MockReceipt(CtxDebugTracePanic, common.HexToHash(TestNonPanicTxHash), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxDebugTracePanic, common.HexToHash(TestNonPanicTxHash), &types.Receipt{
 		BlockNumber:      MockHeight103,
 		TransactionIndex: 0,
 		TxHashHex:        TestNonPanicTxHash,
 	})
-	EVMKeeper.MockReceipt(CtxDebugTracePanic, common.HexToHash(TestPanicTxHash), &types.Receipt{
+	EVMKeeper.SetReceipt(CtxDebugTracePanic, common.HexToHash(TestPanicTxHash), &types.Receipt{
 		BlockNumber:      MockHeight103,
 		TransactionIndex: 1,
 		TxHashHex:        TestPanicTxHash,
 	})
 	txNonEvmBz, _ := Encoder(TxNonEvmWithSyntheticLog)
 	txNonEvmHash := sha256.Sum256(txNonEvmBz)
-	EVMKeeper.MockReceipt(CtxMultiTx, txNonEvmHash, &types.Receipt{
+	EVMKeeper.SetReceipt(CtxMultiTx, txNonEvmHash, &types.Receipt{
 		BlockNumber:      MockHeight2,
 		TransactionIndex: 1,
 		TxHashHex:        common.Hash(txNonEvmHash).Hex(),

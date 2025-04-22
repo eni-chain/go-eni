@@ -4,6 +4,7 @@ import (
 	//"context"
 	//"encoding/json"
 	tmtypes "github.com/cometbft/cometbft/types"
+	protov2 "google.golang.org/protobuf/proto"
 	//"github.com/cosmos/cosmos-sdk/codec"
 	//distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	genutilstypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
@@ -62,6 +63,11 @@ var DefaultConsensusParams = &tmproto.ConsensusParams{
 
 type TestTx struct {
 	msgs []sdk.Msg
+}
+
+func (t TestTx) GetMsgsV2() ([]protov2.Message, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func NewTestTx(msgs []sdk.Msg) TestTx {
