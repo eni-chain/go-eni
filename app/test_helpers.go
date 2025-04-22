@@ -160,36 +160,40 @@ func (s *TestWrapper) setupValidator(bondStatus stakingtypes.BondStatus, valPub 
 func (s *TestWrapper) BeginBlock() {
 	var proposer sdk.ValAddress
 
-	validators := s.App.StakingKeeper.GetAllValidators(s.Ctx)
+	validators, _ := s.App.StakingKeeper.GetAllValidators(s.Ctx)
 	s.Require().Equal(1, len(validators))
 
 	valAddrFancy, err := validators[0].GetConsAddr()
 	s.Require().NoError(err)
-	proposer = valAddrFancy.Bytes()
+	proposer = valAddrFancy
 
-	validator, found := s.App.StakingKeeper.GetValidator(s.Ctx, proposer)
-	s.Assert().True(found)
+	validator, err := s.App.StakingKeeper.GetValidator(s.Ctx, proposer)
+	s.Assert().True(err == nil, "")
 
 	valConsAddr, err := validator.GetConsAddr()
 
 	s.Require().NoError(err)
 
-	valAddr := valConsAddr.Bytes()
+	valAddr := valConsAddr
 
 	newBlockTime := s.Ctx.BlockTime().Add(2 * time.Second)
 
 	header := tmproto.Header{Height: s.Ctx.BlockHeight() + 1, Time: newBlockTime}
 	newCtx := s.Ctx.WithBlockTime(newBlockTime).WithBlockHeight(s.Ctx.BlockHeight() + 1)
 	s.Ctx = newCtx
-	lastCommitInfo := abci.LastCommitInfo{
+	lastCommitInfo := abci.CommitInfo{
 		Votes: []abci.VoteInfo{{
-			Validator:       abci.Validator{Address: valAddr, Power: 1000},
-			SignedLastBlock: true,
+			Validator: abci.Validator{Address: valAddr, Power: 1000},
+			//SignedLastBlock: true,
+			BlockIdFlag: tmproto.BlockIDFlagCommit,
 		}},
 	}
-	reqBeginBlock := abci.RequestBeginBlock{Header: header, LastCommitInfo: lastCommitInfo}
+	//reqBeginBlock := abci.RequestBeginBlock{Header: header, LastCommitInfo: lastCommitInfo}
+	//s.App.BeginBlocker(s.Ctx, reqBeginBlock)
+	s.Ctx.WithVoteInfos(lastCommitInfo.Votes)
 
-	s.App.BeginBlocker(s.Ctx, reqBeginBlock)
+	s.Ctx.WithBlockHeader(header)
+	s.App.BeginBlocker(s.Ctx)
 }
 
 func (s *TestWrapper) EndBlock() {
