@@ -388,10 +388,10 @@ func (c *MockClient) Subscribe(ctx context.Context, subscriber string, query str
 			<-NewHeadsCalled
 			for i := uint64(0); i < 5; i++ {
 				resCh <- coretypes.ResultEvent{
-					SubscriptionID: subscriber,
-					Query:          query,
-					Data:           *c.mockEventDataNewBlockHeader(i + 1),
-					Events:         c.mockEventDataNewBlockHeader(i + 1).ABCIEvents(),
+					//SubscriptionID: subscriber,
+					Query:  query,
+					Data:   *c.mockEventDataNewBlockHeader(i + 1),
+					Events: c.mockEventDataNewBlockHeader(i + 1).ABCIEvents(),
 				}
 				time.Sleep(20 * time.Millisecond) // sleep a little to simulate real events
 			}
