@@ -1,13 +1,13 @@
 package app
 
 import (
-	"context"
-	"encoding/json"
+	//"context"
+	//"encoding/json"
 	tmtypes "github.com/cometbft/cometbft/types"
-	"github.com/cosmos/cosmos-sdk/codec"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	//"github.com/cosmos/cosmos-sdk/codec"
+	//distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	genutilstypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	"os"
+	//"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -22,7 +22,7 @@ import (
 
 	//"github.com/cosmos/cosmos-sdk/x/staking/teststaking"
 	//"github.com/tendermint/tendermint/config"
-	"github.com/cometbft/cometbft/config"
+	//"github.com/cometbft/cometbft/config"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/suite"
 	//"github.com/tendermint/tendermint/libs/log"
@@ -35,7 +35,7 @@ import (
 	dbm "github.com/cosmos/cosmos-db"
 
 	//minttypes "github.com/eni-chain/go-eni/x/mint/types"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	//servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/testutil/sims"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
@@ -212,8 +212,8 @@ func (s *TestWrapper) EndBlock() {
 
 func Setup(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...func(*baseapp.BaseApp)) (res *App) {
 	db := dbm.NewMemDB()
-	encodingConfig := MakeEncodingConfig()
-	cdc := encodingConfig.Marshaler
+	//encodingConfig := MakeEncodingConfig()
+	//cdc := encodingConfig.Marshaler
 
 	//options := []servertypes.AppOptions{
 	//	func(app *App) {
@@ -256,8 +256,8 @@ func Setup(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...fu
 
 func SetupWithSc(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...func(*baseapp.BaseApp)) (res *App) {
 	db := dbm.NewMemDB()
-	encodingConfig := MakeEncodingConfig()
-	cdc := encodingConfig.Marshaler
+	//encodingConfig := MakeEncodingConfig()
+	//cdc := encodingConfig.Marshaler
 
 	//options := []AppOption{
 	//	func(app *App) {
@@ -301,55 +301,55 @@ func SetupWithSc(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions
 	return res
 }
 
-func SetupTestingAppWithLevelDb(isCheckTx bool, enableEVMCustomPrecompiles bool) (*App, func()) {
-	dir := "eni_testing"
-	db, err := sdk.NewLevelDB("eni_leveldb_testing", dir)
-	if err != nil {
-		panic(err)
-	}
-	encodingConfig := MakeEncodingConfig()
-	cdc := encodingConfig.Marshaler
-	app := New(
-		log.NewNopLogger(),
-		db,
-		nil,
-		true,
-		map[int64]bool{},
-		DefaultNodeHome,
-		5,
-		enableEVMCustomPrecompiles,
-		nil,
-		encodingConfig,
-		TestAppOpts{},
-		EmptyACLOpts,
-		nil,
-	)
-	if !isCheckTx {
-		genesisState := NewDefaultGenesisState(cdc)
-		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
-		if err != nil {
-			panic(err)
-		}
-
-		_, err = app.InitChain(
-			context.Background(), &abci.RequestInitChain{
-				Validators:      []abci.ValidatorUpdate{},
-				ConsensusParams: DefaultConsensusParams,
-				AppStateBytes:   stateBytes,
-			},
-		)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	cleanupFn := func() {
-		db.Close()
-		err = os.RemoveAll(dir)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	return app, cleanupFn
-}
+//func SetupTestingAppWithLevelDb(isCheckTx bool, enableEVMCustomPrecompiles bool) (*App, func()) {
+//	dir := "eni_testing"
+//	db, err := sdk.NewLevelDB("eni_leveldb_testing", dir)
+//	if err != nil {
+//		panic(err)
+//	}
+//	encodingConfig := MakeEncodingConfig()
+//	cdc := encodingConfig.Marshaler
+//	app := New(
+//		log.NewNopLogger(),
+//		db,
+//		nil,
+//		true,
+//		map[int64]bool{},
+//		DefaultNodeHome,
+//		5,
+//		enableEVMCustomPrecompiles,
+//		nil,
+//		encodingConfig,
+//		TestAppOpts{},
+//		EmptyACLOpts,
+//		nil,
+//	)
+//	if !isCheckTx {
+//		genesisState := NewDefaultGenesisState(cdc)
+//		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
+//		if err != nil {
+//			panic(err)
+//		}
+//
+//		_, err = app.InitChain(
+//			context.Background(), &abci.RequestInitChain{
+//				Validators:      []abci.ValidatorUpdate{},
+//				ConsensusParams: DefaultConsensusParams,
+//				AppStateBytes:   stateBytes,
+//			},
+//		)
+//		if err != nil {
+//			panic(err)
+//		}
+//	}
+//
+//	cleanupFn := func() {
+//		db.Close()
+//		err = os.RemoveAll(dir)
+//		if err != nil {
+//			panic(err)
+//		}
+//	}
+//
+//	return app, cleanupFn
+//}
