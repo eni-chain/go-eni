@@ -307,14 +307,15 @@ func (c *MockClient) Block(_ context.Context, h *int64) (*coretypes.ResultBlock,
 	return c.mockBlock(*h), nil
 }
 
-func (c *MockClient) BlockByHash(_ context.Context, hash bytes.HexBytes) (*coretypes.ResultBlock, error) {
-	if hash.String() == DebugTraceBlockHash[2:] {
+func (c *MockClient) BlockByHash(_ context.Context, hash []byte) (*coretypes.ResultBlock, error) {
+	hexHash := strings.ToUpper(hex.EncodeToString(hash))
+	if hexHash == DebugTraceBlockHash[2:] {
 		return c.mockBlock(MockHeight101), nil
 	}
-	if hash.String() == DebugTracePanicBlockHash[2:] {
+	if hexHash == DebugTracePanicBlockHash[2:] {
 		return c.mockBlock(MockHeight103), nil
 	}
-	if hash.String() == MultiTxBlockHash[2:] {
+	if hexHash == MultiTxBlockHash[2:] {
 		return c.mockBlock(MockHeight2), nil
 	}
 	return c.mockBlock(MockHeight8), nil
@@ -465,11 +466,11 @@ func (c *MockClient) BroadcastTx(context.Context, tmtypes.Tx) (*coretypes.Result
 	return &coretypes.ResultBroadcastTx{Code: 0, Hash: []byte("0x123")}, nil
 }
 
-func (c *MockClient) Tx(context.Context, bytes.HexBytes, bool) (*coretypes.ResultTx, error) {
+func (c *MockClient) Tx(context.Context, []byte, bool) (*coretypes.ResultTx, error) {
 	return &coretypes.ResultTx{Hash: bytes.HexBytes(TestCosmosTxHash), Height: MockHeight8, TxResult: abci.ExecTxResult{EvmTxInfo: &abci.EvmTxInfo{TxHash: TestEvmTxHash}}}, nil
 }
 
-func (c *MockClient) UnconfirmedTxs(ctx context.Context, page, perPage *int) (*coretypes.ResultUnconfirmedTxs, error) {
+func (c *MockClient) UnconfirmedTxs(_ context.Context, _ *int) (*coretypes.ResultUnconfirmedTxs, error) {
 	tx, _ := Encoder(UnconfirmedTx)
 	return &coretypes.ResultUnconfirmedTxs{
 		Count:      1,
@@ -487,7 +488,7 @@ func (m *MockBadClient) Block(context.Context, *int64) (*coretypes.ResultBlock, 
 	return nil, errors.New("error block")
 }
 
-func (m *MockBadClient) BlockByHash(context.Context, bytes.HexBytes) (*coretypes.ResultBlock, error) {
+func (m *MockBadClient) BlockByHash(context.Context, []byte) (*coretypes.ResultBlock, error) {
 	return nil, errors.New("error block")
 }
 
