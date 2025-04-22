@@ -11,7 +11,6 @@ import (
 	"math/big"
 	"net"
 	"net/http"
-	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -22,7 +21,7 @@ import (
 	types2 "github.com/cometbft/cometbft/proto/tendermint/types"
 	cmtversion "github.com/cometbft/cometbft/proto/tendermint/version"
 	"github.com/cometbft/cometbft/rpc/client/mock"
-	"github.com/cometbft/cometbft/rpc/core/types"
+	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -406,56 +405,58 @@ func (c *MockClient) Unsubscribe(_ context.Context, _, _ string) error {
 	return nil
 }
 
-func (c *MockClient) Events(_ context.Context, req *coretypes.RequestEvents) (*coretypes.ResultEvents, error) {
-	if strings.Contains(req.Filter.Query, "tm.event = 'NewBlock'") {
-		var cursor int
-		var err error
-		if req.After != "" {
-			cursor, err = strconv.Atoi(req.After)
-			if err != nil {
-				panic("invalid cursor")
-			}
-		} else {
-			cursor = MockHeight8
-		}
-		resultBlock := c.mockBlock(int64(cursor))
-		data := tmtypes.EventDataNewBlock{
-			Block:   resultBlock.Block,
-			BlockID: tmtypes.BlockID{},
-		}
-		newCursor := strconv.FormatInt(int64(cursor)+1, 10)
-		return buildSingleResultEvent(data, false, newCursor, "event"), nil
-	} else {
-		panic("unknown query")
-	}
-}
-
-func buildSingleResultEvent(data interface{}, more bool, cursor string, event string) *coretypes.ResultEvents {
-	eventData, err := json.Marshal(data)
-	if err != nil {
-		panic(err)
-	}
-	wrappedData := evmrpc.EventItemDataWrapper{
-		Type:  "NewBlock",
-		Value: eventData,
-	}
-	bz, err := json.Marshal(wrappedData)
-	if err != nil {
-		panic(err)
-	}
-	return &coretypes.ResultEvents{
-		Items: []*coretypes.EventItem{
-			{
-				Cursor: cursor,
-				Event:  event,
-				Data:   bz,
-			},
-		},
-		More:   more,
-		Oldest: cursor,
-		Newest: cursor,
-	}
-}
+// this methods not required by interfaces, and there is no calling point
+//todo: maybe should implement EventsClient.Subscribe replaced
+//func (c *MockClient) Events(_ context.Context, req *coretypes.RequestEvents) (*coretypes.ResultEvents, error) {
+//	if strings.Contains(req.Filter.Query, "tm.event = 'NewBlock'") {
+//		var cursor int
+//		var err error
+//		if req.After != "" {
+//			cursor, err = strconv.Atoi(req.After)
+//			if err != nil {
+//				panic("invalid cursor")
+//			}
+//		} else {
+//			cursor = MockHeight8
+//		}
+//		resultBlock := c.mockBlock(int64(cursor))
+//		data := tmtypes.EventDataNewBlock{
+//			Block:   resultBlock.Block,
+//			BlockID: tmtypes.BlockID{},
+//		}
+//		newCursor := strconv.FormatInt(int64(cursor)+1, 10)
+//		return buildSingleResultEvent(data, false, newCursor, "event"), nil
+//	} else {
+//		panic("unknown query")
+//	}
+//}
+//
+//func buildSingleResultEvent(data interface{}, more bool, cursor string, event string) *coretypes.ResultEvents {
+//	eventData, err := json.Marshal(data)
+//	if err != nil {
+//		panic(err)
+//	}
+//	wrappedData := evmrpc.EventItemDataWrapper{
+//		Type:  "NewBlock",
+//		Value: eventData,
+//	}
+//	bz, err := json.Marshal(wrappedData)
+//	if err != nil {
+//		panic(err)
+//	}
+//	return &coretypes.ResultEvents{
+//		Items: []*coretypes.EventItem{
+//			{
+//				Cursor: cursor,
+//				Event:  event,
+//				Data:   bz,
+//			},
+//		},
+//		More:   more,
+//		Oldest: cursor,
+//		Newest: cursor,
+//	}
+//}
 
 func (c *MockClient) BroadcastTx(context.Context, tmtypes.Tx) (*coretypes.ResultBroadcastTx, error) {
 	return &coretypes.ResultBroadcastTx{Code: 0, Hash: []byte("0x123")}, nil
