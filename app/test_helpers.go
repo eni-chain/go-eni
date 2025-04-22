@@ -5,6 +5,8 @@ import (
 	//"encoding/json"
 	tmtypes "github.com/cometbft/cometbft/types"
 	protov2 "google.golang.org/protobuf/proto"
+	"os"
+
 	//"github.com/cosmos/cosmos-sdk/codec"
 	//distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	genutilstypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
@@ -236,6 +238,7 @@ func Setup(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...fu
 		sims.EmptyAppOptions{},
 		baseAppOptions...,
 	)
+	baseapp.SetChainID("goeni")(res.BaseApp)
 	if !isCheckTx {
 		//genesisState := NewDefaultGenesisState(cdc)
 		//stateBytes, err := json.MarshalIndent(genesisState, "", " ")
@@ -243,15 +246,17 @@ func Setup(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...fu
 		//	panic(err)
 		//}
 
-		genDoc, err := genutilstypes.AppGenesisFromFile(filepath.Join(DefaultNodeHome, "config/genesis.json"))
-		_, err = res.InitChain(
-			&abci.RequestInitChain{
-				Validators:      []abci.ValidatorUpdate{},
-				ConsensusParams: DefaultConsensusParams,
-				//AppStateBytes:   stateBytes,
-				AppStateBytes: genDoc.AppState,
-			},
-		)
+		dir, _ := os.Getwd()
+		genDoc, err := genutilstypes.AppGenesisFromFile(filepath.Join(dir, "../eni-node/config/genesis.json"))
+		req := abci.RequestInitChain{
+			ChainId:         "goeni",
+			Validators:      []abci.ValidatorUpdate{},
+			ConsensusParams: DefaultConsensusParams,
+			//AppStateBytes:   stateBytes,
+			AppStateBytes: genDoc.AppState,
+		}
+
+		_, err = res.InitChain(&req)
 		if err != nil {
 			panic(err)
 		}
