@@ -197,8 +197,9 @@ func (s *TestWrapper) BeginBlock() {
 }
 
 func (s *TestWrapper) EndBlock() {
-	reqEndBlock := abci.RequestEndBlock{Height: s.Ctx.BlockHeight()}
-	s.App.EndBlocker(s.Ctx, reqEndBlock)
+	//reqEndBlock := abci.RequestEndBlock{Height: s.Ctx.BlockHeight()}
+	//s.App.EndBlocker(s.Ctx, reqEndBlock)
+	s.App.EndBlocker(s.Ctx)
 }
 
 func Setup(isCheckTx bool, enableEVMCustomPrecompiles bool, baseAppOptions ...func(*baseapp.BaseApp)) (res *App) {
