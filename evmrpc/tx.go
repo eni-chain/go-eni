@@ -189,13 +189,9 @@ func (t *TransactionAPI) GetTransactionByHash(ctx context.Context, hash common.H
 	defer recordMetrics("eth_getTransactionByHash", t.connectionType, startTime, returnErr == nil)
 	sdkCtx := t.ctxProvider(LatestCtxHeight)
 	// first try get from mempool
-	for page := 1; page <= UnconfirmedTxQueryMaxPage; page++ {
-		//res, err := t.tmClient.UnconfirmedTxs(ctx, &page, nil)
-		//todo:need to verify that the new method is passed correctly
-		res, err := t.tmClient.UnconfirmedTxs(ctx, &page)
-		if err != nil || len(res.Txs) == 0 {
-			break
-		}
+	maxTxs := UnconfirmedTxQueryMaxPage * UnconfirmedTxQueryPerPage
+	res, err := t.tmClient.UnconfirmedTxs(ctx, &maxTxs)
+	if err == nil && len(res.Txs) > 0 {
 		for _, tx := range res.Txs {
 			etx := getEthTxForTxBz(tx, t.txConfig.TxDecoder())
 			if etx != nil && etx.Hash() == hash {
