@@ -176,7 +176,8 @@ func startWorkersForConti(client *LoadTestClient, config Config, filePaths []str
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
-	sendInterval := 4
+	sendInterval := 4 // node number
+	//	sendInterval := 3 // node number
 	endEpoch := len(filePaths)
 
 	if len(filePaths) < endEpoch {
@@ -715,13 +716,13 @@ func ReadConfig(path string) Config {
 func main() {
 	configFilePath := flag.String("config-file", GetDefaultConfigFilePath(), "Path to the config.json file to use for this run")
 	txFilePath := flag.String("tx", "", "Path to the file containing Ethereum transactions")
-	txStartHeight := flag.Int("height", 20, "The starting height at which the transaction sending begins")
+	txStartHeight := flag.Int("height", 0, "The starting height at which the transaction sending begins")
 	flag.Parse()
 
 	config := ReadConfig(*configFilePath)
 	fmt.Printf("Using config file: %s\n", *configFilePath)
 	txFilePaths := strings.Split(*txFilePath, ",")
-	if len(txFilePaths) > 1 {
+	if *txStartHeight > 0 {
 		runContinuous(&config, txFilePaths, *txStartHeight)
 	} else {
 		run(&config, *txFilePath)

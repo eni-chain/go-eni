@@ -214,8 +214,7 @@ external_address = ""
 seeds = ""
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = "aeae7d4753419b11c958248de72fc8ba26460701@localhost:26656,c816663066d786f89e61c23076a37e0c0c81be7d@localhost:26666,9b6526775a0b81e72b2e1ed9a1ad7c58601618ff@localhost:26676,66594928af8120b4af318125b5d23f5545cf03a7@localhost:26686,"
-
+persistent_peers = "aeae7d4753419b11c958248de72fc8ba26460701@localhost:26656,c816663066d786f89e61c23076a37e0c0c81be7d@localhost:26676,9b6526775a0b81e72b2e1ed9a1ad7c58601618ff@172.31.44.20:26686,66594928af8120b4af318125b5d23f5545cf03a7@172.31.44.20:26696"
 # Path to address book
 addr_book_file = "config/addrbook.json"
 
@@ -239,13 +238,13 @@ persistent_peers_max_dial_period = "0s"
 flush_throttle_timeout = "100ms"
 
 # Maximum size of a message packet payload, in bytes
-max_packet_msg_payload_size = 1024
+max_packet_msg_payload_size = 10240000
 
 # Rate at which packets can be sent, in bytes/second
-send_rate = 5120000
+send_rate = 5120000000
 
 # Rate at which packets can be received, in bytes/second
-recv_rate = 5120000
+recv_rate = 5120000000
 
 # Set true to enable the peer-exchange reactor
 pex = true
@@ -313,7 +312,7 @@ broadcast = true
 wal_dir = ""
 
 # Maximum number of transactions in the mempool
-size = 5000
+size = 50000
 
 # Limit the total size of all txs in the mempool.
 # This only accounts for raw transactions (e.g. given 1MB transactions and
@@ -351,7 +350,7 @@ max_batch_bytes = 0
 # performance results using the default P2P configuration.
 experimental_max_gossip_connections_to_persistent_peers = 0
 experimental_max_gossip_connections_to_non_persistent_peers = 0
-pending-size = 5000
+pending-size = 50000
 
 max-pending-txs-bytes = 1073741824
 
@@ -427,7 +426,7 @@ timeout_precommit_delta = "500ms"
 # How long we wait after committing a block, before starting on the new
 # height (this gives us a chance to receive some more precommits, even
 # though we already have +2/3).
-timeout_commit = "1s"
+timeout_commit = "400ms"
 
 # How many blocks to look back to check existence of the node's consensus votes before joining consensus
 # When non-zero, the node will panic upon restart
