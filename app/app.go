@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/cosmos/cosmos-sdk/x/evm/types"
 
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	"github.com/eni-chain/go-eni/evmrpc"
@@ -334,6 +335,8 @@ func New(
 	}
 
 	app.SetAnteHandler(anteHandler)
+	app.SetEvmMsgsHandler(app.SetEvmMsgs)
+	app.SetEvmResultsHandler(app.EvmKeeper.SetTxResults)
 
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
@@ -506,4 +509,37 @@ func BlockedAddresses() map[string]bool {
 		}
 	}
 	return result
+}
+
+func (app *App) SetEvmMsgs(txs [][]byte) {
+	msgs := app.getEvmMsgs(txs)
+	app.EvmKeeper.SetMsgs(msgs)
+}
+
+func (app *App) getEvmMsgs(txs [][]byte) []*types.MsgEVMTransaction {
+	var res []*types.MsgEVMTransaction
+	for _, tx := range txs {
+		sdkTx, err := app.TxDecode(tx)
+		if err != nil {
+			continue
+		}
+		res = append(res, convertEVMMsg(sdkTx))
+	}
+
+	return res
+}
+
+func convertEVMMsg(tx sdk.Tx) (res *types.MsgEVMTransaction) {
+	defer func() {
+		if err := recover(); err != nil {
+			res = nil
+		}
+	}()
+	if tx == nil {
+		return nil
+	} else if emsg := types.GetEVMTransactionMessage(tx); emsg != nil && !emsg.IsAssociateTx() {
+		return emsg
+	} else {
+		return nil
+	}
 }

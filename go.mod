@@ -140,7 +140,7 @@ require (
 	github.com/docker/docker-credential-helpers v0.8.2 // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
-	github.com/dop251/goja v0.0.0-20230605162241-28ee0ee714f3 // indirect
+	github.com/dop251/goja v0.0.0-20230806174421-c933cf95e127 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.6.0 // indirect
 	github.com/emicklei/dot v1.6.2 // indirect
@@ -315,7 +315,7 @@ require (
 
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
-	github.com/eni-chain/eni-db v0.0.0-20250417072804-cd50b72160de
+	github.com/eni-chain/eni-db v0.0.0-20250424114347-283a9ffa38d3
 )
 
 require (
@@ -351,9 +351,9 @@ require (
 replace (
 	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250417161735-801d336f4305
 	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250417161735-801d336f4305
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250417161735-801d336f4305
-	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250424113550-5ead4968aa60
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250417161735-801d336f4305
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250424114303-4de9d878db6b
+	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250416110654-231bd23f28f3
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250424114303-4de9d878db6b
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250412064101-a6bcc327b474
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
 )
