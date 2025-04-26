@@ -2,13 +2,14 @@ package goeni
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
 	cosmossdk_io_math "cosmossdk.io/math"
-	"encoding/json"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -18,7 +19,6 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/eni-chain/go-eni/precompiles/ed25519Verify"
 	ContractNodeLog "github.com/eni-chain/go-eni/precompiles/nodeLog"
-	"github.com/eni-chain/go-eni/syscontract"
 	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	epochtypes "github.com/eni-chain/go-eni/x/epoch/keeper"
 	"github.com/ethereum/go-ethereum/common"
@@ -166,10 +166,10 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(goCtx context.Context) error {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	if ctx.BlockHeight() == 1 {
-		syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
-	}
+	//ctx := sdk.UnwrapSDKContext(goCtx)
+	//if ctx.BlockHeight() == 1 {
+	//	syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
+	//}
 	return nil
 }
 

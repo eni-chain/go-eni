@@ -25,7 +25,7 @@ import (
 func BlockTest(a *App, bt *ethtests.BlockTest) {
 	a.EvmKeeper.BlockTest = bt
 	a.EvmKeeper.EthBlockTestConfig.Enabled = true
-
+	a.SetEnableParallelTxExecution(false)
 	gendoc, err := genutilstypes.AppGenesisFromFile(filepath.Join(DefaultNodeHome, "config/genesis.json"))
 	if err != nil {
 		panic(err)

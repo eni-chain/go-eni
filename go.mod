@@ -353,8 +353,9 @@ replace (
 	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250425115757-a8baea9378d9
 	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250425115757-a8baea9378d9
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250424120902-2d3e2bcd91da
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250425115757-a8baea9378d9
-	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250412064101-a6bcc327b474
+	//github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250425115757-a8baea9378d9
+	github.com/cosmos/cosmos-sdk => ../eni-cosmos
+	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250217083617-06521db733fd
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
 )
 
