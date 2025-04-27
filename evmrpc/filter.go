@@ -49,6 +49,8 @@ type filter struct {
 
 	// LogsSubscription
 	lastToHeight int64
+	// hashes block list
+	hashes []common.Hash
 }
 
 type FilterAPI struct {
@@ -126,7 +128,7 @@ func (a *FilterAPI) NewFilter(
 }
 
 func (a *FilterAPI) NewBlockFilter(
-	_ context.Context,
+	ctx context.Context,
 ) (id ethrpc.ID, err error) {
 	defer recordMetrics(fmt.Sprintf("%s_newBlockFilter", a.namespace), a.connectionType, time.Now(), err == nil)
 	a.filtersMu.Lock()
@@ -137,6 +139,41 @@ func (a *FilterAPI) NewBlockFilter(
 		deadline:    time.NewTimer(a.filterConfig.timeout),
 		blockCursor: "",
 	}
+
+	q := NewBlockQueryBuilder()
+	builtQuery := q.Build()
+	eventCh, err := a.tmClient.Subscribe(ctx, string(curFilterID), builtQuery)
+	if err != nil {
+		return "", fmt.Errorf("subscribe to block filter failed: %w", err)
+	}
+
+	go func(eventCh <-chan coretypes.ResultEvent) {
+		for {
+			select {
+			case ev, ok := <-eventCh:
+				if !ok {
+					a.filtersMu.Lock()
+					delete(a.filters, curFilterID)
+					a.filtersMu.Unlock()
+					return
+				}
+				data, ok := ev.Data.(tmtypes.EventDataNewBlock)
+				if !ok {
+					continue
+				}
+				a.filtersMu.Lock()
+				if f, found := a.filters[curFilterID]; found {
+					f.hashes = append(f.hashes, common.BytesToHash(data.Block.Hash()))
+					a.filters[curFilterID] = f
+				} else {
+					// If not found, it indicates that the filterID does not exist or has been deleted due to timeout, and there is no need to continue listening.
+					return
+				}
+				a.filtersMu.Unlock()
+			}
+		}
+	}(eventCh)
+
 	return curFilterID, nil
 }
 
@@ -161,15 +198,10 @@ func (a *FilterAPI) GetFilterChanges(
 
 	switch filter.typ {
 	case BlocksSubscription:
-		//hashes, cursor, err := a.getBlockHeadersAfter(ctx, filter.blockCursor)
-		hashes, err := a.getBlockHeadersAfter(ctx, filterID)
-		if err != nil {
-			return nil, err
-		}
-		updatedFilter := a.filters[filterID]
-		//updatedFilter.blockCursor = cursor
-		a.filters[filterID] = updatedFilter
-		return hashes, nil
+		hashes := filter.hashes
+		filter.hashes = nil
+		a.filters[filterID] = filter
+		return returnHashes(hashes), nil
 	case LogsSubscription:
 		// filter by hash would have no updates if it has previously queried for this crit
 		if filter.fc.BlockHash != nil && filter.lastToHeight > 0 {
@@ -494,4 +526,12 @@ func matchTopics(topics [][]common.Hash, eventTopics []common.Hash) bool {
 		}
 	}
 	return true
+}
+
+// No nil return allowed, should return an empty slice
+func returnHashes(hashes []common.Hash) []common.Hash {
+	if hashes == nil {
+		return []common.Hash{}
+	}
+	return hashes
 }

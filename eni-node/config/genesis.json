@@ -255,15 +255,15 @@
             "codes": [],
             "nonces": [],
             "params": {
-                "base_fee_per_gas": "0",
+                "base_fee_per_gas": "1000000000",
                 "init_eni_amount": "100000000000000000000000000,100000000000000000000000000,100000000000000000000000000,100000000000000000000000000",
                 "init_eni_address": "3140aedbf686A3150060Cb946893b0598b266f5C,B680152a597c937164941e77cbF4a6b2F866675c,5746036C781851B9eF234219e770E1591104561f,7B6ba0Fe2610BF3c69Fc571C37aeC7bB87A281D2",
-                "max_dynamic_base_fee_downward_adjustment": "0",
-                "max_dynamic_base_fee_upward_adjustment": "0",
-                "maximum_fee_per_gas": "0",
-                "minimum_fee_per_gas": "0",
+                "max_dynamic_base_fee_downward_adjustment": "1",
+                "max_dynamic_base_fee_upward_adjustment": "1",
+                "maximum_fee_per_gas": "2000000000",
+                "minimum_fee_per_gas": "1000000000",
                 "priority_normalizer": "1",
-                "target_gas_used_per_block": "0"
+                "target_gas_used_per_block": "15000000"
             },
             "serialized": [],
             "states": []

@@ -2,7 +2,6 @@ package evmrpc_test
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -16,6 +15,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"cosmossdk.io/math"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/bytes"
@@ -279,6 +280,34 @@ func (c *MockClient) mockEventDataNewBlockHeader(mockHeight uint64) *tmtypes.Eve
 	}
 }
 
+func (c *MockClient) mockEventDataNewBlock(mockHeight int64) *tmtypes.EventDataNewBlock {
+	return &tmtypes.EventDataNewBlock{
+		Block: &tmtypes.Block{
+			Header: mockBlockHeader(mockHeight),
+			Data: tmtypes.Data{
+				Txs: []tmtypes.Tx{
+					func() []byte {
+						bz, _ := Encoder(Tx1)
+						return bz
+					}(),
+					func() []byte {
+						bz, _ := Encoder(TxNonEvmWithSyntheticLog)
+						return bz
+					}(),
+				},
+			},
+			LastCommit: &tmtypes.Commit{
+				Height: mockHeight - 1,
+			},
+		},
+		BlockID: MockBlockID,
+		ResultFinalizeBlock: abci.ResponseFinalizeBlock{
+			TxResults: mockTxResult(),
+			AppHash:   mustHexToBytes("0000000000000000000000000000000000000000000000000000000000000006"),
+		},
+	}
+}
+
 func mockTxResult() []*abci.ExecTxResult {
 	return []*abci.ExecTxResult{
 		{
@@ -385,7 +414,21 @@ func (c *MockClient) BlockResults(_ context.Context, height *int64) (*coretypes.
 }
 
 func (c *MockClient) Subscribe(ctx context.Context, subscriber string, query string, outCapacity ...int) (<-chan coretypes.ResultEvent, error) {
-	if query == "tm.event = 'NewBlockHeader'" {
+	switch query {
+	case "tm.event = 'NewBlock'":
+		resCh := make(chan coretypes.ResultEvent, 5)
+		go func() {
+			<-NewHeadsCalled
+			for i := int64(0); i < 5; i++ {
+				resCh <- coretypes.ResultEvent{
+					Query: query,
+					Data:  *c.mockEventDataNewBlock(i + 1),
+				}
+				time.Sleep(20 * time.Millisecond) // sleep a little to simulate real events
+			}
+		}()
+		return resCh, nil
+	case "tm.event = 'NewBlockHeader'":
 		resCh := make(chan coretypes.ResultEvent, 5)
 		go func() {
 			<-NewHeadsCalled
@@ -400,6 +443,13 @@ func (c *MockClient) Subscribe(ctx context.Context, subscriber string, query str
 			}
 		}()
 		return resCh, nil
+
+	default:
+		return nil, errors.New("unknown query")
+	}
+
+	if query == "tm.event = 'NewBlockHeader'" {
+
 		// hardcoded test case for simplicity
 	}
 	return nil, errors.New("unknown query")
