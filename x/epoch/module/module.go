@@ -145,7 +145,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 	if genState.GetEpoch() == nil {
 		epoch := types.Epoch{
 			GenesisTime:             ctx.BlockTime(),
-			EpochInterval:           1000,
+			EpochInterval:           40,
 			CurrentEpoch:            1,
 			CurrentEpochStartHeight: 1,
 			CurrentEpochHeight:      1,
@@ -185,7 +185,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 	if lastEpoch.EpochInterval == 0 && sdkCtx.BlockHeight() == 1 {
 		epoch := types.Epoch{
 			GenesisTime:             sdkCtx.BlockTime(),
-			EpochInterval:           1000,
+			EpochInterval:           40,
 			CurrentEpoch:            1,
 			CurrentEpochStartHeight: 1,
 			CurrentEpochHeight:      1,

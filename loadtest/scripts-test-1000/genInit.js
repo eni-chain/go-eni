@@ -6,15 +6,15 @@ const fs = require("fs");
 const CONFIG = {
     mnemonic: "party two quit over jaguar carry episode naive machine nothing borrow sell",
     senderPrivKey: "0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e",
-    senderAddress: "0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
+    senderAddress: "",
     numAddresses: 4400,
     fromAddress: 400,
-    amountEth: 1,            // Initial ENI transfer amount
+    amountEth: 2,            // Initial ENI transfer amount
     transferAmountEth: 0.1,  // Secondary ENI transfer amount
     amountToken: 100,        // Initial ERC20 transfer amount
     transferAmountToken: 10, // Secondary ERC20 transfer amount
     chainId: 6912115,        // Chain ID parameterized
-    gasPrice: 0,    // Unified gasPrice
+    gasPrice: 2000000000,    // Unified gasPrice
     outputFile: "init4000.txt",          // Initial ENI transfer
     transferFile: "transfer1000.txt"    // Secondary ENI transfer
 };
@@ -41,9 +41,14 @@ async function main() {
 
     fromAccounts = Accounts.splice(0,400)
     console.log("receiverAddress length==============",fromAccounts.length)
+    let addresss = ""
+    for (const from of fromAccounts) {
+        addresss += from.address +","
+    }
+    console.log(addresss)
     console.log("receivers length==============",Accounts.length)
 
-
+    return
     let mainNonce = 0;  // Main account nonce starts from 0
     // ----------------------------------
     // 1. Generate initial ENI transfer transactions (main account → receiving addresses)

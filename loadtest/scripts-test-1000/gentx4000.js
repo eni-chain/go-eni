@@ -7,14 +7,14 @@ const CONFIG = {
     senderMnemonic: "party two quit over jaguar carry episode naive machine nothing borrow sell",
     receiverMnemonic: "word sea trophy enhance rain glad skill drastic proof guitar lemon decline",
     senderPrivKey: "0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e",
-    senderAddress: "0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52",
+    senderAddress: "",
     numFromAccounts: 4400,    // Number of "from" accounts
     numToAccounts: 1000,      // Number of "to" accounts
     txsPerAccountPerBatch: 10, // Transactions per account per batch
     numBatches: 3,           // Number of batches
-    amountEth: 0.0001,           // ENI transfer amount
+    amountEth: 0.001,           // ENI transfer amount
     chainId: 6912115,         // Chain ID
-    gasPrice: 0,     // Unified gas price
+    gasPrice: 2000000000,     // Unified gas price
     outputFilePrefix: "newtx_batch1000_", // Output file prefix
     outputNodeFilePrefix: "acc_tx_batch1000_",
     txsPerFile: 10000,        // Transactions per file (1,000 accounts × 10 txs)
@@ -24,7 +24,7 @@ async function main() {
     // Initialize (all offline)
     const { chainId, gasPrice } = CONFIG;
     const senderWallet = new ethers.Wallet(CONFIG.senderPrivKey);
-
+    console.log(gasPrice);
     // Generate "from" accounts (assumed funded) using HD wallet
     const senderSeed = bip39.mnemonicToSeedSync(CONFIG.senderMnemonic);
     const senderRootNode = ethers.HDNodeWallet.fromSeed(senderSeed);

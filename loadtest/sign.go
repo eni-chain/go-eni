@@ -16,9 +16,12 @@ import (
 	"time"
 
 	"github.com/btcsuite/btcd/btcec/v2"
+	cryptokeys "github.com/cometbft/cometbft/crypto"
+	"github.com/cometbft/cometbft/crypto/sr25519"
 	"github.com/cosmos/cosmos-sdk/client"
 	clienttx "github.com/cosmos/cosmos-sdk/client/tx"
-
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
+	"github.com/cosmos/cosmos-sdk/crypto"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
@@ -159,47 +162,47 @@ func (sc *SignerClient) GetKey(accountID, backend, accountKeyFilePath string) cr
 	return privKey
 }
 
-//func (sc *SignerClient) GetValKeys() []cryptokeys.PrivKey {
-//	valKeys := []cryptokeys.PrivKey{}
-//	userHomeDir, _ := os.UserHomeDir()
-//	valKeysFilePath := filepath.Join(userHomeDir, "exported_keys")
-//	files, _ := os.ReadDir(valKeysFilePath)
-//	for _, fn := range files {
-//		// we dont expect subdirectories, so we can just handle files
-//		valKeyFile := filepath.Join(valKeysFilePath, fn.Name())
-//		privKeyBz, err := os.ReadFile(valKeyFile)
-//		if err != nil {
-//			panic(err)
-//		}
-//
-//		privKeyBytes, algo, err := crypto.UnarmorDecryptPrivKey(string(privKeyBz), "12345678")
-//		if err != nil {
-//			panic(err)
-//		}
-//
-//		var privKey cryptokeys.PrivKey
-//		var ok bool
-//		if algo == string(hd.Sr25519Type) {
-//			typedKey := &sr25519.PrivKey{}
-//			if err := typedKey.UnmarshalJSON(privKeyBytes.Bytes()); err != nil {
-//				panic(err)
-//			}
-//			privKey = typedKey
-//		} else {
-//			key, err := legacy.PrivKeyFromBytes(privKeyBytes.Bytes())
-//			if err != nil {
-//				panic(err)
-//			}
-//
-//			if privKey, ok = key.(cryptokeys.PrivKey); !ok {
-//				panic("invalid private key type")
-//			}
-//		}
-//
-//		valKeys = append(valKeys, privKey)
-//	}
-//	return valKeys
-//}
+func (sc *SignerClient) GetValKeys() []cryptokeys.PrivKey {
+	valKeys := []cryptokeys.PrivKey{}
+	userHomeDir, _ := os.UserHomeDir()
+	valKeysFilePath := filepath.Join(userHomeDir, "exported_keys")
+	files, _ := os.ReadDir(valKeysFilePath)
+	for _, fn := range files {
+		// we dont expect subdirectories, so we can just handle files
+		valKeyFile := filepath.Join(valKeysFilePath, fn.Name())
+		privKeyBz, err := os.ReadFile(valKeyFile)
+		if err != nil {
+			panic(err)
+		}
+
+		privKeyBytes, algo, err := crypto.UnarmorDecryptPrivKey(string(privKeyBz), "12345678")
+		if err != nil {
+			panic(err)
+		}
+
+		var privKey cryptokeys.PrivKey
+		var ok bool
+		if algo == string(hd.Sr25519Type) {
+			typedKey := &sr25519.PrivKey{}
+			if err := typedKey.UnmarshalJSON(privKeyBytes.Bytes()); err != nil {
+				panic(err)
+			}
+			privKey = typedKey
+		} else {
+			key, err := legacy.PrivKeyFromBytes(privKeyBytes.Bytes())
+			if err != nil {
+				panic(err)
+			}
+
+			if privKey, ok = key.(cryptokeys.PrivKey); !ok {
+				panic("invalid private key type")
+			}
+		}
+
+		valKeys = append(valKeys, privKey)
+	}
+	return valKeys
+}
 
 func (sc *SignerClient) SignTx(chainID string, txBuilder *client.TxBuilder, privKey cryptotypes.PrivKey, seqDelta uint64) {
 	var sigsV2 []signing.SignatureV2
