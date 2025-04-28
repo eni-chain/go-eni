@@ -4,16 +4,13 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract Hub is LocalLog {
+contract Hub is DelegateCallBase, administrationBase{
     //todo: add event and commit for methods
 
     uint256 constant ratioDeno = 100000;
     uint256 constant ratioNumer = 20000;
     uint256 constant increasePerCoin = 1;
     uint256 constant weiPerCoin = 1000000000000000000;
-
-    //administrator address
-    address _admin;
 
     //validator apply info
     struct applicant{
@@ -30,21 +27,19 @@ contract Hub is LocalLog {
     //List of applicants
     mapping (address=>applicant) _applicants;
 
-    modifier onlyAdmin() {
-        require(msg.sender == _admin, "The message sender must be administrator");
-        _;
-    }
-
-    function init() external {
-        _admin = ADMIN_ADDR;
+    function init(address admin) external onlyNotInited {
+        llog(DEBUG, abi.encodePacked("call init with param:", H(admin)));
+        _init(admin);
     }
 
     function updateAdmin(address admin) external onlyAdmin {
-        _admin = admin;
+        _updateAdmin(admin);
     }
 
-    function getAdmin() external  returns (address){
-        return _admin;
+    //This method is called by proxy contract to update the address of the new implementation contract by the current implementation contract
+    function updateImpl(address impl) external onlyAdmin {
+        //require(msg.sender == _admin, "Msg sender is not administrator");
+        _setImpl(impl);
     }
 
     function applyForValidator(
@@ -56,6 +51,7 @@ contract Hub is LocalLog {
     ) payable external {
         require(msg.value >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_applicants[msg.sender].amount == 0, "applicant already exsit");
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
 
         applicant storage a = _applicants[msg.sender];
         a.operator = msg.sender;
@@ -66,11 +62,15 @@ contract Hub is LocalLog {
         a.name = name;
         a.description = description;
         a.enterTime = block.timestamp;
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator finished, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
     }
 
     function auditPass(address operator) external onlyAdmin {
+        llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass start."));
         applicant storage a = _applicants[operator];
         require(a.amount > 0, "applicant not exists");
+        llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass ", a.name, ", amount: ", S(a.amount)));
+
 
         IValidatorManager(VALIDATOR_MANAGER_ADDR).addValidator(
             a.operator,
@@ -83,14 +83,17 @@ contract Hub is LocalLog {
             a.pubKey
         );
 
+        //llog(DEBUG, abi.encodePacked(H(msg.sender), " addValidator finished."));
+
         delete _applicants[operator];
     }
 
     function blockReward(address node) external returns (address, uint256) {
-
+        llog(DEBUG, abi.encodePacked("system call blockReward, to node:", H(node)));
         address operator;
         uint256 pledgeAmount;
         (operator, pledgeAmount) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getOperatorAndPledgeAmount(node);
+        llog(DEBUG, abi.encodePacked("system call blockReward, to operator:", H(operator), ", pledge amount: ", S(pledgeAmount)));
         uint256 reward = calculateReward(pledgeAmount);
         return (operator, reward);
     }
