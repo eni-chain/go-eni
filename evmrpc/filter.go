@@ -484,7 +484,7 @@ func (f *LogFetcher) FindLogsByBloom(block *coretypes.ResultBlock, filters [][]b
 			}
 			continue
 		}
-		if !f.includeSyntheticReceipts && (receipt.TxType == ShellEVMTxType || receipt.EffectiveGasPrice == 0) {
+		if !f.includeSyntheticReceipts && (receipt.TxType == ShellEVMTxType) {
 			continue
 		}
 		if len(receipt.LogsBloom) > 0 && MatchFilters(ethtypes.Bloom(receipt.LogsBloom), filters) {
