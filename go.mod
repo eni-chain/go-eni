@@ -355,7 +355,7 @@ replace (
 	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250425134842-39d01d7f7348
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250425121440-b2ee3fd6171c
 	//github.com/cometbft/cometbft => ../eni-cometbft
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250428101113-8c4a242e58c7
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250428163159-e87337a9a425
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	//github.com/ethereum/go-ethereum => ../go-ethereum
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250427153625-6da9a608bcc1
