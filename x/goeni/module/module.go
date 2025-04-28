@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
-	cosmossdk_io_math "cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -19,10 +18,7 @@ import (
 	"github.com/eni-chain/go-eni/precompiles/ed25519Verify"
 	ContractNodeLog "github.com/eni-chain/go-eni/precompiles/nodeLog"
 	"github.com/eni-chain/go-eni/syscontract"
-	syscontractSdk "github.com/eni-chain/go-eni/syscontract/genesis/sdk"
 	epochtypes "github.com/eni-chain/go-eni/x/epoch/keeper"
-	"github.com/ethereum/go-ethereum/common"
-
 	//evmKeeper "github.com/eni-chain/go-eni/x/evm/keeper"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -181,33 +177,33 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 //	}
 
 func (am AppModule) EndBlock(goCtx context.Context) error {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	hub, err := syscontractSdk.NewHub(am.EvmKeeper)
-	if err != nil {
-		return err
-	}
+	//ctx := sdk.UnwrapSDKContext(goCtx)
+	//hub, err := syscontractSdk.NewHub(am.EvmKeeper)
+	//if err != nil {
+	//	return err
+	//}
 
-	header := ctx.BlockHeader()
-	proposerBytes := header.GetProposerAddress()
-	node := common.Address(proposerBytes)
+	//header := ctx.BlockHeader()
+	//proposerBytes := header.GetProposerAddress()
+	//node := common.Address(proposerBytes)
 
-	moduleAddr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
-	caller := common.Address(moduleAddr)
-	operator, reward, err := hub.BlockReward(ctx, caller, node)
-	if err != nil {
-		return err
-	}
-	if reward.Uint64() == 0 {
-		return nil
-	}
+	//moduleAddr := am.EvmKeeper.AccountKeeper().GetModuleAddress(authtypes.FeeCollectorName)
+	//caller := common.Address(moduleAddr)
+	//operator, reward, err := hub.BlockReward(ctx, caller, node)
+	//if err != nil {
+	//	return err
+	//}
+	//if reward.Uint64() == 0 {
+	//	return nil
+	//}
 
-	//logger := ctx.Logger().With("module", types.ModuleName)
-	ctx.Logger().Info(fmt.Sprintf("Block reward for %x is %v", operator, reward.Uint64()))
+	////logger := ctx.Logger().With("module", types.ModuleName)
+	//ctx.Logger().Info(fmt.Sprintf("Block reward for %x is %v", operator, reward.Uint64()))
 
-	eniOpe := am.EvmKeeper.GetEniAddressOrDefault(ctx, operator)
-	denom := am.EvmKeeper.GetBaseDenom(ctx)
-	coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
-	am.EvmKeeper.BankKeeper().AddCoins(ctx, eniOpe, sdk.NewCoins(coin))
+	//eniOpe := am.EvmKeeper.GetEniAddressOrDefault(ctx, operator)
+	//denom := am.EvmKeeper.GetBaseDenom(ctx)
+	//coin := sdk.Coin{Denom: denom, Amount: cosmossdk_io_math.NewIntFromBigInt(reward)}
+	//am.EvmKeeper.BankKeeper().AddCoins(ctx, eniOpe, sdk.NewCoins(coin))
 	return nil
 }
 

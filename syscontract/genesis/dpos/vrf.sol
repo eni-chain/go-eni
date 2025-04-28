@@ -79,14 +79,12 @@ contract Vrf is DelegateCallBase, administrationBase {
         // | PubKey   | Signature  |  msgHash   |
         // | 32 bytes | 64 bytes   |  64 bytes  |
         bytes memory input = bytes.concat(pubKey, signature, msgHash);
-        //bytes32[2] memory output;
-        bytes memory output = new bytes(32);
 
-        assembly {
-            let len := mload(input)
-            if iszero(staticcall(not(0), ED25519_VERIFY_PRECOMPILED, add(input, 0x20), len, add(output, 0x20), 0x20)) {
-                revert(0, 0)
-            }
+        bool success;
+        bytes memory output;
+        (success, output) = address(uint160(ED25519_VERIFY_PRECOMPILED)).staticcall(input);
+        if(!success){
+            revert("the call to the ed15519 precompiled contract failed");
         }
 
         if(output[31] == 0){

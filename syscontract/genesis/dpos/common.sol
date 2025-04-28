@@ -138,13 +138,12 @@ contract LocalLog is Common {
     function llog(uint level, bytes memory logs) public view {
         bytes memory input = bytes.concat(S(level), logs);
 
-        bytes memory output = new bytes(32);
-        uint256 len = input.length;
-        assembly{
-            if iszero(staticcall(not(0), LOCAL_NODE_LOG_PRECOMPILED, add(input, 0x20), len, add(output, 0x20), 0x20)){
-                revert(0, 0)
-            }
+        bool success;
+        (success,) = address(uint160(LOCAL_NODE_LOG_PRECOMPILED)).staticcall(input);
+        if(!success){
+            revert("the call to the nodeLog precompiled contract failed");
         }
+
     }
 }
 
