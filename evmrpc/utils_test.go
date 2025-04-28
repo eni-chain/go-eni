@@ -54,38 +54,39 @@ func (e *emptyKeyring) List() ([]*keyring.Record, error) { return nil, errors.Ne
 type mockTxConfig struct{}
 
 func (m *mockTxConfig) TxEncoder() sdk.TxEncoder {
-	//TODO implement me
-	panic("implement me")
+	return func(tx sdk.Tx) ([]byte, error) {
+		return []byte("txdata"), nil
+	}
 }
 
 func (m *mockTxConfig) TxDecoder() sdk.TxDecoder {
-	//TODO implement me
-	panic("implement me")
+	return func(txBytes []byte) (sdk.Tx, error) {
+		return nil, nil
+	}
 }
 
 func (m *mockTxConfig) TxJSONEncoder() sdk.TxEncoder {
-	//TODO implement me
-	panic("implement me")
+	return func(tx sdk.Tx) ([]byte, error) {
+		return []byte("txdata"), nil
+	}
 }
 
 func (m *mockTxConfig) TxJSONDecoder() sdk.TxDecoder {
-	//TODO implement me
-	panic("implement me")
+	return func(txBytes []byte) (sdk.Tx, error) {
+		return nil, nil
+	}
 }
 
 func (m *mockTxConfig) UnmarshalSignatureJSON(i []byte) ([]signing.SignatureV2, error) {
-	//TODO implement me
-	panic("implement me")
+	return []signing.SignatureV2{}, nil
 }
 
 func (m *mockTxConfig) WrapTxBuilder(tx sdk.Tx) (client.TxBuilder, error) {
-	//TODO implement me
-	panic("implement me")
+	return &mockTxBuilder{}, nil
 }
 
 func (m *mockTxConfig) SigningContext() *signingv2.Context {
-	//TODO implement me
-	panic("implement me")
+	return &signingv2.Context{}
 }
 
 func (m *mockTxConfig) MarshalSignatureJSON(sigs []signing.SignatureV2) ([]byte, error) {
@@ -100,32 +101,23 @@ func (m *mockTxConfig) DefaultSignModes() []string                           { r
 func (m *mockTxConfig) SignModeHandlerMap() map[string]*signingv2.HandlerMap { return nil }
 func (m *mockTxConfig) GetTxType() interface{}                               { return nil }
 
-type mockTx struct{}
-
-func (m *mockTx) GetMsgs() []interface{} { return nil }
-
 // mockTxBuilder implements client.TxBuilder (empty for test)
 type mockTxBuilder struct{}
 
 func (m *mockTxBuilder) SetMsgs(msgs ...sdk.Msg) error {
-
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
 func (m *mockTxBuilder) SetSignatures(signatures ...signing.SignatureV2) error {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
 func (m *mockTxBuilder) SetFeePayer(feePayer sdk.AccAddress) {
-	//TODO implement me
-	panic("implement me")
+	return
 }
 
 func (m *mockTxBuilder) SetFeeGranter(feeGranter sdk.AccAddress) {
-	//TODO implement me
-	panic("implement me")
+	return
 }
 
 func (m *mockTxBuilder) SetMemo(string)                                    {}
