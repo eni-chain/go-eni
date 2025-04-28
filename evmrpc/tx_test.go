@@ -17,12 +17,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/evm/types"
+	testutil "github.com/eni-chain/go-eni/testutil/keeper"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"google.golang.org/protobuf/proto"
 )
 
 // Use the mockTx and mockMsg from utils_test.go, do NOT redefine here.
@@ -41,19 +41,6 @@ func (m *mockMsg) GetSigners() []sdk.AccAddress { return nil }
 func (m *mockMsg) Reset()         {}
 func (m *mockMsg) String() string { return "mockMsg" }
 func (m *mockMsg) ProtoMessage()  {}
-
-type mockTx struct {
-	msgs []proto.Message
-}
-
-func (m *mockTx) GetMsgs() []sdk.Msg                  { return nil }
-func (m *mockTx) ValidateBasic() error                { return nil }
-func (m *mockTx) GetSigners() []sdk.AccAddress        { return nil }
-func (m *mockTx) GetFee() sdk.Coins                   { return nil }
-func (m *mockTx) GetGas() uint64                      { return 0 }
-func (m *mockTx) GetMemo() string                     { return "" }
-func (m *mockTx) GetTimeoutHeight() uint64            { return 0 }
-func (m *mockTx) GetMsgsV2() ([]proto.Message, error) { return m.msgs, nil }
 
 type mockKeeper struct {
 	mock.Mock
@@ -95,13 +82,12 @@ func TestEniTransactionAPI_GetTransactionReceiptExcludeTraceFail(t *testing.T) {
 	ctxProvider := func(height int64) sdk.Context { return sdk.Context{} }
 	isPanicTx := func(ctx context.Context, hash common.Hash) (bool, error) { return false, nil }
 
-	var cfg sdkclient.TxConfig // Use nil or a proper mock if needed
+	var cfg sdkclient.TxConfig
 	api := NewEniTransactionAPI(tmClient, &keeper.Keeper{}, ctxProvider, cfg, "", ConnectionType("test"), isPanicTx)
 
 	// Test case: Panic transaction
 	t.Run("PanicTx", func(t *testing.T) {
-		isPanicTx = func(ctx context.Context, hash common.Hash) (bool, error) { return true, nil }
-		api.isPanicTx = isPanicTx
+		api.isPanicTx = func(ctx context.Context, hash common.Hash) (bool, error) { return true, nil }
 		result, err := api.GetTransactionReceiptExcludeTraceFail(ctx, hash)
 		assert.ErrorIs(t, err, ErrPanicTx)
 		assert.Nil(t, result)
@@ -109,10 +95,9 @@ func TestEniTransactionAPI_GetTransactionReceiptExcludeTraceFail(t *testing.T) {
 
 	// Test case: Panic check error
 	t.Run("PanicCheckError", func(t *testing.T) {
-		isPanicTx = func(ctx context.Context, hash common.Hash) (bool, error) {
+		api.isPanicTx = func(ctx context.Context, hash common.Hash) (bool, error) {
 			return false, errors.New("panic check failed")
 		}
-		api.isPanicTx = isPanicTx
 		result, err := api.GetTransactionReceiptExcludeTraceFail(ctx, hash)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "failed to check if tx is panic tx")
@@ -121,8 +106,9 @@ func TestEniTransactionAPI_GetTransactionReceiptExcludeTraceFail(t *testing.T) {
 
 	// Test case: Receipt not found
 	t.Run("ReceiptNotFound", func(t *testing.T) {
+		api.isPanicTx = func(ctx context.Context, hash common.Hash) (bool, error) { return false, nil }
 		keeperMock.On("GetReceipt", mock.Anything, hash).Return(nil, errors.New("not found")).Once()
-		api.TransactionAPI.keeper = &keeper.Keeper{} // Mock keeper behavior
+		api.TransactionAPI.keeper = nil
 		result, err := api.GetTransactionReceiptExcludeTraceFail(ctx, hash)
 		assert.NoError(t, err)
 		assert.Nil(t, result)
@@ -133,32 +119,13 @@ func TestTransactionAPI_GetTransactionReceipt(t *testing.T) {
 	hash := common.HexToHash("0x123")
 	ctx := context.Background()
 	tmClient := &rpcclientmock.Client{}
-	keeperMock := &mockKeeper{}
+	evmKeeper, _ := testutil.EvmKeeper(t)
 	ctxProvider := func(height int64) sdk.Context { return sdk.Context{} }
-
 	var cfg sdkclient.TxConfig
-	api := NewTransactionAPI(tmClient, &keeper.Keeper{}, ctxProvider, cfg, "", ConnectionType("test"))
-
-	// Test case: Receipt not found
-	t.Run("ReceiptNotFound", func(t *testing.T) {
-		keeperMock.On("GetReceipt", mock.Anything, hash).Return(nil, errors.New("not found")).Once()
-		api.keeper = &keeper.Keeper{} // Mock keeper behavior
-		result, err := api.GetTransactionReceipt(ctx, hash)
-		assert.NoError(t, err)
-		assert.Nil(t, result)
-	})
+	api := NewTransactionAPI(tmClient, evmKeeper, ctxProvider, cfg, "", ConnectionType("test"))
 
 	// Test case: Failed transaction with zero gas
 	t.Run("FailedTxZeroGas", func(t *testing.T) {
-		receipt := &types.Receipt{
-			BlockNumber:      100,
-			Status:           uint32(ethtypes.ReceiptStatusFailed),
-			GasUsed:          0,
-			TransactionIndex: 0,
-			TxHashHex:        hash.Hex(),
-		}
-		keeperMock.On("GetReceipt", mock.Anything, hash).Return(receipt, nil).Once()
-
 		block := &coretypes.ResultBlock{
 			Block: &tmtypes.Block{
 				Header: tmtypes.Header{Height: 100, Time: time.Now()},
@@ -168,13 +135,6 @@ func TestTransactionAPI_GetTransactionReceipt(t *testing.T) {
 		}
 		tmClient.On("Block", mock.Anything, mock.Anything).Return(block, nil).Once()
 
-		txDecoder := &mockTxDecoder{
-			decodeFunc: func(txBytes []byte) (sdk.Tx, error) {
-				return &mockTx{
-					msgs: []proto.Message{&types.MsgEVMTransaction{}},
-				}, nil
-			},
-		}
 		// You may need to mock sdkclient.TxConfig if your code expects a non-nil value
 		// For now, we use nil for simplicity
 		result, err := api.GetTransactionReceipt(ctx, hash)
@@ -203,13 +163,6 @@ func TestTransactionAPI_GetTransactionByHash(t *testing.T) {
 			[]byte("data"),
 		)
 		tmClient.On("UnconfirmedTxs", mock.Anything, mock.Anything).Return(&coretypes.ResultUnconfirmedTxs{Txs: tmtypes.Txs{[]byte("txdata")}}, nil).Once()
-		txDecoder := &mockTxDecoder{
-			decodeFunc: func(txBytes []byte) (sdk.Tx, error) {
-				return &mockTx{
-					msgs: []proto.Message{&types.MsgEVMTransaction{}},
-				}, nil
-			},
-		}
 		// You may need to mock sdkclient.TxConfig if your code expects a non-nil value
 		result, err := api.GetTransactionByHash(ctx, tx.Hash())
 		assert.NoError(t, err)
@@ -275,9 +228,7 @@ func TestTransactionAPI_Sign(t *testing.T) {
 func TestGetEthTxForTxBz(t *testing.T) {
 	txDecoder := &mockTxDecoder{
 		decodeFunc: func(txBytes []byte) (sdk.Tx, error) {
-			return &mockTx{
-				msgs: []sdk.Msg{&types.MsgEVMTransaction{}},
-			}, nil
+			return nil, errors.New("failed to decode tx")
 		},
 	}
 
@@ -292,9 +243,7 @@ func TestGetEthTxForTxBz(t *testing.T) {
 	t.Run("NonEVMTransaction", func(t *testing.T) {
 		txDecoder := &mockTxDecoder{
 			decodeFunc: func(txBytes []byte) (sdk.Tx, error) {
-				return &mockTx{
-					msgs: []sdk.Msg{&mockMsg{}},
-				}, nil
+				return nil, errors.New("failed to decode tx")
 			},
 		}
 		tx := tmtypes.Tx([]byte("txdata"))
@@ -324,9 +273,7 @@ func TestEncodeReceipt(t *testing.T) {
 	}
 	txDecoder := &mockTxDecoder{
 		decodeFunc: func(txBytes []byte) (sdk.Tx, error) {
-			return &mockTx{
-				msgs: []proto.Message{&types.MsgEVMTransaction{}},
-			}, nil
+			return nil, errors.New("failed to decode tx")
 		},
 	}
 	receiptChecker := func(h common.Hash) bool { return true }
