@@ -98,19 +98,6 @@ const PROXYABI = `
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "impl",
-				"type": "address"
-			}
-		],
-		"name": "init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "bytes",
 				"name": "bytecode",
 				"type": "bytes"

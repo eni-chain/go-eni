@@ -41,23 +41,23 @@ contract ProxyContract is DelegateCallBase, LocalLog {
     // }
 
     //system call, which can only be called once at deployment time
-    function init(address impl) external {
-        address addr = _getImpl();
-        require(addr.code.length == 0, "init method can only be called once.");
+    // function init(address impl) external {
+    //     address addr = _getImpl();
+    //     require(addr.code.length == 0, "init method can only be called once.");
 
-        llog(DEBUG, abi.encodePacked("init implementation contract: ", H(impl)));
-        _setImpl(impl);
+    //     llog(DEBUG, abi.encodePacked("init implementation contract: ", H(impl)));
+    //     _setImpl(impl);
 
-        //bytes4 selector = bytes4(keccak256("init(address)"));
-        //bytes memory data = abi.encodeWithSelector(selector, INIT_ADMIN_ADDR);
-        //bytes memory data = abi.encodeCall(impl.init, (INIT_ADMIN_ADDR));
+    //     bytes4 selector = bytes4(keccak256("init(address)"));
+    //     bytes memory data = abi.encodeWithSelector(selector, INIT_ADMIN_ADDR);
+    //     bytes memory data = abi.encodeCall(impl.init, (INIT_ADMIN_ADDR));
 
-        bytes memory data = abi.encodeWithSignature("init(address)", INIT_ADMIN_ADDR);
-        (bool success, bytes memory result) = impl.delegatecall(data);
+    //     bytes memory data = abi.encodeWithSignature("init(address)", INIT_ADMIN_ADDR);
+    //     (bool success, bytes memory result) = impl.delegatecall(data);
 
-        require(success, "DelegateCall failed");
-        llog(DEBUG, abi.encodePacked("Delegate call implementation contract[", H(impl), "] succeed, return: ", H(result)));
-    }
+    //     require(success, "DelegateCall failed");
+    //     llog(DEBUG, abi.encodePacked("Delegate call implementation contract[", H(impl), "] succeed, return: ", H(result)));
+    // }
 
     function init(bytes memory bytecode) external {
         address addr = _getImpl();
@@ -71,14 +71,6 @@ contract ProxyContract is DelegateCallBase, LocalLog {
 
          _setImpl(addr);
         llog(DEBUG, abi.encodePacked("Set implementation contract[", H(addr), "] succeed."));
-
-        bytes memory data = abi.encodeWithSignature("init(address)", INIT_ADMIN_ADDR);
-        llog(DEBUG, abi.encodePacked("pack calldata[", H(data), "] succeed."));
-        (bool success, bytes memory result) = addr.delegatecall(data);
-        llog(DEBUG, abi.encodePacked("delegatecall finished, success:", S(success)));
-        require(success, "DelegateCall failed");
-
-        llog(DEBUG, abi.encodePacked("delegate call implementation contract[", H(addr), "] succeed, return: ", H(result)));
     }
 
     // captures all calls and forwards them to the logical contract
@@ -93,5 +85,4 @@ contract ProxyContract is DelegateCallBase, LocalLog {
 
         return result;
     }
-
 }

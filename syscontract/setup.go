@@ -112,7 +112,7 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 		}
 
 		evmKeeper.SetCode(ctx, cfg.Addr, proxyBody)
-		calldata, err := proxyAbi.Pack("init0", newContractCode)
+		calldata, err := proxyAbi.Pack("init", newContractCode)
 		if err != nil {
 			panic(fmt.Errorf("failed to pack calldata: %s", err.Error()))
 		}
