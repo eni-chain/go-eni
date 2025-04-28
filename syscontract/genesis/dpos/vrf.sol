@@ -10,7 +10,7 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf is DelegateCallBase, administrationBase {
+contract Vrf is DelegateCallBase, LocalLog {
     //todo: add event and emit for every method
 
     //init rand seed, will be init by administrator
@@ -34,20 +34,6 @@ contract Vrf is DelegateCallBase, administrationBase {
     modifier needInited() {
         require(_initSeed.length != 0, "The initial seed has not been initialized and dpos has not been started");
         _;
-    }
-
-    function init(address admin) external onlyNotInited {
-        _init(admin);
-    }
-
-    function updateAdmin(address admin) external onlyAdmin {
-        _updateAdmin(admin);
-    }
-
-    //This method is called by proxy contract to update the address of the new implementation contract by the current implementation contract
-    function updateImpl(address impl) external onlyAdmin {
-        //require(msg.sender == _admin, "Msg sender is not administrator");
-        _setImpl(impl);
     }
 
     function initRandomSeed(bytes calldata rnd, uint256 epoch) external onlyAdmin {

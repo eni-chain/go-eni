@@ -4,7 +4,7 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract Hub is DelegateCallBase, administrationBase{
+contract Hub is DelegateCallBase, LocalLog {
     //todo: add event and commit for methods
 
     uint256 constant ratioDeno = 100000;
@@ -26,21 +26,6 @@ contract Hub is DelegateCallBase, administrationBase{
 
     //List of applicants
     mapping (address=>applicant) _applicants;
-
-    function init(address admin) external onlyNotInited {
-        llog(DEBUG, abi.encodePacked("call init with param:", H(admin)));
-        _init(admin);
-    }
-
-    function updateAdmin(address admin) external onlyAdmin {
-        _updateAdmin(admin);
-    }
-
-    //This method is called by proxy contract to update the address of the new implementation contract by the current implementation contract
-    function updateImpl(address impl) external onlyAdmin {
-        //require(msg.sender == _admin, "Msg sender is not administrator");
-        _setImpl(impl);
-    }
 
     function applyForValidator(
         address node,

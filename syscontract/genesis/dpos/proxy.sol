@@ -9,6 +9,37 @@ contract ProxyContract is DelegateCallBase, LocalLog {
     //value is hex("LogicContractAddressSlot")
     //uint256 private constant implSlotParam = 0x4c6f676963436f6e747261637441646472657373536c6f74;
 
+    // //get delegate call's implementation contract address
+    // function _getImpl() internal view returns (address impl) {
+    //     bytes memory key = new bytes(32);
+    //     assembly {
+    //         //let offset := add(key, 0x20)
+    //         mstore(add(key, 0x20), IMPL_SLOT_BASE)
+
+    //         let slot := sub(keccak256(add(key, 0x20), 0x20), 1)
+    //         let addr := sload(slot)
+    //         impl := and(addr, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+    //     }
+
+    //     return impl;
+    // }
+
+    // //set delegate call's implementation contract address
+    // function _setImpl(address impl) internal  {
+    //     require(impl.code.length > 0, "Invalid implementation address");
+
+    //     bytes memory key = new bytes(32);
+    //     bytes memory addr = new bytes(32);
+    //     assembly {
+    //         //let offset := add(bs, 0x20)
+    //         mstore(add(key, 0x20), IMPL_SLOT_BASE)
+    //         mstore(add(addr, 0x20), impl)
+
+    //         let slot := sub(keccak256(add(key, 0x20), 0x20), 1)
+    //         sstore(slot, addr)
+    //     }
+    // }
+
     //system call, which can only be called once at deployment time
     function init(address impl) external {
         address addr = _getImpl();
@@ -50,28 +81,6 @@ contract ProxyContract is DelegateCallBase, LocalLog {
         llog(DEBUG, abi.encodePacked("delegate call implementation contract[", H(addr), "] succeed, return: ", H(result)));
     }
 
-    // //get implementation contract address
-    // function getImpl() internal view returns (address impl) {
-    //     bytes memory bs = new bytes(32);
-    //     assembly {
-    //         mstore(add(bs, 0x20), implSlotParam)
-    //         let slot := sub(keccak256(add(bs, 0x20), 0x20), 1)
-    //         impl := sload(slot)
-    //     }
-    // }
-
-    // //set implementation contract address
-    // function setImpl(address impl) internal  {
-    //     require(impl.code.length > 0, "Invalid implementation address");
-
-    //     bytes memory bs = new bytes(32);
-    //     assembly {
-    //         mstore(add(bs, 0x20), implSlotParam)
-    //         let slot := sub(keccak256(add(bs, 0x20), 0x20), 1)
-    //         sstore(slot, impl)
-    //     }
-    // }
-
     // captures all calls and forwards them to the logical contract
     fallback(bytes calldata data) external payable returns (bytes memory) {
         address impl = _getImpl();
@@ -84,4 +93,5 @@ contract ProxyContract is DelegateCallBase, LocalLog {
 
         return result;
     }
+
 }

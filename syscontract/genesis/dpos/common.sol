@@ -2,25 +2,25 @@
 
 pragma solidity >= 0.8.0;
 
+//system contract parameters
+uint constant CONSENSUS_SIZE = 40;
+uint constant MIN_PLEDGE_AMOUNT = 10000;
+
+//precompiled contract address
+uint constant ED25519_VERIFY_PRECOMPILED = 0xa1;
+uint constant LOCAL_NODE_LOG_PRECOMPILED = 0xa2;
+
+//initial address of the system administrator
+address constant INIT_ADMIN_ADDR = 0x3140aedbf686A3150060Cb946893b0598b266f5C;
+
+//system contract address
+address constant HUB_ADDR = 0x0000000000000000000000000000000000001001;
+address constant VALIDATOR_MANAGER_ADDR = 0x0000000000000000000000000000000000001002;
+address constant VRF_ADDR = 0x0000000000000000000000000000000000001003;
+address constant VOTER_MANAGER_ADDR = 0x0000000000000000000000000000000000001004;
+address constant SLASH_ADDR = 0x0000000000000000000000000000000000001005;
+
 contract Common {
-    //system contract parameters
-    uint constant CONSENSUS_SIZE = 40;
-    uint constant MIN_PLEDGE_AMOUNT = 10000;
-
-    //precompiled contract address
-    uint constant ED25519_VERIFY_PRECOMPILED = 0xa1;
-    uint constant LOCAL_NODE_LOG_PRECOMPILED = 0xa2;
-
-    //initial address of the system administrator
-    address constant INIT_ADMIN_ADDR = 0x251604eBfD1ddeef1F4f40b8F9Fc425538BE1339;
-
-    //system contract address
-    address constant HUB_ADDR = 0x0000000000000000000000000000000000001001;
-    address constant VALIDATOR_MANAGER_ADDR = 0x0000000000000000000000000000000000001002;
-    address constant VRF_ADDR = 0x0000000000000000000000000000000000001003;
-    address constant VOTER_MANAGER_ADDR = 0x0000000000000000000000000000000000001004;
-    address constant SLASH_ADDR = 0x0000000000000000000000000000000000001005;
-
     modifier onlyCoinbase() {
         require(msg.sender == block.coinbase, "the message sender must be the block producer");
         _;
@@ -57,7 +57,7 @@ contract Common {
     }
 }
 
-contract LocalLog is Common {
+contract LocalLog {
     //log level
     uint constant DEBUG = 1;
     uint constant INFO = 2;
@@ -147,86 +147,45 @@ contract LocalLog is Common {
     }
 }
 
-contract administrationBase is LocalLog {
-
+contract DelegateCallBase {
     //administrator address
-    address public _admin;
-
-    bool public _alreadyInit = false;
+    address _admin = INIT_ADMIN_ADDR;
+    address _impl;
 
     modifier onlyAdmin() {
         require(msg.sender == _admin, "The message sender must be administrator");
         _;
     }
 
-    modifier onlyNotInited() {
-        require(!_alreadyInit, "The contract already init");
+    modifier onlyValidContract(address impl){
+        require(impl.code.length != 0, "implement contracts has no code");
         _;
     }
 
-    modifier onlyInited() {
-        require(_alreadyInit, "The contract not init yet");
-        _;
+    function updateAdmin(address admin) external {
+        return _setAdmin(admin);
     }
 
-    function _init(address admin) internal onlyNotInited {
-        //require(_alreadyInit == false, "Already initialized.");
-
-        if(admin != address(0)){
-
-            llog(DEBUG, abi.encodePacked("Set admin with param[", H(admin), "]."));
-            _admin = admin;
-        }else{
-            llog(DEBUG, abi.encodePacked("Set admin with hardcode[", H(INIT_ADMIN_ADDR), "]."));
-            _admin = INIT_ADMIN_ADDR;
-        }
-
-        llog(DEBUG, abi.encodePacked("Set admin succeed."));
-
-        _alreadyInit = true;
+    function updateImpl(address impl) external {
+        return _setImpl(impl);
     }
 
-    function _updateAdmin(address admin) internal onlyAdmin {
+    function _setAdmin(address admin) internal onlyAdmin {
         _admin = admin;
     }
 
     function getAdmin() external view returns (address){
         return _admin;
     }
-}
-
-contract DelegateCallBase {
-    //A structured storage slot parameter that defines logical contract address
-    //value is hex("ImplContractAddrSlotBase")
-    uint256 private constant IMPL_SLOT_BASE = 0x496d706c436f6e747261637441646472536c6f7442617365;
-
-
-    //get delegate call's implementation contract address
-    function _getImpl() internal view returns (address impl) {
-        bytes memory bs = new bytes(32);
-        assembly {
-            //let offset := add(bs, 0x20)
-            mstore(add(bs, 0x20), IMPL_SLOT_BASE)
-
-            let slot := sub(keccak256(add(bs, 0x20), 0x20), 1)
-            impl := sload(slot)
-        }
-
-        return impl;
-    }
 
     //set delegate call's implementation contract address
-    function _setImpl(address impl) internal  {
-        require(impl.code.length > 0, "Invalid implementation address");
+    function _setImpl(address impl) internal onlyAdmin onlyValidContract(impl) {
+        _impl = impl;
+    }
 
-        bytes memory bs = new bytes(32);
-        assembly {
-            //let offset := add(bs, 0x20)
-            mstore(add(bs, 0x20), IMPL_SLOT_BASE)
-
-            let slot := sub(keccak256(add(bs, 0x20), 0x20), 1)
-            sstore(slot, impl)
-        }
+    //get delegate call's implementation contract address
+    function _getImpl() internal view returns (address) {
+        return _impl;
     }
 }
 

@@ -4,7 +4,7 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract ValidatorManager is DelegateCallBase, administrationBase {
+contract ValidatorManager is DelegateCallBase, LocalLog, Common {
     //todo: add event and emit for every external method
 
     //current consensus node set
@@ -49,20 +49,6 @@ contract ValidatorManager is DelegateCallBase, administrationBase {
 
     //validator name=>operator addr
     mapping (string=>address) _names;
-
-    function init(address admin) external onlyNotInited {
-        _init(admin);
-    }
-
-    function updateAdmin(address admin) external onlyAdmin {
-        _updateAdmin(admin);
-    }
-
-
-    function updateImpl(address impl) external onlyAdmin {
-        //require(msg.sender == _admin, "Msg sender is not administrator");
-        _setImpl(impl);
-    }
 
     function getPubKey(address node) external returns (bytes memory){
         address ope = _node2operator[node];
