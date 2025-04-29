@@ -9,7 +9,6 @@ release/
 *.ign
 build
 eni-node/data/
-ethtests
 nohup.out
 *.pprof
 docker/prometheus-grafana/prometheus_data
