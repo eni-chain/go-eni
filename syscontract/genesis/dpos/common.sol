@@ -179,7 +179,7 @@ contract DelegateCallBase {
     }
 
     //set delegate call's implementation contract address
-    function _setImpl(address impl) public onlyValidContract(impl){
+    function _setImpl(address impl) internal onlyValidContract(impl){
         _impl = impl;
     }
 
