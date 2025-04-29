@@ -4,7 +4,7 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract Hub is DelegateCallBase/*, LocalLog*/ {
+contract Hub is DelegateCallBase, LocalLog {
     //todo: add event and commit for methods
 
     uint256 constant ratioDeno = 100000;
@@ -36,7 +36,7 @@ contract Hub is DelegateCallBase/*, LocalLog*/ {
     ) payable external {
         require(msg.value >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_applicants[msg.sender].amount == 0, "applicant already exsit");
-        //llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
 
         applicant storage a = _applicants[msg.sender];
         a.operator = msg.sender;
@@ -47,14 +47,14 @@ contract Hub is DelegateCallBase/*, LocalLog*/ {
         a.name = name;
         a.description = description;
         a.enterTime = block.timestamp;
-        //llog(DEBUG, abi.encodePacked(name, " applyForValidator finished, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator finished, operator: ", H(msg.sender), ", node:", H(node), ", amount: ", S(msg.value)));
     }
 
     function auditPass(address operator) external onlyAdmin {
-        //llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass start."));
+        llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass start."));
         applicant storage a = _applicants[operator];
         require(a.amount > 0, "applicant not exists");
-        //llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass ", a.name, ", amount: ", S(a.amount)));
+        llog(DEBUG, abi.encodePacked(H(msg.sender), " auditPass ", a.name, ", amount: ", S(a.amount)));
 
 
         IValidatorManager(VALIDATOR_MANAGER_ADDR).addValidator(
@@ -68,17 +68,17 @@ contract Hub is DelegateCallBase/*, LocalLog*/ {
             a.pubKey
         );
 
-        ////llog(DEBUG, abi.encodePacked(H(msg.sender), " addValidator finished."));
+        //llog(DEBUG, abi.encodePacked(H(msg.sender), " addValidator finished."));
 
         delete _applicants[operator];
     }
 
     function blockReward(address node) external returns (address, uint256) {
-        //llog(DEBUG, abi.encodePacked("system call blockReward, to node:", H(node)));
+        llog(DEBUG, abi.encodePacked("system call blockReward, to node:", H(node)));
         address operator;
         uint256 pledgeAmount;
         (operator, pledgeAmount) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getOperatorAndPledgeAmount(node);
-        //llog(DEBUG, abi.encodePacked("system call blockReward, to operator:", H(operator), ", pledge amount: ", S(pledgeAmount)));
+        llog(DEBUG, abi.encodePacked("system call blockReward, to operator:", H(operator), ", pledge amount: ", S(pledgeAmount)));
         uint256 reward = calculateReward(pledgeAmount);
         return (operator, reward);
     }
@@ -89,13 +89,13 @@ contract Hub is DelegateCallBase/*, LocalLog*/ {
 
         //convert wei to coin
         uint256 pledge = pledgeAmount/weiPerCoin;
-        //llog(DEBUG, abi.encodePacked("pledge amount in wei:", S(pledgeAmount), ", in coin:", S(pledge)));
+        llog(DEBUG, abi.encodePacked("pledge amount in wei:", S(pledgeAmount), ", in coin:", S(pledge)));
 
         //uint256 reward = (ratioNumer/ratioDeno) *(1 + (pledge*(increasePerCoin/ratioDeno)));
         //uint256 reward = (ratioNumer/ratioDeno) *(1*ratioDeno + (pledge*increasePerCoin))/ratioDeno;
         //uint256 reward = ((ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*weiPerCoin)/(ratioDeno*ratioDeno);
         uint256 reward = (ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*(weiPerCoin/(ratioDeno*ratioDeno));
-        //llog(DEBUG, abi.encodePacked("reward amount in wei:", S(reward)));
+        llog(DEBUG, abi.encodePacked("reward amount in wei:", S(reward)));
 
         return reward;
     }

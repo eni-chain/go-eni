@@ -10,7 +10,7 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf is DelegateCallBase/*, LocalLog*/ {
+contract Vrf is DelegateCallBase, LocalLog {
     //todo: add event and emit for every method
 
     //init rand seed, will be init by administrator
@@ -77,7 +77,7 @@ contract Vrf is DelegateCallBase/*, LocalLog*/ {
             return  false;
         }
 
-        //llog(DEBUG, abi.encodePacked("verify random succeed, user:", H(msg.sender), ", pubKey:", H(pubKey), ", signature:", H(signature), ", msgHash: ", H(msgHash)));
+        llog(DEBUG, abi.encodePacked("verify random succeed, user:", H(msg.sender), ", pubKey:", H(pubKey), ", signature:", H(signature), ", msgHash: ", H(msgHash)));
         return true;
     }
 
@@ -110,10 +110,10 @@ contract Vrf is DelegateCallBase/*, LocalLog*/ {
         for (uint i = 0; i < validators.length; ++i) {
             if(_randoms[epoch][validators[i]].length == 0){
                 _unSendRandNodes.push(validators[i]);
-                //llog(DEBUG, abi.encodePacked("record unsent random node:", H(validators[i])));
+                llog(DEBUG, abi.encodePacked("record unsent random node:", H(validators[i])));
             }else{
                 _validNodes.push(validators[i]);
-                //llog(DEBUG, abi.encodePacked("record valid node:", H(validators[i])));
+                llog(DEBUG, abi.encodePacked("record valid node:", H(validators[i])));
             }
         }
 
@@ -128,14 +128,14 @@ contract Vrf is DelegateCallBase/*, LocalLog*/ {
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
-        //llog(DEBUG, abi.encodePacked("generate new seed:", H(_seeds[epoch]), ", epoch:", S(epoch)));
+        llog(DEBUG, abi.encodePacked("generate new seed:", H(_seeds[epoch]), ", epoch:", S(epoch)));
 
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
         delete _validNodes;
-        //llog(DEBUG, abi.encodePacked("clear _unSendRandNodes and _validNodes for next epoch, _unSendRandNodes.len:", S(_unSendRandNodes.length), ", _validNodes.len:", S(_validNodes.length)));
+        llog(DEBUG, abi.encodePacked("clear _unSendRandNodes and _validNodes for next epoch, _unSendRandNodes.len:", S(_unSendRandNodes.length), ", _validNodes.len:", S(_validNodes.length)));
         if(_unSendRandNodes.length != 0 || _validNodes.length != 0){
-            //llog(ERROR, abi.encodePacked("_unSendRandNodes or _validNodes not clean"));
+            llog(ERROR, abi.encodePacked("_unSendRandNodes or _validNodes not clean"));
         }
 
         return topN;
@@ -193,7 +193,7 @@ contract Vrf is DelegateCallBase/*, LocalLog*/ {
             }
         }
 
-        //llog(DEBUG, abi.encodePacked("sum rand:", H(a), " + ", H(b), " = ", H(result)));
+        llog(DEBUG, abi.encodePacked("sum rand:", H(a), " + ", H(b), " = ", H(result)));
 
         return result;
     }
