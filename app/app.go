@@ -511,8 +511,10 @@ func BlockedAddresses() map[string]bool {
 	return result
 }
 
-func (app *App) SetEvmMsgs(txs [][]byte) {
-	msgs := app.getEvmMsgs(txs)
+func (app *App) SetEvmMsgs(txs [][]byte, msgs []*types.MsgEVMTransaction) {
+	if msgs == nil {
+		msgs = app.getEvmMsgs(txs)
+	}
 	app.EvmKeeper.SetMsgs(msgs)
 }
 
