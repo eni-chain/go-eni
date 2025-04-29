@@ -4,7 +4,7 @@ pragma solidity >= 0.8.0;
 
 //system contract parameters
 uint constant CONSENSUS_SIZE = 40;
-uint constant MIN_PLEDGE_AMOUNT = 10000;
+uint constant MIN_PLEDGE_AMOUNT = 10000000000000000000000; //wei
 
 //precompiled contract address
 uint constant ED25519_VERIFY_PRECOMPILED = 0xa1;
@@ -138,10 +138,14 @@ contract LocalLog {
     }
 }
 
-contract DelegateCallBase {
+contract DelegateCallBase is LocalLog {
     //administrator address
     address internal _admin;
     address internal _impl;
+
+    event UpdateAdmin(address indexed oldAdmin, address indexed newAdmin);
+
+    event UpdateImpl(address indexed oldImpl, address indexed newImpl);
 
     modifier onlyAdmin() {
         require(msg.sender == _admin, "The message sender must be administrator");
@@ -154,10 +158,16 @@ contract DelegateCallBase {
     }
 
     function updateAdmin(address admin) external onlyAdmin {
+        llog(DEBUG, abi.encodePacked("updateAdmin, old admin:", H(_admin), ", new admin:", H(admin)));
+        emit UpdateAdmin(_admin, admin);
+
         return _setAdmin(admin);
     }
 
     function updateImpl(address impl) external onlyAdmin  {
+        llog(DEBUG, abi.encodePacked("updateImpl, old impl:", H(_impl), ", new impl:", H(impl)));
+        emit UpdateImpl(_impl, impl);
+
         return _setImpl(impl);
     }
 

@@ -4,8 +4,7 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract ValidatorManager is DelegateCallBase, LocalLog, Common {
-    //todo: add event and emit for every external method
+contract ValidatorManager is DelegateCallBase, Common {
 
     //current consensus node set
     address[CONSENSUS_SIZE] _consensusSet;
@@ -49,6 +48,8 @@ contract ValidatorManager is DelegateCallBase, LocalLog, Common {
 
     //validator name=>operator addr
     mapping (string=>address) _names;
+
+    event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
     function getPubKey(address node) external returns (bytes memory){
         address ope = _node2operator[node];
@@ -94,7 +95,6 @@ contract ValidatorManager is DelegateCallBase, LocalLog, Common {
     ) external onlyHub {
         require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_infos[operator].amount == 0, "validator already exist");
-        llog(DEBUG, abi.encodePacked("addValidator ", name, " start."));
 
         validator storage v = _infos[operator];
         v.operator = operator;
@@ -112,7 +112,10 @@ contract ValidatorManager is DelegateCallBase, LocalLog, Common {
         _names[name] = operator;
         _node2operator[node] = operator;
         _agent2operator[agent] = operator;
-        llog(DEBUG, abi.encodePacked("addValidator ", name, " succeed."));
+
+        llog(DEBUG, abi.encodePacked("addValidator, name:", name));
+
+        emit AddValidator(name, operator, node, pubKey, amount);
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {
@@ -134,12 +137,10 @@ contract ValidatorManager is DelegateCallBase, LocalLog, Common {
     }
 
     function getOperatorAndPledgeAmount(address node) external returns (address, uint256) {
-        llog(DEBUG, abi.encodePacked("hub contract call getOperatorAndPledgeAmount, to node:", H(node)));
         address oper = _node2operator[node];
         if(oper != address(0) ){
             return (oper, _infos[oper].amount);
         }
-        llog(DEBUG, abi.encodePacked("hub contract call getOperatorAndPledgeAmount, to operator:", H(oper)));
         return (address(0), 0);
     }
 }
