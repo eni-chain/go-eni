@@ -4,7 +4,7 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract ProxyContract is DelegateCallBase, LocalLog {
+contract ProxyContract is DelegateCallBase/*, LocalLog*/ {
     //A structured storage slot parameter that defines logical contract address
     //value is hex("LogicContractAddressSlot")
     //uint256 private constant implSlotParam = 0x4c6f676963436f6e747261637441646472657373536c6f74;
@@ -60,6 +60,8 @@ contract ProxyContract is DelegateCallBase, LocalLog {
     // }
 
     function init(bytes memory bytecode) external {
+        _setAdmin(INIT_ADMIN_ADDR);
+
         address addr = _getImpl();
         require(addr.code.length == 0, "Init method can only be called once.");
 
@@ -67,16 +69,16 @@ contract ProxyContract is DelegateCallBase, LocalLog {
             addr := create(0,add(bytecode, 0x20), mload(bytecode))
         }
         require(addr.code.length != 0, "Create implementation contract failed fail");
-        llog(DEBUG, abi.encodePacked("Deploy implementation contract[", H(addr), "] succeed."));
+        //llog(DEBUG, abi.encodePacked("Deploy implementation contract[", H(addr), "] succeed."));
 
          _setImpl(addr);
-        llog(DEBUG, abi.encodePacked("Set implementation contract[", H(addr), "] succeed."));
+        //llog(DEBUG, abi.encodePacked("Set implementation contract[", H(addr), "] succeed."));
     }
 
     // captures all calls and forwards them to the logical contract
     fallback(bytes calldata data) external payable returns (bytes memory) {
         address impl = _getImpl();
-        llog(DEBUG, abi.encodePacked(H(msg.sender), " delegate call address:", H(impl), ", calldata:", H(data)));
+        //llog(DEBUG, abi.encodePacked(H(msg.sender), " delegate call address:", H(impl), ", calldata:", H(data)));
         require(impl.code.length > 0, "Invalid implementation address");
 
         (bool success, bytes memory result) = impl.delegatecall(data);

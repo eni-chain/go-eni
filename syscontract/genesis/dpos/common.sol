@@ -149,7 +149,7 @@ contract LocalLog {
 
 contract DelegateCallBase {
     //administrator address
-    address internal _admin = INIT_ADMIN_ADDR;
+    address internal _admin;
     address internal _impl;
 
     modifier onlyAdmin() {
