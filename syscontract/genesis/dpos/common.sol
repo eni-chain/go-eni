@@ -149,8 +149,8 @@ contract LocalLog {
 
 contract DelegateCallBase {
     //administrator address
-    address _admin = INIT_ADMIN_ADDR;
-    address _impl;
+    address internal _admin = INIT_ADMIN_ADDR;
+    address internal _impl;
 
     modifier onlyAdmin() {
         require(msg.sender == _admin, "The message sender must be administrator");
@@ -162,15 +162,15 @@ contract DelegateCallBase {
         _;
     }
 
-    function updateAdmin(address admin) external {
+    function updateAdmin(address admin) external onlyAdmin {
         return _setAdmin(admin);
     }
 
-    function updateImpl(address impl) external {
+    function updateImpl(address impl) external onlyAdmin  {
         return _setImpl(impl);
     }
 
-    function _setAdmin(address admin) internal onlyAdmin {
+    function _setAdmin(address admin) internal {
         _admin = admin;
     }
 
@@ -179,7 +179,7 @@ contract DelegateCallBase {
     }
 
     //set delegate call's implementation contract address
-    function _setImpl(address impl) internal onlyAdmin onlyValidContract(impl) {
+    function _setImpl(address impl) public onlyValidContract(impl){
         _impl = impl;
     }
 

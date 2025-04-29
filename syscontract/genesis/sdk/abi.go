@@ -83,6 +83,19 @@ const PROXYABI = `
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "impl",
+				"type": "address"
+			}
+		],
+		"name": "_setImpl",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "getAdmin",
 		"outputs": [
@@ -231,6 +244,19 @@ const VRFABI = `
 			}
 		],
 		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "impl",
+				"type": "address"
+			}
+		],
+		"name": "_setImpl",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -484,6 +510,19 @@ const HubABI = `
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "impl",
+				"type": "address"
+			}
+		],
+		"name": "_setImpl",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "node",
 				"type": "address"
 			},
@@ -686,6 +725,19 @@ const ValidatorManagerABI = `
 			}
 		],
 		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "impl",
+				"type": "address"
+			}
+		],
+		"name": "_setImpl",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
