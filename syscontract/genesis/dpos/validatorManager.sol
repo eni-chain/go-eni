@@ -4,14 +4,10 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract ValidatorManager{
-    //todo: add event and emit for every external method
-
-    //administrator address
-    address _admin;
+contract ValidatorManager is DelegateCallBase, Common {
 
     //current consensus node set
-    address[consensusSize] _consensusSet;
+    address[CONSENSUS_SIZE] _consensusSet;
 
     //For traversal and retrieval, because the mapping type cannot be traversed
     address[] _validatorNodes;
@@ -53,32 +49,7 @@ contract ValidatorManager{
     //validator name=>operator addr
     mapping (string=>address) _names;
 
-    modifier onlyHub() {
-        require(msg.sender == HUB_ADDR, "the message sender must be hub contract");
-        _;
-    }
-
-        modifier onlyVrf() {
-        require(msg.sender == VRF_ADDR, "the message sender must be vrf contract");
-        _;
-    }
-
-    modifier onlyAdmin() {
-        require(msg.sender == _admin, "The message sender must be administrator");
-        _;
-    }
-
-    function init() external {
-        _admin = ADMIN_ADDR;
-    }
-
-    function updateAdmin(address admin) external onlyAdmin {
-        _admin = admin;
-    }
-
-    function getAdmin() external  returns (address){
-        return _admin;
-    }
+    event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
     function getPubKey(address node) external returns (bytes memory){
         address ope = _node2operator[node];
@@ -141,10 +112,14 @@ contract ValidatorManager{
         _names[name] = operator;
         _node2operator[node] = operator;
         _agent2operator[agent] = operator;
+
+        llog(DEBUG, abi.encodePacked("addValidator, name:", name));
+
+        emit AddValidator(name, operator, node, pubKey, amount);
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {
-        require(nodes.length <= consensusSize, "The number of consensuses exceeds the maximum limit");
+        require(nodes.length <= CONSENSUS_SIZE, "The number of consensuses exceeds the maximum limit");
 
         delete _consensusSet;
         for(uint i = 0; i < nodes.length; ++i){
@@ -166,7 +141,6 @@ contract ValidatorManager{
         if(oper != address(0) ){
             return (oper, _infos[oper].amount);
         }
-
         return (address(0), 0);
     }
 }

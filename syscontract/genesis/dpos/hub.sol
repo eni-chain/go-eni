@@ -4,16 +4,12 @@ pragma solidity >= 0.8.0;
 
 import "./common.sol";
 
-contract Hub is LocalLog {
-    //todo: add event and commit for methods
+contract Hub is DelegateCallBase {
 
     uint256 constant ratioDeno = 100000;
     uint256 constant ratioNumer = 20000;
     uint256 constant increasePerCoin = 1;
     uint256 constant weiPerCoin = 1000000000000000000;
-
-    //administrator address
-    address _admin;
 
     //validator apply info
     struct applicant{
@@ -30,22 +26,11 @@ contract Hub is LocalLog {
     //List of applicants
     mapping (address=>applicant) _applicants;
 
-    modifier onlyAdmin() {
-        require(msg.sender == _admin, "The message sender must be administrator");
-        _;
-    }
+    event ApplyForValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
-    function init() external {
-        _admin = ADMIN_ADDR;
-    }
+    event AuditPass(address indexed admin, string indexed name, address indexed operator, address node, bytes pubKey, uint256 pledge);
 
-    function updateAdmin(address admin) external onlyAdmin {
-        _admin = admin;
-    }
-
-    function getAdmin() external  returns (address){
-        return _admin;
-    }
+    event BlockReward(address indexed proposer, uint256 pledge, uint256 reward);
 
     function applyForValidator(
         address node,
@@ -66,6 +51,9 @@ contract Hub is LocalLog {
         a.name = name;
         a.description = description;
         a.enterTime = block.timestamp;
+
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", plege amount: ", S(msg.value)));
+        emit ApplyForValidator(name, msg.sender, node, pubKey, msg.value);
     }
 
     function auditPass(address operator) external onlyAdmin {
@@ -83,15 +71,22 @@ contract Hub is LocalLog {
             a.pubKey
         );
 
+        llog(DEBUG, abi.encodePacked("auditPass, validator name:", a.name, ", operator:", a.operator, ", admin:", H(msg.sender),  ", pledge amount: ", S(a.amount)));
+        emit AuditPass(msg.sender, a.name, a.operator, a.node, a.pubKey, a.amount);
+
         delete _applicants[operator];
+
     }
 
     function blockReward(address node) external returns (address, uint256) {
-
         address operator;
         uint256 pledgeAmount;
         (operator, pledgeAmount) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getOperatorAndPledgeAmount(node);
         uint256 reward = calculateReward(pledgeAmount);
+
+        llog(DEBUG, abi.encodePacked("blockReward, proposer:", H(operator), ", pledge amount: ", S(pledgeAmount), ", reward:", S(reward)));
+        emit BlockReward(operator, pledgeAmount, reward);
+
         return (operator, reward);
     }
 
@@ -101,13 +96,13 @@ contract Hub is LocalLog {
 
         //convert wei to coin
         uint256 pledge = pledgeAmount/weiPerCoin;
-        llog(DEBUG, abi.encodePacked("pledge amount in wei:", S(pledgeAmount), ", in coin:", S(pledge)));
+        //llog(DEBUG, abi.encodePacked("calculateReward, pledge amount in wei:", S(pledgeAmount), ", in coin:", S(pledge)));
 
         //uint256 reward = (ratioNumer/ratioDeno) *(1 + (pledge*(increasePerCoin/ratioDeno)));
         //uint256 reward = (ratioNumer/ratioDeno) *(1*ratioDeno + (pledge*increasePerCoin))/ratioDeno;
         //uint256 reward = ((ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*weiPerCoin)/(ratioDeno*ratioDeno);
         uint256 reward = (ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*(weiPerCoin/(ratioDeno*ratioDeno));
-        llog(DEBUG, abi.encodePacked("reward amount in wei:", S(reward)));
+        //llog(DEBUG, abi.encodePacked("calculateReward, reward amount in wei:", S(reward)));
 
         return reward;
     }

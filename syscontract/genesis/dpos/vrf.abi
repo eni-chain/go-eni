@@ -1,5 +1,106 @@
 [
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "epoch",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes",
+				"name": "rnd",
+				"type": "bytes"
+			}
+		],
+		"name": "InitRandomSeed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "validator",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "epoch",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes",
+				"name": "rnd",
+				"type": "bytes"
+			}
+		],
+		"name": "SendRandom",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "oldAdmin",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newAdmin",
+				"type": "address"
+			}
+		],
+		"name": "UpdateAdmin",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "epoch",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address[]",
+				"name": "validators",
+				"type": "address[]"
+			}
+		],
+		"name": "UpdateConsensusSet",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "oldImpl",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newImpl",
+				"type": "address"
+			}
+		],
+		"name": "UpdateImpl",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -77,7 +178,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "_admin",
+		"name": "getAdmin",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -105,13 +206,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -203,6 +297,19 @@
 				"type": "address[]"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "impl",
+				"type": "address"
+			}
+		],
+		"name": "updateImpl",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
