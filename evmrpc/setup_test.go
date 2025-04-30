@@ -516,6 +516,10 @@ func (c *MockClient) BroadcastTx(context.Context, tmtypes.Tx) (*coretypes.Result
 	return &coretypes.ResultBroadcastTx{Code: 0, Hash: []byte("0x123")}, nil
 }
 
+func (c *MockClient) BroadcastTxSync(context.Context, tmtypes.Tx) (*coretypes.ResultBroadcastTx, error) {
+	return &coretypes.ResultBroadcastTx{Code: 0, Hash: []byte("0x123")}, nil
+}
+
 func (c *MockClient) Tx(context.Context, []byte, bool) (*coretypes.ResultTx, error) {
 	return &coretypes.ResultTx{Hash: bytes.HexBytes(TestCosmosTxHash), Height: MockHeight8, TxResult: abci.ExecTxResult{EvmTxInfo: &abci.EvmTxInfo{TxHash: TestEvmTxHash}}}, nil
 }
