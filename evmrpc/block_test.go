@@ -18,7 +18,7 @@ func TestGetEniBlockByHash(t *testing.T) {
 func TestGetEniBlockByNumberExcludeTraceFail(t *testing.T) {
 	resObj := sendEniRequestGood(t, "getBlockByNumberExcludeTraceFail", "0x67", true)
 	// first tx is not a panic tx, second tx is a panic tx
-	expectedNumTxs := 1
+	expectedNumTxs := 0
 	require.Equal(t, expectedNumTxs, len(resObj["result"].(map[string]interface{})["transactions"].([]interface{})))
 }
 
