@@ -638,6 +638,7 @@ func init() {
 }
 
 func generateTxData() {
+	txLog := log.NewLogger(os.Stdout)
 	chainId := big.NewInt(config.DefaultChainID)
 	to := common.HexToAddress("010203")
 	var txBuilder1, txBuilder1_5, txBuilder2, txBuilder3, txBuilder4, synthTxBuilder client.TxBuilder
@@ -650,6 +651,8 @@ func generateTxData() {
 		Data:      []byte("abc"),
 		ChainID:   chainId,
 	})
+	txLog.Info(fmt.Sprintf("tx1 hash: %v", tx1.Hash().Hex()))
+
 	txBuilder1_5, multiTxBlockTx1 = buildTx(ethtypes.DynamicFeeTx{
 		Nonce:     2,
 		GasFeeCap: big.NewInt(10),
@@ -659,6 +662,8 @@ func generateTxData() {
 		Data:      []byte("abc"),
 		ChainID:   chainId,
 	})
+	txLog.Info(fmt.Sprintf("multiTxBlockTx1 hash: %v", multiTxBlockTx1.Hash().Hex()))
+
 	txBuilder2, multiTxBlockTx2 = buildTx(ethtypes.DynamicFeeTx{
 		Nonce:     3,
 		GasFeeCap: big.NewInt(10),
@@ -668,6 +673,8 @@ func generateTxData() {
 		Data:      []byte("abc"),
 		ChainID:   chainId,
 	})
+	txLog.Info(fmt.Sprintf("multiTxBlockTx2 hash: %v", multiTxBlockTx2.Hash().Hex()))
+
 	txBuilder3, multiTxBlockTx3 = buildTx(ethtypes.DynamicFeeTx{
 		Nonce:     4,
 		GasFeeCap: big.NewInt(10),
@@ -677,6 +684,8 @@ func generateTxData() {
 		Data:      []byte("abc"),
 		ChainID:   chainId,
 	})
+	txLog.Info(fmt.Sprintf("multiTxBlockTx3 hash: %v", multiTxBlockTx3.Hash().Hex()))
+
 	txBuilder4, multiTxBlockTx4 = buildTx(ethtypes.DynamicFeeTx{
 		Nonce:     5,
 		GasFeeCap: big.NewInt(10),
@@ -686,6 +695,8 @@ func generateTxData() {
 		Data:      []byte("abc"),
 		ChainID:   chainId,
 	})
+	txLog.Info(fmt.Sprintf("multiTxBlockTx4 hash: %v", multiTxBlockTx4.Hash().Hex()))
+
 	synthTxBuilder, multiTxBlockSynthTx = buildTx(ethtypes.DynamicFeeTx{
 		Nonce:     6,
 		GasFeeCap: big.NewInt(20),
@@ -695,6 +706,8 @@ func generateTxData() {
 		Data:      []byte("synthetic"),
 		ChainID:   chainId,
 	})
+	txLog.Info(fmt.Sprintf("multiTxBlockSynthTx hash: %v", multiTxBlockSynthTx.Hash().Hex()))
+
 	debugTraceTxBuilder, _ := buildTx(ethtypes.DynamicFeeTx{
 		Nonce:     0,
 		GasFeeCap: big.NewInt(10),

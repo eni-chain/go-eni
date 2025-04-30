@@ -187,5 +187,6 @@ func (t *AssociationAPI) GetEvmTx(ctx context.Context, cosmosHash string) (resul
 	//}
 
 	//return txResponse.TxResult.EvmTxInfo.TxHash, nil
-	return string(txResponse.Tx.Hash()), nil
+	//return string(txResponse.Tx.Hash()), nil
+	return txResponse.TxResult.EvmTxInfo.TxHash, nil
 }
