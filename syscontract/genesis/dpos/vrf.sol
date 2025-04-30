@@ -10,14 +10,10 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf is LocalLog {
-    //todo: add event and emit for every method
+contract Vrf is DelegateCallBase {
 
     //init rand seed, will be init by administrator
     bytes _initSeed;
-
-    //administrator address
-    address public _admin;
 
     //epoch => random seed
     mapping(uint256 => bytes)internal _seeds;
@@ -34,44 +30,34 @@ contract Vrf is LocalLog {
     //valid validator[]
     address[] private _validNodes;
 
-    modifier onlyAdmin() {
-        require(msg.sender == _admin, "The message sender must be administrator");
-        _;
-    }
 
-   modifier needInited() {
+    event InitRandomSeed(uint256 indexed epoch, bytes rnd);
+
+    event SendRandom(address indexed validator, uint256 indexed epoch, bytes rnd);
+
+    event UpdateConsensusSet(uint256 epoch, address[] validators);
+
+    modifier needInited() {
         require(_initSeed.length != 0, "The initial seed has not been initialized and dpos has not been started");
         _;
     }
 
-    function init() external {
-        _admin = ADMIN_ADDR;
-    }
-
-    function updateAdmin(address admin) external onlyAdmin {
-        //require(msg.sender == _admin, "Msg sender is not administrator");
-        _admin = admin;
-    }
-
     function initRandomSeed(bytes calldata rnd, uint256 epoch) external onlyAdmin {
-        //require(msg.sender == _admin, "Msg sender is not administrator");
         require(_initSeed.length == 0, "vrf has been init!");
 
         _initSeed = rnd;
         _seeds[epoch] = rnd;
+
+        llog(DEBUG, abi.encodePacked("initRandomSeed, epoch:", S(epoch), ", random seed:", H(rnd)));
+        emit InitRandomSeed(epoch, rnd);
     }
 
     function getRandomSeed(uint256 epoch) external view needInited returns (bytes memory) {
-        //require(_initSeed.length != 0, "vrf has not been init!");
         require(epoch > 1, "epoch number too small");
 
         //each random values is generated from the seeds of the previous epoch
         return _seeds[epoch-1];
     }
-
-    // function setPubKey(address validator, bytes calldata pubkey) public {
-    //     _pubKeys[validator] = pubkey;
-    // }
 
     function verifyEd25519Sign(bytes memory pubKey, bytes memory signature, bytes memory msgHash) public view returns (bool) {
         require(pubKey.length == PUBKEY_LEN, "The public key length is not ed25519 public key size");
@@ -82,26 +68,23 @@ contract Vrf is LocalLog {
         // | PubKey   | Signature  |  msgHash   |
         // | 32 bytes | 64 bytes   |  64 bytes  |
         bytes memory input = bytes.concat(pubKey, signature, msgHash);
-        //bytes32[2] memory output;
-        bytes memory output = new bytes(32);
 
-        assembly {
-            let len := mload(input)
-            if iszero(staticcall(not(0), ED25519_VERIFY_PRECOMPILED, add(input, 0x20), len, add(output, 0x20), 0x20)) {
-                revert(0, 0)
-            }
+        bool success;
+        bytes memory output;
+        (success, output) = address(uint160(ED25519_VERIFY_PRECOMPILED)).staticcall(input);
+        if(!success){
+            revert("the call to the ed15519 precompiled contract failed");
         }
 
         if(output[31] == 0){
             return  false;
         }
 
-        llog(DEBUG, abi.encodePacked("verify random succeed, user:", H(msg.sender), ", pubKey:", H(pubKey), ", signature:", H(signature), ", msgHash: ", H(msgHash)));
+        llog(DEBUG, abi.encodePacked("verifyEd25519Sign, user:", H(msg.sender), ", pubKey:", H(pubKey), ", signature:", H(signature), ", msgHash: ", H(msgHash)));
         return true;
     }
 
     function sendRandom(bytes calldata rnd, uint256 epoch) external needInited returns (bool success){
-        //require(_initSeed.length != 0, "Needs init first!");
         require(epoch > 1, "Epoch number too small");
         require(_seeds[epoch-1].length == SEED_LEN, "Random values sent ahead of epoch!");
         require(rnd.length == SIGN_LEN, "Random length is not ed25519 signature size!");
@@ -115,11 +98,12 @@ contract Vrf is LocalLog {
         require(success == true, "Random is not signature that signed by validator");
 
         _randoms[epoch][nodeAddr] = rnd;
+
+        llog(DEBUG, abi.encodePacked("sendRandom, sender:", H(msg.sender), ", epoch:", S(epoch), ", random:", H(rnd)));
+        emit SendRandom(msg.sender, epoch, rnd);
     }
 
     function updateConsensusSet(uint256 epoch) external needInited returns (address[] memory) {
-        //todo: add permission- only the epoch module address can call the updateConsensusSet method
-        //require(_randoms[epoch].length > 0, "Epoch has no random value!");
         require(keccak256(_seeds[epoch]) != keccak256(_initSeed), "Consensus set should be elected in next epoch");
 
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();
@@ -129,10 +113,10 @@ contract Vrf is LocalLog {
         for (uint i = 0; i < validators.length; ++i) {
             if(_randoms[epoch][validators[i]].length == 0){
                 _unSendRandNodes.push(validators[i]);
-                llog(DEBUG, abi.encodePacked("record unsent random node:", H(validators[i])));
+                llog(DEBUG, abi.encodePacked("updateConsensusSet, found unsend random validator:", H(validators[i])));
             }else{
                 _validNodes.push(validators[i]);
-                llog(DEBUG, abi.encodePacked("record valid node:", H(validators[i])));
+                llog(DEBUG, abi.encodePacked("updateConsensusSet, found send random validator:", H(validators[i])));
             }
         }
 
@@ -140,23 +124,24 @@ contract Vrf is LocalLog {
         //ISlash(SLASH_ADDR).penaltyUnsendRandomValidator(_unSendRandNodes);
 
         address[] memory sorted = sortAddrs(_validNodes, epoch);
-        address[] memory topN = getTopNAddresses(sorted, consensusSize);
+        address[] memory topN = getTopNAddresses(sorted, CONSENSUS_SIZE);
 
         //The seed of this epoch are generated for the next epoch to generate random values
         _seeds[epoch] = _seeds[epoch-1];
         for(uint i = 0; i < topN.length; ++i){
             _seeds[epoch] = addBytes(_seeds[epoch],  _randoms[epoch][topN[i]]);
         }
-        llog(DEBUG, abi.encodePacked("generate new seed:", H(_seeds[epoch]), ", epoch:", S(epoch)));
+        llog(DEBUG, abi.encodePacked("updateConsensusSet, generate new seed:", H(_seeds[epoch]), ", epoch:", S(epoch)));
 
         //Empty the invalid node set and the valid node set for the next epoch
         delete _unSendRandNodes;
         delete _validNodes;
-        llog(DEBUG, abi.encodePacked("clear _unSendRandNodes and _validNodes for next epoch, _unSendRandNodes.len:", S(_unSendRandNodes.length), ", _validNodes.len:", S(_validNodes.length)));
+        llog(DEBUG, abi.encodePacked("updateConsensusSet, clear _unSendRandNodes and _validNodes for next epoch, _unSendRandNodes.len:", S(_unSendRandNodes.length), ", _validNodes.len:", S(_validNodes.length)));
         if(_unSendRandNodes.length != 0 || _validNodes.length != 0){
             llog(ERROR, abi.encodePacked("_unSendRandNodes or _validNodes not clean"));
         }
 
+        emit UpdateConsensusSet(epoch, topN);
         return topN;
     }
 
@@ -184,10 +169,11 @@ contract Vrf is LocalLog {
             }
         }
 
+        llog(DEBUG, abi.encodePacked("sortAddrs, validator set size:", S(n), ", epoch:", S(epoch)));
         return array;
     }
 
-    function getTopNAddresses(address[] memory array, uint256 n) internal pure returns (address[] memory) {
+    function getTopNAddresses(address[] memory array, uint256 n) internal view returns (address[] memory) {
         if(array.length < n){
             n = array.length;
         }
@@ -198,6 +184,8 @@ contract Vrf is LocalLog {
         for (uint256 i = 0; i < n; i++) {
             result[i] = array[i];
         }
+
+        llog(DEBUG, abi.encodePacked("getTopNAddresses, consensus set size:", S(n)));
         return result;
     }
 
@@ -212,8 +200,7 @@ contract Vrf is LocalLog {
             }
         }
 
-        llog(DEBUG, abi.encodePacked("sum rand:", H(a), " + ", H(b), " = ", H(result)));
-
+        //llog(DEBUG, abi.encodePacked("addBytes, sum rand:", H(a), " + ", H(b), " = ", H(result)));
         return result;
     }
 }
