@@ -89,6 +89,6 @@ Removes all blockchain data and configuration from the respective node directori
 
 # Build with Us!
 If you are interested in building with Eni Network:  
-📧 Email: team@eninetwork.io  
+👉 Visit our community hub: https://linktr.ee/ENI_OFFICIAL  
 🐦 DM us on X: https://x.com/eni__official  
 🌐 Website: https://www.eniac.network
