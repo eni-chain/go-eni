@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/evm/types"
-	"github.com/eni-chain/go-eni/evmrpc/ethapi"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/ethapi"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 )

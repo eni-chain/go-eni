@@ -20,9 +20,9 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/eni-chain/go-eni/evmrpc/ethapi/override"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/ethapi/override"
 )
 
 func newUint64(v uint64) *hexutil.Uint64 {
