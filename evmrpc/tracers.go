@@ -10,6 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/eth/tracers"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"     // run init()s to register JS tracers
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native" // run init()s to register native tracers
+	"github.com/ethereum/go-ethereum/ethapi"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/hashicorp/golang-lru/v2/expirable"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
@@ -159,9 +160,9 @@ func (api *DebugAPI) TraceBlockByHash(ctx context.Context, hash common.Hash, con
 	return
 }
 
-//func (api *DebugAPI) TraceCall(ctx context.Context, args ethapi.TransactionArgs, blockNrOrHash rpc.BlockNumberOrHash, config *tracers.TraceCallConfig) (result interface{}, returnErr error) {
-//	startTime := time.Now()
-//	defer recordMetrics("debug_traceCall", api.connectionType, startTime, returnErr == nil)
-//	result, returnErr = api.tracersAPI.TraceCall(ctx, args, blockNrOrHash, config)
-//	return
-//}
+func (api *DebugAPI) TraceCall(ctx context.Context, args ethapi.TransactionArgs, blockNrOrHash rpc.BlockNumberOrHash, config *tracers.TraceCallConfig) (result interface{}, returnErr error) {
+	startTime := time.Now()
+	defer recordMetrics("debug_traceCall", api.connectionType, startTime, returnErr == nil)
+	result, returnErr = api.tracersAPI.TraceCall(ctx, args, blockNrOrHash, config)
+	return
+}
