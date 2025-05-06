@@ -78,6 +78,10 @@ contract ProxyContract is DelegateCallBase {
         emit Init(address(this), _admin, addr);
     }
 
+    receive() external payable {
+        llog(DEBUG, abi.encodePacked("receive, from:", H(msg.sender), ", value:", S(msg.value)));
+    }
+
     // captures all calls and forwards them to the logical contract
     fallback(bytes calldata data) external payable returns (bytes memory) {
         address impl = _getImpl();

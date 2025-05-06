@@ -51,7 +51,7 @@ contract ValidatorManager is DelegateCallBase, Common {
 
     event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
-    function getPubKey(address node) external returns (bytes memory){
+    function getPubKey(address node) external view returns (bytes memory){
         address ope = _node2operator[node];
         if(ope != address(0) ){
             return _infos[ope].pubKey;
@@ -60,13 +60,13 @@ contract ValidatorManager is DelegateCallBase, Common {
         return bytes("");
     }
 
-    function getNodeAddrAndPubKey(address operator) external returns (address, bytes memory){
+    function getNodeAddrAndPubKey(address operator) external view returns (address, bytes memory){
         validator storage a = _infos[operator];
         require(a.amount > 0, "Operator and validator not exist");
         return (a.node, a.pubKey);
     }
 
-    function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory){
+    function getPubKeysBySequence(address[] calldata nodes) external view returns (bytes[] memory){
         bytes[] memory pubKeys = new bytes[](nodes.length);
 
         for(uint i = 0; i < nodes.length; i++){
@@ -79,7 +79,7 @@ contract ValidatorManager is DelegateCallBase, Common {
         return pubKeys;
     }
 
-    function getValidatorSet() external returns (address[] memory){
+    function getValidatorSet() external view returns (address[] memory){
         return _validatorNodes;
     }
 
@@ -127,7 +127,7 @@ contract ValidatorManager is DelegateCallBase, Common {
         }
     }
 
-    function getPledgeAmount(address node) external returns (uint256) {
+    function getPledgeAmount(address node) external view returns (uint256) {
         address oper = _node2operator[node];
         if(oper != address(0) ){
             return _infos[oper].amount;
@@ -136,7 +136,7 @@ contract ValidatorManager is DelegateCallBase, Common {
         return 0;
     }
 
-    function getOperatorAndPledgeAmount(address node) external returns (address, uint256) {
+    function getOperatorAndPledgeAmount(address node) external view returns (address, uint256) {
         address oper = _node2operator[node];
         if(oper != address(0) ){
             return (oper, _infos[oper].amount);

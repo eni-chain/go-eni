@@ -94,13 +94,14 @@ contract Vrf is DelegateCallBase {
         (nodeAddr, pubKey) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getNodeAddrAndPubKey(msg.sender);
         require(pubKey.length != 0, "Msg sender is not validator operator");
 
-        bool success = verifyEd25519Sign(pubKey, rnd, _seeds[epoch-1]);
+        success = verifyEd25519Sign(pubKey, rnd, _seeds[epoch-1]);
         require(success == true, "Random is not signature that signed by validator");
 
         _randoms[epoch][nodeAddr] = rnd;
 
         llog(DEBUG, abi.encodePacked("sendRandom, sender:", H(msg.sender), ", epoch:", S(epoch), ", random:", H(rnd)));
         emit SendRandom(msg.sender, epoch, rnd);
+        return success;
     }
 
     function updateConsensusSet(uint256 epoch) external needInited returns (address[] memory) {
@@ -190,7 +191,7 @@ contract Vrf is DelegateCallBase {
     }
 
     // Adds two 64-byte bytes byte by byte
-    function addBytes(bytes memory a, bytes memory b) internal view returns (bytes memory) {
+    function addBytes(bytes memory a, bytes memory b) internal pure returns (bytes memory) {
         require(a.length == SEED_LEN && b.length == SEED_LEN, "Invalid input length");
 
         bytes memory result = new bytes(SEED_LEN);
