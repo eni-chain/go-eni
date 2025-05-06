@@ -95,6 +95,7 @@ contract ValidatorManager is DelegateCallBase, Common {
     ) external onlyHub {
         require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_infos[operator].amount == 0, "validator already exist");
+        require(_names[name] == address(0), "validator name already used");
 
         validator storage v = _infos[operator];
         v.operator = operator;
