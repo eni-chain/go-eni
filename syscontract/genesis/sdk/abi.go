@@ -214,6 +214,10 @@ const PROXYABI = `
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
 	}
 ]
 `
@@ -1152,7 +1156,7 @@ const ValidatorManagerABI = `
 				"type": "bytes"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1176,7 +1180,7 @@ const ValidatorManagerABI = `
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1195,7 +1199,7 @@ const ValidatorManagerABI = `
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1214,7 +1218,7 @@ const ValidatorManagerABI = `
 				"type": "bytes"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1233,7 +1237,7 @@ const ValidatorManagerABI = `
 				"type": "bytes[]"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1246,7 +1250,7 @@ const ValidatorManagerABI = `
 				"type": "address[]"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
