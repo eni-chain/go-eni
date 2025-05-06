@@ -333,11 +333,11 @@ require (
 
 replace (
 	// replace broken cosmos-sdk
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250506060558-cdf51b96639d
-	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250506060558-cdf51b96639d
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250506060558-cdf51b96639d
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250506084528-8a50737d7533
+	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250506084528-8a50737d7533
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250506084528-8a50737d7533
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250429032449-0022343a43fd
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250506060558-cdf51b96639d
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250506084528-8a50737d7533
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250505113906-74606eca3d53
 	//github.com/ethereum/go-ethereum => ../go-ethereum
