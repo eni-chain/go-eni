@@ -9,7 +9,7 @@ Eni is the fastest general purpose L1 blockchain and the first parallelized EVM.
 
 # Documentation
 For the most up-to-date documentation please visit:  
-👉 http://doc.eniac.network/
+👉 http://docs.eniac.network/
 
 # Eni Optimizations
 Eni introduces four major innovations:
