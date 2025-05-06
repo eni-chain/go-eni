@@ -12,8 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/evm/state"
 	"github.com/cosmos/cosmos-sdk/x/evm/types"
-	"github.com/eni-chain/go-eni/evmrpc/ethapi"
-	"github.com/eni-chain/go-eni/evmrpc/ethapi/override"
 	"github.com/eni-chain/go-eni/utils"
 	"github.com/eni-chain/go-eni/utils/metrics"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -26,6 +24,8 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/eth"
 	"github.com/ethereum/go-ethereum/eth/tracers"
+	"github.com/ethereum/go-ethereum/ethapi"
+	"github.com/ethereum/go-ethereum/ethapi/override"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -261,8 +261,7 @@ func (b Backend) BlockByNumber(ctx context.Context, bn rpc.BlockNumber) (*ethtyp
 		}
 	}
 	header := b.getHeader(big.NewInt(bn.Int64()))
-	block := ethtypes.NewBlock(header, &ethtypes.Body{Transactions: txs}, nil, nil)
-
+	block := ethtypes.NewBlock2(header, txs)
 	return block, nil
 }
 
@@ -333,21 +332,20 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 		// set address association for the sender if not present. Note that here we take the shortcut
 		// of querying from the latest height with the assumption that if this tx has been processed
 		// at all then its association must be present in the latest height
-		_, associated := b.keeper.GetEniAddress(statedb.Ctx(), msg.From)
-		if !associated {
-			eniAddr, associatedNow := b.keeper.GetEniAddress(b.ctxProvider(LatestCtxHeight), msg.From)
-			if !associatedNow {
-				err := types.NewAssociationMissingErr(msg.From.Hex())
-				metrics.IncrementAssociationError("state_at_tx", err)
-				return nil, vm.BlockContext{}, nil, nil, err
-			}
-			//if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
-			//	return nil, vm.BlockContext{}, nil, nil, err
-			//}
-			//todo:Wait until statedb migration is complete
-			_ = eniAddr
-		}
-
+		//_, associated := b.keeper.GetEniAddress(statedb.Ctx(), msg.From)
+		//if !associated {
+		//	eniAddr, associatedNow := b.keeper.GetEniAddress(b.ctxProvider(LatestCtxHeight), msg.From)
+		//	if !associatedNow {
+		//		err := types.NewAssociationMissingErr(msg.From.Hex())
+		//		metrics.IncrementAssociationError("state_at_tx", err)
+		//		return nil, vm.BlockContext{}, nil, nil, err
+		//	}
+		//	//if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
+		//	//	return nil, vm.BlockContext{}, nil, nil, err
+		//	//}
+		//	//todo:Wait until statedb migration is complete
+		//	_ = eniAddr
+		//}
 		if idx == txIndex {
 			return tx, *blockContext, statedb, emptyRelease, nil
 		}
