@@ -3,6 +3,8 @@
 pragma solidity >= 0.8.0;
 
 import "./common.sol";
+import "./localLog.sol";
+import "./delegateCallBase.sol";
 
 uint256 constant PUBKEY_LEN = 32; //ed25519 public key length
 uint256 constant PRIKEY_LEN = 64; //ed25519 private key length

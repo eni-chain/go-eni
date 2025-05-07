@@ -3,6 +3,8 @@
 pragma solidity >= 0.8.0;
 
 import "./common.sol";
+import "./localLog.sol";
+import "./delegateCallBase.sol";
 
 contract ProxyContract is DelegateCallBase {
     //A structured storage slot parameter that defines logical contract address

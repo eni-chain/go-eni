@@ -3,6 +3,8 @@
 pragma solidity >= 0.8.0;
 
 import "./common.sol";
+import "./localLog.sol";
+import "./delegateCallBase.sol";
 
 contract ValidatorManager is DelegateCallBase, Common {
 
