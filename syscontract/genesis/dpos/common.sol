@@ -66,7 +66,7 @@ interface IValidatorManager {
 
     function getValidatorSet() external  returns (address[] memory);
 
-    function addValidator(address operator, address node, address agent, uint256 amount, uint256 enterTime, string calldata name, string calldata description, bytes  calldata pubKey) external;
+    function addValidator(address operator, address node, address agent, uint256 amount, uint256 applyBlockNumber, string calldata name, string calldata description, bytes  calldata pubKey) external;
 
     function undateConsensus(address[] calldata nodes)external;
 

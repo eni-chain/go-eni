@@ -22,7 +22,7 @@ contract Hub is DelegateCallBase {
         uint256 amount;//validator pledge amount
         string name; //validator name
         string description; //validator description
-        uint256 enterTime; //time of application
+        uint256 applyBlockNumber; //bock number when applied to be validator
     }
 
     //List of applicants
@@ -52,7 +52,7 @@ contract Hub is DelegateCallBase {
         a.amount = msg.value;
         a.name = name;
         a.description = description;
-        a.enterTime = block.timestamp;
+        a.applyBlockNumber = block.number;
 
         llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", plege amount: ", S(msg.value)));
         emit ApplyForValidator(name, msg.sender, node, pubKey, msg.value);
@@ -67,7 +67,7 @@ contract Hub is DelegateCallBase {
             a.node,
             a.agent,
             a.amount,
-            a.enterTime,
+            a.applyBlockNumber,
             a.name,
             a.description,
             a.pubKey

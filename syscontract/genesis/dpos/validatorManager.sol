@@ -14,27 +14,17 @@ contract ValidatorManager is DelegateCallBase, Common {
     //For traversal and retrieval, because the mapping type cannot be traversed
     address[] _validatorNodes;
 
-    struct applicant{
-        address operator; //operator address, validator node's owner
-        address node; //node address, for consensus
-        address agent; //After being authorized by the operator, the agent can perform operator functions
-        bytes  pubKey; //validator node' public key, ed25519 type
-        uint256 amount;//validator pledge amount
-        string name; //validator name
-        string description; //validator description
-        uint256 enterTime; //time of application
-    }
-
     //validator info
     struct validator{
         address operator;   //operator address, validator node's owner, also the address to receive the block reward
         address node;       //node address, for consensus
         address agent;      //After being authorized by the operator, the agent can perform operator functions
         bytes  pubKey;      //validator node' public key, ed25519 type, used to verify data such as random, malicious votes, and duplicate proposals
-        uint256 amount;      //validator pledge amount
+        uint256 amount;     //validator pledge amount
         string name;        //validator name
         string description; //validator description
-        uint256 enterTime;  //time to be a validator
+        uint256 applyBlockNumber;  //bock number when applied to be validator
+        uint256 passBlockNumber;   //bock number when approved to be validator
         bool isJail;        //current validator is jailed
         uint256 expired;    //expired time of jail
     }
@@ -90,7 +80,7 @@ contract ValidatorManager is DelegateCallBase, Common {
         address node,
         address agent,
         uint256 amount,
-        uint256 enterTime,
+        uint256 applyBlockNumber,
         string calldata name,
         string calldata description,
         bytes  calldata pubKey
@@ -105,7 +95,8 @@ contract ValidatorManager is DelegateCallBase, Common {
         v.agent = agent;
         v.pubKey = pubKey;
         v.amount = amount;
-        v.enterTime = enterTime;
+        v.applyBlockNumber = applyBlockNumber;
+        v.passBlockNumber = block.number;
         v.name = name;
         v.description = description;
         v.isJail = false;
