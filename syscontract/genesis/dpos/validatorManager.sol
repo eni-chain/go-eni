@@ -11,8 +11,11 @@ contract ValidatorManager is DelegateCallBase, Common {
     //current consensus node set
     address[CONSENSUS_SIZE] _consensusSet;
 
-    //For traversal and retrieval, because the mapping type cannot be traversed
-    address[] _validatorNodes;
+    //The default validator nodes list
+    address[] _defaultValidators;
+
+    //The list of validator nodes approved to join
+    address[] _joinedValidators;
 
     //validator info
     struct validator{
@@ -40,6 +43,8 @@ contract ValidatorManager is DelegateCallBase, Common {
 
     //validator name=>operator addr
     mapping (string=>address) _names;
+
+    event AddDefaultValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
     event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
@@ -71,8 +76,62 @@ contract ValidatorManager is DelegateCallBase, Common {
         return pubKeys;
     }
 
+    function getDefaultValidatorSet() external view returns (address[] memory){
+        return _defaultValidators;
+    }
+
+    function getJoinedValidatorSet() external view returns (address[] memory){
+        return _joinedValidators;
+    }
+
     function getValidatorSet() external view returns (address[] memory){
-        return _validatorNodes;
+        address[] memory all = new address[](_defaultValidators.length + _joinedValidators.length);
+
+        for(uint i = 0; i < _defaultValidators.length; i++){
+            all[i] = _defaultValidators[i];
+        }
+
+        for(uint j = 0; j < _joinedValidators.length; ++j){
+           all[_defaultValidators.length + j] = _joinedValidators[j];
+        }
+
+        return all;
+    }
+
+    function addDefaultValidator(
+        address operator,
+        address node,
+        address agent,
+        uint256 amount,
+        string calldata name,
+        string calldata description,
+        bytes  calldata pubKey
+    ) external onlyHub {
+        //require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
+        require(_infos[operator].amount == 0, "validator already exist");
+        require(_names[name] == address(0), "validator name already used");
+
+        validator storage v = _infos[operator];
+        v.operator = operator;
+        v.node = node;
+        v.agent = agent;
+        v.pubKey = pubKey;
+        v.amount = amount;
+        v.applyBlockNumber = block.number;
+        v.passBlockNumber = block.number;
+        v.name = name;
+        v.description = description;
+        v.isJail = false;
+        v.expired = 0;
+
+        _defaultValidators.push(node);
+        _names[name] = operator;
+        _node2operator[node] = operator;
+        _agent2operator[agent] = operator;
+
+        llog(DEBUG, abi.encodePacked("addDefaultValidator, name:", name));
+
+        emit AddDefaultValidator(name, operator, node, pubKey, amount);
     }
 
     function addValidator(
@@ -102,7 +161,7 @@ contract ValidatorManager is DelegateCallBase, Common {
         v.isJail = false;
         v.expired = 0;
 
-        _validatorNodes.push(node);
+        _joinedValidators.push(node);
         _names[name] = operator;
         _node2operator[node] = operator;
         _agent2operator[agent] = operator;
@@ -136,5 +195,9 @@ contract ValidatorManager is DelegateCallBase, Common {
             return (oper, _infos[oper].amount);
         }
         return (address(0), 0);
+    }
+
+    function getValidatorInfo(address operator) external view returns (validator memory){
+        return _infos[operator];
     }
 }

@@ -28,11 +28,38 @@ contract Hub is DelegateCallBase {
     //List of applicants
     mapping (address=>applicant) _applicants;
 
+    event AddDefaultValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
+
     event ApplyForValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
     event AuditPass(address indexed admin, string indexed name, address indexed operator, address node, bytes pubKey, uint256 pledge);
 
     event BlockReward(address indexed proposer, uint256 pledge, uint256 reward);
+
+    function addDefaultValidator(
+        address operator,
+        address node,
+        address agent,
+        string calldata name,
+        string calldata description,
+        bytes  calldata pubKey
+    ) payable external {
+        //require(msg.value >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
+        require(_applicants[msg.sender].amount == 0, "applicant already exsit");
+
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).addDefaultValidator(
+            operator,
+            node,
+            agent,
+            msg.value,
+            name,
+            description,
+            pubKey
+        );
+
+        llog(DEBUG, abi.encodePacked(name, "addDefaultValidator, operator: ", H(operator), ", node:", H(node), ", plege amount: ", S(msg.value)));
+        emit AddDefaultValidator(name, msg.sender, node, pubKey, msg.value);
+    }
 
     function applyForValidator(
         address node,

@@ -58,19 +58,42 @@ contract Common {
 }
 
 interface IValidatorManager {
-    function getPubKey(address validator) external returns (bytes memory);
+    //validator info
+    struct validator{
+        address operator;   //operator address, validator node's owner, also the address to receive the block reward
+        address node;       //node address, for consensus
+        address agent;      //After being authorized by the operator, the agent can perform operator functions
+        bytes  pubKey;      //validator node' public key, ed25519 type, used to verify data such as random, malicious votes, and duplicate proposals
+        uint256 amount;     //validator pledge amount
+        string name;        //validator name
+        string description; //validator description
+        uint256 applyBlockNumber;  //bock number when applied to be validator
+        uint256 passBlockNumber;   //bock number when approved to be validator
+        bool isJail;        //current validator is jailed
+        uint256 expired;    //expired time of jail
+    }
 
-    function getNodeAddrAndPubKey(address operator) external returns (address, bytes memory);
+    function getPubKey(address validator) external view returns (bytes memory);
 
-    function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory);
+    function getNodeAddrAndPubKey(address operator) external view returns (address, bytes memory);
 
-    function getValidatorSet() external  returns (address[] memory);
+    function getPubKeysBySequence(address[] calldata nodes) external view returns (bytes[] memory);
 
-    function addValidator(address operator, address node, address agent, uint256 amount, uint256 applyBlockNumber, string calldata name, string calldata description, bytes  calldata pubKey) external;
+    function getDefaultValidatorSet() external view returns (address[] memory);
+
+    function getJoinedValidatorSet() external view returns (address[] memory);
+
+    function getValidatorSet() external view returns (address[] memory);
+
+    function addDefaultValidator(address operator, address node, address agent, uint256 amount, string calldata name, string calldata description, bytes calldata pubKey ) external;
+
+    function addValidator(address operator, address node, address agent, uint256 amount, uint256 applyBlockNumber, string calldata name, string calldata description, bytes calldata pubKey) external;
 
     function undateConsensus(address[] calldata nodes)external;
 
-    function getPledgeAmount(address node) external returns (uint256);
+    function getPledgeAmount(address node) external view returns (uint256);
 
-    function getOperatorAndPledgeAmount(address node) external returns (address, uint256);
+    function getOperatorAndPledgeAmount(address node) external view returns (address, uint256);
+
+    function getValidatorInfo(address operator) external view returns (validator memory);
 }

@@ -109,8 +109,11 @@ contract Vrf is DelegateCallBase {
     function updateConsensusSet(uint256 epoch) external needInited returns (address[] memory) {
         require(keccak256(_seeds[epoch]) != keccak256(_initSeed), "Consensus set should be elected in next epoch");
 
-        address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getValidatorSet();
-        require(validators.length > 0, "Validator set is empty");
+        address[] memory defaults = IValidatorManager(VALIDATOR_MANAGER_ADDR).getDefaultValidatorSet();
+        address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getJoinedValidatorSet();
+        if(validators.length == 0) {
+            return defaults;
+        }
 
         //address[] memory validators = new address[](address(uint160(_randoms[epoch][keccak256("Vrf")])));
         for (uint i = 0; i < validators.length; ++i) {
@@ -127,7 +130,7 @@ contract Vrf is DelegateCallBase {
         //ISlash(SLASH_ADDR).penaltyUnsendRandomValidator(_unSendRandNodes);
 
         address[] memory sorted = sortAddrs(_validNodes, epoch);
-        address[] memory topN = getTopNAddresses(sorted, CONSENSUS_SIZE);
+        address[] memory topN = getTopNAddresses(sorted, CONSENSUS_SIZE - defaults.length);
 
         //The seed of this epoch are generated for the next epoch to generate random values
         _seeds[epoch] = _seeds[epoch-1];
@@ -144,8 +147,16 @@ contract Vrf is DelegateCallBase {
             llog(ERROR, abi.encodePacked("_unSendRandNodes or _validNodes not clean"));
         }
 
-        emit UpdateConsensusSet(epoch, topN);
-        return topN;
+        address[] memory all = new address[](CONSENSUS_SIZE);
+        for(uint i = 0; i < defaults.length; i++){
+            all[i] = defaults[i];
+        }
+        for(uint j = 0; j < topN.length; j++){
+            all[defaults.length+j] = topN[j];
+        }
+
+        emit UpdateConsensusSet(epoch, all);
+        return all;
     }
 
     function compare(bytes memory a, bytes memory b) internal pure returns (bool) {
