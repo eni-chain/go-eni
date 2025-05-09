@@ -147,7 +147,7 @@ contract Vrf is DelegateCallBase {
             llog(ERROR, abi.encodePacked("_unSendRandNodes or _validNodes not clean"));
         }
 
-        address[] memory all = new address[](CONSENSUS_SIZE);
+        address[] memory all = new address[](defaults.length + topN.length);
         for(uint i = 0; i < defaults.length; i++){
             all[i] = defaults[i];
         }

@@ -606,6 +606,43 @@ const HubABI = `
 				"type": "uint256"
 			}
 		],
+		"name": "AddDefaultValidator",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "node",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes",
+				"name": "pubKey",
+				"type": "bytes"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pledge",
+				"type": "uint256"
+			}
+		],
 		"name": "ApplyForValidator",
 		"type": "event"
 	},
@@ -795,6 +832,44 @@ const HubABI = `
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "node",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "agent",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "bytes",
+				"name": "pubKey",
+				"type": "bytes"
+			}
+		],
+		"name": "addDefaultValidator",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "node",
 				"type": "address"
 			},
@@ -923,6 +998,43 @@ const HubABI = `
 
 const ValidatorManagerABI = `
 [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "node",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes",
+				"name": "pubKey",
+				"type": "bytes"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pledge",
+				"type": "uint256"
+			}
+		],
+		"name": "AddDefaultValidator",
+		"type": "event"
+	},
 	{
 		"anonymous": false,
 		"inputs": [
@@ -1097,8 +1209,51 @@ const ValidatorManagerABI = `
 				"type": "uint256"
 			},
 			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "bytes",
+				"name": "pubKey",
+				"type": "bytes"
+			}
+		],
+		"name": "addDefaultValidator",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "node",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "agent",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
-				"name": "enterTime",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "applyBlockNumber",
 				"type": "uint256"
 			},
 			{
@@ -1130,6 +1285,32 @@ const ValidatorManagerABI = `
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getDefaultValidatorSet",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getJoinedValidatorSet",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
 			}
 		],
 		"stateMutability": "view",
@@ -1235,6 +1416,82 @@ const ValidatorManagerABI = `
 				"internalType": "bytes[]",
 				"name": "",
 				"type": "bytes[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "getValidatorInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "operator",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "node",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "agent",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "pubKey",
+						"type": "bytes"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "applyBlockNumber",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "passBlockNumber",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isJail",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expired",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct ValidatorManager.validator",
+				"name": "",
+				"type": "tuple"
 			}
 		],
 		"stateMutability": "view",
