@@ -1,0 +1,17 @@
+syntax = "proto3";
+package goeni.crossbalance;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "goeni/crossbalance/params.proto";
+
+option go_package = "github.com/eni-chain/go-eni/x/crossbalance/types";
+
+// GenesisState defines the crossbalance module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
