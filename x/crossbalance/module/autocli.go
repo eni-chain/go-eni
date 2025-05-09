@@ -28,6 +28,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "UpdateParams",
 					Skip:      true, // skipped because authority gated
 				},
+				{
+					RpcMethod:      "TransferCrossAccount",
+					Use:            "transfer-cross-account [from-address] [to-address] [amount]",
+					Short:          "Send a transfer-cross-account tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "fromAddress"}, {ProtoField: "toAddress"}, {ProtoField: "amount"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},

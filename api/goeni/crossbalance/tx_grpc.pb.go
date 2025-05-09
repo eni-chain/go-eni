@@ -20,7 +20,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName = "/goeni.crossbalance.Msg/UpdateParams"
+	Msg_UpdateParams_FullMethodName         = "/goeni.crossbalance.Msg/UpdateParams"
+	Msg_TransferCrossAccount_FullMethodName = "/goeni.crossbalance.Msg/TransferCrossAccount"
 )
 
 // MsgClient is the client API for Msg service.
@@ -30,6 +31,7 @@ type MsgClient interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	TransferCrossAccount(ctx context.Context, in *MsgTransferCrossAccount, opts ...grpc.CallOption) (*MsgTransferCrossAccountResponse, error)
 }
 
 type msgClient struct {
@@ -49,6 +51,15 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) TransferCrossAccount(ctx context.Context, in *MsgTransferCrossAccount, opts ...grpc.CallOption) (*MsgTransferCrossAccountResponse, error) {
+	out := new(MsgTransferCrossAccountResponse)
+	err := c.cc.Invoke(ctx, Msg_TransferCrossAccount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -56,6 +67,7 @@ type MsgServer interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	TransferCrossAccount(context.Context, *MsgTransferCrossAccount) (*MsgTransferCrossAccountResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -65,6 +77,9 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (UnimplementedMsgServer) TransferCrossAccount(context.Context, *MsgTransferCrossAccount) (*MsgTransferCrossAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransferCrossAccount not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -97,6 +112,24 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_TransferCrossAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgTransferCrossAccount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).TransferCrossAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_TransferCrossAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).TransferCrossAccount(ctx, req.(*MsgTransferCrossAccount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -107,6 +140,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "TransferCrossAccount",
+			Handler:    _Msg_TransferCrossAccount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
