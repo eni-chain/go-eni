@@ -85,6 +85,7 @@ import (
 	epochmodulekeeper "github.com/eni-chain/go-eni/x/epoch/keeper"
 	goenimodulekeeper "github.com/eni-chain/go-eni/x/goeni/keeper"
 
+	bindingmodulekeeper "github.com/eni-chain/go-eni/x/binding/keeper"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/eni-chain/go-eni/docs"
@@ -150,10 +151,10 @@ type App struct {
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
 
-	GoeniKeeper goenimodulekeeper.Keeper
-	EvmKeeper   *evmmodulekeeper.Keeper
-	EpochKeeper epochmodulekeeper.Keeper
-
+	GoeniKeeper   goenimodulekeeper.Keeper
+	EvmKeeper     *evmmodulekeeper.Keeper
+	EpochKeeper   epochmodulekeeper.Keeper
+	BindingKeeper bindingmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -262,6 +263,7 @@ func New(
 		&app.GoeniKeeper,
 		&app.EvmKeeper,
 		&app.EpochKeeper,
+		&app.BindingKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	)
 

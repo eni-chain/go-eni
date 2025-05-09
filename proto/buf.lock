@@ -19,8 +19,13 @@ deps:
   - remote: buf.build
     owner: cosmos
     repository: ibc
+<<<<<<< Updated upstream
     commit: 2858ed9d416a4c17adc0989ad6096f75
     digest: shake256:6fab056be6855cd10758df6585971ed73fe1ac4f813d54ca57cbdf7c2d07636ca50b815cef54058e01264e382e366ce8d0eb3619b3e94dc5d1cf9606dcfe33ac
+=======
+    commit: 709f9ae1d3464a058fe7a2687ad9a229
+    digest: shake256:56b9c28319fc79a924c95421ac6005adc79621fc31707be5459d3d489bc4f5b52bebf2d58e473ceb38e4b2d551bce3aa6bcb5fad9bab81488e9de7edc996a69f
+>>>>>>> Stashed changes
   - remote: buf.build
     owner: cosmos
     repository: ics23
@@ -29,13 +34,13 @@ deps:
   - remote: buf.build
     owner: googleapis
     repository: googleapis
-    commit: 546238c53f7340c6a2a6099fb863bc1b
-    digest: shake256:8d75c12f391e392b24c076d05117b47aeddb090add99c70247a8f4389b906a65f61a933c68e54ed8b73a050b967b6b712ba194348b67c3ab3ee26cc2cb25852c
+    commit: 61b203b9a9164be9a834f58c37be6f62
+    digest: shake256:e619113001d6e284ee8a92b1561e5d4ea89a47b28bf0410815cb2fa23914df8be9f1a6a98dcf069f5bc2d829a2cfb1ac614863be45cd4f8a5ad8606c5f200224
   - remote: buf.build
     owner: protocolbuffers
     repository: wellknowntypes
-    commit: d4f14e5e0a9c40889c90d373c74e95eb
-    digest: shake256:c9824714afd6cc432c2e1fafa20df47c87a8a0aca9e27192cd5732619453997af1721c2eac5c0fbbe7b29a741af5b8d7ba4ee89c85903e782d9c725d7b9436b5
+    commit: 7727a3b7399540398e5736b9916f0faa
+    digest: shake256:74c046f009811965d227acd11bb2c6259bf387759d4230b95405e402a2ed4212d6f4babab690407d07bc81095c3917c4ae9144195ddfb081525c9aec58e51173
   - remote: buf.build
     owner: tendermint
     repository: tendermint

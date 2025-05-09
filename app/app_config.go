@@ -54,8 +54,11 @@ import (
 	evmmodulev1 "cosmossdk.io/api/cosmos/evm/module"
 	_ "github.com/cosmos/cosmos-sdk/x/evm/module" // import for side-effects
 	evmmoduletypes "github.com/cosmos/cosmos-sdk/x/evm/types"
+	bindingmodulev1 "github.com/eni-chain/go-eni/api/goeni/binding/module"
 	epochmodulev1 "github.com/eni-chain/go-eni/api/goeni/epoch/module"
 	goenimodulev1 "github.com/eni-chain/go-eni/api/goeni/goeni/module"
+	_ "github.com/eni-chain/go-eni/x/binding/module" // import for side-effects
+	bindingmoduletypes "github.com/eni-chain/go-eni/x/binding/types"
 	_ "github.com/eni-chain/go-eni/x/epoch/module" // import for side-effects
 	epochmoduletypes "github.com/eni-chain/go-eni/x/epoch/types"
 	_ "github.com/eni-chain/go-eni/x/goeni/module" // import for side-effects
@@ -99,7 +102,7 @@ var (
 		goenimoduletypes.ModuleName,
 		evmmoduletypes.ModuleName,
 		epochmoduletypes.ModuleName,
-
+		bindingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -127,7 +130,7 @@ var (
 		goenimoduletypes.ModuleName,
 		evmmoduletypes.ModuleName,
 		epochmoduletypes.ModuleName,
-
+		bindingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -149,7 +152,7 @@ var (
 		goenimoduletypes.ModuleName,
 		evmmoduletypes.ModuleName,
 		epochmoduletypes.ModuleName,
-
+		bindingmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -311,6 +314,10 @@ var (
 			{
 				Name:   epochmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&epochmodulev1.Module{}),
+			},
+			{
+				Name:   bindingmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&bindingmodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

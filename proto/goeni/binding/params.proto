@@ -1,0 +1,15 @@
+syntax = "proto3";
+package goeni.binding;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/eni-chain/go-eni/x/binding/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "goeni/x/binding/Params";
+  option (gogoproto.equal) = true;
+
+  
+}
