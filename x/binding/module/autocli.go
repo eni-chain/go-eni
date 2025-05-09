@@ -17,6 +17,17 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "params",
 					Short:     "Shows the parameters of the module",
 				},
+				{
+					RpcMethod: "BindingAll",
+					Use:       "list-binding",
+					Short:     "List all binding",
+				},
+				{
+					RpcMethod:      "Binding",
+					Use:            "show-binding [id]",
+					Short:          "Shows a binding",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "index"}},
+				},
 				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
@@ -27,6 +38,24 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 				{
 					RpcMethod: "UpdateParams",
 					Skip:      true, // skipped because authority gated
+				},
+				{
+					RpcMethod:      "CreateBinding",
+					Use:            "create-binding [index] [evmAddress] [cosmosAddress]",
+					Short:          "Create a new binding",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "index"}, {ProtoField: "evmAddress"}, {ProtoField: "cosmosAddress"}},
+				},
+				{
+					RpcMethod:      "UpdateBinding",
+					Use:            "update-binding [index] [evmAddress] [cosmosAddress]",
+					Short:          "Update binding",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "index"}, {ProtoField: "evmAddress"}, {ProtoField: "cosmosAddress"}},
+				},
+				{
+					RpcMethod:      "DeleteBinding",
+					Use:            "delete-binding [index]",
+					Short:          "Delete binding",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "index"}},
 				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},

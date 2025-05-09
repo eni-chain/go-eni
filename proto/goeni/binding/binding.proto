@@ -1,0 +1,12 @@
+syntax = "proto3";
+package goeni.binding;
+
+option go_package = "github.com/eni-chain/go-eni/x/binding/types";
+
+message Binding {
+  string index = 1; 
+  string evmAddress = 2; 
+  string cosmosAddress = 3; 
+  string creator = 4;
+}
+

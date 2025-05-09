@@ -20,7 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName = "/goeni.binding.Msg/UpdateParams"
+	Msg_UpdateParams_FullMethodName  = "/goeni.binding.Msg/UpdateParams"
+	Msg_CreateBinding_FullMethodName = "/goeni.binding.Msg/CreateBinding"
+	Msg_UpdateBinding_FullMethodName = "/goeni.binding.Msg/UpdateBinding"
+	Msg_DeleteBinding_FullMethodName = "/goeni.binding.Msg/DeleteBinding"
 )
 
 // MsgClient is the client API for Msg service.
@@ -30,6 +33,9 @@ type MsgClient interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CreateBinding(ctx context.Context, in *MsgCreateBinding, opts ...grpc.CallOption) (*MsgCreateBindingResponse, error)
+	UpdateBinding(ctx context.Context, in *MsgUpdateBinding, opts ...grpc.CallOption) (*MsgUpdateBindingResponse, error)
+	DeleteBinding(ctx context.Context, in *MsgDeleteBinding, opts ...grpc.CallOption) (*MsgDeleteBindingResponse, error)
 }
 
 type msgClient struct {
@@ -49,6 +55,33 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) CreateBinding(ctx context.Context, in *MsgCreateBinding, opts ...grpc.CallOption) (*MsgCreateBindingResponse, error) {
+	out := new(MsgCreateBindingResponse)
+	err := c.cc.Invoke(ctx, Msg_CreateBinding_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateBinding(ctx context.Context, in *MsgUpdateBinding, opts ...grpc.CallOption) (*MsgUpdateBindingResponse, error) {
+	out := new(MsgUpdateBindingResponse)
+	err := c.cc.Invoke(ctx, Msg_UpdateBinding_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DeleteBinding(ctx context.Context, in *MsgDeleteBinding, opts ...grpc.CallOption) (*MsgDeleteBindingResponse, error) {
+	out := new(MsgDeleteBindingResponse)
+	err := c.cc.Invoke(ctx, Msg_DeleteBinding_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -56,6 +89,9 @@ type MsgServer interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	CreateBinding(context.Context, *MsgCreateBinding) (*MsgCreateBindingResponse, error)
+	UpdateBinding(context.Context, *MsgUpdateBinding) (*MsgUpdateBindingResponse, error)
+	DeleteBinding(context.Context, *MsgDeleteBinding) (*MsgDeleteBindingResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -65,6 +101,15 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (UnimplementedMsgServer) CreateBinding(context.Context, *MsgCreateBinding) (*MsgCreateBindingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBinding not implemented")
+}
+func (UnimplementedMsgServer) UpdateBinding(context.Context, *MsgUpdateBinding) (*MsgUpdateBindingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBinding not implemented")
+}
+func (UnimplementedMsgServer) DeleteBinding(context.Context, *MsgDeleteBinding) (*MsgDeleteBindingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBinding not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -97,6 +142,60 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateBinding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateBinding)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateBinding(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateBinding_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateBinding(ctx, req.(*MsgCreateBinding))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateBinding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateBinding)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateBinding(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateBinding_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateBinding(ctx, req.(*MsgUpdateBinding))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DeleteBinding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteBinding)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeleteBinding(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DeleteBinding_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeleteBinding(ctx, req.(*MsgDeleteBinding))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -107,6 +206,18 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "CreateBinding",
+			Handler:    _Msg_CreateBinding_Handler,
+		},
+		{
+			MethodName: "UpdateBinding",
+			Handler:    _Msg_UpdateBinding_Handler,
+		},
+		{
+			MethodName: "DeleteBinding",
+			Handler:    _Msg_DeleteBinding_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -20,7 +20,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName = "/goeni.binding.Query/Params"
+	Query_Params_FullMethodName     = "/goeni.binding.Query/Params"
+	Query_Binding_FullMethodName    = "/goeni.binding.Query/Binding"
+	Query_BindingAll_FullMethodName = "/goeni.binding.Query/BindingAll"
 )
 
 // QueryClient is the client API for Query service.
@@ -29,6 +31,9 @@ const (
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Queries a list of Binding items.
+	Binding(ctx context.Context, in *QueryGetBindingRequest, opts ...grpc.CallOption) (*QueryGetBindingResponse, error)
+	BindingAll(ctx context.Context, in *QueryAllBindingRequest, opts ...grpc.CallOption) (*QueryAllBindingResponse, error)
 }
 
 type queryClient struct {
@@ -48,12 +53,33 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Binding(ctx context.Context, in *QueryGetBindingRequest, opts ...grpc.CallOption) (*QueryGetBindingResponse, error) {
+	out := new(QueryGetBindingResponse)
+	err := c.cc.Invoke(ctx, Query_Binding_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) BindingAll(ctx context.Context, in *QueryAllBindingRequest, opts ...grpc.CallOption) (*QueryAllBindingResponse, error) {
+	out := new(QueryAllBindingResponse)
+	err := c.cc.Invoke(ctx, Query_BindingAll_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Queries a list of Binding items.
+	Binding(context.Context, *QueryGetBindingRequest) (*QueryGetBindingResponse, error)
+	BindingAll(context.Context, *QueryAllBindingRequest) (*QueryAllBindingResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -63,6 +89,12 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) Binding(context.Context, *QueryGetBindingRequest) (*QueryGetBindingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Binding not implemented")
+}
+func (UnimplementedQueryServer) BindingAll(context.Context, *QueryAllBindingRequest) (*QueryAllBindingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BindingAll not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -95,6 +127,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Binding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetBindingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Binding(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Binding_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Binding(ctx, req.(*QueryGetBindingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_BindingAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllBindingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).BindingAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_BindingAll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).BindingAll(ctx, req.(*QueryAllBindingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -105,6 +173,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Binding",
+			Handler:    _Query_Binding_Handler,
+		},
+		{
+			MethodName: "BindingAll",
+			Handler:    _Query_BindingAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
