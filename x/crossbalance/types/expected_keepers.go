@@ -6,6 +6,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// BindingKeeper defines expected keeper from the binding module
+type BindingKeeper interface {
+	GetBinding(ctx sdk.Context, evmAddress string) (cosmosAddress string, found bool)
+}
+
 // AccountKeeper defines the expected interface for the Account module.
 type AccountKeeper interface {
 	GetAccount(context.Context, sdk.AccAddress) sdk.AccountI // only used for simulation

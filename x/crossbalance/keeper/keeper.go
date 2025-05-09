@@ -19,7 +19,8 @@ type (
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
-		authority string
+		authority     string
+		BindingKeeper types.BindingKeeper // binding module keeper
 	}
 )
 
