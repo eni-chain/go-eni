@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	crossbalanceTypes "github.com/eni-chain/go-eni/x/crossbalance/types"
 	"github.com/spf13/cobra"
@@ -19,8 +20,13 @@ func NewTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		CmdTransferCrossAccount(),
+		CmdCreateBinding(),
+		CmdUpdateBinding(),
+		CmdDeleteBinding(),
 	)
 
+	cmd.Flags().String(flags.FlagFrom, "", "Name of the sender (optional)")
+	cmd.MarkFlagRequired(flags.FlagFrom)
 	return cmd
 }
 
@@ -51,6 +57,6 @@ func CmdTransferCrossAccount() *cobra.Command {
 		},
 	}
 
-	//cmd.Flags().AddTxFlagsToCmd(cmd) // todo add tx flags to cmd
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
