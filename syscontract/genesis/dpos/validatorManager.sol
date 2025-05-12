@@ -49,6 +49,11 @@ contract ValidatorManager is DelegateCallBase, Common, SystemManager {
 
     event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
+    function init() public {
+        require(_sys == address(0), "Init method can only be called once.");
+        _setSysAddr(INIT_SYSTEM_ADDR);
+    }
+
     function addDefaultValidator(
         address operator,
         address node,

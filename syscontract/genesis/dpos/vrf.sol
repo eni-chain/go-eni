@@ -45,6 +45,11 @@ contract Vrf is DelegateCallBase, SystemManager {
         _;
     }
 
+    function init() public {
+        require(_sys == address(0), "Init method can only be called once.");
+        _setSysAddr(INIT_SYSTEM_ADDR);
+    }
+
     function initRandomSeed(bytes calldata rnd, uint256 epoch) external onlyAdmin {
         require(_initSeed.length == 0, "vrf has been init!");
 

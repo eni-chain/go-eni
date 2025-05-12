@@ -38,6 +38,11 @@ contract Hub is DelegateCallBase, SystemManager {
 
     event BlockReward(address indexed proposer, uint256 pledge, uint256 reward);
 
+    function init() public {
+        require(_sys == address(0), "Init method can only be called once.");
+        _setSysAddr(INIT_SYSTEM_ADDR);
+    }
+
     function addDefaultValidator(
         address operator,
         address node,
