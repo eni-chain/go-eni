@@ -326,6 +326,25 @@ const VRFABI = `
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "oldSysAddr",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newSysAddr",
+				"type": "address"
+			}
+		],
+		"name": "UpdateSysAddr",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -534,6 +553,19 @@ const VRFABI = `
 			}
 		],
 		"name": "updateImpl",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "updateSysAddr",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -750,6 +782,25 @@ const HubABI = `
 			}
 		],
 		"name": "UpdateImpl",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "oldSysAddr",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newSysAddr",
+				"type": "address"
+			}
+		],
+		"name": "UpdateSysAddr",
 		"type": "event"
 	},
 	{
@@ -992,6 +1043,19 @@ const HubABI = `
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "updateSysAddr",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
 `
@@ -1108,6 +1172,25 @@ const ValidatorManagerABI = `
 			}
 		],
 		"name": "UpdateImpl",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "oldSysAddr",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newSysAddr",
+				"type": "address"
+			}
+		],
+		"name": "UpdateSysAddr",
 		"type": "event"
 	},
 	{
@@ -1563,6 +1646,19 @@ const ValidatorManagerABI = `
 			}
 		],
 		"name": "updateImpl",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "updateSysAddr",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
