@@ -11,7 +11,6 @@ contract SystemManager is LocalLog {
 
     event UpdateSysAddr(address indexed oldSysAddr, address indexed newSysAddr);
 
-
     modifier onlySystem() {
         require(msg.sender == _sys, "The message sender must be system address");
         _;
@@ -31,6 +30,5 @@ contract SystemManager is LocalLog {
     function getSysAddr() internal view returns (address){
         return _sys;
     }
-
 }
 
