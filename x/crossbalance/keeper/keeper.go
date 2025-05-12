@@ -19,8 +19,10 @@ type (
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
-		authority     string
-		BindingKeeper types.BindingKeeper // binding module keeper
+		authority string
+
+		BindingKeeper types.BindingKeeper
+		BankKeeper    types.BankKeeper
 	}
 )
 
@@ -29,6 +31,8 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
+	bindingKeeper types.BindingKeeper,
+	bankKeeper types.BankKeeper,
 
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
@@ -36,10 +40,12 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		cdc:          cdc,
-		storeService: storeService,
-		authority:    authority,
-		logger:       logger,
+		cdc:           cdc,
+		storeService:  storeService,
+		authority:     authority,
+		logger:        logger,
+		BindingKeeper: bindingKeeper,
+		BankKeeper:    bankKeeper,
 	}
 }
 

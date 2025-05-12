@@ -7,6 +7,7 @@ import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "goeni/crossbalance/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/eni-chain/go-eni/x/crossbalance/types";
 
@@ -42,7 +43,7 @@ message MsgTransferCrossAccount {
   string creator     = 1;
   string fromAddress = 2;
   string toAddress   = 3;
-  string amount      = 4;
+  cosmos.base.v1beta1.Coin amount = 4;
 }
 
 message MsgTransferCrossAccountResponse {}

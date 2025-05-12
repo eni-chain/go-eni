@@ -4,11 +4,12 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/eni-chain/go-eni/x/binding/types"
 )
 
 // BindingKeeper defines expected keeper from the binding module
 type BindingKeeper interface {
-	GetBinding(ctx sdk.Context, evmAddress string) (cosmosAddress string, found bool)
+	GetBinding(ctx sdk.Context, cosmosAddr sdk.AccAddress) (types.Binding, error)
 }
 
 // AccountKeeper defines the expected interface for the Account module.
@@ -19,8 +20,9 @@ type AccountKeeper interface {
 
 // BankKeeper defines the expected interface for the Bank module.
 type BankKeeper interface {
-	SpendableCoins(context.Context, sdk.AccAddress) sdk.Coins
-	// Methods imported from bank should be defined here
+	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
 }
 
 // ParamSubspace defines the expected Subspace interface for parameters.
