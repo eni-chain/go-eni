@@ -5,6 +5,7 @@ pragma solidity >= 0.8.0;
 import "./common.sol";
 import "./localLog.sol";
 import "./delegateCallBase.sol";
+import "./systemManager.sol";
 
 uint256 constant PUBKEY_LEN = 32; //ed25519 public key length
 uint256 constant PRIKEY_LEN = 64; //ed25519 private key length
@@ -12,7 +13,7 @@ uint256 constant SEED_LEN = 64;   //random seed length
 uint256 constant SIGN_LEN = 64;   //ed25519 signature length
 uint256 constant HASH_LEN = 64;  //hash length
 
-contract Vrf is DelegateCallBase {
+contract Vrf is DelegateCallBase, SystemManager {
 
     //init rand seed, will be init by administrator
     bytes _initSeed;
@@ -106,7 +107,7 @@ contract Vrf is DelegateCallBase {
         return success;
     }
 
-    function updateConsensusSet(uint256 epoch) external needInited returns (address[] memory) {
+    function updateConsensusSet(uint256 epoch) external onlySystem needInited returns (address[] memory) {
         require(keccak256(_seeds[epoch]) != keccak256(_initSeed), "Consensus set should be elected in next epoch");
 
         address[] memory defaults = IValidatorManager(VALIDATOR_MANAGER_ADDR).getDefaultValidatorSet();

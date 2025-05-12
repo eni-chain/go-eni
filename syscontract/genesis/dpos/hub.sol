@@ -5,8 +5,10 @@ pragma solidity >= 0.8.0;
 import "./common.sol";
 import "./localLog.sol";
 import "./delegateCallBase.sol";
+import "./systemManager.sol";
 
-contract Hub is DelegateCallBase {
+
+contract Hub is DelegateCallBase, SystemManager {
 
     uint256 constant ratioDeno = 100000;
     uint256 constant ratioNumer = 20000;
@@ -43,7 +45,7 @@ contract Hub is DelegateCallBase {
         string calldata name,
         string calldata description,
         bytes  calldata pubKey
-    ) payable external {
+    ) payable external onlyAdmin {
         //require(msg.value >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
         require(_applicants[msg.sender].amount == 0, "applicant already exsit");
 
@@ -104,7 +106,7 @@ contract Hub is DelegateCallBase {
         emit AuditPass(msg.sender, a.name, a.operator, a.node, a.pubKey, a.amount);
     }
 
-    function blockReward(address node) external returns (address, uint256) {
+    function blockReward(address node) external onlySystem returns (address, uint256) {
         address operator;
         uint256 pledgeAmount;
         (operator, pledgeAmount) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getOperatorAndPledgeAmount(node);
