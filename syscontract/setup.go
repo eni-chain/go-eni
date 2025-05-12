@@ -102,7 +102,7 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 		if err != nil {
 			panic(fmt.Errorf("failed to execute contract constructor: %s", err.Error()))
 		}
-		//再统一调用一下init方法
+
 		//data, err := cfg.abi.Pack("init")
 
 		if cfg.Addr == common.HexToAddress(syscontractSdk.ProxyAddr) {
