@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/core/store"
@@ -49,15 +50,17 @@ func (k Keeper) Logger() log.Logger {
 }
 
 // HasBinding checks if a binding relationship exists
-func (k Keeper) HasBinding(ctx sdk.Context, cosmosAddr sdk.AccAddress) (bool, error) {
-	store := k.storeService.OpenKVStore(ctx)
+func (k Keeper) HasBinding(ctx context.Context, cosmosAddr sdk.AccAddress) (bool, error) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	store := k.storeService.OpenKVStore(sdkCtx)
 	key := types.GetBindingKey(cosmosAddr)
 	return store.Has(key)
 }
 
 // DeleteBinding deletes the binding relationship
-func (k Keeper) DeleteBinding(ctx sdk.Context, cosmosAddr sdk.AccAddress) error {
-	store := k.storeService.OpenKVStore(ctx)
+func (k Keeper) DeleteBinding(ctx context.Context, cosmosAddr sdk.AccAddress) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	store := k.storeService.OpenKVStore(sdkCtx)
 	key := types.GetBindingKey(cosmosAddr)
 	return store.Delete(key)
 }

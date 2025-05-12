@@ -23,6 +23,8 @@ import (
 	modulev1 "github.com/eni-chain/go-eni/api/goeni/crossbalance/module"
 	"github.com/eni-chain/go-eni/x/crossbalance/keeper"
 	"github.com/eni-chain/go-eni/x/crossbalance/types"
+
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
 var (
@@ -97,14 +99,14 @@ type AppModule struct {
 
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
+	bankKeeper    bankkeeper.Keeper
 }
 
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper,
+	bankKeeper bankkeeper.Keeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
@@ -182,7 +184,7 @@ type ModuleInputs struct {
 
 	AccountKeeper types.AccountKeeper
 	BindingKeeper types.BindingKeeper
-	BankKeeper    types.BankKeeper
+	BankKeeper    bankkeeper.Keeper
 }
 
 type ModuleOutputs struct {
