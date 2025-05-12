@@ -49,6 +49,8 @@ contract ValidatorManager is DelegateCallBase, Common, SystemManager {
 
     event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
+    event DelValidator(address indexed operator, uint256 pledge);
+
     function init() public {
         require(_sys == address(0), "Init method can only be called once.");
         _setSysAddr(INIT_SYSTEM_ADDR);
@@ -125,6 +127,69 @@ contract ValidatorManager is DelegateCallBase, Common, SystemManager {
         llog(DEBUG, abi.encodePacked("addValidator, name:", name));
 
         emit AddValidator(name, operator, node, pubKey, amount);
+    }
+
+    function delNodeFromDefaultList(address node) internal returns (bool) {
+        uint pos = 0;
+        for(uint i = 0; i < _defaultValidators.length; i++){
+            if(_defaultValidators[i] == node){
+                pos = i;
+            }
+        }
+
+        if(pos == 0 && _defaultValidators[0] != node){
+            return false;
+        }
+
+        for(uint j = pos; j < _defaultValidators.length - 1; j++){
+            _defaultValidators[j] = _defaultValidators[j + 1];
+        }
+
+        _defaultValidators.pop();
+        return true;
+    }
+
+    function delNodeFromJoinedList(address node) internal returns (bool) {
+        uint pos = 0;
+        for(uint i = 0; i < _joinedValidators.length; i++){
+            if(_joinedValidators[i] == node){
+                pos = i;
+            }
+        }
+
+        if(pos == 0 && _joinedValidators[0] != node){
+            return false;
+        }
+
+        for(uint j = pos; j < _joinedValidators.length - 1; j++){
+            _joinedValidators[j] = _joinedValidators[j + 1];
+        }
+
+        _joinedValidators.pop();
+        return true;
+    }
+
+    function delValidator(address operator) external onlyHub returns(uint256){
+        validator storage v = _infos[operator];
+        if(v.node == address(0)){
+            llog(DEBUG, abi.encodePacked("delValidator, validator not exist, maybe already exited"));
+            return 0;
+        }
+
+        uint256 pledge = v.amount;
+
+        if(!delNodeFromDefaultList(v.node)){
+            delNodeFromJoinedList(v.node);
+        }
+
+        delete _node2operator[v.node];
+        delete _agent2operator[v.agent];
+        delete _names[v.name];
+        delete _infos[operator];
+
+        llog(DEBUG, abi.encodePacked("delValidator, operator:", H(operator), ", pledge amount:", S(pledge)));
+        emit DelValidator(operator, pledge);
+        return pledge;
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {

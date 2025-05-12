@@ -30,11 +30,17 @@ contract Hub is DelegateCallBase, SystemManager {
     //List of applicants
     mapping (address=>applicant) _applicants;
 
+    mapping (address => uint256) _withdraws;
+
     event AddDefaultValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
     event ApplyForValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
     event AuditPass(address indexed admin, string indexed name, address indexed operator, address node, bytes pubKey, uint256 pledge);
+
+    event ApplyExitValidator(address indexed operator);
+
+    event AuditExit(address indexed admin, address indexed operator, uint256 pledge);
 
     event BlockReward(address indexed proposer, uint256 pledge, uint256 reward);
 
@@ -64,7 +70,7 @@ contract Hub is DelegateCallBase, SystemManager {
             pubKey
         );
 
-        llog(DEBUG, abi.encodePacked(name, "addDefaultValidator, operator: ", H(operator), ", node:", H(node), ", plege amount: ", S(msg.value)));
+        llog(DEBUG, abi.encodePacked(name, " addDefaultValidator, operator: ", H(operator), ", node:", H(node), ", plege amount: ", S(msg.value)));
         emit AddDefaultValidator(name, msg.sender, node, pubKey, msg.value);
     }
 
@@ -109,6 +115,32 @@ contract Hub is DelegateCallBase, SystemManager {
 
         llog(DEBUG, abi.encodePacked("auditPass, validator name:", a.name, ", operator:", H(a.operator), ", admin:", H(msg.sender),  ", pledge amount: ", S(a.amount)));
         emit AuditPass(msg.sender, a.name, a.operator, a.node, a.pubKey, a.amount);
+    }
+
+    function applyExitValidator() external returns (string memory){
+        (, bytes memory pubkey)= IValidatorManager(VALIDATOR_MANAGER_ADDR).getNodeAddrAndPubKey(msg.sender);
+        if(pubkey.length == 0){
+            return "validator not exist!";
+        }
+
+        _withdraws[msg.sender] = block.number;
+        llog(DEBUG, abi.encodePacked("applyExitValidator, operator:", H(msg.sender)));
+
+        emit ApplyExitValidator(msg.sender);
+
+        return "please wait for review.";
+    }
+
+    function auditExit(address operator) external onlyAdmin {
+        uint256 pledge = IValidatorManager(VALIDATOR_MANAGER_ADDR).delValidator(operator);
+        if(pledge != 0){
+            payable(operator).transfer(pledge);
+        }
+
+        delete _withdraws[operator];
+        llog(DEBUG, abi.encodePacked("auditExit, admin:", H(msg.sender), ", operator:", H(operator), ", pledge amount:", S(pledge)));
+
+        emit AuditExit(msg.sender, operator, pledge);
     }
 
     function blockReward(address node) external onlySystem returns (address, uint256) {

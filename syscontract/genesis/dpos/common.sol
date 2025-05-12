@@ -76,7 +76,7 @@ interface IValidatorManager {
         uint256 expired;    //expired time of jail
     }
 
-    function getPubKey(address validator) external view returns (bytes memory);
+    function getPubKey(address node) external view returns (bytes memory);
 
     function getNodeAddrAndPubKey(address operator) external view returns (address, bytes memory);
 
@@ -91,6 +91,8 @@ interface IValidatorManager {
     function addDefaultValidator(address operator, address node, address agent, uint256 amount, string calldata name, string calldata description, bytes calldata pubKey ) external;
 
     function addValidator(address operator, address node, address agent, uint256 amount, uint256 applyBlockNumber, string calldata name, string calldata description, bytes calldata pubKey) external;
+
+    function delValidator(address operator) external returns(uint256);
 
     function undateConsensus(address[] calldata nodes)external;
 
