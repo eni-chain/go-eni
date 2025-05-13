@@ -5,8 +5,9 @@ pragma solidity >= 0.8.0;
 import "./common.sol";
 import "./localLog.sol";
 import "./delegateCallBase.sol";
+import "./systemManager.sol";
 
-contract ValidatorManager is DelegateCallBase, Common {
+contract ValidatorManager is DelegateCallBase, Common, SystemManager {
 
     //current consensus node set
     address[CONSENSUS_SIZE] _consensusSet;
@@ -48,54 +49,11 @@ contract ValidatorManager is DelegateCallBase, Common {
 
     event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
-    function getPubKey(address node) external view returns (bytes memory){
-        address ope = _node2operator[node];
-        if(ope != address(0) ){
-            return _infos[ope].pubKey;
-        }
+    event DelNode(address indexed operator, uint256 pledge);
 
-        return bytes("");
-    }
-
-    function getNodeAddrAndPubKey(address operator) external view returns (address, bytes memory){
-        validator storage a = _infos[operator];
-        require(a.amount > 0, "Operator and validator not exist");
-        return (a.node, a.pubKey);
-    }
-
-    function getPubKeysBySequence(address[] calldata nodes) external view returns (bytes[] memory){
-        bytes[] memory pubKeys = new bytes[](nodes.length);
-
-        for(uint i = 0; i < nodes.length; i++){
-            address ope = _node2operator[nodes[i]];
-            if(ope != address(0) ){
-                pubKeys[i] = _infos[ope].pubKey;
-            }
-        }
-
-        return pubKeys;
-    }
-
-    function getDefaultValidatorSet() external view returns (address[] memory){
-        return _defaultValidators;
-    }
-
-    function getJoinedValidatorSet() external view returns (address[] memory){
-        return _joinedValidators;
-    }
-
-    function getValidatorSet() external view returns (address[] memory){
-        address[] memory all = new address[](_defaultValidators.length + _joinedValidators.length);
-
-        for(uint i = 0; i < _defaultValidators.length; i++){
-            all[i] = _defaultValidators[i];
-        }
-
-        for(uint j = 0; j < _joinedValidators.length; ++j){
-           all[_defaultValidators.length + j] = _joinedValidators[j];
-        }
-
-        return all;
+    function init() public {
+        require(_sys == address(0), "Init method can only be called once.");
+        _setSysAddr(INIT_SYSTEM_ADDR);
     }
 
     function addDefaultValidator(
@@ -171,6 +129,75 @@ contract ValidatorManager is DelegateCallBase, Common {
         emit AddValidator(name, operator, node, pubKey, amount);
     }
 
+    function delNodeFromDefaultList(address node) internal returns (bool) {
+        uint pos = 0;
+        for(uint i = 0; i < _defaultValidators.length; i++){
+            if(_defaultValidators[i] == node){
+                pos = i;
+            }
+        }
+
+        if(pos == 0 && _defaultValidators[0] != node){
+            return false;
+        }
+
+        for(uint j = pos; j < _defaultValidators.length - 1; j++){
+            _defaultValidators[j] = _defaultValidators[j + 1];
+        }
+
+        _defaultValidators.pop();
+        return true;
+    }
+
+    function delNodeFromJoinedList(address node) internal returns (bool) {
+        uint pos = 0;
+        for(uint i = 0; i < _joinedValidators.length; i++){
+            if(_joinedValidators[i] == node){
+                pos = i;
+            }
+        }
+
+        if(pos == 0 && _joinedValidators[0] != node){
+            return false;
+        }
+
+        for(uint j = pos; j < _joinedValidators.length - 1; j++){
+            _joinedValidators[j] = _joinedValidators[j + 1];
+        }
+
+        _joinedValidators.pop();
+        return true;
+    }
+
+    function delNode(address operator) internal returns(uint256){
+        validator storage v = _infos[operator];
+        if(v.node == address(0)){
+            llog(DEBUG, abi.encodePacked("delNode, validator not exist, maybe already exited"));
+            return 0;
+        }
+
+        uint256 pledge = v.amount;
+
+        if(!delNodeFromDefaultList(v.node)){
+            delNodeFromJoinedList(v.node);
+        }
+
+        delete _node2operator[v.node];
+        delete _agent2operator[v.agent];
+        delete _names[v.name];
+        delete _infos[operator];
+
+        llog(DEBUG, abi.encodePacked("delNode, operator:", H(operator), ", pledge amount:", S(pledge)));
+        emit DelNode(operator, pledge);
+        return pledge;
+    }
+
+    function delValidators(address[] memory operators) external onlyHub {
+        for(uint i = 0; i < operators.length; i++){
+            delNode(operators[i]);
+        }
+    }
+
     function undateConsensus(address[] calldata nodes)external onlyVrf {
         require(nodes.length <= CONSENSUS_SIZE, "The number of consensuses exceeds the maximum limit");
 
@@ -178,6 +205,56 @@ contract ValidatorManager is DelegateCallBase, Common {
         for(uint i = 0; i < nodes.length; ++i){
             _consensusSet[i] = nodes[i];
         }
+    }
+
+    function getPubKey(address node) external view returns (bytes memory){
+        address ope = _node2operator[node];
+        if(ope != address(0) ){
+            return _infos[ope].pubKey;
+        }
+
+        return bytes("");
+    }
+
+    function getNodeAddrAndPubKey(address operator) external view returns (address, bytes memory){
+        validator storage a = _infos[operator];
+        require(a.amount > 0, "Operator and validator not exist");
+        return (a.node, a.pubKey);
+    }
+
+    function getPubKeysBySequence(address[] calldata nodes) external view returns (bytes[] memory){
+        bytes[] memory pubKeys = new bytes[](nodes.length);
+
+        for(uint i = 0; i < nodes.length; i++){
+            address ope = _node2operator[nodes[i]];
+            if(ope != address(0) ){
+                pubKeys[i] = _infos[ope].pubKey;
+            }
+        }
+
+        return pubKeys;
+    }
+
+    function getDefaultValidatorSet() external view returns (address[] memory){
+        return _defaultValidators;
+    }
+
+    function getJoinedValidatorSet() external view returns (address[] memory){
+        return _joinedValidators;
+    }
+
+    function getValidatorSet() external view returns (address[] memory){
+        address[] memory all = new address[](_defaultValidators.length + _joinedValidators.length);
+
+        for(uint i = 0; i < _defaultValidators.length; i++){
+            all[i] = _defaultValidators[i];
+        }
+
+        for(uint j = 0; j < _joinedValidators.length; ++j){
+           all[_defaultValidators.length + j] = _joinedValidators[j];
+        }
+
+        return all;
     }
 
     function getPledgeAmount(address node) external view returns (uint256) {

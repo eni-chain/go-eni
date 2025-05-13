@@ -64,20 +64,26 @@ contract ProxyContract is DelegateCallBase {
     event Init(address indexed self, address indexed admin, address indexed impl);
 
     function init(bytes memory bytecode) external {
-        address addr = _getImpl();
-        require(addr.code.length == 0, "Init method can only be called once.");
+        address impl = _getImpl();
+        require(impl.code.length == 0, "Init method can only be called once.");
 
         assembly {
-            addr := create(0,add(bytecode, 0x20), mload(bytecode))
+            impl := create(0,add(bytecode, 0x20), mload(bytecode))
         }
-        require(addr.code.length != 0, "Create implementation contract failed fail");
-        llog(DEBUG, abi.encodePacked("init, deploy implementation contract: ", H(addr)));
+        require(impl.code.length != 0, "Create implementation contract failed fail");
+        llog(DEBUG, abi.encodePacked("init, deploy implementation contract: ", H(impl)));
 
-         _setImpl(addr);
+         _setImpl(impl);
         _setAdmin(INIT_ADMIN_ADDR);
-        llog(DEBUG, abi.encodePacked("init, set impl:", H(addr), ", set admin:", H(_admin)));
+        llog(DEBUG, abi.encodePacked("init, set impl:", H(impl), ", set admin:", H(_admin)));
 
-        emit Init(address(this), _admin, addr);
+        bytes memory data = abi.encodeWithSignature("init()");
+        (bool success, ) = impl.delegatecall(data);
+        if(!success){
+            llog(DEBUG, abi.encodePacked("init, DelegateCall impl:", H(impl), " init method failed"));
+        }
+
+        emit Init(address(this), _admin, impl);
     }
 
     receive() external payable {

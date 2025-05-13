@@ -79,6 +79,25 @@
 			{
 				"indexed": true,
 				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pledge",
+				"type": "uint256"
+			}
+		],
+		"name": "DelNode",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
 				"name": "oldAdmin",
 				"type": "address"
 			},
@@ -109,6 +128,25 @@
 			}
 		],
 		"name": "UpdateImpl",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "oldSysAddr",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newSysAddr",
+				"type": "address"
+			}
+		],
+		"name": "UpdateSysAddr",
 		"type": "event"
 	},
 	{
@@ -274,6 +312,19 @@
 			}
 		],
 		"name": "addValidator",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "operators",
+				"type": "address[]"
+			}
+		],
+		"name": "delValidators",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -512,6 +563,13 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "init",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -564,6 +622,19 @@
 			}
 		],
 		"name": "updateImpl",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "updateSysAddr",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
