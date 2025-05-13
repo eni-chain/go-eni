@@ -8,7 +8,7 @@ import "./delegateCallBase.sol";
 import "./systemManager.sol";
 
 
-contract Hub is DelegateCallBase, SystemManager {
+contract Hub is DelegateCallBase, Common, SystemManager {
 
     uint256 constant ratioDeno = 100000;
     uint256 constant ratioNumer = 20000;
@@ -25,12 +25,13 @@ contract Hub is DelegateCallBase, SystemManager {
         string name; //validator name
         string description; //validator description
         uint256 applyBlockNumber; //bock number when applied to be validator
+        bool withdraw;
     }
 
     //List of applicants
     mapping (address=>applicant) _applicants;
 
-    mapping (address => uint256) _withdraws;
+    address[] _withdraws;
 
     event AddDefaultValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
@@ -93,6 +94,7 @@ contract Hub is DelegateCallBase, SystemManager {
         a.name = name;
         a.description = description;
         a.applyBlockNumber = block.number;
+        a.withdraw = false;
 
         llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", plege amount: ", S(msg.value)));
         emit ApplyForValidator(name, msg.sender, node, pubKey, msg.value);
@@ -113,8 +115,6 @@ contract Hub is DelegateCallBase, SystemManager {
             a.pubKey
         );
 
-        delete _applicants[operator];
-
         llog(DEBUG, abi.encodePacked("auditPass, validator name:", a.name, ", operator:", H(a.operator), ", admin:", H(msg.sender),  ", pledge amount: ", S(a.amount)));
         emit AuditPass(msg.sender, a.name, a.operator, a.node, a.pubKey, a.amount);
     }
@@ -125,21 +125,29 @@ contract Hub is DelegateCallBase, SystemManager {
             return "validator not exist!";
         }
 
-        _withdraws[msg.sender] = block.number;
+        applicant storage a = _applicants[msg.sender];
+        a.withdraw = true;
+
+        _withdraws.push(msg.sender);
         llog(DEBUG, abi.encodePacked("applyExitValidator, operator:", H(msg.sender)));
 
         emit ApplyExitValidator(msg.sender);
 
-        return "please wait for review.";
+        return "please wait for next epoch and review.";
+    }
+
+    function updateValidators() external onlyVrf {
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).delValidators(_withdraws);
+        delete _withdraws;
     }
 
     function auditExit(address operator) external onlyAdmin {
-        uint256 pledge = IValidatorManager(VALIDATOR_MANAGER_ADDR).delValidator(operator);
+        uint256 pledge = _applicants[operator].amount;
         if(pledge != 0){
             payable(operator).transfer(pledge);
         }
 
-        delete _withdraws[operator];
+        delete _applicants[operator];
         llog(DEBUG, abi.encodePacked("auditExit, admin:", H(msg.sender), ", operator:", H(operator), ", pledge amount:", S(pledge)));
 
         emit AuditExit(msg.sender, operator, pledge);

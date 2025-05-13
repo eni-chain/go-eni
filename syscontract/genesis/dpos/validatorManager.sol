@@ -49,7 +49,7 @@ contract ValidatorManager is DelegateCallBase, Common, SystemManager {
 
     event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
 
-    event DelValidator(address indexed operator, uint256 pledge);
+    event DelNode(address indexed operator, uint256 pledge);
 
     function init() public {
         require(_sys == address(0), "Init method can only be called once.");
@@ -169,10 +169,10 @@ contract ValidatorManager is DelegateCallBase, Common, SystemManager {
         return true;
     }
 
-    function delValidator(address operator) external onlyHub returns(uint256){
+    function delNode(address operator) internal returns(uint256){
         validator storage v = _infos[operator];
         if(v.node == address(0)){
-            llog(DEBUG, abi.encodePacked("delValidator, validator not exist, maybe already exited"));
+            llog(DEBUG, abi.encodePacked("delNode, validator not exist, maybe already exited"));
             return 0;
         }
 
@@ -187,9 +187,15 @@ contract ValidatorManager is DelegateCallBase, Common, SystemManager {
         delete _names[v.name];
         delete _infos[operator];
 
-        llog(DEBUG, abi.encodePacked("delValidator, operator:", H(operator), ", pledge amount:", S(pledge)));
-        emit DelValidator(operator, pledge);
+        llog(DEBUG, abi.encodePacked("delNode, operator:", H(operator), ", pledge amount:", S(pledge)));
+        emit DelNode(operator, pledge);
         return pledge;
+    }
+
+    function delValidators(address[] memory operators) external onlyHub {
+        for(uint i = 0; i < operators.length; i++){
+            delNode(operators[i]);
+        }
     }
 
     function undateConsensus(address[] calldata nodes)external onlyVrf {
