@@ -113,6 +113,8 @@ contract Hub is DelegateCallBase, SystemManager {
             a.pubKey
         );
 
+        delete _applicants[operator];
+
         llog(DEBUG, abi.encodePacked("auditPass, validator name:", a.name, ", operator:", H(a.operator), ", admin:", H(msg.sender),  ", pledge amount: ", S(a.amount)));
         emit AuditPass(msg.sender, a.name, a.operator, a.node, a.pubKey, a.amount);
     }
