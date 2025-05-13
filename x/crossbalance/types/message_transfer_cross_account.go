@@ -61,7 +61,7 @@ func (msg *MsgTransferCrossAccount) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.ToAddress); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid to address (%s)", err)
 	}
-	if msg.Amount == nil || !msg.Amount.IsValid() {
+	if msg.Amount.IsNil() || !msg.Amount.IsValid() {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, "invalid amount")
 	}
 	return nil

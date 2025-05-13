@@ -19,17 +19,19 @@ service Msg {
   // parameters. The authority defaults to the x/gov module account.
   rpc UpdateParams         (MsgUpdateParams        ) returns (MsgUpdateParamsResponse        );
   rpc TransferCrossAccount (MsgTransferCrossAccount) returns (MsgTransferCrossAccountResponse);
+  rpc TransferEniToEvm(MsgTransferEniToEvm) returns (MsgTransferEniToEvmResponse);
+  rpc TransferEvmToEni(MsgTransferEvmToEni) returns (MsgTransferEvmToEniResponse);
 }
+
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
-  option (cosmos.msg.v1.signer) =                            "authority";
-  option           (amino.name) = "goeni/x/crossbalance/MsgUpdateParams";
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "goeni/x/crossbalance/MsgUpdateParams";
   
   // authority is the address that controls the module (defaults to x/gov unless overwritten).
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // params defines the module parameters to update.
-  
   // NOTE: All parameters must be supplied.
   Params params = 2 [(gogoproto.nullable) = false, (amino.dont_omitempty) = true];
 }
@@ -40,11 +42,30 @@ message MsgUpdateParamsResponse {}
 
 message MsgTransferCrossAccount {
   option (cosmos.msg.v1.signer) = "creator";
-  string creator     = 1;
-  string fromAddress = 2;
-  string toAddress   = 3;
-  cosmos.base.v1beta1.Coin amount = 4;
+  string creator = 1;
+  string from_address = 2;
+  string to_address = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
 message MsgTransferCrossAccountResponse {}
+
+message MsgTransferEniToEvm {
+  option (cosmos.msg.v1.signer) = "sender";
+  string sender = 1;
+  string to = 2;
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+}
+
+message MsgTransferEniToEvmResponse {}
+
+message MsgTransferEvmToEni {
+  option (cosmos.msg.v1.signer) = "from";
+  string from = 1;
+  bytes ak = 2;
+  string to = 3;
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+message MsgTransferEvmToEniResponse {}
 
