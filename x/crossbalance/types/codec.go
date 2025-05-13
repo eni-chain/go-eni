@@ -12,14 +12,17 @@ var (
 	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )
 
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgTransferEniToEvm{}, "crossbalance/TransferEniToEvm", nil)
+	cdc.RegisterConcrete(&MsgTransferEvmToEni{}, "crossbalance/TransferEvmToEni", nil)
+}
+
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgTransferCrossAccount{},
+		&MsgTransferEniToEvm{},
+		&MsgTransferEvmToEni{},
 	)
 	// this line is used by starport scaffolding # 3
 
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateParams{},
-	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

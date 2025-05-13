@@ -1,13 +1,12 @@
 package keeper
 
 import (
-	"fmt"
-
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
+	evmmodulekeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/crossbalance/types"
 )
 
@@ -21,8 +20,8 @@ type (
 		// should be the x/gov module account.
 		authority string
 
-		BindingKeeper types.BindingKeeper
-		BankKeeper    types.BankKeeper
+		BankKeeper types.BankKeeper
+		EvmKeeper  *evmmodulekeeper.Keeper
 	}
 )
 
@@ -31,7 +30,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
-	bindingKeeper types.BindingKeeper,
+	evmKeeper *evmmodulekeeper.Keeper,
 	bankKeeper types.BankKeeper,
 
 ) Keeper {
@@ -40,12 +39,12 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		cdc:           cdc,
-		storeService:  storeService,
-		authority:     authority,
-		logger:        logger,
-		BindingKeeper: bindingKeeper,
-		BankKeeper:    bankKeeper,
+		cdc:          cdc,
+		storeService: storeService,
+		authority:    authority,
+		logger:       logger,
+		EvmKeeper:    evmKeeper,
+		BankKeeper:   bankKeeper,
 	}
 }
 

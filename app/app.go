@@ -85,7 +85,6 @@ import (
 	epochmodulekeeper "github.com/eni-chain/go-eni/x/epoch/keeper"
 	goenimodulekeeper "github.com/eni-chain/go-eni/x/goeni/keeper"
 
-	bindingmodulekeeper "github.com/eni-chain/go-eni/x/binding/keeper"
 	crossbalancemodulekeeper "github.com/eni-chain/go-eni/x/crossbalance/keeper"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
@@ -156,7 +155,6 @@ type App struct {
 	GoeniKeeper        goenimodulekeeper.Keeper
 	EvmKeeper          *evmmodulekeeper.Keeper
 	EpochKeeper        epochmodulekeeper.Keeper
-	BindingKeeper      bindingmodulekeeper.Keeper
 	CrossbalanceKeeper crossbalancemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
@@ -266,7 +264,6 @@ func New(
 		&app.GoeniKeeper,
 		&app.EvmKeeper,
 		&app.EpochKeeper,
-		&app.BindingKeeper,
 		&app.CrossbalanceKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	)

@@ -40,7 +40,7 @@ func (k msgServer) TransferCrossAccount(goCtx context.Context, msg *types.MsgTra
 }
 
 func (k msgServer) resolveRealAddress(goCtx context.Context, inputAddr string) (sdk.AccAddress, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	//ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// if inputAddr is a cosmos address (bech32)
 	if accAddr, err := sdk.AccAddressFromBech32(inputAddr); err == nil {
@@ -49,13 +49,13 @@ func (k msgServer) resolveRealAddress(goCtx context.Context, inputAddr string) (
 
 	// try to find the evm address binding
 	evmAddr := strings.ToLower(inputAddr)
-	hasBinding, err := k.BindingKeeper.HasBinding(ctx, sdk.AccAddress(evmAddr))
-	if err != nil {
-		return nil, sdkerrors.Wrapf(err, "failed to check binding for evm address %s", evmAddr)
-	}
-	if !hasBinding {
-		return nil, sdkerrors.Wrapf(errors.New("no binding for evm address"), "no binding for evm address %s", evmAddr)
-	}
+	//hasBinding, err := k.BindingKeeper.HasBinding(ctx, sdk.AccAddress(evmAddr))
+	//if err != nil {
+	//	return nil, sdkerrors.Wrapf(err, "failed to check binding for evm address %s", evmAddr)
+	//}
+	//if !hasBinding {
+	//	return nil, sdkerrors.Wrapf(errors.New("no binding for evm address"), "no binding for evm address %s", evmAddr)
+	//}
 
 	// Since we can't get the binding directly, we'll need to use the EVM address as the real address
 	return sdk.AccAddress(evmAddr), nil

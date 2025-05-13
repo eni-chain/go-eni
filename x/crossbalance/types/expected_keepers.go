@@ -6,25 +6,20 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// BindingKeeper defines expected keeper from the binding module
-type BindingKeeper interface {
-	HasBinding(ctx context.Context, cosmosAddr sdk.AccAddress) (bool, error)
-	DeleteBinding(ctx context.Context, cosmosAddr sdk.AccAddress) error
-}
-
-// AccountKeeper defines the expected interface for the Account module.
+// AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
 	GetAccount(context.Context, sdk.AccAddress) sdk.AccountI // only used for simulation
 	// Methods imported from account should be defined here
 }
 
-// BankKeeper defines the expected interface for the Bank module.
+// BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 	SendCoins(ctx context.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	MintCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
 	HasBalance(ctx context.Context, addr sdk.AccAddress, amt sdk.Coin) bool
-	AddCoins(ctx context.Context, addr sdk.AccAddress, amt sdk.Coins) error
-	SubUnlockedCoins(ctx context.Context, addr sdk.AccAddress, amt sdk.Coins) error
+	// Methods imported from bank should be defined here
 }
 
 // ParamSubspace defines the expected Subspace interface for parameters.

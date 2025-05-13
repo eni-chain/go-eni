@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	evmmodulekeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
+
 	"github.com/eni-chain/go-eni/x/crossbalance/client/cli"
 	"github.com/spf13/cobra"
 
@@ -62,7 +64,9 @@ func (AppModuleBasic) Name() string {
 
 // RegisterLegacyAminoCodec registers the amino codec for the module, which is used
 // to marshal and unmarshal structs to/from []byte in order to persist them in the module's KVStore.
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	types.RegisterLegacyAminoCodec(cdc)
+}
 
 // RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message.
 func (a AppModuleBasic) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
@@ -107,6 +111,7 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    bankkeeper.Keeper
+	EvmKeeper     *evmmodulekeeper.Keeper
 }
 
 func NewAppModule(
@@ -114,12 +119,14 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper bankkeeper.Keeper,
+	evmKeeper *evmmodulekeeper.Keeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
+		EvmKeeper:      evmKeeper,
 	}
 }
 
@@ -138,12 +145,12 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
-	InitGenesis(ctx, am.keeper, genState)
+	am.keeper.InitGenesis(ctx, genState)
 }
 
 // ExportGenesis returns the module's exported genesis state as raw JSON bytes.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
-	genState := ExportGenesis(ctx, am.keeper)
+	genState := am.keeper.ExportGenesis(ctx)
 	return cdc.MustMarshalJSON(genState)
 }
 
@@ -190,7 +197,7 @@ type ModuleInputs struct {
 	Logger       log.Logger
 
 	AccountKeeper types.AccountKeeper
-	BindingKeeper types.BindingKeeper
+	EvmKeeper     *evmmodulekeeper.Keeper
 	BankKeeper    bankkeeper.Keeper
 }
 
@@ -212,7 +219,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.StoreService,
 		in.Logger,
 		authority.String(),
-		in.BindingKeeper,
+		in.EvmKeeper,
 		in.BankKeeper,
 	)
 	m := NewAppModule(
@@ -220,6 +227,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		k,
 		in.AccountKeeper,
 		in.BankKeeper,
+		in.EvmKeeper,
 	)
 
 	return ModuleOutputs{CrossbalanceKeeper: k, Module: m}
