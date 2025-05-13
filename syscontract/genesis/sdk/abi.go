@@ -44,6 +44,19 @@ const HubABI = `
 		"inputs": [
 			{
 				"indexed": true,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "ApplyExitValidator",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
@@ -74,6 +87,31 @@ const HubABI = `
 			}
 		],
 		"name": "ApplyForValidator",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "admin",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pledge",
+				"type": "uint256"
+			}
+		],
+		"name": "AuditExit",
 		"type": "event"
 	},
 	{
@@ -316,6 +354,19 @@ const HubABI = `
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "applyExitValidator",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -346,6 +397,19 @@ const HubABI = `
 		"name": "applyForValidator",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "auditExit",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -769,6 +833,25 @@ const ValidatorManagerABI = `
 			{
 				"indexed": true,
 				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pledge",
+				"type": "uint256"
+			}
+		],
+		"name": "DelValidator",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
 				"name": "oldAdmin",
 				"type": "address"
 			},
@@ -984,6 +1067,25 @@ const ValidatorManagerABI = `
 		],
 		"name": "addValidator",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "delValidator",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
