@@ -186,6 +186,19 @@ const HubABI = `
 		"anonymous": false,
 		"inputs": [
 			{
+				"indexed": false,
+				"internalType": "address[]",
+				"name": "operators",
+				"type": "address[]"
+			}
+		],
+		"name": "DeleteValidators",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
 				"indexed": true,
 				"internalType": "address",
 				"name": "oldAdmin",

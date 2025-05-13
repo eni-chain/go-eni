@@ -41,6 +41,8 @@ contract Hub is DelegateCallBase, Common, SystemManager {
 
     event ApplyExitValidator(address indexed operator);
 
+    event DeleteValidators(address[] operators);
+
     event AuditExit(address indexed admin, address indexed operator, uint256 pledge);
 
     event BlockReward(address indexed proposer, uint256 pledge, uint256 reward);
@@ -121,9 +123,7 @@ contract Hub is DelegateCallBase, Common, SystemManager {
 
     function applyExitValidator() external returns (string memory){
         (, bytes memory pubkey)= IValidatorManager(VALIDATOR_MANAGER_ADDR).getNodeAddrAndPubKey(msg.sender);
-        if(pubkey.length == 0){
-            return "validator not exist!";
-        }
+        require(pubkey.length != 0, "validator not exist!");
 
         applicant storage a = _applicants[msg.sender];
         a.withdraw = true;
@@ -133,18 +133,19 @@ contract Hub is DelegateCallBase, Common, SystemManager {
 
         emit ApplyExitValidator(msg.sender);
 
-        return "please wait for next epoch and review.";
+        return "apply successfully, please wait for review in next epoch.";
     }
 
     function updateValidators() external onlyVrf {
         IValidatorManager(VALIDATOR_MANAGER_ADDR).delValidators(_withdraws);
+        emit DeleteValidators(_withdraws);
+
         delete _withdraws;
+        llog(DEBUG, abi.encodePacked("updateValidators, deleted validators that applied to withdraw, in block: ", S(block.number)));
     }
 
     function auditExit(address operator) external onlyAdmin returns (string memory){
-        if(!_applicants[operator].withdraw){
-            return "validator did not apply to withdraw!";
-        }
+        require(_applicants[operator].withdraw, "validator did not apply to withdraw!");
 
         bool updated = true;
         for(uint i = 0; i < _withdraws.length; i++){
@@ -153,9 +154,7 @@ contract Hub is DelegateCallBase, Common, SystemManager {
             }
         }
 
-        if(!updated){
-            return "epoch has not been updated, please try in next epoch";
-        }
+        require(updated,  "epoch has not been updated, please try in next epoch");
 
         uint256 pledge = _applicants[operator].amount;
         if(pledge != 0){
