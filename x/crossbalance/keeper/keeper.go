@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	evmmodulekeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/eni-chain/go-eni/x/crossbalance/types"
 )
@@ -20,7 +21,7 @@ type (
 		// should be the x/gov module account.
 		authority string
 
-		BankKeeper types.BankKeeper
+		BankKeeper bankkeeper.Keeper
 		EvmKeeper  *evmmodulekeeper.Keeper
 	}
 )
@@ -31,8 +32,7 @@ func NewKeeper(
 	logger log.Logger,
 	authority string,
 	evmKeeper *evmmodulekeeper.Keeper,
-	bankKeeper types.BankKeeper,
-
+	bankKeeper bankkeeper.Keeper,
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
