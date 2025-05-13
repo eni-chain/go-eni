@@ -408,7 +408,13 @@ const HubABI = `
 			}
 		],
 		"name": "auditExit",
-		"outputs": [],
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -522,6 +528,13 @@ const HubABI = `
 			}
 		],
 		"name": "updateSysAddr",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "updateValidators",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -843,7 +856,7 @@ const ValidatorManagerABI = `
 				"type": "uint256"
 			}
 		],
-		"name": "DelValidator",
+		"name": "DelNode",
 		"type": "event"
 	},
 	{
@@ -1073,19 +1086,13 @@ const ValidatorManagerABI = `
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "operator",
-				"type": "address"
+				"internalType": "address[]",
+				"name": "operators",
+				"type": "address[]"
 			}
 		],
-		"name": "delValidator",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
+		"name": "delValidators",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},

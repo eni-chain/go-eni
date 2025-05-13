@@ -115,6 +115,8 @@ contract Vrf is DelegateCallBase, SystemManager {
     function updateConsensusSet(uint256 epoch) external onlySystem needInited returns (address[] memory) {
         require(keccak256(_seeds[epoch]) != keccak256(_initSeed), "Consensus set should be elected in next epoch");
 
+        IHub(HUB_ADDR).updateValidators();
+
         address[] memory defaults = IValidatorManager(VALIDATOR_MANAGER_ADDR).getDefaultValidatorSet();
         address[] memory validators = IValidatorManager(VALIDATOR_MANAGER_ADDR).getJoinedValidatorSet();
         if(validators.length == 0) {
@@ -160,6 +162,8 @@ contract Vrf is DelegateCallBase, SystemManager {
         for(uint j = 0; j < topN.length; j++){
             all[defaults.length+j] = topN[j];
         }
+
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).undateConsensus(all);
 
         emit UpdateConsensusSet(epoch, all);
         return all;

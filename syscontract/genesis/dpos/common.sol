@@ -60,6 +60,36 @@ contract Common {
     }
 }
 
+interface IHub {
+    function addDefaultValidator(
+        address operator,
+        address node,
+        address agent,
+        string calldata name,
+        string calldata description,
+        bytes  calldata pubKey
+    ) payable external;
+
+    function applyForValidator(
+        address node,
+        address agent,
+        string calldata name,
+        string calldata description,
+        bytes  calldata pubKey
+    ) payable external;
+
+    function auditPass(address operator) external;
+
+    function applyExitValidator() external returns (string memory);
+
+    function updateValidators() external;
+
+    function auditExit(address operator) external returns (string memory);
+
+    function blockReward(address node) external returns (address, uint256);
+
+}
+
 interface IValidatorManager {
     //validator info
     struct validator{

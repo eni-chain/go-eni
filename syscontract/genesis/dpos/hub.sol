@@ -141,7 +141,22 @@ contract Hub is DelegateCallBase, Common, SystemManager {
         delete _withdraws;
     }
 
-    function auditExit(address operator) external onlyAdmin {
+    function auditExit(address operator) external onlyAdmin returns (string memory){
+        if(!_applicants[operator].withdraw){
+            return "validator did not apply to withdraw!";
+        }
+
+        bool updated = true;
+        for(uint i = 0; i < _withdraws.length; i++){
+            if(_withdraws[i] == operator){
+                updated = false;
+            }
+        }
+
+        if(!updated){
+            return "epoch has not been updated, please try in next epoch";
+        }
+
         uint256 pledge = _applicants[operator].amount;
         if(pledge != 0){
             payable(operator).transfer(pledge);
@@ -151,6 +166,8 @@ contract Hub is DelegateCallBase, Common, SystemManager {
         llog(DEBUG, abi.encodePacked("auditExit, admin:", H(msg.sender), ", operator:", H(operator), ", pledge amount:", S(pledge)));
 
         emit AuditExit(msg.sender, operator, pledge);
+
+        return "validator withdraw successfully";
     }
 
     function blockReward(address node) external onlySystem returns (address, uint256) {
