@@ -1,0 +1,16 @@
+{
+  "name": "uniswap-v4-loadtest",
+  "version": "1.0.0",
+  "description": "Load testing scripts for Uniswap V4",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy_erc20.js --network localhost"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.0",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.12.0"
+  }
+} 
