@@ -285,7 +285,8 @@ func (c *LoadTestClient) ReadFileTxs(
 }
 
 func (c *LoadTestClient) generateSignedEvmTx(keyIndex int, msgType string) *ethtypes.Transaction {
-	return c.EvmTxClients[keyIndex].GetTxForMsgType(msgType)
+	randomIndex := randomOtherIndex(len(c.EvmTxClients)-1, keyIndex)
+	return c.EvmTxClients[keyIndex].GetTxForMsgType(msgType, c.EvmTxClients[randomIndex].accountAddress)
 }
 
 func (c *LoadTestClient) generateSignedCosmosTxs(keyIndex int, msgType string, msgTypeCount int64) []byte {
