@@ -1,149 +1,223 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"math/big"
-	"strings"
+	"os"
+	"path/filepath"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/joho/godotenv"
+	uniswap "github.com/liuyunlong/go-eni/loadtest/contracts/uniswap_v4/bindings"
 )
 
-const (
-	poolAddress   = "0x..."                                                              // Replace with actual pool address
-	token0Address = "0x..."                                                              // Replace with actual token0 address
-	token1Address = "0x..."                                                              // Replace with actual token1 address
-	privateKey    = "0x57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e" // Replace with actual private key
-	rpcURL        = "http://localhost:8545"                                              // Replace with actual RPC URL
-)
+func loadEnvFile() error {
+	// Try to load .env file from multiple locations
+	envFiles := []string{
+		".env",                                   // Current directory
+		"../.env",                                // Parent directory
+		"../../.env",                             // Two levels up
+		"../../../.env",                          // Three levels up
+		filepath.Join(os.Getenv("HOME"), ".env"), // Home directory
+	}
+
+	for _, envFile := range envFiles {
+		if err := godotenv.Load(envFile); err == nil {
+			fmt.Printf("Loaded environment from %s\n", envFile)
+			return nil
+		}
+	}
+
+	return fmt.Errorf("could not find .env file in any of the following locations: %v", envFiles)
+}
 
 func main() {
-	// Connect to Ethereum client
+	// Load .env file
+	if err := loadEnvFile(); err != nil {
+		log.Fatal("Error loading .env file:", err)
+	}
+
+	// Read configuration from .env file
+	poolAddress := os.Getenv("POOL_ADDRESS")
+	token0Address := os.Getenv("TOKEN0_ADDRESS")
+	token1Address := os.Getenv("TOKEN1_ADDRESS")
+	privateKey := os.Getenv("PRIVATE_KEY")
+	rpcURL := os.Getenv("RPC_URL")
+
+	// Validate required environment variables
+	if poolAddress == "" || token0Address == "" || token1Address == "" || privateKey == "" || rpcURL == "" {
+		log.Fatal("Missing required environment variables in .env file")
+	}
+
 	client, err := ethclient.Dial(rpcURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Create authorized transactor
 	privateKeyECDSA, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	auth, err := bind.NewKeyedTransactorWithChainID(
-		privateKeyECDSA,
-		big.NewInt(1337), // Replace with actual chain ID
-	)
+	chainID, err := client.ChainID(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Load Uniswap V4 pool contract
-	pool, err := NewUniswapV4Pool(common.HexToAddress(poolAddress), client)
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKeyECDSA, chainID)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Load token contracts
-	token0, err := NewIERC20(common.HexToAddress(token0Address), client)
+	// Initialize pool contract
+	pool, err := uniswap.NewUniswapV4Pool(common.HexToAddress(poolAddress), client)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	token1, err := NewIERC20(common.HexToAddress(token1Address), client)
+	// Initialize token contracts
+	token0, err := uniswap.NewIERC20(common.HexToAddress(token0Address), client)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Approve tokens
-	amount := big.NewInt(1000000000000000000) // 1 token
-	_, err = token0.Approve(auth, common.HexToAddress(poolAddress), amount)
+	token1, err := uniswap.NewIERC20(common.HexToAddress(token1Address), client)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = token1.Approve(auth, common.HexToAddress(poolAddress), amount)
+	// Get account balance
+	balance, err := client.BalanceAt(context.Background(), auth.From, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to get account balance:", err)
+	}
+	fmt.Printf("Account balance: %s ETH\n", balance.String())
+
+	// Get token balances
+	token0Balance, err := token0.BalanceOf(nil, auth.From)
+	if err != nil {
+		log.Fatal("Failed to get token0 balance:", err)
+	}
+	fmt.Printf("Token0 balance: %s\n", token0Balance.String())
+
+	token1Balance, err := token1.BalanceOf(nil, auth.From)
+	if err != nil {
+		log.Fatal("Failed to get token1 balance:", err)
+	}
+	fmt.Printf("Token1 balance: %s\n", token1Balance.String())
+
+	// Get current allowances
+	allowance0, err := token0.Allowance(nil, auth.From, common.HexToAddress(poolAddress))
+	if err != nil {
+		log.Fatal("Failed to get token0 allowance:", err)
+	}
+	fmt.Printf("Token0 allowance: %s\n", allowance0.String())
+
+	allowance1, err := token1.Allowance(nil, auth.From, common.HexToAddress(poolAddress))
+	if err != nil {
+		log.Fatal("Failed to get token1 allowance:", err)
+	}
+	fmt.Printf("Token1 allowance: %s\n", allowance1.String())
+
+	// Approve tokens for the pool if needed
+	approveAmount := big.NewInt(0).Mul(big.NewInt(1000000), big.NewInt(1e18)) // 1 million tokens
+	if allowance0.Cmp(approveAmount) < 0 {
+		fmt.Println("Approving token0...")
+		auth.GasLimit = uint64(300000)
+		auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+		if err != nil {
+			log.Fatal("Failed to get gas price:", err)
+		}
+		tx, err := token0.Approve(auth, common.HexToAddress(poolAddress), approveAmount)
+		if err != nil {
+			log.Fatal("Failed to approve token0:", err)
+		}
+		receipt, err := bind.WaitMined(context.Background(), client, tx)
+		if err != nil {
+			log.Fatal("Failed to wait for token0 approval:", err)
+		}
+		if receipt.Status == 0 {
+			log.Fatal("Token0 approval failed")
+		}
+		fmt.Println("Token0 approved successfully")
 	}
 
-	// Add liquidity
-	_, err = pool.Mint(auth, auth.From)
-	if err != nil {
-		log.Fatal(err)
+	if allowance1.Cmp(approveAmount) < 0 {
+		fmt.Println("Approving token1...")
+		auth.GasLimit = uint64(300000)
+		auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+		if err != nil {
+			log.Fatal("Failed to get gas price:", err)
+		}
+		tx, err := token1.Approve(auth, common.HexToAddress(poolAddress), approveAmount)
+		if err != nil {
+			log.Fatal("Failed to approve token1:", err)
+		}
+		receipt, err := bind.WaitMined(context.Background(), client, tx)
+		if err != nil {
+			log.Fatal("Failed to wait for token1 approval:", err)
+		}
+		if receipt.Status == 0 {
+			log.Fatal("Token1 approval failed")
+		}
+		fmt.Println("Token1 approved successfully")
 	}
 
-	// Get initial reserves
-	reserve0, reserve1, _, err := pool.GetReserves(nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("Initial reserves: %s, %s\n", reserve0.String(), reserve1.String())
-
-	// Perform swaps
-	iterations := 100
-	startTime := time.Now()
-
+	iterations := 10 // Number of swaps
 	for i := 0; i < iterations; i++ {
-		// Swap token0 for token1
+		// Get the current nonce for the account
+		nonce, err := client.PendingNonceAt(context.Background(), auth.From)
+		if err != nil {
+			log.Fatalf("Failed to get nonce: %v", err)
+		}
+
+		auth.Nonce = big.NewInt(int64(nonce))
+		auth.GasLimit = uint64(300000)
+		auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+		if err != nil {
+			log.Fatalf("Failed to get gas price: %v", err)
+		}
+
+		// Set swap parameters
+		amount0In := big.NewInt(1000000000000000) // 0.001 token
+		amount1In := big.NewInt(0)
 		amount0Out := big.NewInt(0)
-		amount1Out := big.NewInt(1000000000000000) // 0.001 token
-		_, err = pool.Swap(auth, amount0Out, amount1Out, auth.From)
+		amount1Out := big.NewInt(990000000000000) // 0.00099 token (0.1% fee)
+
+		// Create the swap transaction
+		tx, err := pool.Swap(auth, amount0In, amount1In, amount0Out, amount1Out, auth.From)
 		if err != nil {
-			log.Printf("Swap %d failed: %v\n", i, err)
+			log.Printf("Swap %d transaction failed to send: %v\n", i, err)
 			continue
 		}
 
-		// Get updated reserves
-		reserve0, reserve1, _, err = pool.GetReserves(nil)
+		fmt.Printf("Swap %d transaction sent, tx hash: %s. Waiting for confirmation...\n", i, tx.Hash().Hex())
+
+		// Wait for the transaction to be mined
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		receipt, err := bind.WaitMined(ctx, client, tx)
 		if err != nil {
-			log.Printf("GetReserves failed: %v\n", err)
+			log.Printf("Swap %d transaction mining failed or timed out: %v\n", i, err)
 			continue
 		}
 
-		fmt.Printf("Swap %d completed. Reserves: %s, %s\n", i, reserve0.String(), reserve1.String())
+		if receipt.Status == 1 {
+			fmt.Printf("Swap %d transaction confirmed successfully, block number: %d\n", i, receipt.BlockNumber.Uint64())
+		} else {
+			log.Printf("Swap %d transaction failed, block number: %d\n", i, receipt.BlockNumber.Uint64())
+		}
+
+		// Add a small delay between transactions
+		time.Sleep(1 * time.Second)
 	}
 
-	duration := time.Since(startTime)
-	fmt.Printf("Test completed in %v\n", duration)
-	fmt.Printf("Average time per transaction: %v\n", duration/time.Duration(iterations))
+	fmt.Println("All transactions completed")
 }
-
-// IERC20 represents the ERC20 token interface
-type IERC20 struct {
-	Address  common.Address
-	Contract *bind.BoundContract
-}
-
-// NewIERC20 creates a new instance of IERC20
-func NewIERC20(address common.Address, backend bind.ContractBackend) (*IERC20, error) {
-	contract, err := bindERC20(address, backend, backend, backend)
-	if err != nil {
-		return nil, err
-	}
-	return &IERC20{Address: address, Contract: contract}, nil
-}
-
-// Approve approves the spender to spend tokens
-func (token *IERC20) Approve(opts *bind.TransactOpts, spender common.Address, amount *big.Int) (*types.Transaction, error) {
-	return token.Contract.Transact(opts, "approve", spender, amount)
-}
-
-// bindERC20 binds a generic wrapper to an already deployed contract
-func bindERC20(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
-	parsed, err := abi.JSON(strings.NewReader(ERC20ABI))
-	if err != nil {
-		return nil, err
-	}
-	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
-}
-
-// ERC20ABI is the input ABI used to generate the binding from
-const ERC20ABI = `[{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]`
