@@ -140,6 +140,49 @@ func main() {
 		initialAmount0 := big.NewInt(1000000000000000000) // 1 token
 		initialAmount1 := big.NewInt(1000000000000000000) // 1 token
 
+		// Approve tokens for minting if needed
+		if allowance0.Cmp(initialAmount0) < 0 {
+			fmt.Println("Approving token0 for minting...")
+			auth.GasLimit = uint64(300000)
+			auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+			if err != nil {
+				log.Fatal("Failed to get gas price:", err)
+			}
+			tx, err := token0.Approve(auth, common.HexToAddress(poolAddress), initialAmount0)
+			if err != nil {
+				log.Fatal("Failed to approve token0 for minting:", err)
+			}
+			receipt, err := bind.WaitMined(context.Background(), client, tx)
+			if err != nil {
+				log.Fatal("Failed to wait for token0 approval:", err)
+			}
+			if receipt.Status == 0 {
+				log.Fatal("Token0 approval failed")
+			}
+			fmt.Println("Token0 approved for minting")
+		}
+
+		if allowance1.Cmp(initialAmount1) < 0 {
+			fmt.Println("Approving token1 for minting...")
+			auth.GasLimit = uint64(300000)
+			auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+			if err != nil {
+				log.Fatal("Failed to get gas price:", err)
+			}
+			tx, err := token1.Approve(auth, common.HexToAddress(poolAddress), initialAmount1)
+			if err != nil {
+				log.Fatal("Failed to approve token1 for minting:", err)
+			}
+			receipt, err := bind.WaitMined(context.Background(), client, tx)
+			if err != nil {
+				log.Fatal("Failed to wait for token1 approval:", err)
+			}
+			if receipt.Status == 0 {
+				log.Fatal("Token1 approval failed")
+			}
+			fmt.Println("Token1 approved for minting")
+		}
+
 		// Get current nonce
 		nonce, err := client.PendingNonceAt(context.Background(), auth.From)
 		if err != nil {
@@ -188,79 +231,70 @@ func main() {
 		}
 	}
 
-	// Approve tokens for the pool if needed
-	approveAmount := big.NewInt(0).Mul(big.NewInt(1000000), big.NewInt(1e18)) // 1 million tokens
-	if allowance0.Cmp(approveAmount) < 0 {
-		fmt.Println("Approving token0...")
-		auth.GasLimit = uint64(300000)
-		auth.GasPrice, err = client.SuggestGasPrice(context.Background())
-		if err != nil {
-			log.Fatal("Failed to get gas price:", err)
-		}
-		tx, err := token0.Approve(auth, common.HexToAddress(poolAddress), approveAmount)
-		if err != nil {
-			log.Fatal("Failed to approve token0:", err)
-		}
-		receipt, err := bind.WaitMined(context.Background(), client, tx)
-		if err != nil {
-			log.Fatal("Failed to wait for token0 approval:", err)
-		}
-		if receipt.Status == 0 {
-			log.Fatal("Token0 approval failed")
-		}
-		fmt.Println("Token0 approved successfully")
-	}
-
-	if allowance1.Cmp(approveAmount) < 0 {
-		fmt.Println("Approving token1...")
-		auth.GasLimit = uint64(300000)
-		auth.GasPrice, err = client.SuggestGasPrice(context.Background())
-		if err != nil {
-			log.Fatal("Failed to get gas price:", err)
-		}
-		tx, err := token1.Approve(auth, common.HexToAddress(poolAddress), approveAmount)
-		if err != nil {
-			log.Fatal("Failed to approve token1:", err)
-		}
-		receipt, err := bind.WaitMined(context.Background(), client, tx)
-		if err != nil {
-			log.Fatal("Failed to wait for token1 approval:", err)
-		}
-		if receipt.Status == 0 {
-			log.Fatal("Token1 approval failed")
-		}
-		fmt.Println("Token1 approved successfully")
-	}
-
-	// Calculate swap amounts based on current reserves
-	amount0In := big.NewInt(1000000000000000) // 0.001 token
-	amount1In := big.NewInt(0)
-
-	// Calculate expected output using constant product formula: x * y = k
-	// amount0In * reserve1 / (reserve0 + amount0In)
-	amount1Out := new(big.Int).Mul(amount0In, reserves.Reserve1)
-	amount1Out = amount1Out.Div(amount1Out, new(big.Int).Add(reserves.Reserve0, amount0In))
-
-	// Apply 0.3% fee
-	fee := new(big.Int).Mul(amount1Out, big.NewInt(3))
-	fee = fee.Div(fee, big.NewInt(1000))
-	amount1Out = amount1Out.Sub(amount1Out, fee)
-
-	amount0Out := big.NewInt(0)
-
-	fmt.Printf("Swap parameters:\n")
-	fmt.Printf("  Input: %s token0\n", amount0In.String())
-	fmt.Printf("  Expected output: %s token1\n", amount1Out.String())
-	fmt.Printf("  Fee: %s token1\n", fee.String())
-
 	iterations := 10 // Number of swaps
 	for i := 0; i < iterations; i++ {
+		// Get current reserves
+		reserves, err = pool.GetReserves(nil)
+		if err != nil {
+			log.Fatal("Failed to get reserves:", err)
+		}
+
+		// Calculate swap amounts based on current reserves
+		amount0In := big.NewInt(1000000000000000) // 0.001 token
+		amount1In := big.NewInt(0)
+
+		// Calculate expected output using constant product formula: x * y = k
+		// amount0In * reserve1 / (reserve0 + amount0In)
+		amount1Out := new(big.Int).Mul(amount0In, reserves.Reserve1)
+		amount1Out = amount1Out.Div(amount1Out, new(big.Int).Add(reserves.Reserve0, amount0In))
+
+		// Apply 0.3% fee
+		fee := new(big.Int).Mul(amount1Out, big.NewInt(3))
+		fee = fee.Div(fee, big.NewInt(1000))
+		amount1Out = amount1Out.Sub(amount1Out, fee)
+
+		amount0Out := big.NewInt(0)
+
+		fmt.Printf("\nSwap %d parameters:\n", i)
+		fmt.Printf("  Current reserves - Token0: %s, Token1: %s\n",
+			reserves.Reserve0.String(), reserves.Reserve1.String())
+		fmt.Printf("  Input: %s token0\n", amount0In.String())
+		fmt.Printf("  Expected output: %s token1\n", amount1Out.String())
+		fmt.Printf("  Fee: %s token1\n", fee.String())
+
 		// Get the current nonce for the account
 		nonce, err := client.PendingNonceAt(context.Background(), auth.From)
 		if err != nil {
 			log.Fatalf("Failed to get nonce: %v", err)
 		}
 
+		// Approve tokens for swapping if needed
+		if allowance0.Cmp(amount0In) < 0 {
+			fmt.Println("Approving token0 for swapping...")
+			auth.Nonce = big.NewInt(int64(nonce))
+			auth.GasLimit = uint64(300000)
+			auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+			if err != nil {
+				log.Fatal("Failed to get gas price:", err)
+			}
+			tx, err := token0.Approve(auth, common.HexToAddress(poolAddress), amount0In)
+			if err != nil {
+				log.Fatal("Failed to approve token0 for swapping:", err)
+			}
+			receipt, err := bind.WaitMined(context.Background(), client, tx)
+			if err != nil {
+				log.Fatal("Failed to wait for token0 approval:", err)
+			}
+			if receipt.Status == 0 {
+				log.Fatal("Token0 approval failed")
+			}
+			fmt.Println("Token0 approved for swapping")
+
+			// Update nonce after approval
+			nonce++
+		}
+
+		// Create the swap transaction
 		auth.Nonce = big.NewInt(int64(nonce))
 		auth.GasLimit = uint64(300000)
 		auth.GasPrice, err = client.SuggestGasPrice(context.Background())
@@ -268,7 +302,6 @@ func main() {
 			log.Fatalf("Failed to get gas price: %v", err)
 		}
 
-		// Create the swap transaction
 		tx, err := pool.Swap(auth, amount0In, amount1In, amount0Out, amount1Out, auth.From)
 		if err != nil {
 			log.Printf("Swap %d transaction failed to send: %v\n", i, err)
