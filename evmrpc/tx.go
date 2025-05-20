@@ -30,8 +30,8 @@ import (
 
 var ErrPanicTx = errors.New("transaction is panic tx")
 
-const UnconfirmedTxQueryMaxPage = 20
-const UnconfirmedTxQueryPerPage = 30
+const UnconfirmedTxQueryMaxPage = 10
+const UnconfirmedTxQueryPerPage = 10
 
 type TransactionAPI struct {
 	tmClient       rpcclient.Client
