@@ -27,7 +27,7 @@ echo "---------------------------------------"
 
 # 1. Send 1 wei ETH to a random address
 echo "➡️ Sending 1 wei ETH to 0xc1bbFB1358bA0E54B5Eb6cA4c0020F7DA669E6d1"
-cast send --rpc-url "$RPC_URL" \
+/home/ubuntu/.foundry/bin/cast send --rpc-url "$RPC_URL" \
   0xc1bbFB1358bA0E54B5Eb6cA4c0020F7DA669E6d1 \
   --value 1wei \
   --from "$FROM_ADDR" \
@@ -37,19 +37,19 @@ echo "---------------------------------------"
 
 # 2. Check ETH balance of sender
 echo "📊 Checking ETH balance of account: $FROM_ADDR"
-cast balance "$FROM_ADDR" --rpc-url "$RPC_URL"
+/home/ubuntu/.foundry/bin/cast balance "$FROM_ADDR" --rpc-url "$RPC_URL"
 
 echo "---------------------------------------"
 
 # 3. Check token balance (ERC20 balanceOf)
 echo "📊 Checking token balance in contract $CONTRACT"
-cast call "$CONTRACT" "balanceOf(address)" "$FROM_ADDR" --rpc-url "$RPC_URL"
+/home/ubuntu/.foundry/bin/cast call "$CONTRACT" "balanceOf(address)" "$FROM_ADDR" --rpc-url "$RPC_URL"
 
 echo "---------------------------------------"
 
 # 4. Transfer 100 tokens (assuming 18 decimals)
 echo "🔁 Transferring 100 tokens to $TO_ADDR"
-cast send "$CONTRACT" "transfer(address,uint256)" \
+/home/ubuntu/.foundry/bin/cast send "$CONTRACT" "transfer(address,uint256)" \
   "$TO_ADDR" \
   100000000000000000000 \
   --rpc-url "$RPC_URL" \
@@ -59,7 +59,7 @@ echo "---------------------------------------"
 
 # 5. Transfer 1 token unit (for testing raw uint256 values)
 echo "🔁 Transferring 1 token unit to $TO_ADDR"
-cast send "$CONTRACT" "transfer(address,uint256)" \
+/home/ubuntu/.foundry/bin/cast send "$CONTRACT" "transfer(address,uint256)" \
   "$TO_ADDR" \
   1 \
   --rpc-url "$RPC_URL" \
