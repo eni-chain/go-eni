@@ -125,6 +125,69 @@ func main() {
 	}
 	fmt.Printf("Token1 allowance: %s\n", allowance1.String())
 
+	// Get pool reserves
+	reserves, err := pool.GetReserves(nil)
+	if err != nil {
+		log.Fatal("Failed to get pool reserves:", err)
+	}
+	fmt.Printf("Pool reserves - Token0: %s, Token1: %s\n", reserves.Reserve0.String(), reserves.Reserve1.String())
+
+	// Check if pool has liquidity
+	if reserves.Reserve0.Cmp(big.NewInt(0)) == 0 || reserves.Reserve1.Cmp(big.NewInt(0)) == 0 {
+		fmt.Println("Pool has no liquidity, adding initial liquidity...")
+
+		// Calculate initial liquidity amounts
+		initialAmount0 := big.NewInt(1000000000000000000) // 1 token
+		initialAmount1 := big.NewInt(1000000000000000000) // 1 token
+
+		// Get current nonce
+		nonce, err := client.PendingNonceAt(context.Background(), auth.From)
+		if err != nil {
+			log.Fatal("Failed to get nonce:", err)
+		}
+
+		auth.Nonce = big.NewInt(int64(nonce))
+		auth.GasLimit = uint64(500000) // Higher gas limit for mint
+		auth.GasPrice, err = client.SuggestGasPrice(context.Background())
+		if err != nil {
+			log.Fatal("Failed to get gas price:", err)
+		}
+
+		// Mint initial liquidity
+		fmt.Printf("Adding initial liquidity - Token0: %s, Token1: %s\n",
+			initialAmount0.String(), initialAmount1.String())
+
+		tx, err := pool.Mint(auth, initialAmount0, initialAmount1)
+		if err != nil {
+			log.Fatal("Failed to mint initial liquidity:", err)
+		}
+
+		fmt.Printf("Mint transaction sent, tx hash: %s. Waiting for confirmation...\n", tx.Hash().Hex())
+
+		// Wait for the transaction to be mined
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		receipt, err := bind.WaitMined(ctx, client, tx)
+		if err != nil {
+			log.Fatal("Failed to wait for mint transaction:", err)
+		}
+
+		if receipt.Status == 1 {
+			fmt.Println("Initial liquidity added successfully")
+
+			// Get updated reserves
+			reserves, err = pool.GetReserves(nil)
+			if err != nil {
+				log.Fatal("Failed to get updated reserves:", err)
+			}
+			fmt.Printf("Updated pool reserves - Token0: %s, Token1: %s\n",
+				reserves.Reserve0.String(), reserves.Reserve1.String())
+		} else {
+			log.Fatal("Failed to add initial liquidity")
+		}
+	}
+
 	// Approve tokens for the pool if needed
 	approveAmount := big.NewInt(0).Mul(big.NewInt(1000000), big.NewInt(1e18)) // 1 million tokens
 	if allowance0.Cmp(approveAmount) < 0 {
@@ -169,6 +232,27 @@ func main() {
 		fmt.Println("Token1 approved successfully")
 	}
 
+	// Calculate swap amounts based on current reserves
+	amount0In := big.NewInt(1000000000000000) // 0.001 token
+	amount1In := big.NewInt(0)
+
+	// Calculate expected output using constant product formula: x * y = k
+	// amount0In * reserve1 / (reserve0 + amount0In)
+	amount1Out := new(big.Int).Mul(amount0In, reserves.Reserve1)
+	amount1Out = amount1Out.Div(amount1Out, new(big.Int).Add(reserves.Reserve0, amount0In))
+
+	// Apply 0.3% fee
+	fee := new(big.Int).Mul(amount1Out, big.NewInt(3))
+	fee = fee.Div(fee, big.NewInt(1000))
+	amount1Out = amount1Out.Sub(amount1Out, fee)
+
+	amount0Out := big.NewInt(0)
+
+	fmt.Printf("Swap parameters:\n")
+	fmt.Printf("  Input: %s token0\n", amount0In.String())
+	fmt.Printf("  Expected output: %s token1\n", amount1Out.String())
+	fmt.Printf("  Fee: %s token1\n", fee.String())
+
 	iterations := 10 // Number of swaps
 	for i := 0; i < iterations; i++ {
 		// Get the current nonce for the account
@@ -183,12 +267,6 @@ func main() {
 		if err != nil {
 			log.Fatalf("Failed to get gas price: %v", err)
 		}
-
-		// Set swap parameters
-		amount0In := big.NewInt(1000000000000000) // 0.001 token
-		amount1In := big.NewInt(0)
-		amount0Out := big.NewInt(0)
-		amount1Out := big.NewInt(990000000000000) // 0.00099 token (0.1% fee)
 
 		// Create the swap transaction
 		tx, err := pool.Swap(auth, amount0In, amount1In, amount0Out, amount1Out, auth.From)
@@ -211,6 +289,15 @@ func main() {
 
 		if receipt.Status == 1 {
 			fmt.Printf("Swap %d transaction confirmed successfully, block number: %d\n", i, receipt.BlockNumber.Uint64())
+
+			// Update reserves after successful swap
+			newReserves, err := pool.GetReserves(nil)
+			if err != nil {
+				log.Printf("Failed to get updated reserves: %v\n", err)
+			} else {
+				fmt.Printf("Updated pool reserves - Token0: %s, Token1: %s\n",
+					newReserves.Reserve0.String(), newReserves.Reserve1.String())
+			}
 		} else {
 			log.Printf("Swap %d transaction failed, block number: %d\n", i, receipt.BlockNumber.Uint64())
 		}
