@@ -297,6 +297,6 @@ ss-import-num-workers = 1
 
 [evm]
 http_enabled = true
-http_port = 8555
+http_port = 8545
 ws_enabled = false
 
