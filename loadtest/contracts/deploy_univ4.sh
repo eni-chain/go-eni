@@ -5,6 +5,21 @@ set -e  # Exit on any error
 echo "Starting deployment process..."
 echo "Using account: 0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
 
+# Store the original directory
+ORIGINAL_DIR=$(pwd)
+
+# Change to the uniswap_v4 directory
+cd uniswap_v4 || {
+    echo "Error: Could not change to uniswap_v4 directory"
+    exit 1
+}
+
+# Install dependencies if node_modules doesn't exist
+if [ ! -d "node_modules" ]; then
+    echo "Installing dependencies..."
+    npm install
+fi
+
 # Check if the local node is running
 check_node() {
     if ! curl -s http://127.0.0.1:8545 > /dev/null; then
@@ -78,5 +93,8 @@ POOL_ADDRESS=$POOL_ADDRESS
 PRIVATE_KEY=57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e
 RPC_URL=http://localhost:8545
 EOL
+
+# Return to the original directory
+cd "$ORIGINAL_DIR"
 
 echo -e "\n Deployment completed successfully!"

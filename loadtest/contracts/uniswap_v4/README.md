@@ -27,8 +27,8 @@ PRIVATE_KEY=your_private_key_here
 
 1. Deploy the contracts:
 ```bash
-chmod +x deploy.sh
-./deploy.sh
+chmod +x deploy_univ4.sh
+./deploy_univ4.sh
 ```
 
 This will:
