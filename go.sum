@@ -500,10 +500,6 @@ github.com/eni-chain/eni-cosmos/core v0.0.0-20250506084528-8a50737d7533 h1:q1YU2
 github.com/eni-chain/eni-cosmos/core v0.0.0-20250506084528-8a50737d7533/go.mod h1:01u7jX5X4U/LlkPfEONgYGMTsHtyLPeFm1cPHeLce2Y=
 github.com/eni-chain/eni-cosmos/store v0.0.0-20250506084528-8a50737d7533 h1:mVpLTIp91iWUApXXv7Weesq3EkJWVK4y4+XJSH6SCsY=
 github.com/eni-chain/eni-cosmos/store v0.0.0-20250506084528-8a50737d7533/go.mod h1:qRhIa3VKACuROpz36SBHEqMgHJTw5mrPBDI2w7YuNEQ=
-github.com/eni-chain/eni-db v0.0.0-20250424114347-283a9ffa38d3 h1:5Rzk1yqZgq1te8OEP6XiHJuPGK47XAR8vhsmu7JANjk=
-github.com/eni-chain/eni-db v0.0.0-20250424114347-283a9ffa38d3/go.mod h1:TCv1hKOEnheE5jUyP4S7Ow75UBeRt7A366KVooKlZ8I=
-github.com/eni-chain/eni-db v0.0.0-20250515104116-32cf78231bd6 h1:QB8+pXaWmVcZQaKcDsSSKmrgtM2pm23Y4ffAbWL29BY=
-github.com/eni-chain/eni-db v0.0.0-20250515104116-32cf78231bd6/go.mod h1:+i++fYfO7H+HeVYKJjO9zI+bBAfKKLUCK33/jmzHsI4=
 github.com/eni-chain/eni-db v0.0.0-20250515110049-b80f3999693b h1:kuM8zg6BnzS979Mu3JYF7+4ixDwzU05gJFQ3PU83OkU=
 github.com/eni-chain/eni-db v0.0.0-20250515110049-b80f3999693b/go.mod h1:+i++fYfO7H+HeVYKJjO9zI+bBAfKKLUCK33/jmzHsI4=
 github.com/eni-chain/go-ethereum v0.0.0-20250505113906-74606eca3d53 h1:0LxjejBrUIDSEhz3iDutvUYrfVarC1KIZQ+OwuNHoOw=
@@ -865,6 +861,8 @@ github.com/jmespath/go-jmespath/internal/testify v1.5.1 h1:shLQSRRSCCPj3f2gpwzGw
 github.com/jmespath/go-jmespath/internal/testify v1.5.1/go.mod h1:L3OGu8Wl2/fWfCI6z80xFu9LTZmf1ZRjMHUOPmWr69U=
 github.com/jmhodges/levigo v1.0.0 h1:q5EC36kV79HWeTBWsod3mG11EgStG3qArTKcvlksN1U=
 github.com/jmhodges/levigo v1.0.0/go.mod h1:Q6Qx+uH3RAqyK4rFQroq9RL7mdkABMcfhEI+nNuzMJQ=
+github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
+github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFFd8Hwg//Y=
 github.com/jpillora/backoff v1.0.0/go.mod h1:J/6gKK9jxlEcS3zixgDgUAsiuZ7yrSoa/FX5e0EB2j4=

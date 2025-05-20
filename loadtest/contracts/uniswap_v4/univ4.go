@@ -9,21 +9,21 @@ import (
 	"path/filepath"
 	"time"
 
+	uniswap "github.com/eni-chain/go-eni/loadtest/contracts/uniswap_v4/bindings"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/joho/godotenv"
-	uniswap "github.com/liuyunlong/go-eni/loadtest/contracts/uniswap_v4/bindings"
 )
 
 func loadEnvFile() error {
 	// Try to load .env file from multiple locations
 	envFiles := []string{
 		".env",                                   // Current directory
-		"../.env",                                // Parent directory
-		"../../.env",                             // Two levels up
-		"../../../.env",                          // Three levels up
+		"loadtest/contracts/uniswap_v4/.env",     // Parent directory
+		"contracts/uniswap_v4/.env",              // Two levels up
+		"uniswap_v4/.env",                        // Three levels up
 		filepath.Join(os.Getenv("HOME"), ".env"), // Home directory
 	}
 
