@@ -140,11 +140,10 @@ OUTER:
 			iavl = cast
 			break OUTER
 		case *cachekv.Store:
-			// todo must be readapted
-			//if cast.GetParent() == nil {
-			//	return nil, errors.New("cannot find EVM IAVL store")
-			//}
-			//s = cast.GetParent()
+			if cast.GetParent() == nil {
+				return nil, errors.New("cannot find EVM IAVL store")
+			}
+			s = cast.GetParent()
 		default:
 			return nil, errors.New("cannot find EVM IAVL store")
 		}
