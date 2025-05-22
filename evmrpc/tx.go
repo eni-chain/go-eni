@@ -20,6 +20,7 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethapi"
 	"github.com/ethereum/go-ethereum/rpc"
+
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
 	//"github.com/tendermint/tendermint/rpc/coretypes"
 	//tmtypes "github.com/tendermint/tendermint/types"
@@ -376,13 +377,20 @@ func encodeReceipt(receipt *types.Receipt, decoder sdk.TxDecoder, block *coretyp
 		"effectiveGasPrice": (*hexutil.Big)(big.NewInt(int64(receipt.EffectiveGasPrice))),
 		"status":            hexutil.Uint(receipt.Status),
 	}
+
+	// Always include to field, even if empty
+	if receipt.To != "" {
+		fields["to"] = common.HexToAddress(receipt.To)
+	} else {
+		fields["to"] = nil
+	}
+
+	// Handle contract address for contract creation transactions
 	if receipt.ContractAddress != "" && receipt.To == "" {
 		fields["contractAddress"] = common.HexToAddress(receipt.ContractAddress)
 	} else {
 		fields["contractAddress"] = nil
 	}
-	if receipt.To != "" {
-		fields["to"] = common.HexToAddress(receipt.To)
-	}
+
 	return fields, nil
 }
