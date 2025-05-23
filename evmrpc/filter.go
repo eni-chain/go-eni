@@ -165,11 +165,12 @@ func (a *FilterAPI) NewBlockFilter(
 				if f, found := a.filters[curFilterID]; found {
 					f.hashes = append(f.hashes, common.BytesToHash(data.Block.Hash()))
 					a.filters[curFilterID] = f
+					a.filtersMu.Unlock()
 				} else {
 					// If not found, it indicates that the filterID does not exist or has been deleted due to timeout, and there is no need to continue listening.
+					a.filtersMu.Unlock()
 					return
 				}
-				a.filtersMu.Unlock()
 			}
 		}
 	}(eventCh)
