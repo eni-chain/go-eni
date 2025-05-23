@@ -16,3 +16,6 @@ loadtest/scripts-test/node_modules
 node_modules/
 loadtest/loadtest
 evmrpc/config/client.toml
+loadtest/contracts/uniswap_v4/artifacts/
+loadtest/contracts/uniswap_v4/.env
+loadtest/contracts/uniswap_v4/cache/
