@@ -155,10 +155,6 @@
                     "address": "eni1d20hj38qavlfhs8p0mcwgp32rkqqxu4uphfmg7",
                     "coins": [
                         {
-                            "denom": "stake",
-                            "amount": "100000000"
-                        },
-                        {
                             "denom": "ueni",
                             "amount": "1000000000000000000000"
                         }
@@ -168,12 +164,17 @@
                     "address": "eni1cfm78jrcad2awqq0w87wdrlxfr6dqqly4l9ke9",
                     "coins": [
                         {
-                            "denom": "stake",
-                            "amount": "100000000"
-                        },
-                        {
                             "denom": "ueni",
                             "amount": "1000000000000000000000"
+                        }
+                    ]
+                },
+                {
+                    "address": "eni1vqu8rska6swzdmnhf90zuv0xmelej4lqaua23w",
+                    "coins": [
+                        {
+                            "denom": "ueni",
+                            "amount": "400000000000000000000000000"
                         }
                     ]
                 }
@@ -181,11 +182,11 @@
             "supply": [
                 {
                     "denom": "stake",
-                    "amount": "800000000"
+                    "amount": "600000000"
                 },
                 {
                     "denom": "ueni",
-                    "amount": "131000000000000000000000"
+                    "amount": "400131000000000000000000000"
                 }
             ],
             "denom_metadata": [
