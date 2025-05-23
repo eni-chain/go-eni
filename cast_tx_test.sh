@@ -25,8 +25,8 @@ echo "✅ Receiver address: $TO_ADDR"
 echo "✅ RPC URL: $RPC_URL"
 echo "---------------------------------------"
 
-# 1. Send 1 wei ETH to a random address
-echo "➡️ Sending 1 wei ETH to 0xc1bbFB1358bA0E54B5Eb6cA4c0020F7DA669E6d1"
+# 1. Send 1 wei ENI to a random address
+echo "➡️ Sending 1 wei ENI to 0xc1bbFB1358bA0E54B5Eb6cA4c0020F7DA669E6d1"
 /home/ubuntu/.foundry/bin/cast send --rpc-url "$RPC_URL" \
   0xc1bbFB1358bA0E54B5Eb6cA4c0020F7DA669E6d1 \
   --value 1wei \
@@ -35,8 +35,8 @@ echo "➡️ Sending 1 wei ETH to 0xc1bbFB1358bA0E54B5Eb6cA4c0020F7DA669E6d1"
 
 echo "---------------------------------------"
 
-# 2. Check ETH balance of sender
-echo "📊 Checking ETH balance of account: $FROM_ADDR"
+# 2. Check ENI balance of sender
+echo "📊 Checking ENI balance of account: $FROM_ADDR"
 /home/ubuntu/.foundry/bin/cast balance "$FROM_ADDR" --rpc-url "$RPC_URL"
 
 echo "---------------------------------------"
