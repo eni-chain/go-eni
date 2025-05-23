@@ -335,11 +335,11 @@ require github.com/joho/godotenv v1.5.1
 
 replace (
 	// replace broken cosmos-sdk
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250522161338-5a383b99b8d5
-	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250522161338-5a383b99b8d5
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250522161338-5a383b99b8d5
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250523093210-546df751cdcb
+	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250523093210-546df751cdcb
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250523093210-546df751cdcb
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250429032449-0022343a43fd
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250522161338-5a383b99b8d5
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250523093210-546df751cdcb
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250505113906-74606eca3d53
 	//github.com/ethereum/go-ethereum => ../go-ethereum
