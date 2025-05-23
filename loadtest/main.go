@@ -97,7 +97,7 @@ func deployEvmContract(scriptPath string, config *Config) (common.Address, error
 	if err != nil {
 		return common.Address{}, err
 	}
-	return common.HexToAddress(out.String()), nil
+	return common.HexToAddress(strings.TrimSpace(out.String())), nil
 }
 
 func deployEvmContracts(config *Config) {
@@ -120,6 +120,28 @@ func deployEvmContracts(config *Config) {
 		}
 		config.EVMAddresses.ERC721 = erc721
 	}
+}
+
+func deployNewEvmContracts(config *Config) {
+	config.EVMAddresses = &EVMAddresses{}
+	if config.ContainsAnyMessageTypes(ERC20) {
+		erc20, err := deployEvmContract("loadtest/contracts/deploy_erc20_token.sh", config)
+		if err != nil {
+			fmt.Println("error deploying, make sure 0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52 is funded")
+			panic(err)
+		}
+		config.EVMAddresses.ERC20 = erc20
+	}
+	if config.ContainsAnyMessageTypes(ERC721) {
+		erc721, err := deployEvmContract("loadtest/contracts/deploy_erc721_mint.sh", config)
+		if err != nil {
+			fmt.Println("error deploying, make sure 0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52 is funded")
+			panic(err)
+		}
+		config.EVMAddresses.ERC721 = erc721
+	}
+
+	fmt.Printf("ERC20 address: %s, ERC721 address: %s\n", config.EVMAddresses.ERC20.String(), config.EVMAddresses.ERC721.String())
 }
 
 //nolint:gosec
@@ -150,10 +172,12 @@ func run(config *Config, txFilePath string) {
 	metricsServer := MetricsServer{}
 	go metricsServer.StartMetricsClient(*config)
 
+	//deployEvmContracts(config)
+	deployNewEvmContracts(config)
+	//deployUniswapContracts(client, config)
+
 	client := NewLoadTestClient(*config)
 	client.SetValidators()
-	deployEvmContracts(config)
-	//deployUniswapContracts(client, config)
 
 	startLoadtestWorkers(client, *config, txFilePath)
 
