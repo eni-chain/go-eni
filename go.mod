@@ -331,6 +331,8 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
+require github.com/joho/godotenv v1.5.1
+
 replace (
 	// replace broken cosmos-sdk
 	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250522161338-5a383b99b8d5
