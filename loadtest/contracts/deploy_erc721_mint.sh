@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# This script is used to deploy the NoopToken contract to the target network
+# This avoids trying to predict what address it might be deployed to
+
+evm_endpoint=$1
+
+# first fund account if necessary
+THRESHOLD=100000000000000000000 # 100 Eth
+ACCOUNT="0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52"
+BALANCE=$(cast balance $ACCOUNT --rpc-url "$evm_endpoint")
+if (( $(echo "$BALANCE < $THRESHOLD" | bc -l) )); then
+  printf "12345678\n" | ~/go/bin/enid tx evm send $ACCOUNT 100000000000000000000 --from admin --evm-rpc "$evm_endpoint"
+  sleep 3
+fi
+cd loadtest/contracts/evm || exit 1
+
+./setup.sh > /dev/null
+
+git submodule update --init --recursive > /dev/null
+
+INPUT=$(forge create -r "$evm_endpoint" --private-key 57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e src/ERC721Mint.sol:ERC721Mint --json --constructor-args "TEST_NFT" "TN" | jq -r '.transaction.input')
+
+deploy_output=$(cast send --rpc-url $evm_endpoint --private-key 57acb95d82739866a5c29e40b0aa2590742ae50425b7dd5b5d279a986370189e --gas-limit 700000000 --gas-price 1000000000 --create $INPUT --json | jq -r '.contractAddress')
+
+echo "$deploy_output"
