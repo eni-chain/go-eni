@@ -94,12 +94,12 @@ require (
 	github.com/bufbuild/protoplugin v0.0.0-20240323223605-e2735f6c31ee // indirect
 	github.com/bufbuild/protovalidate-go v0.6.2 // indirect
 	github.com/bufbuild/protoyaml-go v0.1.9 // indirect
-	github.com/bytedance/sonic v1.12.6 // indirect
-	github.com/bytedance/sonic/loader v0.2.1 // indirect
+	github.com/bytedance/sonic v1.13.2 // indirect
+	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chzyer/readline v1.5.1 // indirect
-	github.com/cloudwego/base64x v0.1.4 // indirect
+	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/cockroachdb/apd/v2 v2.0.2 // indirect
 	github.com/cockroachdb/apd/v3 v3.2.1 // indirect
@@ -339,7 +339,7 @@ replace (
 	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250523094746-1558d0920982
 	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250523094746-1558d0920982
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250429032449-0022343a43fd
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250523094746-1558d0920982
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250525173605-afd915c09edd
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250505113906-74606eca3d53
 	//github.com/ethereum/go-ethereum => ../go-ethereum

@@ -124,6 +124,7 @@ govulncheck:
 reset-eni-node:
 	@echo Resetting eni node...
 	rm -rf eni-node && git checkout  eni-node
+	rm -rf testnet && git checkout testnet
 
 reset-multi-node:
 	@echo Resetting multi eni node...
