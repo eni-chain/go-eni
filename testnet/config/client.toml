@@ -6,9 +6,9 @@
 ###############################################################################
 
 # The network chain ID
-chain-id = ""
+chain-id = "eni-testnet"
 # The keyring's backend, where the keys are stored (os|file|kwallet|pass|test|memory)
-keyring-backend = "os"
+keyring-backend = "test"
 # CLI output format (text|json)
 output = "text"
 # <host>:<port> to CometBFT RPC interface for this chain
