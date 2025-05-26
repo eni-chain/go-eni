@@ -15,6 +15,8 @@ import (
 	"strings"
 )
 
+var AdminAddr = common.HexToAddress("0x3140aedbf686A3150060Cb946893b0598b266f5C")
+
 var contracts *contractsConfig
 
 var logger = log.NewLogger(os.Stdout)
@@ -112,7 +114,7 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 		}
 
 		evmKeeper.SetCode(ctx, cfg.Addr, proxyBody)
-		calldata, err := proxyAbi.Pack("init", newContractCode)
+		calldata, err := proxyAbi.Pack("init", AdminAddr, newContractCode)
 		if err != nil {
 			panic(fmt.Errorf("failed to pack calldata: %s", err.Error()))
 		}
