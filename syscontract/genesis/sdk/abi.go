@@ -716,6 +716,11 @@ const PROXYABI = `
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "admin",
+				"type": "address"
+			},
+			{
 				"internalType": "bytes",
 				"name": "bytecode",
 				"type": "bytes"

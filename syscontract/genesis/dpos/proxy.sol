@@ -63,7 +63,7 @@ contract ProxyContract is DelegateCallBase {
 
     event Init(address indexed self, address indexed admin, address indexed impl);
 
-    function init(bytes memory bytecode) external {
+    function init(address admin, bytes memory bytecode) external {
         address impl = _getImpl();
         require(impl.code.length == 0, "Init method can only be called once.");
 
@@ -74,7 +74,7 @@ contract ProxyContract is DelegateCallBase {
         llog(DEBUG, abi.encodePacked("init, deploy implementation contract: ", H(impl)));
 
          _setImpl(impl);
-        _setAdmin(INIT_ADMIN_ADDR);
+        _setAdmin(admin);
         llog(DEBUG, abi.encodePacked("init, set impl:", H(impl), ", set admin:", H(_admin)));
 
         bytes memory data = abi.encodeWithSignature("init()");
