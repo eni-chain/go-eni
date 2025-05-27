@@ -501,10 +501,9 @@ func TestEncodeReceipt(t *testing.T) {
 		},
 	}
 	receiptChecker := func(h common.Hash) bool { return true }
-
 	// Test case: Valid receipt
 	t.Run("ValidReceipt", func(t *testing.T) {
-		result, err := encodeReceipt(receipt, txDecoder.Decode, block, receiptChecker)
+		result, err := encodeReceipt(receipt, txDecoder.Decode, block, receiptChecker, ethtypes.NewPragueSigner(nil))
 		assert.NoError(t, err)
 		assert.Equal(t, hexutil.Uint64(100), result["blockNumber"])
 	})
@@ -512,7 +511,7 @@ func TestEncodeReceipt(t *testing.T) {
 	// Test case: Transaction not found
 	t.Run("TransactionNotFound", func(t *testing.T) {
 		receiptChecker := func(h common.Hash) bool { return false }
-		_, err := encodeReceipt(receipt, txDecoder.Decode, block, receiptChecker)
+		_, err := encodeReceipt(receipt, txDecoder.Decode, block, receiptChecker, ethtypes.NewPragueSigner(nil))
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "failed to find transaction in block")
 	})
