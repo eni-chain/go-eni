@@ -29,6 +29,7 @@ const (
 	Market               string = "market"
 	WasmMintNft          string = "wasm_mint_nft"
 	UNIV2                string = "univ2"
+	UNIV4                string = "univ4"
 	Vortex               string = "vortex"
 	WasmInstantiate      string = "wasm_instantiate"
 	WasmOccIteratorWrite string = "wasm_occ_iterator_write"
@@ -44,6 +45,9 @@ type EVMAddresses struct {
 	ERC20        common.Address
 	ERC721       common.Address
 	UniV2Swapper common.Address
+	Token0       common.Address
+	Token1       common.Address
+	UniV4Pool    common.Address
 }
 
 type Config struct {

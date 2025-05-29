@@ -22,6 +22,7 @@ import (
 	erc20token "github.com/eni-chain/go-eni/loadtest/contracts/evm/bindings/erc20_token"
 	erc721mint "github.com/eni-chain/go-eni/loadtest/contracts/evm/bindings/erc721_mint"
 	"github.com/eni-chain/go-eni/loadtest/contracts/evm/bindings/univ2_swapper"
+	uniswap "github.com/eni-chain/go-eni/loadtest/contracts/uniswap_v4/bindings"
 )
 
 var (
@@ -95,6 +96,8 @@ func (txClient *EvmTxClient) GetTxForMsgType(msgType string, address common.Addr
 		return txClient.GenerateERC721RandomTx(address)
 	case UNIV2:
 		return txClient.GenerateUniV2SwapTx()
+	case UNIV4:
+		return txClient.GenerateUniV4SwapTx()
 	default:
 		panic("invalid message type")
 	}
@@ -373,4 +376,47 @@ func (txClient *EvmTxClient) ResetNonce() error {
 	txClient.nonce.Store(newNonce)
 	fmt.Printf("Resetting nonce to %d for addr: %s\n ", newNonce, txClient.accountAddress.String())
 	return nil
+}
+
+func (txClient *EvmTxClient) GenerateUniV4SwapTx() *ethtypes.Transaction {
+	opts := txClient.getTransactOpts()
+	opts.GasLimit = uint64(300000) // Higher gas limit for swap
+
+	// Get pool contract instance
+	poolAddress := txClient.evmAddresses.UniV4Pool
+	pool, err := uniswap.NewUniswapV4Pool(poolAddress, GetNextEthClient(txClient.ethClients))
+	if err != nil {
+		panic(fmt.Sprintf("Failed to create Uniswap V4 pool contract: %v", err))
+	}
+
+	// Get current reserves
+	reserves, err := pool.GetReserves(nil)
+	if err != nil {
+		panic(fmt.Sprintf("Failed to get pool reserves: %v", err))
+	}
+
+	// Calculate swap amounts
+	amount0In := big.NewInt(1000000000000000) // 0.001 token
+	amount1In := big.NewInt(0)
+
+	// Calculate expected output using constant product formula: x * y = k
+	// amount0In * reserve1 / (reserve0 + amount0In)
+	amount1Out := new(big.Int).Mul(amount0In, reserves.Reserve1)
+	amount1Out = amount1Out.Div(amount1Out, new(big.Int).Add(reserves.Reserve0, amount0In))
+
+	// Apply 0.3% fee
+	fee := new(big.Int).Mul(amount1Out, big.NewInt(3))
+	fee = fee.Div(fee, big.NewInt(1000))
+	amount1Out = amount1Out.Sub(amount1Out, fee)
+
+	amount0Out := big.NewInt(0)
+
+	// Create swap transaction
+	tx, err := pool.Swap(opts, amount0In, amount1In, amount0Out, amount1Out, txClient.accountAddress)
+	if err != nil {
+		panic(fmt.Sprintf("Failed to create swap transaction: %v", err))
+	}
+	//fmt.Println("SwapV4 transaction created successfully")
+
+	return txClient.sign(tx)
 }
