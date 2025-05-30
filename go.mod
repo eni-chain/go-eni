@@ -288,7 +288,7 @@ require (
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.49.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
-	go.opentelemetry.io/otel v1.34.0 // indirect
+	go.opentelemetry.io/otel v1.34.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.34.0 // indirect
 	go.opentelemetry.io/otel/metric v1.34.0 // indirect
@@ -334,12 +334,12 @@ require github.com/joho/godotenv v1.5.1
 
 replace (
 	// replace broken cosmos-sdk
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250525173605-afd915c09edd
-	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250525173605-afd915c09edd
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250525173605-afd915c09edd
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250530110937-eae9c9bb0b8b
+	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250530110937-eae9c9bb0b8b
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250530110937-eae9c9bb0b8b
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250526151337-962f79644941
 	//github.com/cometbft/cometbft => ../eni-cometbft
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250528023434-a4efb614224b
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250530110937-eae9c9bb0b8b
 	//github.com/cosmos/cosmos-sdk => ../eni-cosmos
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250505113906-74606eca3d53
 	//github.com/ethereum/go-ethereum => ../go-ethereum

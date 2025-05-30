@@ -1,11 +1,13 @@
 package app
 
 import (
+	"fmt"
+	"os"
+
 	//"context"
 	//"encoding/json"
 	tmtypes "github.com/cometbft/cometbft/types"
 	protov2 "google.golang.org/protobuf/proto"
-	"os"
 
 	//"github.com/cosmos/cosmos-sdk/codec"
 	//distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -152,6 +154,7 @@ func (s *TestWrapper) setupValidator(bondStatus stakingtypes.BondStatus, valPub 
 	//sh.Handle(msg, true)
 
 	val, err := s.App.StakingKeeper.GetValidator(s.Ctx, valAddr)
+	fmt.Println("err", err, valAddr.String())
 	s.Require().True(err == nil, "")
 
 	val = val.UpdateStatus(bondStatus)
