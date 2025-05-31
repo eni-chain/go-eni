@@ -133,10 +133,10 @@ do
     node_id=$(./build/enid comet show-node-id --home ./eni-nodes/node$i)
     echo "nodeId $node_id"
     # Calculate P2P port based on node ID
-#    P2P_PORT=$((26656 + i * 10 - 10))
+   # P2P_PORT=$((26656 + i * 10 - 10))
 
     # Append peer to the list
-    peers+="$node_id@localhost:26656,"
+    peers+="$node_id@localhost:26666,"
 done
 
 echo "peers $peers"
