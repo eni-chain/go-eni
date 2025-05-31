@@ -27,7 +27,7 @@ for ((i=1; i<=NODE_COUNT; i++))
 do
     # Initialize each node
     echo "Initializing node$i..."
-    ./build/enid init "node$i" --chain-id eni-chain --home "./eni-nodes/node$i"
+    ./build/enid init "node$i" --chain-id "ENI Mainnet" --home "./eni-nodes/node$i"
 
     # Generate validator account keys
     echo "Generating validator account keys for node$i..."
@@ -84,7 +84,7 @@ for ((i=1; i<=NODE_COUNT; i++))
 do
     #Generate gentx for each node stake token is 1wueni
     echo "Generating gentx for node$i..."
-    ./build/enid genesis gentx validator$i 10000000000000000000000ueni --chain-id eni-chain --keyring-backend test --home ./eni-nodes/node$i
+    ./build/enid genesis gentx validator$i 10000000000000000000000ueni --chain-id "ENI Mainnet" --keyring-backend test --home ./eni-nodes/node$i
 done
 
 
@@ -132,10 +132,10 @@ do
     node_id=$(./build/enid comet show-node-id --home ./eni-nodes/node$i)
     echo "nodeId $node_id"
     # Calculate P2P port based on node ID
-#    P2P_PORT=$((26656 + i * 10 - 10))
+   # P2P_PORT=$((26656 + i * 10 - 10))
 
     # Append peer to the list
-    peers+="$node_id@localhost:26656,"
+    peers+="$node_id@localhost:26666,"
 done
 
 echo "peers $peers"
@@ -150,7 +150,7 @@ do
     perl -pi -e  's|laddr = "tcp://127.0.0.1:26657"|laddr = "tcp://0.0.0.0:26657"|' ./eni-nodes/node$i/config/config.toml
     perl -pi -e  "s|persistent_peers = \".*\"|persistent_peers = \"${peers//@/\\@}\"|" ./eni-nodes/node$i/config/config.toml
     perl -pi -e  's|keyring-backend = "os"|keyring-backend = "test"|' ./eni-nodes/node$i/config/client.toml
-    perl -pi -e  's|chain-id = ""|chain-id = "eni-chain"|' ./eni-nodes/node$i/config/client.toml
+    perl -pi -e  's|chain-id = ""|chain-id = "ENI Mainnet"|' ./eni-nodes/node$i/config/client.toml
 done
 
 echo "Configuration files generated successfully!"
