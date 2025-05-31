@@ -4,6 +4,7 @@
 # Default values
 DEFAULT_NODE_COUNT=4
 DEFAULT_ACCOUNT_COUNT=4
+DEFAULT_CHAIN_ID="ENI Mainnet"
 
 # Get node count and account count from command line arguments
 NODE_COUNT=$1
@@ -27,7 +28,7 @@ for ((i=1; i<=NODE_COUNT; i++))
 do
     # Initialize each node
     echo "Initializing node$i..."
-    ./build/enid init "node$i" --chain-id "ENI Mainnet" --home "./eni-nodes/node$i"
+    ./build/enid init "node$i" --chain-id ${DEFAULT_CHAIN_ID} --home "./eni-nodes/node$i"
 
     # Generate validator account keys
     echo "Generating validator account keys for node$i..."
@@ -84,7 +85,7 @@ for ((i=1; i<=NODE_COUNT; i++))
 do
     #Generate gentx for each node stake token is 1wueni
     echo "Generating gentx for node$i..."
-    ./build/enid genesis gentx validator$i 10000000000000000000000ueni --chain-id "ENI Mainnet" --keyring-backend test --home ./eni-nodes/node$i
+    ./build/enid genesis gentx validator$i 10000000000000000000000ueni --chain-id ${DEFAULT_CHAIN_ID} --keyring-backend test --home ./eni-nodes/node$i
 done
 
 
@@ -150,7 +151,7 @@ do
     perl -pi -e  's|laddr = "tcp://127.0.0.1:26657"|laddr = "tcp://0.0.0.0:26657"|' ./eni-nodes/node$i/config/config.toml
     perl -pi -e  "s|persistent_peers = \".*\"|persistent_peers = \"${peers//@/\\@}\"|" ./eni-nodes/node$i/config/config.toml
     perl -pi -e  's|keyring-backend = "os"|keyring-backend = "test"|' ./eni-nodes/node$i/config/client.toml
-    perl -pi -e  's|chain-id = ""|chain-id = "ENI Mainnet"|' ./eni-nodes/node$i/config/client.toml
+    perl -pi -e  "s|chain-id = \"\"|chain-id = \"$DEFAULT_CHAIN_ID\"|" ./eni-nodes/node$i/config/client.toml
 done
 
 echo "Configuration files generated successfully!"
