@@ -4,7 +4,7 @@
 # Default values
 DEFAULT_NODE_COUNT=4
 DEFAULT_ACCOUNT_COUNT=4
-DEFAULT_CHAIN_ID=173
+DEFAULT_CHAIN_ID="ENI Mainnet"
 
 # Get node count and account count from command line arguments
 NODE_COUNT=$1
