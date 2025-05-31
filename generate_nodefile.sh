@@ -135,7 +135,7 @@ do
    # P2P_PORT=$((26656 + i * 10 - 10))
 
     # Append peer to the list
-    peers+="$node_id@localhost:26666,"
+    peers+="$node_id@localhost:26656,"
 done
 
 echo "peers $peers"
