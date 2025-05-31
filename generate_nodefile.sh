@@ -28,7 +28,7 @@ for ((i=1; i<=NODE_COUNT; i++))
 do
     # Initialize each node
     echo "Initializing node$i..."
-    ./build/enid init "node$i" --chain-id ${DEFAULT_CHAIN_ID} --home "./eni-nodes/node$i"
+    ./build/enid init "node$i" --chain-id "$DEFAULT_CHAIN_ID" --home "./eni-nodes/node$i"
 
     # Generate validator account keys
     echo "Generating validator account keys for node$i..."
@@ -85,7 +85,7 @@ for ((i=1; i<=NODE_COUNT; i++))
 do
     #Generate gentx for each node stake token is 1wueni
     echo "Generating gentx for node$i..."
-    ./build/enid genesis gentx validator$i 10000000000000000000000ueni --chain-id ${DEFAULT_CHAIN_ID} --keyring-backend test --home ./eni-nodes/node$i
+    ./build/enid genesis gentx validator$i 10000000000000000000000ueni --chain-id "$DEFAULT_CHAIN_ID" --keyring-backend test --home ./eni-nodes/node$i
 done
 
 
