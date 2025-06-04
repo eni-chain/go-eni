@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-var AdminAddr = common.HexToAddress("0x3140aedbf686A3150060Cb946893b0598b266f5C")
+var AdminAddr = common.HexToAddress("0x110b6FB6675Fb2a310394ac3a43b23Fc23aB9BC6")
 
 var contracts *contractsConfig
 
