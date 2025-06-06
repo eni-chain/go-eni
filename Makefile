@@ -130,6 +130,10 @@ reset-multi-node:
 	@echo Resetting multi eni node...
 	rm -rf eni-nodes && git checkout eni-nodes
 
+reset-full-node:
+	@echo Resetting eni full node...
+	rm -rf full-node && git checkout  full-node
+
 start4-node: build
 	@echo Starting 4 eni nodes...
 	nohup ./build/enid start --home=./eni-nodes/node1 &> ./build/node1.log &
