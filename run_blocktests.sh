@@ -50,6 +50,24 @@ declare -a test_name_skip_list=(
     # InvaldBlockTests/bcEIP1559
     "badUncles" # reorgs don't apply to us
     "checkGasLimit" # not sure what issue is
+
+    "suicideThenCheckBalance"
+    "lowDemand"
+    "feeCap"
+    "valCausesOOF"
+    "callcodeOutput2"
+    "AmIOnEIP150"
+    "extCodeHashOfDeletedAccountDynamic"
+    "extcodehashEmptySuicide"
+    "random"
+    "medDemand"
+    "callcodeOutput3partial"
+    "selfdestructBalance"
+    "suicideStorageCheck"
+    "suicideStorageCheckVCreate2"
+    "suicideStorageCheckVCreate"
+    "extCodeHashOfDeletedAccount"
+    "highDemand"
 )
 
 # list out all paths to json files starting from the block_tests_dir

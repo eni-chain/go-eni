@@ -1,14 +1,15 @@
 # Eni
 
-![Banner!](assets/EniLogo.png)
-
+![Banner!](assets/EniLogo.png)  
+Website: 🌐 https://www.eniac.network  
 Eni is the fastest general purpose L1 blockchain and the first parallelized EVM. This allows Eni to get the best of Solana and Ethereum - a hyper optimized execution layer that benefits from the tooling and mindshare around the EVM.
 
 # Overview
 **Eni** is a high-performance, low-fee, delegated proof-of-stake blockchain designed for developers. It supports optimistic parallel execution of both EVM and CosmWasm, opening up new design possibilities. With unique optimizations like twin turbo consensus and EniDB, Eni ensures consistent 400ms block times and a transaction throughput that’s orders of magnitude higher than Ethereum. This means faster, more cost-effective operations. Plus, Eni’s seamless interoperability between EVM and CosmWasm gives developers native access to the entire Cosmos ecosystem, including IBC tokens, multi-sig accounts, fee grants, and more.
 
 # Documentation
-For the most up to date documentation please visit http://doc.eniac.network/
+For the most up-to-date documentation please visit:  
+👉 http://docs.eniac.network/
 
 # Eni Optimizations
 Eni introduces four major innovations:
@@ -22,10 +23,8 @@ All these features combine to unlock a brand new, scalable design space for the 
 
 # Testnet
 ## Get started
-**How to validate on the Eni Testnet**
-*This is the Eni newbase2 Testnet ()*
-
-> Genesis [Published](https://github.com/eni-chain/go-eni/blob/newbase2/eni-node/config/genesis.json)
+**Validate on the Eni Testnet**
+*Current Testnet: release/v0.2*
 
 ## Hardware Requirements
 **Minimum**
@@ -38,43 +37,58 @@ All these features combine to unlock a brand new, scalable design space for the 
 > Linux (x86_64) or Linux (amd64) Recommended Arch Linux
 
 **Dependencies**
-> Prerequisite: 
-> go1.23+ required. 
-> Ignite v28.7.0 required
+> Prerequisite:
+> go1.24.2 + required.
 
 
-## Enid Installation Steps
+## Deployment Guide
 
-**Clone git repository**
+**1. Clone git repository and build the node**
 
 ```bash
 git clone https://github.com/eni-chain/go-eni.git
 cd go-eni
 git checkout $VERSION
-make install
+make build
 ```
-**Generate keys**
-
-* `enid keys add [key_name]`
-
-* `enid keys add [key_name] --recover` to regenerate keys with your mnemonic
-
-* `enid keys add [key_name] --ledger` to generate keys with ledger device
-
-## Start the node
-
-**Start enid on Linux/macOS**
+**2. Start a Single Node**
 ```bash
-enid start --home=${PROJECT_DIR}/eni-node
+ cd ${PROJECT_DIR}
+ ./build/enid start --home=./eni-node
+
 ```
+🔧 Config path for single node: ${PROJECT_DIR}/eni-node
 
-
-**Start by Ignite**
-
-```bash 
-ignite chain serve
+**3. Start a 4-Node Local Network**
+```bash
+  make start4-node
 ```
+🔧 Config path for multi-node setup: ${PROJECT_DIR}/eni-nodes
+
+This will launch a 4-node validator testnet locally.
+
+
+**4. Stop the 4-Node Network**
+```bash
+  make stop4-node
+```
+Gracefully stops all running processes from start4-node.
+
+
+
+**5. Clean Node Data**
+- Single Node Reset
+```bash
+  make reset-eni-node
+```
+- Multi-Node Reset
+```bash
+  make reset-multi-node
+ ```
+Removes all blockchain data and configuration from the respective node directories.
+
 # Build with Us!
-If you are interested in building with Eni Network:
-Email us at team@eninetwork.io
-DM us on X https://x.com/eni__official/
+If you are interested in building with Eni Network:  
+👉 Visit our community hub: https://linktr.ee/ENI_OFFICIAL  
+🐦 DM us on X: https://x.com/eni__official  
+🌐 Website: https://www.eniac.network

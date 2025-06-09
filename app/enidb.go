@@ -29,6 +29,7 @@ const (
 	FlagSSBackend           = "state-store.ss-backend"
 	FlagSSAsyncWriterBuffer = "state-store.ss-async-write-buffer"
 	FlagSSKeepRecent        = "state-store.ss-keep-recent"
+	FlagSSKeepLastVersion   = "state-store.ss-keep-last-version"
 	FlagSSPruneInterval     = "state-store.ss-prune-interval"
 	FlagSSImportNumWorkers  = "state-store.ss-import-num-workers"
 
@@ -97,6 +98,7 @@ func parseSSConfigs(appOpts servertypes.AppOptions) config.StateStoreConfig {
 	ssConfig.PruneIntervalSeconds = cast.ToInt(appOpts.Get(FlagSSPruneInterval))
 	ssConfig.ImportNumWorkers = cast.ToInt(appOpts.Get(FlagSSImportNumWorkers))
 	ssConfig.DBDirectory = cast.ToString(appOpts.Get(FlagSSDirectory))
+	ssConfig.KeepLastVersion = cast.ToBool(appOpts.Get(FlagSSKeepLastVersion))
 	return ssConfig
 }
 

@@ -3,29 +3,20 @@
 pragma solidity >= 0.8.0;
 
 import "./common.sol";
+import "./localLog.sol";
+import "./delegateCallBase.sol";
+import "./systemManager.sol";
 
-contract ValidatorManager{
-    //todo: add event and emit for every external method
-
-    //administrator address
-    address _admin;
+contract ValidatorManager is DelegateCallBase, Common, SystemManager {
 
     //current consensus node set
-    address[consensusSize] _consensusSet;
+    address[CONSENSUS_SIZE] _consensusSet;
 
-    //For traversal and retrieval, because the mapping type cannot be traversed
-    address[] _validatorNodes;
+    //The default validator nodes list
+    address[] _defaultValidators;
 
-    struct applicant{
-        address operator; //operator address, validator node's owner
-        address node; //node address, for consensus
-        address agent; //After being authorized by the operator, the agent can perform operator functions
-        bytes  pubKey; //validator node' public key, ed25519 type
-        uint256 amount;//validator pledge amount
-        string name; //validator name
-        string description; //validator description
-        uint256 enterTime; //time of application
-    }
+    //The list of validator nodes approved to join
+    address[] _joinedValidators;
 
     //validator info
     struct validator{
@@ -33,10 +24,11 @@ contract ValidatorManager{
         address node;       //node address, for consensus
         address agent;      //After being authorized by the operator, the agent can perform operator functions
         bytes  pubKey;      //validator node' public key, ed25519 type, used to verify data such as random, malicious votes, and duplicate proposals
-        uint256 amount;      //validator pledge amount
+        uint256 amount;     //validator pledge amount
         string name;        //validator name
         string description; //validator description
-        uint256 enterTime;  //time to be a validator
+        uint256 applyBlockNumber;  //bock number when applied to be validator
+        uint256 passBlockNumber;   //bock number when approved to be validator
         bool isJail;        //current validator is jailed
         uint256 expired;    //expired time of jail
     }
@@ -53,34 +45,169 @@ contract ValidatorManager{
     //validator name=>operator addr
     mapping (string=>address) _names;
 
-    modifier onlyHub() {
-        require(msg.sender == HUB_ADDR, "the message sender must be hub contract");
-        _;
+    event AddDefaultValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
+
+    event AddValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
+
+    event DelNode(address indexed operator, uint256 pledge);
+
+    function init() public {
+        require(_sys == address(0), "Init method can only be called once.");
+        _setSysAddr(INIT_SYSTEM_ADDR);
     }
 
-        modifier onlyVrf() {
-        require(msg.sender == VRF_ADDR, "the message sender must be vrf contract");
-        _;
+    function addDefaultValidator(
+        address operator,
+        address node,
+        address agent,
+        uint256 amount,
+        string calldata name,
+        string calldata description,
+        bytes  calldata pubKey
+    ) external onlyHub {
+        //require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
+        require(_infos[operator].amount == 0, "validator already exist");
+        require(_names[name] == address(0), "validator name already used");
+
+        validator storage v = _infos[operator];
+        v.operator = operator;
+        v.node = node;
+        v.agent = agent;
+        v.pubKey = pubKey;
+        v.amount = amount;
+        v.applyBlockNumber = block.number;
+        v.passBlockNumber = block.number;
+        v.name = name;
+        v.description = description;
+        v.isJail = false;
+        v.expired = 0;
+
+        _defaultValidators.push(node);
+        _names[name] = operator;
+        _node2operator[node] = operator;
+        _agent2operator[agent] = operator;
+
+        llog(DEBUG, abi.encodePacked("addDefaultValidator, name:", name));
+
+        emit AddDefaultValidator(name, operator, node, pubKey, amount);
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == _admin, "The message sender must be administrator");
-        _;
+    function addValidator(
+        address operator,
+        address node,
+        address agent,
+        uint256 amount,
+        uint256 applyBlockNumber,
+        string calldata name,
+        string calldata description,
+        bytes  calldata pubKey
+    ) external onlyHub {
+        require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
+        require(_infos[operator].amount == 0, "validator already exist");
+        require(_names[name] == address(0), "validator name already used");
+
+        validator storage v = _infos[operator];
+        v.operator = operator;
+        v.node = node;
+        v.agent = agent;
+        v.pubKey = pubKey;
+        v.amount = amount;
+        v.applyBlockNumber = applyBlockNumber;
+        v.passBlockNumber = block.number;
+        v.name = name;
+        v.description = description;
+        v.isJail = false;
+        v.expired = 0;
+
+        _joinedValidators.push(node);
+        _names[name] = operator;
+        _node2operator[node] = operator;
+        _agent2operator[agent] = operator;
+
+        llog(DEBUG, abi.encodePacked("addValidator, name:", name));
+
+        emit AddValidator(name, operator, node, pubKey, amount);
     }
 
-    function init() external {
-        _admin = ADMIN_ADDR;
+    function delNodeFromDefaultList(address node) internal returns (bool) {
+        uint pos = 0;
+        for(uint i = 0; i < _defaultValidators.length; i++){
+            if(_defaultValidators[i] == node){
+                pos = i;
+            }
+        }
+
+        if(pos == 0 && _defaultValidators[0] != node){
+            return false;
+        }
+
+        for(uint j = pos; j < _defaultValidators.length - 1; j++){
+            _defaultValidators[j] = _defaultValidators[j + 1];
+        }
+
+        _defaultValidators.pop();
+        return true;
     }
 
-    function updateAdmin(address admin) external onlyAdmin {
-        _admin = admin;
+    function delNodeFromJoinedList(address node) internal returns (bool) {
+        uint pos = 0;
+        for(uint i = 0; i < _joinedValidators.length; i++){
+            if(_joinedValidators[i] == node){
+                pos = i;
+            }
+        }
+
+        if(pos == 0 && _joinedValidators[0] != node){
+            return false;
+        }
+
+        for(uint j = pos; j < _joinedValidators.length - 1; j++){
+            _joinedValidators[j] = _joinedValidators[j + 1];
+        }
+
+        _joinedValidators.pop();
+        return true;
     }
 
-    function getAdmin() external  returns (address){
-        return _admin;
+    function delNode(address operator) internal returns(uint256){
+        validator storage v = _infos[operator];
+        if(v.node == address(0)){
+            llog(DEBUG, abi.encodePacked("delNode, validator not exist, maybe already exited"));
+            return 0;
+        }
+
+        uint256 pledge = v.amount;
+
+        if(!delNodeFromDefaultList(v.node)){
+            delNodeFromJoinedList(v.node);
+        }
+
+        delete _node2operator[v.node];
+        delete _agent2operator[v.agent];
+        delete _names[v.name];
+        delete _infos[operator];
+
+        llog(DEBUG, abi.encodePacked("delNode, operator:", H(operator), ", pledge amount:", S(pledge)));
+        emit DelNode(operator, pledge);
+        return pledge;
     }
 
-    function getPubKey(address node) external returns (bytes memory){
+    function delValidators(address[] memory operators) external onlyHub {
+        for(uint i = 0; i < operators.length; i++){
+            delNode(operators[i]);
+        }
+    }
+
+    function undateConsensus(address[] calldata nodes)external onlyVrf {
+        require(nodes.length <= CONSENSUS_SIZE, "The number of consensuses exceeds the maximum limit");
+
+        delete _consensusSet;
+        for(uint i = 0; i < nodes.length; ++i){
+            _consensusSet[i] = nodes[i];
+        }
+    }
+
+    function getPubKey(address node) external view returns (bytes memory){
         address ope = _node2operator[node];
         if(ope != address(0) ){
             return _infos[ope].pubKey;
@@ -89,13 +216,13 @@ contract ValidatorManager{
         return bytes("");
     }
 
-    function getNodeAddrAndPubKey(address operator) external returns (address, bytes memory){
+    function getNodeAddrAndPubKey(address operator) external view returns (address, bytes memory){
         validator storage a = _infos[operator];
         require(a.amount > 0, "Operator and validator not exist");
         return (a.node, a.pubKey);
     }
 
-    function getPubKeysBySequence(address[] calldata nodes) external returns (bytes[] memory){
+    function getPubKeysBySequence(address[] calldata nodes) external view returns (bytes[] memory){
         bytes[] memory pubKeys = new bytes[](nodes.length);
 
         for(uint i = 0; i < nodes.length; i++){
@@ -108,51 +235,29 @@ contract ValidatorManager{
         return pubKeys;
     }
 
-    function getValidatorSet() external returns (address[] memory){
-        return _validatorNodes;
+    function getDefaultValidatorSet() external view returns (address[] memory){
+        return _defaultValidators;
     }
 
-    function addValidator(
-        address operator,
-        address node,
-        address agent,
-        uint256 amount,
-        uint256 enterTime,
-        string calldata name,
-        string calldata description,
-        bytes  calldata pubKey
-    ) external onlyHub {
-        require(amount >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
-        require(_infos[operator].amount == 0, "validator already exist");
-
-        validator storage v = _infos[operator];
-        v.operator = operator;
-        v.node = node;
-        v.agent = agent;
-        v.pubKey = pubKey;
-        v.amount = amount;
-        v.enterTime = enterTime;
-        v.name = name;
-        v.description = description;
-        v.isJail = false;
-        v.expired = 0;
-
-        _validatorNodes.push(node);
-        _names[name] = operator;
-        _node2operator[node] = operator;
-        _agent2operator[agent] = operator;
+    function getJoinedValidatorSet() external view returns (address[] memory){
+        return _joinedValidators;
     }
 
-    function undateConsensus(address[] calldata nodes)external onlyVrf {
-        require(nodes.length <= consensusSize, "The number of consensuses exceeds the maximum limit");
+    function getValidatorSet() external view returns (address[] memory){
+        address[] memory all = new address[](_defaultValidators.length + _joinedValidators.length);
 
-        delete _consensusSet;
-        for(uint i = 0; i < nodes.length; ++i){
-            _consensusSet[i] = nodes[i];
+        for(uint i = 0; i < _defaultValidators.length; i++){
+            all[i] = _defaultValidators[i];
         }
+
+        for(uint j = 0; j < _joinedValidators.length; ++j){
+           all[_defaultValidators.length + j] = _joinedValidators[j];
+        }
+
+        return all;
     }
 
-    function getPledgeAmount(address node) external returns (uint256) {
+    function getPledgeAmount(address node) external view returns (uint256) {
         address oper = _node2operator[node];
         if(oper != address(0) ){
             return _infos[oper].amount;
@@ -161,12 +266,15 @@ contract ValidatorManager{
         return 0;
     }
 
-    function getOperatorAndPledgeAmount(address node) external returns (address, uint256) {
+    function getOperatorAndPledgeAmount(address node) external view returns (address, uint256) {
         address oper = _node2operator[node];
         if(oper != address(0) ){
             return (oper, _infos[oper].amount);
         }
-
         return (address(0), 0);
+    }
+
+    function getValidatorInfo(address operator) external view returns (validator memory){
+        return _infos[operator];
     }
 }

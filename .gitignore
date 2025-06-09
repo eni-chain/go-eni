@@ -9,10 +9,13 @@ release/
 *.ign
 build
 eni-node/data/
-ethtests
 nohup.out
 *.pprof
 docker/prometheus-grafana/prometheus_data
 loadtest/scripts-test/node_modules
 node_modules/
 loadtest/loadtest
+evmrpc/config/client.toml
+loadtest/contracts/uniswap_v4/artifacts/
+loadtest/contracts/uniswap_v4/.env
+loadtest/contracts/uniswap_v4/cache/

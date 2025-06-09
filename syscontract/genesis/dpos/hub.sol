@@ -3,17 +3,17 @@
 pragma solidity >= 0.8.0;
 
 import "./common.sol";
+import "./localLog.sol";
+import "./delegateCallBase.sol";
+import "./systemManager.sol";
 
-contract Hub is LocalLog {
-    //todo: add event and commit for methods
+
+contract Hub is DelegateCallBase, Common, SystemManager {
 
     uint256 constant ratioDeno = 100000;
     uint256 constant ratioNumer = 20000;
     uint256 constant increasePerCoin = 1;
     uint256 constant weiPerCoin = 1000000000000000000;
-
-    //administrator address
-    address _admin;
 
     //validator apply info
     struct applicant{
@@ -24,27 +24,57 @@ contract Hub is LocalLog {
         uint256 amount;//validator pledge amount
         string name; //validator name
         string description; //validator description
-        uint256 enterTime; //time of application
+        uint256 applyBlockNumber; //bock number when applied to be validator
+        bool withdraw;
     }
 
     //List of applicants
     mapping (address=>applicant) _applicants;
 
-    modifier onlyAdmin() {
-        require(msg.sender == _admin, "The message sender must be administrator");
-        _;
+    address[] _withdraws;
+
+    event AddDefaultValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
+
+    event ApplyForValidator(string indexed name, address indexed operator, address indexed node, bytes pubKey, uint256 pledge);
+
+    event AuditPass(address indexed admin, string indexed name, address indexed operator, address node, bytes pubKey, uint256 pledge);
+
+    event ApplyExitValidator(address indexed operator);
+
+    event DeleteValidators(address[] operators);
+
+    event AuditExit(address indexed admin, address indexed operator, uint256 pledge);
+
+    event BlockReward(address indexed proposer, uint256 pledge, uint256 reward);
+
+    function init() public {
+        require(_sys == address(0), "Init method can only be called once.");
+        _setSysAddr(INIT_SYSTEM_ADDR);
     }
 
-    function init() external {
-        _admin = ADMIN_ADDR;
-    }
+    function addDefaultValidator(
+        address operator,
+        address node,
+        address agent,
+        string calldata name,
+        string calldata description,
+        bytes  calldata pubKey
+    ) payable external onlyAdmin {
+        //require(msg.value >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than the minimum pledge amount!");
+        require(_applicants[msg.sender].amount == 0, "applicant already exsit");
 
-    function updateAdmin(address admin) external onlyAdmin {
-        _admin = admin;
-    }
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).addDefaultValidator(
+            operator,
+            node,
+            agent,
+            msg.value,
+            name,
+            description,
+            pubKey
+        );
 
-    function getAdmin() external  returns (address){
-        return _admin;
+        llog(DEBUG, abi.encodePacked(name, " addDefaultValidator, operator: ", H(operator), ", node:", H(node), ", plege amount: ", S(msg.value)));
+        emit AddDefaultValidator(name, msg.sender, node, pubKey, msg.value);
     }
 
     function applyForValidator(
@@ -65,7 +95,11 @@ contract Hub is LocalLog {
         a.amount = msg.value;
         a.name = name;
         a.description = description;
-        a.enterTime = block.timestamp;
+        a.applyBlockNumber = block.number;
+        a.withdraw = false;
+
+        llog(DEBUG, abi.encodePacked(name, " applyForValidator, operator: ", H(msg.sender), ", node:", H(node), ", plege amount: ", S(msg.value)));
+        emit ApplyForValidator(name, msg.sender, node, pubKey, msg.value);
     }
 
     function auditPass(address operator) external onlyAdmin {
@@ -77,37 +111,89 @@ contract Hub is LocalLog {
             a.node,
             a.agent,
             a.amount,
-            a.enterTime,
+            a.applyBlockNumber,
             a.name,
             a.description,
             a.pubKey
         );
 
-        delete _applicants[operator];
+        llog(DEBUG, abi.encodePacked("auditPass, validator name:", a.name, ", operator:", H(a.operator), ", admin:", H(msg.sender),  ", pledge amount: ", S(a.amount)));
+        emit AuditPass(msg.sender, a.name, a.operator, a.node, a.pubKey, a.amount);
     }
 
-    function blockReward(address node) external returns (address, uint256) {
+    function applyExitValidator() external returns (string memory){
+        (, bytes memory pubkey)= IValidatorManager(VALIDATOR_MANAGER_ADDR).getNodeAddrAndPubKey(msg.sender);
+        require(pubkey.length != 0, "validator not exist!");
 
+        applicant storage a = _applicants[msg.sender];
+        a.withdraw = true;
+
+        _withdraws.push(msg.sender);
+        llog(DEBUG, abi.encodePacked("applyExitValidator, operator:", H(msg.sender)));
+
+        emit ApplyExitValidator(msg.sender);
+
+        return "apply successfully, please wait for review in next epoch.";
+    }
+
+    function updateValidators() external onlyVrf {
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).delValidators(_withdraws);
+        emit DeleteValidators(_withdraws);
+
+        delete _withdraws;
+        llog(DEBUG, abi.encodePacked("updateValidators, deleted validators that applied to withdraw, in block: ", S(block.number)));
+    }
+
+    function auditExit(address operator) external onlyAdmin returns (string memory){
+        require(_applicants[operator].withdraw, "validator did not apply to withdraw!");
+
+        bool updated = true;
+        for(uint i = 0; i < _withdraws.length; i++){
+            if(_withdraws[i] == operator){
+                updated = false;
+            }
+        }
+
+        require(updated,  "epoch has not been updated, please try in next epoch");
+
+        uint256 pledge = _applicants[operator].amount;
+        if(pledge != 0){
+            payable(operator).transfer(pledge);
+        }
+
+        delete _applicants[operator];
+        llog(DEBUG, abi.encodePacked("auditExit, admin:", H(msg.sender), ", operator:", H(operator), ", pledge amount:", S(pledge)));
+
+        emit AuditExit(msg.sender, operator, pledge);
+
+        return "validator withdraw successfully";
+    }
+
+    function blockReward(address node) external onlySystem returns (address, uint256) {
         address operator;
         uint256 pledgeAmount;
         (operator, pledgeAmount) = IValidatorManager(VALIDATOR_MANAGER_ADDR).getOperatorAndPledgeAmount(node);
         uint256 reward = calculateReward(pledgeAmount);
+
+        llog(DEBUG, abi.encodePacked("blockReward, proposer:", H(operator), ", pledge amount: ", S(pledgeAmount), ", reward:", S(reward)));
+        emit BlockReward(operator, pledgeAmount, reward);
+
         return (operator, reward);
     }
 
     //Reward algorithm: base * { 1 + (pledgeAmount * increasePerCoin)}
-    function calculateReward(uint256 pledgeAmount) internal returns (uint256){
+    function calculateReward(uint256 pledgeAmount) internal pure returns (uint256){
         require(pledgeAmount != 0, "Pledge amount is 0, maybe dpos not started");
 
         //convert wei to coin
         uint256 pledge = pledgeAmount/weiPerCoin;
-        llog(DEBUG, abi.encodePacked("pledge amount in wei:", S(pledgeAmount), ", in coin:", S(pledge)));
+        //llog(DEBUG, abi.encodePacked("calculateReward, pledge amount in wei:", S(pledgeAmount), ", in coin:", S(pledge)));
 
         //uint256 reward = (ratioNumer/ratioDeno) *(1 + (pledge*(increasePerCoin/ratioDeno)));
         //uint256 reward = (ratioNumer/ratioDeno) *(1*ratioDeno + (pledge*increasePerCoin))/ratioDeno;
         //uint256 reward = ((ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*weiPerCoin)/(ratioDeno*ratioDeno);
         uint256 reward = (ratioNumer*(1*ratioDeno + (pledge*increasePerCoin)))*(weiPerCoin/(ratioDeno*ratioDeno));
-        llog(DEBUG, abi.encodePacked("reward amount in wei:", S(reward)));
+        //llog(DEBUG, abi.encodePacked("calculateReward, reward amount in wei:", S(reward)));
 
         return reward;
     }

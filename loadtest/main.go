@@ -97,7 +97,7 @@ func deployEvmContract(scriptPath string, config *Config) (common.Address, error
 	if err != nil {
 		return common.Address{}, err
 	}
-	return common.HexToAddress(out.String()), nil
+	return common.HexToAddress(strings.TrimSpace(out.String())), nil
 }
 
 func deployEvmContracts(config *Config) {
@@ -120,6 +120,28 @@ func deployEvmContracts(config *Config) {
 		}
 		config.EVMAddresses.ERC721 = erc721
 	}
+}
+
+func deployNewEvmContracts(config *Config) {
+	config.EVMAddresses = &EVMAddresses{}
+	if config.ContainsAnyMessageTypes(ERC20) {
+		erc20, err := deployEvmContract("loadtest/contracts/deploy_erc20_token.sh", config)
+		if err != nil {
+			fmt.Println("error deploying, make sure 0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52 is funded")
+			panic(err)
+		}
+		config.EVMAddresses.ERC20 = erc20
+	}
+	if config.ContainsAnyMessageTypes(ERC721) {
+		erc721, err := deployEvmContract("loadtest/contracts/deploy_erc721_mint.sh", config)
+		if err != nil {
+			fmt.Println("error deploying, make sure 0xF87A299e6bC7bEba58dbBe5a5Aa21d49bCD16D52 is funded")
+			panic(err)
+		}
+		config.EVMAddresses.ERC721 = erc721
+	}
+
+	fmt.Printf("ERC20 address: %s, ERC721 address: %s\n", config.EVMAddresses.ERC20.String(), config.EVMAddresses.ERC721.String())
 }
 
 //nolint:gosec
@@ -145,15 +167,55 @@ func deployUniswapContracts(client *LoadTestClient, config *Config) {
 	}
 }
 
+func deployUniswapV4Contracts(config *Config) {
+	config.EVMAddresses = &EVMAddresses{}
+	if config.ContainsAnyMessageTypes(UNIV4) {
+		fmt.Println("Deploying UniswapV4 contracts")
+		cmd := exec.Command("loadtest/contracts/deploy_univ4.sh", config.EVMRpcEndpoint())
+		var out bytes.Buffer
+		cmd.Stdout = &out
+		err := cmd.Run()
+		fmt.Println("script output: ", out.String())
+		if err != nil {
+			panic("deploy_univ4.sh failed with error: " + err.Error())
+		}
+
+		// Extract addresses from the deployment output
+		token0Re := regexp.MustCompile(`Token0: (0x[a-fA-F0-9]{40})`)
+		token1Re := regexp.MustCompile(`Token1: (0x[a-fA-F0-9]{40})`)
+		poolRe := regexp.MustCompile(`Pool  : (0x[a-fA-F0-9]{40})`)
+
+		token0Match := token0Re.FindStringSubmatch(out.String())
+		token1Match := token1Re.FindStringSubmatch(out.String())
+		poolMatch := poolRe.FindStringSubmatch(out.String())
+
+		if len(token0Match) < 2 || len(token1Match) < 2 || len(poolMatch) < 2 {
+			panic("Failed to extract contract addresses from deployment output")
+		}
+
+		config.EVMAddresses.Token0 = common.HexToAddress(token0Match[1])
+		config.EVMAddresses.Token1 = common.HexToAddress(token1Match[1])
+		config.EVMAddresses.UniV4Pool = common.HexToAddress(poolMatch[1])
+
+		//fmt.Printf("Deployed contracts:\nToken0: %s\nToken1: %s\nPool: %s\n",
+		//	config.EVMAddresses.Token0.String(),
+		//	config.EVMAddresses.Token1.String(),
+		//	config.EVMAddresses.UniV4Pool.String())
+	}
+}
+
 func run(config *Config, txFilePath string) {
 	// Start metrics collector in another thread
 	metricsServer := MetricsServer{}
 	go metricsServer.StartMetricsClient(*config)
 
+	//deployEvmContracts(config)
+	deployNewEvmContracts(config)
+	//deployUniswapContracts(client, config)
+	deployUniswapV4Contracts(config)
+
 	client := NewLoadTestClient(*config)
 	client.SetValidators()
-	deployEvmContracts(config)
-	//deployUniswapContracts(client, config)
 
 	startLoadtestWorkers(client, *config, txFilePath)
 

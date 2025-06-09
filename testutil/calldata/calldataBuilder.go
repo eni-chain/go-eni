@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
 	"golang.org/x/crypto/ed25519"
 	"io/ioutil"
 	"math/big"
@@ -127,6 +128,8 @@ func solo() {
 	validator2 := "B680152a597c937164941e77cbF4a6b2F866675c"
 	addr2, pubKey2, priKey2 := getAddrByHexPriKey("b7cef85c61f7a973896d5b12f7de5020453dde51c19e4693fb6a55dfa8e3e64080f123e970b41abe1709ff176fc6bcd673afd41456e064e337f8713f8bcd068e")
 	fmt.Printf("\naddr2:%x\npubKey2:%x\npriKey:%x\n", addr2, pubKey2, priKey2)
+
+	calldataF(validator1, "hub", "addDefaultValidator", common.HexToAddress(validator1), valAddr, valAddr, "node1", "add default validator node1", []byte(valPubKey))
 
 	//calldata for apply for validator
 	calldataF(validator1, "hub", "applyForValidator", valAddr, valAddr, "node1", "node1 apply for validator", []byte(valPubKey))

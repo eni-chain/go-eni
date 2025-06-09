@@ -1,0 +1,3 @@
+[submodule "loadtest/contracts/evm/lib/openzeppelin-contracts"]
+	path = loadtest/contracts/evm/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts

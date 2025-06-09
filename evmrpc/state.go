@@ -2,6 +2,7 @@ package evmrpc
 
 import (
 	"context"
+	"cosmossdk.io/store/commitmentv2"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -11,7 +12,6 @@ import (
 	//"github.com/cosmos/cosmos-sdk/store/cachekv"
 	//iavlstore "github.com/cosmos/cosmos-sdk/store/iavl"
 	"cosmossdk.io/store/cachekv"
-	iavlstore "cosmossdk.io/store/iavl"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	//sdk "cosmossdk.io/store/types"
 
@@ -131,20 +131,23 @@ func (a *StateAPI) GetProof(ctx context.Context, address common.Address, storage
 	if err := CheckVersion(sdkCtx, a.keeper); err != nil {
 		return nil, err
 	}
-	var iavl *iavlstore.Store
+	//var iavl *iavlstore.Store
+	var iavl *commitmentv2.Store
 	s := sdkCtx.MultiStore().GetKVStore((a.keeper.GetStoreKey()))
 OUTER:
 	for {
 		switch cast := s.(type) {
-		case *iavlstore.Store:
+		//case *iavlstore.Store:
+		//	iavl = cast
+		//	break OUTER
+		case *commitmentv2.Store:
 			iavl = cast
 			break OUTER
 		case *cachekv.Store:
-			// todo must be readapted
-			//if cast.GetParent() == nil {
-			//	return nil, errors.New("cannot find EVM IAVL store")
-			//}
-			//s = cast.GetParent()
+			if cast.GetParent() == nil {
+				return nil, errors.New("cannot find EVM IAVL store")
+			}
+			s = cast.GetParent()
 		default:
 			return nil, errors.New("cannot find EVM IAVL store")
 		}

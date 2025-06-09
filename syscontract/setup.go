@@ -15,6 +15,8 @@ import (
 	"strings"
 )
 
+var AdminAddr = common.HexToAddress("0x110b6FB6675Fb2a310394ac3a43b23Fc23aB9BC6")
+
 var contracts *contractsConfig
 
 var logger = log.NewLogger(os.Stdout)
@@ -86,11 +88,9 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 
 	evmKeeper.Logger().Info(fmt.Sprintf("apply contracts %s at height %d", contracts.Name, ctx.BlockHeight()))
 
+	var proxyBody []byte
+	var proxyAbi abi.ABI
 	for _, cfg := range contracts.Configs {
-		if cfg.Addr == common.HexToAddress(syscontractSdk.ProxyAddr) {
-			continue
-		}
-
 		evmKeeper.Logger().Info(fmt.Sprintf("contractsConfig contract %s", cfg.Addr.String()))
 
 		newContractCode, err := hex.DecodeString(strings.TrimSpace(cfg.Code))
@@ -105,8 +105,16 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 			panic(fmt.Errorf("failed to execute contract constructor: %s", err.Error()))
 		}
 
-		evmKeeper.SetCode(ctx, cfg.Addr, body)
-		calldata, err := cfg.Abi.Pack("init")
+		//data, err := cfg.abi.Pack("init")
+
+		if cfg.Addr == common.HexToAddress(syscontractSdk.ProxyAddr) {
+			proxyAbi = cfg.Abi
+			proxyBody = body
+			continue
+		}
+
+		evmKeeper.SetCode(ctx, cfg.Addr, proxyBody)
+		calldata, err := proxyAbi.Pack("init", AdminAddr, newContractCode)
 		if err != nil {
 			panic(fmt.Errorf("failed to pack calldata: %s", err.Error()))
 		}

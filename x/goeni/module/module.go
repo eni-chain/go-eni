@@ -168,6 +168,8 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 func (am AppModule) BeginBlock(goCtx context.Context) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if ctx.BlockHeight() == 1 {
+		// Temporary annotation fixes for consistency
+		ctx = ctx.WithMultiStore(ctx.MultiStore().CacheMultiStore())
 		syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
 	}
 	return nil

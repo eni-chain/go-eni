@@ -14,10 +14,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/evm/types"
-	"github.com/eni-chain/go-eni/evmrpc/ethapi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/ethapi"
 	"github.com/ethereum/go-ethereum/rpc"
 	//rpcclient "github.com/tendermint/tendermint/rpc/client"
 	//"github.com/tendermint/tendermint/rpc/coretypes"
@@ -210,6 +210,12 @@ func (a *BlockAPI) GetBlockReceipts(ctx context.Context, blockNrOrHash rpc.Block
 	wg := sync.WaitGroup{}
 	mtx := sync.Mutex{}
 	allReceipts := make([]map[string]interface{}, len(txHashes))
+	sdkCtx := a.ctxProvider(LatestCtxHeight)
+	signer := ethtypes.MakeSigner(
+		types.DefaultChainConfig().EthereumConfig(a.keeper.ChainID(sdkCtx)),
+		big.NewInt(sdkCtx.BlockHeight()),
+		uint64(sdkCtx.BlockTime().Unix()),
+	)
 	for i, hash := range txHashes {
 		wg.Add(1)
 		go func(i int, hash common.Hash) {
@@ -235,7 +241,7 @@ func (a *BlockAPI) GetBlockReceipts(ctx context.Context, blockNrOrHash rpc.Block
 				encodedReceipt, err := encodeReceipt(receipt, a.txConfig.TxDecoder(), block, func(h common.Hash) bool {
 					_, err := a.keeper.GetReceipt(a.ctxProvider(height), h)
 					return err == nil
-				})
+				}, signer)
 				if err != nil {
 					mtx.Lock()
 					returnErr = err
@@ -281,6 +287,7 @@ func EncodeTmBlock(
 	var blockGasUsed int64
 	chainConfig := types.DefaultChainConfig().EthereumConfig(k.ChainID(ctx))
 	transactions := []interface{}{}
+	println("miner ", block.Block.ProposerAddress.String())
 
 	for i, txRes := range blockRes.TxsResults {
 		blockGasUsed += txRes.GasUsed
@@ -326,7 +333,10 @@ func EncodeTmBlock(
 		txHash = ethtypes.EmptyTxsHash
 	}
 
-	gasLimit := blockRes.ConsensusParamUpdates.Block.MaxGas
+	gasLimit := int64(0)
+	if blockRes.ConsensusParamUpdates.Block != nil {
+		gasLimit = blockRes.ConsensusParamUpdates.Block.MaxGas
+	}
 	result := map[string]interface{}{
 		"number":           (*hexutil.Big)(number),
 		"hash":             blockhash,

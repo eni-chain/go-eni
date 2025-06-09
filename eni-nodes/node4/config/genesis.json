@@ -155,12 +155,21 @@
               "amount": "1000000000000000000000000"
             }
           ]
+        },
+        {
+          "address": "eni1vqu8rska6swzdmnhf90zuv0xmelej4lqaua23w",
+          "coins": [
+            {
+              "denom": "ueni",
+              "amount": "400000000000000000000000000"
+            }
+          ]
         }
       ],
       "supply": [
         {
           "denom": "ueni",
-          "amount": "8000000000000000000000000"
+          "amount": "408000000000000000000000000"
         }
       ],
       "denom_metadata": [],

@@ -66,7 +66,7 @@ func NewAnteHandlerAndDepGenerator(options HandlerOptions) (sdk.AnteHandler, err
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
 		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
-		evmante.NewEVMAddressDecorator(options.EVMKeeper, options.AppAccountKeeper),
+		//evmante.NewEVMAddressDecorator(options.EVMKeeper, options.AppAccountKeeper), // Temporarily disable address association
 	}
 
 	anteHandler := sdk.ChainAnteDecorators(anteDecorators...)

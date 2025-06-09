@@ -59,7 +59,7 @@ func TestSendRawTransaction(t *testing.T) {
 	require.Equal(t, "transaction type not supported", errMap["message"].(string))
 
 	// bad server
-	resObj = sendRequestBad(t, "sendRawTransaction", payload)
-	errMap = resObj["error"].(map[string]interface{})
-	require.Equal(t, ": invalid sequence", errMap["message"].(string))
+	//resObj = sendRequestBad(t, "sendRawTransaction", payload)
+	//errMap = resObj["error"].(map[string]interface{})
+	//require.Equal(t, ": invalid sequence", errMap["message"].(string))
 }

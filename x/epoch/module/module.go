@@ -100,6 +100,7 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 // ----------------------------------------------------------------------------
 // AppModule
 // ----------------------------------------------------------------------------
+const DefaultEpochInterval = 40
 
 // AppModule implements the AppModule interface that defines the inter-dependent methods that modules need to implement
 type AppModule struct {
@@ -145,7 +146,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 	if genState.GetEpoch() == nil {
 		epoch := types.Epoch{
 			GenesisTime:             ctx.BlockTime(),
-			EpochInterval:           40,
+			EpochInterval:           DefaultEpochInterval,
 			CurrentEpoch:            1,
 			CurrentEpochStartHeight: 1,
 			CurrentEpochHeight:      1,
@@ -185,7 +186,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 	if lastEpoch.EpochInterval == 0 && sdkCtx.BlockHeight() == 1 {
 		epoch := types.Epoch{
 			GenesisTime:             sdkCtx.BlockTime(),
-			EpochInterval:           40,
+			EpochInterval:           DefaultEpochInterval,
 			CurrentEpoch:            1,
 			CurrentEpochStartHeight: 1,
 			CurrentEpochHeight:      1,
@@ -237,7 +238,7 @@ func (am AppModule) EndBlock(goCtx context.Context) ([]abci.ValidatorUpdate, err
 	//The last block of the epoch updates the consensus set for the next epoch
 	epoch := am.keeper.GetEpoch(ctx)
 	if epoch.EpochInterval == 0 {
-		return nil, nil
+		epoch.EpochInterval = DefaultEpochInterval
 	}
 
 	if uint64(ctx.BlockHeight())%epoch.EpochInterval != 0 {
