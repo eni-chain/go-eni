@@ -315,7 +315,7 @@ require (
 
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
-	github.com/eni-chain/eni-db v0.0.0-20250424114347-283a9ffa38d3
+	github.com/eni-chain/eni-db v0.0.0-20250424114347-e10cf9112fdb
 )
 
 require (
