@@ -125,6 +125,10 @@ reset-eni-node:
 	@echo Resetting eni node...
 	rm -rf eni-node && git checkout  eni-node
 
+reset-full-node:
+	@echo Resetting full node...
+	rm -rf full-node && git checkout  full-node
+
 reset-multi-node:
 	@echo Resetting multi eni node...
 	rm -rf eni-nodes && git checkout eni-nodes
