@@ -489,8 +489,8 @@ github.com/eapache/queue v1.1.0/go.mod h1:6eCeP0CKFpHLu8blIFXhExK/dRa7WDZfr6jVFP
 github.com/edsrzf/mmap-go v1.0.0/go.mod h1:YO35OhQPt3KJa3ryjFM5Bs14WD66h8eGKpfaBNrHW5M=
 github.com/emicklei/dot v1.6.2 h1:08GN+DD79cy/tzN6uLCT84+2Wk9u+wvqP+Hkx/dIR8A=
 github.com/emicklei/dot v1.6.2/go.mod h1:DeV7GvQtIw4h2u73RKBkkFdvVAz0D9fzeJrgPW6gy/s=
-github.com/eni-chain/eni-cometbft v0.0.0-20250526151337-962f79644941 h1:/2HKuM/8gfJLBbvgBp+dmjlTuBRCDNa4+brqsbtmwlU=
-github.com/eni-chain/eni-cometbft v0.0.0-20250526151337-962f79644941/go.mod h1:5l0SkgeLRXi6bBfQuevXjKqML1jjfJJlvI1Ulp02/o4=
+github.com/eni-chain/eni-cometbft v0.0.0-20250623080218-dd531e16e3d4 h1:2DXrJWGrUaNKgvBnfF9IAC33elajIDEx3Dnd/YhFnRU=
+github.com/eni-chain/eni-cometbft v0.0.0-20250623080218-dd531e16e3d4/go.mod h1:5l0SkgeLRXi6bBfQuevXjKqML1jjfJJlvI1Ulp02/o4=
 github.com/eni-chain/eni-cosmos v0.0.0-20250620053138-7ede86875512 h1:o1bK+18fMOwcPpeWmo+HIhFKVCot7uE4I5MjiBp9Wok=
 github.com/eni-chain/eni-cosmos v0.0.0-20250620053138-7ede86875512/go.mod h1:toAJpNTi+SRQ12jozKSNcFExIG/rAKb5JNzqaTrRmuQ=
 github.com/eni-chain/eni-cosmos/api v0.0.0-20250620053138-7ede86875512 h1:Q7XRNcYoAlQhQKD4M+fxCfaIQJk/TC3tpXdTq6q29qA=
