@@ -334,11 +334,11 @@ require github.com/joho/godotenv v1.5.1
 
 replace (
 	// replace broken cosmos-sdk
-	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250620053138-7ede86875512
-	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250620053138-7ede86875512
-	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250620053138-7ede86875512
+	cosmossdk.io/api => github.com/eni-chain/eni-cosmos/api v0.0.0-20250623111109-3509f0c4ad27
+	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250623111109-3509f0c4ad27
+	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250623111109-3509f0c4ad27
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250623080218-dd531e16e3d4
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250620053138-7ede86875512
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250623111109-3509f0c4ad27
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250505113906-74606eca3d53
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.0
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
