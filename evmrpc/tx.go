@@ -368,8 +368,6 @@ func GetEvmTxIndex(txs tmtypes.Txs, txIndex uint32, decoder sdk.TxDecoder, recei
 				}
 			}
 		}
-
-		evmTxIndex++
 	}
 	return -1, false, nil
 }
