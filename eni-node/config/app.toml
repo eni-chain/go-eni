@@ -130,3 +130,7 @@ ss-keep-last-version = true
   ws_enabled = true
   ws_port = 8546
 
+[update]
+contract_admin_addr= "0x110b6FB6675Fb2a310394ac3a43b23Fc23aB9BC6"
+slashing_skip_height = 10000
+gas_admin_addr = "eni1wklu5t7ctecdlfr465lm6ms709xneg0rf45ajt"

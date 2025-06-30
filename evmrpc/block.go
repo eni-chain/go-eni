@@ -287,7 +287,6 @@ func EncodeTmBlock(
 	var blockGasUsed int64
 	chainConfig := types.DefaultChainConfig().EthereumConfig(k.ChainID(ctx))
 	transactions := []interface{}{}
-	println("miner ", block.Block.ProposerAddress.String())
 
 	for i, txRes := range blockRes.TxsResults {
 		blockGasUsed += txRes.GasUsed

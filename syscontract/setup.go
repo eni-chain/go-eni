@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	config "github.com/cosmos/cosmos-sdk/utils/config"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	evmKeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/eni-chain/go-eni/syscontract/genesis"
@@ -14,8 +15,6 @@ import (
 	"os"
 	"strings"
 )
-
-var AdminAddr = common.HexToAddress("0x110b6FB6675Fb2a310394ac3a43b23Fc23aB9BC6")
 
 var contracts *contractsConfig
 
@@ -114,6 +113,7 @@ func SetupSystemContracts(ctx sdk.Context, evmKeeper *evmKeeper.Keeper) {
 		}
 
 		evmKeeper.SetCode(ctx, cfg.Addr, proxyBody)
+		AdminAddr := common.HexToAddress(config.DefaultUpdateConfig.ContractAdminAddr)
 		calldata, err := proxyAbi.Pack("init", AdminAddr, newContractCode)
 		if err != nil {
 			panic(fmt.Errorf("failed to pack calldata: %s", err.Error()))

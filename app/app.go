@@ -81,6 +81,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
+	updateconfig "github.com/cosmos/cosmos-sdk/utils/config"
 	evmmodulekeeper "github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	epochmodulekeeper "github.com/eni-chain/go-eni/x/epoch/keeper"
 	goenimodulekeeper "github.com/eni-chain/go-eni/x/goeni/keeper"
@@ -236,8 +237,12 @@ func New(
 		)
 	)
 	baseAppOptions, _ = SetupEniDB(logger, homePath, appOpts, baseAppOptions)
+	_, err := updateconfig.ReadConfig(appOpts)
+	if err != nil {
+		panic(err)
+	}
 
-	err := depinject.Inject(appConfig,
+	err = depinject.Inject(appConfig,
 		&appBuilder,
 		&app.appCodec,
 		&app.legacyAmino,
