@@ -71,7 +71,9 @@ func NewEniDebugAPI(
 func (api *DebugAPI) TraceTransaction(ctx context.Context, hash common.Hash, config *tracers.TraceConfig) (result interface{}, returnErr error) {
 	startTime := time.Now()
 	defer recordMetrics("debug_traceTransaction", api.connectionType, startTime, returnErr == nil)
+	api.keeper.Logger().Info("traceTransaction", "start_time", startTime.Format(time.RFC3339Nano), "hash", hash)
 	result, returnErr = api.tracersAPI.TraceTransaction(ctx, hash, config)
+	api.keeper.Logger().Info("traceTransaction", "end_time", time.Now().Format(time.RFC3339Nano), "start_time", startTime.Format(time.RFC3339Nano), "hash", hash, "returnErr", returnErr)
 	return
 }
 
@@ -149,20 +151,28 @@ func (api *DebugAPI) isPanicTx(ctx context.Context, hash common.Hash) (isPanic b
 func (api *DebugAPI) TraceBlockByNumber(ctx context.Context, number rpc.BlockNumber, config *tracers.TraceConfig) (result interface{}, returnErr error) {
 	startTime := time.Now()
 	defer recordMetrics("debug_traceBlockByNumber", api.connectionType, startTime, returnErr == nil)
+	api.keeper.Logger().Info("TraceBlockByNumber start_time", startTime.Format(time.RFC3339Nano), "block number", number)
 	result, returnErr = api.tracersAPI.TraceBlockByNumber(ctx, number, config)
+	api.keeper.Logger().Info("TraceBlockByNumber", "end_time", time.Now().Format(time.RFC3339Nano), "start_time", startTime.Format(time.RFC3339Nano), "block number", number, "returnErr", returnErr)
 	return
 }
 
 func (api *DebugAPI) TraceBlockByHash(ctx context.Context, hash common.Hash, config *tracers.TraceConfig) (result interface{}, returnErr error) {
 	startTime := time.Now()
 	defer recordMetrics("debug_traceBlockByHash", api.connectionType, startTime, returnErr == nil)
+	api.keeper.Logger().Info("TraceBlockByHash start_time", startTime.Format(time.RFC3339Nano), "block hash", hash)
 	result, returnErr = api.tracersAPI.TraceBlockByHash(ctx, hash, config)
+	api.keeper.Logger().Info("TraceBlockByHash", "end_time", time.Now().Format(time.RFC3339Nano), "start_time", startTime.Format(time.RFC3339Nano), "block hash", hash, "returnErr", returnErr)
+
 	return
 }
 
 func (api *DebugAPI) TraceCall(ctx context.Context, args ethapi.TransactionArgs, blockNrOrHash rpc.BlockNumberOrHash, config *tracers.TraceCallConfig) (result interface{}, returnErr error) {
 	startTime := time.Now()
 	defer recordMetrics("debug_traceCall", api.connectionType, startTime, returnErr == nil)
+	api.keeper.Logger().Info("TraceCall start_time", startTime.Format(time.RFC3339Nano), "block hash", "block hash", blockNrOrHash.String())
 	result, returnErr = api.tracersAPI.TraceCall(ctx, args, blockNrOrHash, config)
+	api.keeper.Logger().Info("TraceCall", "end_time", time.Now().Format(time.RFC3339Nano), "start_time", startTime.Format(time.RFC3339Nano), "block hash", blockNrOrHash.String(), "returnErr", returnErr)
+
 	return
 }
