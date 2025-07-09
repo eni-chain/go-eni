@@ -5,6 +5,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/client/config"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/ethereum/go-ethereum/rpc"
 	"math/big"
 
@@ -296,7 +299,19 @@ func (s *SendAPI) SendTransaction(ctx context.Context, arg ethapi.TransactionArg
 }
 
 func (s *SendAPI) signTransaction(unsignedTx *ethtypes.Transaction, from string) (*ethtypes.Transaction, error) {
-	kb, err := getTestKeyring(s.homeDir)
+	//kb, err := getTestKeyring(s.homeDir)
+	clientCtx := client.Context{}.WithViper("").WithHomeDir(s.homeDir)
+	clientCtx, err := config.ReadFromClientConfig(clientCtx)
+	if err != nil {
+		return nil, err
+	}
+
+	cdc, ok := s.keeper.Codec().(*codec.ProtoCodec)
+	if ok {
+		clientCtx = clientCtx.WithCodec(cdc)
+	}
+
+	kb, err := client.NewKeyringFromBackend(clientCtx, keyring.BackendTest)
 	if err != nil {
 		return nil, err
 	}
