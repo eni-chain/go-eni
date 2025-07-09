@@ -1,8 +1,12 @@
 package evmrpc
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"fmt"
+	"github.com/ethereum/go-ethereum/rpc"
+	"math/big"
 
 	"time"
 
@@ -128,12 +132,157 @@ func (s *SendAPI) SignTransaction(_ context.Context, args apitypes.SendTxArgs, _
 	return &ethapi.SignTransactionResult{Raw: data, Tx: signedTx}, nil
 }
 
-func (s *SendAPI) SendTransaction(ctx context.Context, args ethapi.TransactionArgs) (result common.Hash, returnErr error) {
+type TxArgs struct {
+	ethapi.TransactionArgs
+}
+
+// data retrieves the transaction calldata. Input field is preferred.
+func (args *TxArgs) data() []byte {
+	if args.Input != nil {
+		return *args.Input
+	}
+	if args.Data != nil {
+		return *args.Data
+	}
+	return nil
+}
+
+// SetDefaults fills in default values for unspecified tx fields.
+func (args *TxArgs) SetDefaults(ctx context.Context, b *Backend) error {
+	if err := args.setFeeDefaults(ctx, b); err != nil {
+		return err
+	}
+	if args.Value == nil {
+		args.Value = new(hexutil.Big)
+	}
+	if args.Nonce == nil {
+		nonce, err := b.GetPoolNonce(ctx, *args.From)
+		if err != nil {
+			return err
+		}
+		args.Nonce = (*hexutil.Uint64)(&nonce)
+	}
+	if args.Data != nil && args.Input != nil && !bytes.Equal(*args.Data, *args.Input) {
+		return errors.New(`both "data" and "input" are set and not equal. Please use "input" to pass transaction call data`)
+	}
+	if args.To == nil && len(args.data()) == 0 {
+		return errors.New(`contract creation without any data provided`)
+	}
+	// Estimate the gas usage if necessary.
+	if args.Gas == nil {
+		// These fields are immutable during the estimation, safe to
+		// pass the pointer directly.
+		data := args.data()
+		callArgs := TxArgs{
+			ethapi.TransactionArgs{
+				From:                 args.From,
+				To:                   args.To,
+				GasPrice:             args.GasPrice,
+				MaxFeePerGas:         args.MaxFeePerGas,
+				MaxPriorityFeePerGas: args.MaxPriorityFeePerGas,
+				Value:                args.Value,
+				Data:                 (*hexutil.Bytes)(&data),
+				AccessList:           args.AccessList,
+			},
+		}
+		pendingBlockNr := rpc.BlockNumberOrHashWithNumber(rpc.PendingBlockNumber)
+		estimated, err := ethapi.DoEstimateGas(ctx, b, callArgs.TransactionArgs, pendingBlockNr, nil, nil, b.RPCGasCap())
+		if err != nil {
+			return err
+		}
+		args.Gas = &estimated
+		//log.Trace("Estimate gas usage automatically", "gas", args.Gas)
+	}
+	// If chain id is provided, ensure it matches the local chain id. Otherwise, set the local
+	// chain id as the default.
+	want := b.ChainConfig().ChainID
+	if args.ChainID != nil {
+		if have := (*big.Int)(args.ChainID); have.Cmp(want) != 0 {
+			return fmt.Errorf("chainId does not match node's (have=%v, want=%v)", have, want)
+		}
+	} else {
+		args.ChainID = (*hexutil.Big)(want)
+	}
+	return nil
+}
+
+// setFeeDefaults fills in default fee values for unspecified tx fields.
+func (args *TxArgs) setFeeDefaults(ctx context.Context, b *Backend) error {
+	// If both gasPrice and at least one of the EIP-1559 fee parameters are specified, error.
+	if args.GasPrice != nil && (args.MaxFeePerGas != nil || args.MaxPriorityFeePerGas != nil) {
+		return errors.New("both gasPrice and (maxFeePerGas or maxPriorityFeePerGas) specified")
+	}
+	// If the tx has completely specified a fee mechanism, no default is needed. This allows users
+	// who are not yet synced past London to get defaults for other tx values. See
+	// https://github.com/ethereum/go-ethereum/pull/23274 for more information.
+	eip1559ParamsSet := args.MaxFeePerGas != nil && args.MaxPriorityFeePerGas != nil
+	if (args.GasPrice != nil && !eip1559ParamsSet) || (args.GasPrice == nil && eip1559ParamsSet) {
+		// Sanity check the EIP-1559 fee parameters if present.
+		if args.GasPrice == nil && args.MaxFeePerGas.ToInt().Cmp(args.MaxPriorityFeePerGas.ToInt()) < 0 {
+			return fmt.Errorf("maxFeePerGas (%v) < maxPriorityFeePerGas (%v)", args.MaxFeePerGas, args.MaxPriorityFeePerGas)
+		}
+		return nil
+	}
+	// Now attempt to fill in default value depending on whether London is active or not.
+	head := b.CurrentHeader()
+	if b.ChainConfig().IsLondon(head.Number) {
+		// London is active, set maxPriorityFeePerGas and maxFeePerGas.
+		if err := args.setLondonFeeDefaults(ctx, head, b); err != nil {
+			return err
+		}
+	} else {
+		if args.MaxFeePerGas != nil || args.MaxPriorityFeePerGas != nil {
+			return errors.New("maxFeePerGas and maxPriorityFeePerGas are not valid before London is active")
+		}
+		// London not active, set gas price.
+		price, err := b.SuggestGasTipCap(ctx)
+		if err != nil {
+			return err
+		}
+		args.GasPrice = (*hexutil.Big)(price)
+	}
+	return nil
+}
+
+// setLondonFeeDefaults fills in reasonable default fee values for unspecified fields.
+func (args *TxArgs) setLondonFeeDefaults(ctx context.Context, head *ethtypes.Header, b *Backend) error {
+	// Set maxPriorityFeePerGas if it is missing.
+	if args.MaxPriorityFeePerGas == nil {
+		tip, err := b.SuggestGasTipCap(ctx)
+		if err != nil {
+			return err
+		}
+		args.MaxPriorityFeePerGas = (*hexutil.Big)(tip)
+	}
+	// Set maxFeePerGas if it is missing.
+	if args.MaxFeePerGas == nil {
+		// Set the max fee to be 2 times larger than the previous block's base fee.
+		// The additional slack allows the tx to not become invalidated if the base
+		// fee is rising.
+		val := new(big.Int).Add(
+			args.MaxPriorityFeePerGas.ToInt(),
+			new(big.Int).Mul(head.BaseFee, big.NewInt(2)),
+		)
+		args.MaxFeePerGas = (*hexutil.Big)(val)
+	}
+	// Both EIP-1559 fee parameters are now set; sanity check them.
+	if args.MaxFeePerGas.ToInt().Cmp(args.MaxPriorityFeePerGas.ToInt()) < 0 {
+		return fmt.Errorf("maxFeePerGas (%v) < maxPriorityFeePerGas (%v)", args.MaxFeePerGas, args.MaxPriorityFeePerGas)
+	}
+	return nil
+}
+
+func (s *SendAPI) SendTransaction(ctx context.Context, arg ethapi.TransactionArgs) (result common.Hash, returnErr error) {
 	startTime := time.Now()
 	defer recordMetrics("eth_sendTransaction", s.connectionType, startTime, returnErr == nil)
 	//if err := args.SetDefaults(ctx, s.backend); err != nil {
 	//	return common.Hash{}, err
 	//}
+	args := TxArgs{arg}
+	if err := args.SetDefaults(ctx, s.backend); err != nil {
+		return common.Hash{}, err
+	}
+
 	var unsignedTx = args.ToTransaction(0)
 	signedTx, err := s.signTransaction(unsignedTx, args.From.Hex())
 	if err != nil {
