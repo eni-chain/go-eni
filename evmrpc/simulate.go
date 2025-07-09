@@ -217,7 +217,7 @@ func (b *Backend) GetTransaction(ctx context.Context, txHash common.Hash) (found
 	txIndex := hexutil.Uint(receipt.TransactionIndex)
 	tmTx := block.Block.Txs[int(txIndex)]
 	// We need to find the ethIndex
-	evmTxIndex, found,_  := GetEvmTxIndex(block.Block.Txs, receipt.TransactionIndex, b.txDecoder, func(h common.Hash) bool {
+	evmTxIndex, found, _ := GetEvmTxIndex(block.Block.Txs, receipt.TransactionIndex, b.txDecoder, func(h common.Hash) bool {
 		_, err := b.keeper.GetReceipt(sdkCtx, h)
 		return err == nil
 	})
@@ -310,9 +310,18 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 	// Get statedb of parent block from the store
 	// todo must be readapted
 	//statedb := state.NewDBImpl(b.ctxProvider(prevBlockHeight).WithIsEVM(true), b.keeper, true)
-	statedb := state.NewDBImpl(b.ctxProvider(prevBlockHeight), b.keeper, true)
+	blockCtx := b.ctxProvider(prevBlockHeight)
+
+	blockCtx = blockCtx.WithMultiStore(blockCtx.MultiStore().CacheMultiStore())
+
+	statedb := state.NewDBImpl(blockCtx, b.keeper, true)
 	if txIndex == 0 && len(block.Transactions()) == 0 {
 		return nil, vm.BlockContext{}, statedb, emptyRelease, nil
+	}
+	emptyRelease = func() {
+		println("StateAtTransaction clean statedb multistore gc ")
+		statedb.Cleanup()
+		blockCtx.WithMultiStore(nil)
 	}
 	// Recompute transactions up to the target index. (only doing EVM at the moment, but should do both EVM + Cosmos)
 	signer := ethtypes.MakeSigner(b.ChainConfig(), block.Number(), block.Time())
@@ -322,35 +331,16 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 			return nil, vm.BlockContext{}, nil, nil, err
 		}
 		txContext := core.NewEVMTxContext(msg)
-		blockContext, err := b.keeper.GetVMBlockContext(b.ctxProvider(prevBlockHeight), core.GasPool(b.RPCGasCap()))
+		blockContext, err := b.keeper.GetVMBlockContext(blockCtx, core.GasPool(b.RPCGasCap()))
 		if err != nil {
 			return nil, vm.BlockContext{}, nil, nil, err
 		}
 		// set block context time as of the block time (block time is the time of the CURRENT block)
 		blockContext.Time = block.Time()
 
-		// set address association for the sender if not present. Note that here we take the shortcut
-		// of querying from the latest height with the assumption that if this tx has been processed
-		// at all then its association must be present in the latest height
-		//_, associated := b.keeper.GetEniAddress(statedb.Ctx(), msg.From)
-		//if !associated {
-		//	eniAddr, associatedNow := b.keeper.GetEniAddress(b.ctxProvider(LatestCtxHeight), msg.From)
-		//	if !associatedNow {
-		//		err := types.NewAssociationMissingErr(msg.From.Hex())
-		//		metrics.IncrementAssociationError("state_at_tx", err)
-		//		return nil, vm.BlockContext{}, nil, nil, err
-		//	}
-		//	//if err := helpers.NewAssociationHelper(b.keeper, b.keeper.BankKeeper(), b.keeper.AccountKeeper()).AssociateAddresses(statedb.Ctx(), eniAddr, msg.From, nil); err != nil {
-		//	//	return nil, vm.BlockContext{}, nil, nil, err
-		//	//}
-		//	//todo:Wait until statedb migration is complete
-		//	_ = eniAddr
-		//}
 		if idx == txIndex {
 			return tx, *blockContext, statedb, emptyRelease, nil
 		}
-		//todo must be readapted
-		//statedb.WithCtx(statedb.Ctx().WithEVMEntryViaWasmdPrecompile(false))
 		statedb.WithCtx(statedb.Ctx())
 		// Not yet the searched for transaction, execute on top of the current state
 		vmenv := vm.NewEVM(*blockContext, statedb, b.ChainConfig(), vm.Config{})
@@ -362,6 +352,7 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 		// Ensure any modifications are committed to the state
 		// Only delete empty objects if EIP158/161 (a.k.a Spurious Dragon) is in effect
 		statedb.Finalise(vmenv.ChainConfig().IsEIP158(block.Number()))
+		vmenv.Cancel()
 	}
 	return nil, vm.BlockContext{}, nil, nil, fmt.Errorf("transaction index %d out of range for block %#x", txIndex, block.Hash())
 }
