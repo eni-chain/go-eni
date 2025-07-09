@@ -319,7 +319,6 @@ func (b *Backend) StateAtTransaction(ctx context.Context, block *ethtypes.Block,
 		return nil, vm.BlockContext{}, statedb, emptyRelease, nil
 	}
 	emptyRelease = func() {
-		println("StateAtTransaction clean statedb multistore gc ")
 		statedb.Cleanup()
 		blockCtx.WithMultiStore(nil)
 	}
