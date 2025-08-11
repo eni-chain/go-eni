@@ -177,7 +177,7 @@ func (a *BlockAPI) getBlockByNumber(
 	if err != nil {
 		return nil, err
 	}
-	block, err := blockByNumberWithRetry(ctx, a.tmClient, numberPtr, 1)
+	block, err := blockByNumberWithRetry(ctx, a.tmClient, numberPtr, 10)
 	if err != nil {
 		return nil, err
 	}
