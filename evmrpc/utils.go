@@ -171,7 +171,7 @@ func blockResultsWithRetry(ctx context.Context, client rpcclient.Client, height 
 }
 
 func blockByNumber(ctx context.Context, client rpcclient.Client, height *int64) (*coretypes.ResultBlock, error) {
-	return blockByNumberWithRetry(ctx, client, height, 0)
+	return blockByNumberWithRetry(ctx, client, height, 100)
 }
 
 func blockByNumberWithRetry(ctx context.Context, client rpcclient.Client, height *int64, maxRetries int) (*coretypes.ResultBlock, error) {

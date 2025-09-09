@@ -416,7 +416,7 @@ func (f *LogFetcher) GetLogsByFilters(ctx context.Context, crit filters.FilterCr
 				}
 			}
 			h := height
-			block, berr := blockByNumberWithRetry(ctx, f.tmClient, &h, 1)
+			block, berr := blockByNumberWithRetry(ctx, f.tmClient, &h, 100)
 			if berr != nil {
 				mu.Lock()
 				errorsList = append(errorsList, berr)

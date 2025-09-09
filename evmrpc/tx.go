@@ -181,7 +181,7 @@ func (t *TransactionAPI) GetTransactionByBlockNumberAndIndex(ctx context.Context
 	if err != nil {
 		return nil, err
 	}
-	block, err := blockByNumberWithRetry(ctx, t.tmClient, blockNumber, 1)
+	block, err := blockByNumberWithRetry(ctx, t.tmClient, blockNumber, 100)
 	if err != nil {
 		return nil, err
 	}
