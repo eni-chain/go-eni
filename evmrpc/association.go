@@ -141,7 +141,7 @@ func (t *AssociationAPI) GetCosmosTx(ctx context.Context, ethHash common.Hash) (
 	if err != nil {
 		return "", err
 	}
-	block, err := blockByNumberWithRetry(ctx, t.tmClient, numberPtr, 1)
+	block, err := blockByNumberWithRetry(ctx, t.tmClient, numberPtr, 100)
 	if err != nil {
 		return "", err
 	}

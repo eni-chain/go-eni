@@ -119,7 +119,7 @@ func getTransactionReceipt(
 	if receipt.Status == 0 && receipt.GasUsed == 0 {
 		// Get the block
 		height := int64(receipt.BlockNumber)
-		block, err := blockByNumberWithRetry(ctx, t.tmClient, &height, 1)
+		block, err := blockByNumberWithRetry(ctx, t.tmClient, &height, 100)
 		if err != nil {
 			return nil, err
 		}
@@ -154,7 +154,7 @@ func getTransactionReceipt(
 		}
 	}
 	height := int64(receipt.BlockNumber)
-	block, err := blockByNumberWithRetry(ctx, t.tmClient, &height, 1)
+	block, err := blockByNumberWithRetry(ctx, t.tmClient, &height, 100)
 	if err != nil {
 		return nil, err
 	}
@@ -181,7 +181,7 @@ func (t *TransactionAPI) GetTransactionByBlockNumberAndIndex(ctx context.Context
 	if err != nil {
 		return nil, err
 	}
-	block, err := blockByNumberWithRetry(ctx, t.tmClient, blockNumber, 1)
+	block, err := blockByNumberWithRetry(ctx, t.tmClient, blockNumber, 100)
 	if err != nil {
 		return nil, err
 	}
