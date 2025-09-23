@@ -99,6 +99,30 @@ contract StakeManager is DelegateCallBase, Common {
         lastRewardBlock = block.number;
     }
 
+    function claimReward(uint256 sequence) external returns(string memory){
+        Voter storage v = voters[msg.sender];
+        require(v.orders.length > 0, "There is no order for current user");
+        require(sequence < v.orders.length, "Invalid order sequence");
+
+        Order storage order = v.orders[sequence];
+        require(order.amount != 0, "There is no order for the sequence");
+
+        //require(block.timestamp <= order.coolingExpired, "The cooling-off period has not expired");
+        //When order.enterTime+order.lockPeriod>=block.timestamp, rewards will be automatically calculated
+        //and reinvested according to the renewed pledge flag, and enterTime will be reset. Therefore,
+        //if the pledge is not renewed after the expiration date, rewards will no longer be calculated.
+        require(order.enterTime + order.lockPeriod < block.timestamp, "The lock-up period expires but the pledge is not renewed");
+
+        //No validator is specified, no reward is calculated
+        require(order.currentValidatorIdx >= 0, "There is no validator for current order");
+        address addr = order.validators[uint256(order.currentValidatorIdx)];
+        Validator storage validator = Validators[addr];
+        require(validator.order.amount != 0, "The current order does not point to a valid validator");
+
+        order.unclaimedReward += (order.amount * rewardPerShare / 1e18) - order.rewardDebt;
+        order.rewardDebt = order.amount * rewardPerShare / 1e18;
+    }
+
 
     function validatorStake(uint256 amount, uint256 lockPeriod, bool continueStake, bool compoundInterest, address node, bytes calldata pubKey) external {
         
