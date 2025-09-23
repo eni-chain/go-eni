@@ -99,6 +99,7 @@ contract StakeManager is DelegateCallBase, Common {
         lastRewardBlock = block.number;
     }
 
+    //for voter
     function claimReward(uint256 sequence) external returns(string memory){
         Voter storage v = voters[msg.sender];
         require(v.orders.length > 0, "There is no order for current user");
@@ -118,6 +119,19 @@ contract StakeManager is DelegateCallBase, Common {
         address addr = order.validators[uint256(order.currentValidatorIdx)];
         Validator storage validator = Validators[addr];
         require(validator.order.amount != 0, "The current order does not point to a valid validator");
+
+        order.unclaimedReward += (order.amount * rewardPerShare / 1e18) - order.rewardDebt;
+        order.rewardDebt = order.amount * rewardPerShare / 1e18;
+    }
+
+    //for validator
+    function claimReward() external {
+        Validator storage val = Validators[msg.sender];
+        require(val.order.amount != 0, "msg.sender is not validator");
+        require(val.frozen == false, "validator was frozen");
+
+        Order storage order = val.order;
+        require(order.enterTime + order.lockPeriod < block.timestamp, "The lock-up period expires but the pledge is not renewed");
 
         order.unclaimedReward += (order.amount * rewardPerShare / 1e18) - order.rewardDebt;
         order.rewardDebt = order.amount * rewardPerShare / 1e18;
