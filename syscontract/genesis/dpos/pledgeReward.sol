@@ -263,42 +263,20 @@ contract StakeManager is DelegateCallBase, Common {
         orderSeq.seqList.push(orderId);
     }
 
-    //锁仓到期复利处理
-    function voteOrderCompoundInterestProc(Order storage order, OrderId storage id) internal {
-        address addr = order.validators[uint256(order.currentValidatorIdx)];
-        Validator storage vali = Validators_[addr];
-        if(vali.order.amount > 0 && vali.frozen != true){//验证者还在，且未被冻结
-            //复利超出验证者总算力限额
-            if(vali.order.amount + vali.poll + order.amount > MAX_PLEDGE_AMOUNT){
-                //复利失败，将质押额从验证者得票额中减除
-                vali.poll -= order.amount;
-                for(uint i = 0; i<vali.voters.length; i++){
-                    if(vali.voters[i].shareholder == id.shareholder && vali.voters[i].sequence == id.sequence){
-                        delete vali.voters[i];
-                    }
-                }
-                //将订单指向的验证者索引设为无效值
-                order.currentValidatorIdx = -1;
-            }else {
-                order.amount += order.unclaimedReward;
-                order.enterTime = block.timestamp;
-                vali.poll += order.unclaimedReward;
-            }
-
-        }
-    }
-
     function autoProcByBlock() external {
         for(uint i = 0; i < OrderSequences_.length; i++){ //对每个锁仓周期的订单时序表分别处理
             OrderSeq storage orderSeq = OrderSequences_[i];
 
             for(uint ii = orderSeq.realStartIdx; ii < orderSeq.seqList.length; ii++){
                 OrderId storage id = orderSeq.seqList[ii];
+                bool isValidator;
                 Order storage order;
                 if(Voters_[id.shareholder].orders.length > 0){//为投票者持有的质押订单
+                    isValidator = false;
                     require(id.sequence < Voters_[id.shareholder].orders.length, "invalid order sequence");
                     order = Voters_[id.shareholder].orders[id.sequence];
                 }else{
+                    isValidator = true;
                     //为验证者持有的质押订单
                     order = Validators_[id.shareholder].order;
                 }
@@ -316,7 +294,39 @@ contract StakeManager is DelegateCallBase, Common {
                         //复利
                         order.enterTime = block.timestamp;
                         order.amount += order.unclaimedReward;
-                        voteOrderCompoundInterestProc(order, id);
+                        if(isValidator){
+                            Validator storage vali = Validators_[id.shareholder];
+                            if(vali.order.amount + vali.order.unclaimedReward + vali.poll > MAX_PLEDGE_AMOUNT){
+                                //从订单时序表中删除订单ID
+                                delete orderSeq.seqList[ii];
+                                orderSeq.realStartIdx += 1; //如果realStartIdx==seqList.length,for循环不会进入处理，push新元素后，realStartIdx正好指向该元素位置，而length会+1
+                            }
+                        }else{
+                            address addr = order.validators[uint256(order.currentValidatorIdx)];
+                            Validator storage vali = Validators_[addr];
+                            if(vali.order.amount > 0 && vali.frozen != true){//验证者还在，且未被冻结
+                                //复利超出验证者总算力限额
+                                if(vali.order.amount + vali.poll + order.amount > MAX_PLEDGE_AMOUNT){
+                                    //复利失败，将质押额从验证者得票额中减除
+                                    vali.poll -= order.amount;
+                                    for(uint iii = 0; iii<vali.voters.length; iii++){
+                                        if(vali.voters[iii].shareholder == id.shareholder && vali.voters[iii].sequence == id.sequence){
+                                            delete vali.voters[iii];
+                                        }
+                                    }
+                                    //将订单指向的验证者索引设为无效值
+                                    order.currentValidatorIdx = -1;
+
+                                    //从订单有序表中删除订单ID
+                                    delete orderSeq.seqList[ii];
+                                    orderSeq.realStartIdx += 1;
+                                }else {
+                                    order.amount += order.unclaimedReward;
+                                    order.enterTime = block.timestamp;
+                                    vali.poll += order.unclaimedReward;
+                                }
+                            }
+                        }
                     }else{
                         //非法参数
                         revert("invalid continue flag");
