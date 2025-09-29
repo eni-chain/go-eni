@@ -54,7 +54,7 @@ contract StakeManager is DelegateCallBase, Common {
       uint256 unclaimedReward;      //未提取奖励，用于记录已结算未提取的奖励
       uint256 continueFlag;         //续质押标识，锁仓到期继续质押
       uint256 coolingExpired;       //切换验证者冷却到期时间
-      address[] validators;         //指向的验证者，默认第1个生效，如果指向的验证者退出，则自动指向列表的下一个，如果下一个不存在，则不指向任何验证者，验证者质押订单中，此列表为空
+      address validator;            //指向的验证者，未指向为address(0)
       int256 currentValidatorIdx;   //当前指向验证者的索引，如果为-1，表示未指向验证者
     }
 
@@ -134,11 +134,7 @@ contract StakeManager is DelegateCallBase, Common {
         require(order.enterTime + order.lockPeriod < block.timestamp, "The lock-up period expires but the pledge is not renewed");
 
         //未指定验证者，不计算奖励
-        require(order.currentValidatorIdx >= 0, "There is no validator for current order");
-        address addr = order.validators[uint256(order.currentValidatorIdx)];
-        Validator storage validator = Validators_[addr];
-        require(validator.order.amount != 0, "The current order does not point to a valid validator");
-
+        require(order.validator != address(0), "There is no validator for current order");
         claimRewardBasic(order);
     }
 
@@ -227,14 +223,14 @@ contract StakeManager is DelegateCallBase, Common {
     }
 
     //投票者质押
-    function voteStake(uint256 lockPeriod, uint256 continueFlag, address[] calldata validator) payable external{
+    function voteStake(uint256 lockPeriod, uint256 continueFlag, address validator) payable external{
         uint256 multi = multiNumber(lockPeriod);
         require(multi != POW_MULTI_ERR, "Lock period error!");
         require(msg.value >= 1e18, "The transfer amount is less than 1 ENI!");
-        require(validator.length > 0, "Validator address list is null!");
+        require(validator != address(0), "Validator address is null!");
 
         //检查指向的验证者是为合法验证者
-        Validator storage vali = Validators_[validator[0]];
+        Validator storage vali = Validators_[validator];
         require(vali.order.amount != 0, "Validator not exist.");
 
         updatePool();
@@ -243,9 +239,9 @@ contract StakeManager is DelegateCallBase, Common {
         Order storage order = voter.orders[voter.orders.length];
 
         fillOrder(order, lockPeriod, continueFlag);
-        order.validators = validator;
-        order.currentValidatorIdx = 0;
+        order.validator = validator;
 
+        //根据锁仓周期放大质押算力
         uint256 pledgePower = order.amount * multi;
         totalStaked += pledgePower;
 
@@ -261,6 +257,13 @@ contract StakeManager is DelegateCallBase, Common {
         //将订单ID插入时序表中，供自动化检测到期处理
         OrderSeq storage orderSeq = OrderSequences_[multi];
         orderSeq.seqList.push(orderId);
+    }
+
+    function validatorValid(Validator storage vali) internal view returns (bool) {
+        if(vali.frozen == false && vali.exitExpired == 0 && vali.order.amount != 0){
+            return true;
+        }
+        return false;
     }
 
     function autoProcByBlock() external {
@@ -292,19 +295,23 @@ contract StakeManager is DelegateCallBase, Common {
                         order.enterTime = block.timestamp;
                     }else if(order.continueFlag == COMPOUND_INTEREST){
                         //复利
-                        order.enterTime = block.timestamp;
-                        order.amount += order.unclaimedReward;
                         if(isValidator){
                             Validator storage vali = Validators_[id.shareholder];
-                            if(vali.order.amount + vali.order.unclaimedReward + vali.poll > MAX_PLEDGE_AMOUNT){
-                                //从订单时序表中删除订单ID
-                                delete orderSeq.seqList[ii];
-                                orderSeq.realStartIdx += 1; //如果realStartIdx==seqList.length,for循环不会进入处理，push新元素后，realStartIdx正好指向该元素位置，而length会+1
+                            if(validatorValid(vali)){
+                                if(vali.order.amount + vali.order.unclaimedReward + vali.poll > MAX_PLEDGE_AMOUNT){
+                                    //从订单时序表中删除订单ID
+                                    delete orderSeq.seqList[ii];
+                                    orderSeq.realStartIdx += 1; //如果realStartIdx==seqList.length,for循环不会进入处理，push新元素后，realStartIdx正好指向该元素位置，而length会+1
+                                }else{
+                                    order.enterTime = block.timestamp;
+                                    order.amount += order.unclaimedReward;
+                                }
+                            }else{
+                                //todo: 发送事件提醒验证者
                             }
                         }else{
-                            address addr = order.validators[uint256(order.currentValidatorIdx)];
-                            Validator storage vali = Validators_[addr];
-                            if(vali.order.amount > 0 && vali.frozen != true){//验证者还在，且未被冻结
+                            Validator storage vali = Validators_[order.validator];
+                            if(validatorValid(vali)){//验证者还在，且未被冻结
                                 //复利超出验证者总算力限额
                                 if(vali.order.amount + vali.poll + order.amount > MAX_PLEDGE_AMOUNT){
                                     //复利失败，将质押额从验证者得票额中减除
@@ -315,7 +322,7 @@ contract StakeManager is DelegateCallBase, Common {
                                         }
                                     }
                                     //将订单指向的验证者索引设为无效值
-                                    order.currentValidatorIdx = -1;
+                                    order.validator = address(0);
 
                                     //从订单有序表中删除订单ID
                                     delete orderSeq.seqList[ii];
@@ -325,6 +332,9 @@ contract StakeManager is DelegateCallBase, Common {
                                     order.enterTime = block.timestamp;
                                     vali.poll += order.unclaimedReward;
                                 }
+                            }else{
+
+                                //todo: 发送事件提醒投票者
                             }
                         }
                     }else{
