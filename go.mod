@@ -315,7 +315,7 @@ require (
 
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
-	github.com/eni-chain/eni-db v0.0.0-20250424114347-283a9ffa38d3
+	github.com/eni-chain/eni-db v0.0.0-20250424114347-e10cf9112fdb
 )
 
 require (
@@ -354,7 +354,7 @@ replace (
 	cosmossdk.io/core => github.com/eni-chain/eni-cosmos/core v0.0.0-20250429052203-b08e9794a822
 	cosmossdk.io/store => github.com/eni-chain/eni-cosmos/store v0.0.0-20250429052203-b08e9794a822
 	github.com/cometbft/cometbft => github.com/eni-chain/eni-cometbft v0.0.0-20250429032449-0022343a43fd
-	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20250429052203-b08e9794a822
+	github.com/cosmos/cosmos-sdk => github.com/eni-chain/eni-cosmos v0.0.0-20251013125855-aec7a6f536cd
 	github.com/ethereum/go-ethereum => github.com/eni-chain/go-ethereum v0.0.0-20250427153625-6da9a608bcc1
 	github.com/gogo/protobuf v1.3.3 => github.com/gogo/protobuf v1.3.2
 )
