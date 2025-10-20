@@ -9,6 +9,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/utils/config"
 	"github.com/cosmos/cosmos-sdk/x/evm/keeper"
 	"github.com/cosmos/cosmos-sdk/x/evm/state"
 	"github.com/cosmos/cosmos-sdk/x/evm/types"
@@ -217,7 +218,7 @@ func (b *Backend) GetTransaction(ctx context.Context, txHash common.Hash) (found
 	txIndex := hexutil.Uint(receipt.TransactionIndex)
 	tmTx := block.Block.Txs[int(txIndex)]
 	// We need to find the ethIndex
-	evmTxIndex, found,_  := GetEvmTxIndex(block.Block.Txs, receipt.TransactionIndex, b.txDecoder, func(h common.Hash) bool {
+	evmTxIndex, found, _ := GetEvmTxIndex(block.Block.Txs, receipt.TransactionIndex, b.txDecoder, func(h common.Hash) bool {
 		_, err := b.keeper.GetReceipt(sdkCtx, h)
 		return err == nil
 	})
@@ -280,7 +281,9 @@ func (b *Backend) RPCEVMTimeout() time.Duration { return b.config.EVMTimeout }
 
 func (b *Backend) ChainConfig() *params.ChainConfig {
 	ctx := b.ctxProvider(LatestCtxHeight)
-	return types.DefaultChainConfig().EthereumConfig(b.keeper.ChainID(ctx))
+	cfg := types.DefaultChainConfig().EthereumConfig(b.keeper.ChainID(ctx))
+	cfg.FixReceiveBlock = big.NewInt(config.DefaultUpdateConfig.FixEvmReceiveHeight)
+	return cfg
 }
 
 func (b *Backend) GetPoolNonce(_ context.Context, addr common.Address) (uint64, error) {
