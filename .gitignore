@@ -8,7 +8,6 @@ release/
 *.log
 *.ign
 build
-eni-node/data/
 nohup.out
 *.pprof
 docker/prometheus-grafana/prometheus_data
