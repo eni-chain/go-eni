@@ -15,7 +15,7 @@ contract StakeManager is DelegateCallBase, Common {
     uint internal constant LOCK_TIME_720 = 720 days;
     uint internal constant LOCK_TIME_1440 = 1440 days;
     //uint internal constant MIN_PLEDGE_AMOUNT = 10000000000000000000000; //wei
-    uint internal constant MAX_PLEDGE_AMOUNT = 1000000000000000000000000; //wei
+    //uint internal constant MAX_PLEDGE_AMOUNT = 1000000000000000000000000; //wei
 
     //质押算力根据锁仓周期放大的倍数
     uint internal constant POW_MULTI_ERR = 0;
@@ -30,16 +30,16 @@ contract StakeManager is DelegateCallBase, Common {
     uint internal constant CONTINUE_PLEDGE = 2;
     uint internal constant COMPOUND_INTEREST = 3;
 
-    //切换验证者冷却时间，避免投票者频繁切换验证者，增加链上负担
+    //冷却时间，避免用户频繁执行高耗能的操作，比如投票者频繁切换验证者，增加链上负担
     uint256 internal coolingPeriod = 7 days;
 
-    //每个区块的总质押奖励
-    uint256 internal totalRewardPerBlock = 600000000000000000; //单位为wei
+    //每个区块的总质押奖励，单位为wei，总量为0.5ENI
+    uint256 internal totalRewardPerBlock = 600000000000000000;
 
     //以下三个状态变量是用于流动性挖矿计算的全局参数
     uint256 internal rewardPerShare; //每股奖励
     uint256 internal lastRewardBlock;//上次奖励区块
-    uint256 internal totalStaked;    //全部奖励质押，这是根据质押周期调整算力倍数后的值
+    uint256 internal totalStaked;    //全部奖励质押份数，这是根据质押周期调整算力倍数后的值
 
     struct OrderId { //可以试着将持有者和编号用abi.encodePacked打包成一个byte32替换
         address shareholder;   //质押订单持有者
@@ -55,7 +55,7 @@ contract StakeManager is DelegateCallBase, Common {
       uint256 continueFlag;         //续质押标识，锁仓到期继续质押
       uint256 coolingExpired;       //切换验证者冷却到期时间
       address validator;            //指向的验证者，未指向为address(0)
-      int256 currentValidatorIdx;   //当前指向验证者的索引，如果为-1，表示未指向验证者
+      //int256 currentValidatorIdx;   //当前指向验证者的索引，如果为-1，表示未指向验证者
     }
 
     struct Voter {
@@ -63,7 +63,7 @@ contract StakeManager is DelegateCallBase, Common {
     }
 
     struct Validator {
-        Order order;        //验证者的质押订单,其指向的验证者列表为空
+        Order order;        //验证者的质押订单,其指向的验证者为空地址
         uint256 poll;       //总得票数，验证者自质押额+总得票额可计算出块奖励倍数
         OrderId[] voters;   //投票者列表, 记录哪些质押指向了当前验证者。验证者退出时，用户找到投票者，触发其切换指向的验证者。
         uint256 exitExpired;//退出缓冲期截止日期
@@ -115,18 +115,18 @@ contract StakeManager is DelegateCallBase, Common {
     }
 
     function claimRewardBasic(Order storage order) internal {
-        //应该用order.amount先除1e18得出有多少股份，然后再用股份数乘rewardPerShare，但为了计算精度，采取了以下写法
-        order.unclaimedReward += (order.amount * rewardPerShare / 1e18) - order.rewardDebt;
-        order.rewardDebt = order.amount * rewardPerShare / 1e18;
+        //应该用order.amount先除1e18得出有多少股份，然后再用股份数乘rewardPerShare
+        order.unclaimedReward += ((order.amount / 1e18) * rewardPerShare) - order.rewardDebt;
+        order.rewardDebt = (order.amount / 1e18) * rewardPerShare;
     }
 
-    //投票者领取奖励：因为验证者只有一个质押订单，无需序号
+    //投票者领取奖励
     function claimReward(uint256 sequence) external {
-        Voter storage v = Voters_[msg.sender];
-        require(v.orders.length > 0, "There is no order for current user");
-        require(sequence < v.orders.length, "Invalid order sequence");
+        Voter storage voter = Voters_[msg.sender];
+        require(voter.orders.length > 0, "There is no order for current user");
+        require(sequence < voter.orders.length, "Invalid order sequence");
 
-        Order storage order = v.orders[sequence];
+        Order storage order = voter.orders[sequence];
         require(order.amount != 0, "There is no order for the sequence");
 
         //require(block.timestamp <= order.coolingExpired, "The cooling-off period has not expired");
@@ -138,7 +138,7 @@ contract StakeManager is DelegateCallBase, Common {
         claimRewardBasic(order);
     }
 
-    //验证者领取奖励
+    //验证者领取奖励：因为验证者只有一个质押订单，无需序号
     function claimReward() external {
         Validator storage val = Validators_[msg.sender];
         require(val.order.amount != 0, "msg.sender is not validator");
@@ -180,7 +180,7 @@ contract StakeManager is DelegateCallBase, Common {
         order.amount = msg.value;
         order.enterTime = block.timestamp;
         order.lockPeriod = lockPeriod;
-        order.rewardDebt = order.amount * rewardPerShare / 1e18;
+        order.rewardDebt = (order.amount / 1e18) * rewardPerShare;
         order.unclaimedReward = 0;
         order.continueFlag = continueFlag;
         order.coolingExpired = block.timestamp + coolingPeriod;
@@ -266,6 +266,46 @@ contract StakeManager is DelegateCallBase, Common {
         return false;
     }
 
+    function markValidatorExit(address validator) internal {
+        //1.调用验证者管理合约为节点打上退出标签
+        //2.将验证者插入待退出验证者列表（key:验证者地址，value:缓冲截止日期）
+    }
+
+    function markValidatorTransfer(address from, address to, address node, bytes memory pk) internal {
+        //1.调用验证者管理合约为节点打上退出标签
+        //2.生成验证者转手信息，将验证者转手信息以转出方地址为key存储
+    }
+
+    //缓冲期到期后，被区块自动调用
+    function validatorExit(address validator) internal {
+        //1.调用验证者管理合约删除验证者信息
+        //2.遍历投票者信息，更新投票者奖励，将投票者指向的验证者删除
+        //3.返还质押金和奖励
+        //4.删除验证者信息和质押订单
+    }
+
+    //缓冲期到期后，被区块自动调用
+    function validatorTransfer(address from) internal {
+        //1.调用验证者管理合约删除转出验证者信息
+        //2.调用验证者管理合约为接收者生成验证者信息
+        //3.遍历投票者信息，将投票者指向的验证者更新
+        //4.将原验证者的质押订单准到新验证者地址下，并更新查询关系
+        //5.返还转出验证者的质押金和奖励
+        //6.删除验证者信息和质押订单
+    }
+
+    // 自动处理内容(首先更新奖励池计算奖励):
+    // - 投票者到期：
+    //    - 复投：修改订单开始时间
+    //    - 不续：从质押订单时序表中删除->更新指向验证者的得票额
+    //    - 复利：检查验证者增加复利后，是否超额：
+    //      - 不超额则复利，更新质押额和得票额
+    //      - 超额则复利失败，从质押订单时序表中删除，更新得票额，由投票者手动处理
+    // - 验证者到期：
+    //   - 复投：修改订单开始时间
+    //   - 不续：从质押订单时序表中删除->调用验证者管理合约为节点打上退出标签->缓冲期到期，自动检测退出标签列表。
+    //   - 复利：检查验证者增加复利后，不超额，更新质押额和订单开始时间，超额与不续处理相同。
+    // - 遍历验证者待退出列表，缓冲期到期的：将验证者删除，并返还质押，同时遍历所有投票者，更新其奖励，并将其指向验证者删除。
     function autoProcByBlock() external {
         for(uint i = 0; i < OrderSequences_.length; i++){ //对每个锁仓周期的订单时序表分别处理
             OrderSeq storage orderSeq = OrderSequences_[i];
@@ -274,7 +314,7 @@ contract StakeManager is DelegateCallBase, Common {
                 OrderId storage id = orderSeq.seqList[ii];
                 bool isValidator;
                 Order storage order;
-                if(Voters_[id.shareholder].orders.length > 0){//为投票者持有的质押订单
+                if(Voters_[id.shareholder].orders.length > 0){ //为投票者持有的质押订单
                     isValidator = false;
                     require(id.sequence < Voters_[id.shareholder].orders.length, "invalid order sequence");
                     order = Voters_[id.shareholder].orders[id.sequence];
@@ -370,4 +410,5 @@ contract StakeManager is DelegateCallBase, Common {
     function redemption() external{
 
     }
+
 }
