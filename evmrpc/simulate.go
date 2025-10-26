@@ -234,8 +234,25 @@ func (b *Backend) ChainDb() ethdb.Database {
 	panic("implement me")
 }
 
-func (b Backend) BlockByNumber(ctx context.Context, bn rpc.BlockNumber) (*ethtypes.Block, error) {
+func (b Backend) ConvertBlockNumber(bn rpc.BlockNumber) int64 {
 	blockNum := bn.Int64()
+	switch blockNum {
+	case rpc.SafeBlockNumber.Int64(), rpc.FinalizedBlockNumber.Int64(), rpc.LatestBlockNumber.Int64():
+		blockNum = b.ctxProvider(LatestCtxHeight).BlockHeight()
+	case rpc.EarliestBlockNumber.Int64():
+		genesisRes, err := b.tmClient.Genesis(context.Background())
+		if err != nil {
+			panic("could not get genesis info from tendermint")
+		}
+		blockNum = genesisRes.Genesis.InitialHeight
+	case rpc.PendingBlockNumber.Int64():
+		panic("tracing on pending block is not supported")
+	}
+	return blockNum
+}
+
+func (b Backend) BlockByNumber(ctx context.Context, bn rpc.BlockNumber) (*ethtypes.Block, error) {
+	blockNum := b.ConvertBlockNumber(bn)
 	tmBlock, err := blockByNumber(ctx, b.tmClient, &blockNum)
 	if err != nil {
 		return nil, err
@@ -261,7 +278,7 @@ func (b Backend) BlockByNumber(ctx context.Context, bn rpc.BlockNumber) (*ethtyp
 			}
 		}
 	}
-	header := b.getHeader(big.NewInt(bn.Int64()))
+	header := b.getHeader(big.NewInt(blockNum))
 	block := ethtypes.NewBlock2(header, txs)
 	return block, nil
 }

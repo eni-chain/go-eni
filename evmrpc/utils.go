@@ -175,20 +175,7 @@ func blockByNumber(ctx context.Context, client rpcclient.Client, height *int64) 
 }
 
 func blockByNumberWithRetry(ctx context.Context, client rpcclient.Client, height *int64, maxRetries int) (*coretypes.ResultBlock, error) {
-	var err error
-	var blockRes *coretypes.ResultBlock
-	var resStatus *coretypes.ResultStatus
-
-	if *height < 0 {
-		resStatus, err = client.Status(ctx)
-		if err != nil {
-			return nil, err
-		}
-		blockRes, err = client.Block(ctx, &resStatus.SyncInfo.LatestBlockHeight)
-	} else {
-		blockRes, err = client.Block(ctx, height)
-	}
-
+	blockRes, err := client.Block(ctx, height)
 	var retryCount = 0
 	for err != nil && retryCount < maxRetries {
 		// retry once, since application DB and block DB are not committed atomically so it's possible for
