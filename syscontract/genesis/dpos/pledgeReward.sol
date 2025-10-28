@@ -33,6 +33,9 @@ contract StakeManager is DelegateCallBase, Common {
     //冷却时间，避免用户频繁执行高耗能的操作，比如投票者频繁切换验证者，增加链上负担
     uint256 internal coolingPeriod = 7 days;
 
+    //退出缓冲期，用以检查验证者在退出前是否作恶，作恶则罚没质押金
+    uint256 internal exitingPeriod = 14 days;
+
     //每个区块的总质押奖励，单位为wei，总量为0.5ENI
     uint256 internal totalRewardPerBlock = 600000000000000000;
 
@@ -76,14 +79,34 @@ contract StakeManager is DelegateCallBase, Common {
         OrderId[] seqList;
     }
 
+    //验证者转手信息
+    struct validatorChange {
+        address receiver;
+        address node;
+        bytes pubKey;
+        uint256 expiredTime;
+    }
+
     //质押订单表内有五个分表，每种锁仓周期，各有一个单独订单时序表
-    OrderSeq[] internal OrderSequences_;
+    OrderSeq[] internal _orderSequences;
 
     //投票者质押表, 用OrderId.shareholder检索投票者，用OrderId.sequence查找投票者的订单
-    mapping(address => Voter) internal Voters_;
+    mapping(address => Voter) internal _voters;
 
     //验证者质押表, 用OrderId.shareholder检索验证者
-    mapping (address => Validator) internal Validators_;
+    mapping (address => Validator) internal _validators;
+
+    //待退出验证者索引表
+    address[] _exitings;
+
+    //待退出验证者列表
+    mapping (address=>uint256) internal _exitingValidators;
+
+    //待转手验证者索引表
+    address[] _changes;
+
+    //验证者转手列表
+    mapping(address=>validatorChange) internal _changeValidators;
 
     //更新奖励池
     function updatePool() internal {
@@ -122,7 +145,7 @@ contract StakeManager is DelegateCallBase, Common {
 
     //投票者领取奖励
     function claimReward(uint256 sequence) external {
-        Voter storage voter = Voters_[msg.sender];
+        Voter storage voter = _voters[msg.sender];
         require(voter.orders.length > 0, "There is no order for current user");
         require(sequence < voter.orders.length, "Invalid order sequence");
 
@@ -140,7 +163,7 @@ contract StakeManager is DelegateCallBase, Common {
 
     //验证者领取奖励：因为验证者只有一个质押订单，无需序号
     function claimReward() external {
-        Validator storage val = Validators_[msg.sender];
+        Validator storage val = _validators[msg.sender];
         require(val.order.amount != 0, "msg.sender is not validator");
         require(val.frozen == false, "validator was frozen");
 
@@ -194,7 +217,7 @@ contract StakeManager is DelegateCallBase, Common {
         require(continueFlagValid(continueFlag), "Continue flag error!");
 
         updatePool();
-        Validator storage vali = Validators_[msg.sender];
+        Validator storage vali = _validators[msg.sender];
         require(vali.order.amount == 0, "Validator alread exist.");
 
         Order storage order = vali.order;
@@ -218,7 +241,7 @@ contract StakeManager is DelegateCallBase, Common {
         OrderId memory orderId;
         orderId.shareholder = msg.sender;
 
-        OrderSeq storage orderSeq = OrderSequences_[multi];
+        OrderSeq storage orderSeq = _orderSequences[multi];
         orderSeq.seqList.push(orderId);
     }
 
@@ -230,12 +253,12 @@ contract StakeManager is DelegateCallBase, Common {
         require(validator != address(0), "Validator address is null!");
 
         //检查指向的验证者是为合法验证者
-        Validator storage vali = Validators_[validator];
+        Validator storage vali = _validators[validator];
         require(vali.order.amount != 0, "Validator not exist.");
 
         updatePool();
 
-        Voter storage voter = Voters_[msg.sender];
+        Voter storage voter = _voters[msg.sender];
         Order storage order = voter.orders[voter.orders.length];
 
         fillOrder(order, lockPeriod, continueFlag);
@@ -255,7 +278,7 @@ contract StakeManager is DelegateCallBase, Common {
         vali.voters.push(orderId);
 
         //将订单ID插入时序表中，供自动化检测到期处理
-        OrderSeq storage orderSeq = OrderSequences_[multi];
+        OrderSeq storage orderSeq = _orderSequences[multi];
         orderSeq.seqList.push(orderId);
     }
 
@@ -268,120 +291,225 @@ contract StakeManager is DelegateCallBase, Common {
 
     function markValidatorExit(address validator) internal {
         //1.调用验证者管理合约为节点打上退出标签
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).markExitValidator(validator);
+
         //2.将验证者插入待退出验证者列表（key:验证者地址，value:缓冲截止日期）
+        _exitings.push(validator);
+        _exitingValidators[validator] = block.timestamp + exitingPeriod;
     }
 
     function markValidatorTransfer(address from, address to, address node, bytes memory pk) internal {
         //1.调用验证者管理合约为节点打上退出标签
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).markExitValidator(from);
+
         //2.生成验证者转手信息，将验证者转手信息以转出方地址为key存储
+        _changes.push(from);
+        validatorChange storage ch = _changeValidators[from];
+        ch.receiver = to;
+        ch.node = node;
+        ch.pubKey = pk;
+        ch.expiredTime = block.timestamp + exitingPeriod;
     }
 
     //缓冲期到期后，被区块自动调用
-    function validatorExit(address validator) internal {
+    function validatorExit(address validator, uint256 amount) internal {
         //1.调用验证者管理合约删除验证者信息
+        // --验证者管理合约会在下轮epoch自动删除有退出标记的验证者，所以这里不用调用了
+
         //2.遍历投票者信息，更新投票者奖励，将投票者指向的验证者删除
+        Validator storage v = _validators[validator];
+        for(uint i = 0; i < v.voters.length; i++){
+            address voterAddr = v.voters[i].shareholder;
+            uint seq = v.voters[i].sequence;
+
+           Voter storage user = _voters[voterAddr];
+           Order storage order = user.orders[seq];
+           order.validator = address(0);
+        }
+
         //3.返还质押金和奖励
-        //4.删除验证者信息和质押订单
+        payable(validator).transfer(amount);
+
+        //4.删除验证者相关信息和质押订单
+        for(uint i = 0; i < _exitings.length; i++){
+            if(_exitings[i] == validator){
+                _exitings[i] = _exitings[_exitings.length-1];
+                _exitings.pop();
+            }
+        }
+        delete _exitingValidators[validator];
+        delete _validators[validator];
+
     }
 
     //缓冲期到期后，被区块自动调用
     function validatorTransfer(address from) internal {
         //1.调用验证者管理合约删除转出验证者信息
+        // --验证者管理合约会在下轮epoch自动删除有退出标记的验证者，所以这里不用调用了
+
         //2.调用验证者管理合约为接收者生成验证者信息
+        Validator storage v = _validators[from];
+        validatorChange storage ch = _changeValidators[from];
+        IValidatorManager(VALIDATOR_MANAGER_ADDR).addValidator(
+            ch.receiver,
+            ch.node,
+            ch.receiver,
+            v.order.amount,
+            block.number,
+            "",
+            "",
+            ch.pubKey
+        );
+
         //3.遍历投票者信息，将投票者指向的验证者更新
+        for(uint i = 0; i < v.voters.length; i++){
+            address voterAddr = v.voters[i].shareholder;
+            uint seq = v.voters[i].sequence;
+
+           Voter storage user = _voters[voterAddr];
+           Order storage order = user.orders[seq];
+           order.validator = from;
+        }
+
         //4.将原验证者的质押订单准到新验证者地址下，并更新查询关系
+        _validators[ch.receiver] = v;
+
         //5.返还转出验证者的质押金和奖励
+        //转手交易只负责转手，转手的资金由用户线下处理？
+         //payable(from).transfer(v.order.amount);
+
         //6.删除验证者信息和质押订单
+        for(uint i = 0; i < _changes.length; i++){
+            if(_changes[i] == from){
+                _changes[i] = _changes[_changes.length-1];
+                _changes.pop();
+            }
+        }
+        delete _changeValidators[from];
+        delete _validators[from];
     }
 
+
+
     // 自动处理内容(首先更新奖励池计算奖励):
-    // - 投票者到期：
-    //    - 复投：修改订单开始时间
-    //    - 不续：从质押订单时序表中删除->更新指向验证者的得票额
-    //    - 复利：检查验证者增加复利后，是否超额：
-    //      - 不超额则复利，更新质押额和得票额
-    //      - 超额则复利失败，从质押订单时序表中删除，更新得票额，由投票者手动处理
-    // - 验证者到期：
-    //   - 复投：修改订单开始时间
-    //   - 不续：从质押订单时序表中删除->调用验证者管理合约为节点打上退出标签->缓冲期到期，自动检测退出标签列表。
-    //   - 复利：检查验证者增加复利后，不超额，更新质押额和订单开始时间，超额与不续处理相同。
     // - 遍历验证者待退出列表，缓冲期到期的：将验证者删除，并返还质押，同时遍历所有投票者，更新其奖励，并将其指向验证者删除。
     function autoProcByBlock() external {
-        for(uint i = 0; i < OrderSequences_.length; i++){ //对每个锁仓周期的订单时序表分别处理
-            OrderSeq storage orderSeq = OrderSequences_[i];
+
+        //订单到期处理
+        for(uint i = 0; i < _orderSequences.length; i++){
+            //对每个锁仓周期的订单时序表分别处理
+            OrderSeq storage orderSeq = _orderSequences[i];
 
             for(uint ii = orderSeq.realStartIdx; ii < orderSeq.seqList.length; ii++){
-                OrderId storage id = orderSeq.seqList[ii];
-                bool isValidator;
                 Order storage order;
-                if(Voters_[id.shareholder].orders.length > 0){ //为投票者持有的质押订单
-                    isValidator = false;
-                    require(id.sequence < Voters_[id.shareholder].orders.length, "invalid order sequence");
-                    order = Voters_[id.shareholder].orders[id.sequence];
-                }else{
-                    isValidator = true;
-                    //为验证者持有的质押订单
-                    order = Validators_[id.shareholder].order;
-                }
+                OrderId storage id = orderSeq.seqList[ii];
+                if(_voters[id.shareholder].orders.length > 0){
+                    //投票者持有的质押订单
+                    require(id.sequence < _voters[id.shareholder].orders.length, "invalid order sequence");
+                    order = _voters[id.shareholder].orders[id.sequence];
 
-                if(block.timestamp >= (order.enterTime + order.lockPeriod)){
-                    claimRewardBasic(order);
-                    if(order.continueFlag == NO_CONTINUE){
-                        //不续投
-                        delete orderSeq.seqList[ii];//存储槽被保留，但DB不再存储数据，gas费将被退还
-                        orderSeq.realStartIdx += 1; //如果realStartIdx==seqList.length,for循环不会进入处理，push新元素后，realStartIdx正好指向该元素位置，而length会+1
-                    }else if(order.continueFlag == CONTINUE_PLEDGE){
+                    if(order.continueFlag == CONTINUE_PLEDGE){
                         //复投
                         order.enterTime = block.timestamp;
                     }else if(order.continueFlag == COMPOUND_INTEREST){
                         //复利
-                        if(isValidator){
-                            Validator storage vali = Validators_[id.shareholder];
-                            if(validatorValid(vali)){
-                                if(vali.order.amount + vali.order.unclaimedReward + vali.poll > MAX_PLEDGE_AMOUNT){
-                                    //从订单时序表中删除订单ID
-                                    delete orderSeq.seqList[ii];
-                                    orderSeq.realStartIdx += 1; //如果realStartIdx==seqList.length,for循环不会进入处理，push新元素后，realStartIdx正好指向该元素位置，而length会+1
-                                }else{
-                                    order.enterTime = block.timestamp;
-                                    order.amount += order.unclaimedReward;
-                                }
-                            }else{
-                                //todo: 发送事件提醒验证者
-                            }
-                        }else{
-                            Validator storage vali = Validators_[order.validator];
-                            if(validatorValid(vali)){//验证者还在，且未被冻结
+                        Validator storage vali = _validators[order.validator];
+                        if(validatorValid(vali)){
+                            //验证者还在，且未被冻结
+                            if(vali.order.amount + vali.poll + order.unclaimedReward > MAX_PLEDGE_AMOUNT){
                                 //复利超出验证者总算力限额
-                                if(vali.order.amount + vali.poll + order.amount > MAX_PLEDGE_AMOUNT){
-                                    //复利失败，将质押额从验证者得票额中减除
-                                    vali.poll -= order.amount;
-                                    for(uint iii = 0; iii<vali.voters.length; iii++){
-                                        if(vali.voters[iii].shareholder == id.shareholder && vali.voters[iii].sequence == id.sequence){
-                                            delete vali.voters[iii];
-                                        }
+                                //计算最终奖励
+                                claimRewardBasic(order);
+
+                                //复利导致验证者总质押超额，将质押额从验证者得票额中减除
+                                vali.poll -= order.amount;
+
+                                //将订单指向的验证者索引设为无效值
+                                order.validator = address(0);
+
+                                //从订单有序表中删除订单ID
+                                delete orderSeq.seqList[ii];
+                                orderSeq.realStartIdx += 1;
+
+                                //将投票订单从验证者的投票者列表中删除
+                                for(uint iii = 0; iii<vali.voters.length; iii++){
+                                    if(vali.voters[iii].shareholder == id.shareholder && vali.voters[iii].sequence == id.sequence){
+                                        delete vali.voters[iii];
                                     }
-                                    //将订单指向的验证者索引设为无效值
-                                    order.validator = address(0);
-
-                                    //从订单有序表中删除订单ID
-                                    delete orderSeq.seqList[ii];
-                                    orderSeq.realStartIdx += 1;
-                                }else {
-                                    order.amount += order.unclaimedReward;
-                                    order.enterTime = block.timestamp;
-                                    vali.poll += order.unclaimedReward;
                                 }
-                            }else{
-
-                                //todo: 发送事件提醒投票者
+                            }else {
+                                //复利未导致验证者总质押额超额
+                                order.amount += order.unclaimedReward;
+                                order.enterTime = block.timestamp;
+                                vali.poll += order.unclaimedReward;
                             }
                         }
                     }else{
-                        //非法参数
-                        revert("invalid continue flag");
+                        //不续，到期赎回
+                        //计算最终奖励
+                        claimRewardBasic(order);
+
+                        //更新验证者的投票列表和得票额
+                        Validator storage vali = _validators[order.validator];
+                        if(validatorValid(vali)){
+                            //验证者得票额减去订单质押额
+                            vali.poll -= order.amount;
+                            //将订单从验证者列表中删除
+                            for(uint iii = 0; iii<vali.voters.length; iii++){
+                                if(vali.voters[iii].shareholder == id.shareholder && vali.voters[iii].sequence == id.sequence){
+                                    delete vali.voters[iii];
+                                }
+                            }
+                        }
+
+                        //从订单有序表中删除订单ID
+                        delete orderSeq.seqList[ii];
+                        orderSeq.realStartIdx += 1;
+
+                        //返还质押金额
+                        payable(id.shareholder).transfer(order.amount+order.unclaimedReward);
+                    }
+                }else{
+                    //验证者持有的质押订单
+                    order = _validators[id.shareholder].order;
+                    if(order.continueFlag == CONTINUE_PLEDGE){
+                        //复投
+                        order.enterTime = block.timestamp;
+                    }else if(order.continueFlag == COMPOUND_INTEREST){
+                        //复利
+                        //todo: 验证者复利超过了质押额上限该如何处理？是否让验证者退出？还是按复投处理？此处暂按复投处理，后期需要讨论确认
+                         Validator storage vali = _validators[id.shareholder];
+                        if(order.amount + vali.poll + order.unclaimedReward < MAX_PLEDGE_AMOUNT){
+                            order.amount += order.unclaimedReward;
+                            order.enterTime = block.timestamp;
+                        }else{
+                            //复利超出质押额上限，按照复投处理
+                            order.enterTime = block.timestamp;
+                        }
+                    }else{
+                        //不续, 将验证者标记为待退出验证者
+                        //计算最终奖励
+                        claimRewardBasic(order);
+                        markValidatorExit(id.shareholder);
                     }
                 }
+            }
+        }
+
+        //遍历待退出验证者列表，处理到期退出者
+        for(uint i = 0; i < _exitings.length; i++){
+            uint expired = _exitingValidators[_exitings[i]];
+            if(block.timestamp >= expired){
+                Validator storage vali = _validators[_exitings[i]];
+                validatorExit(_exitings[i], vali.order.amount + vali.order.unclaimedReward);
+            }
+        }
+
+        //遍历转手验证者列表，处理到期转手者
+        for(uint i = 0; i < _changes.length; i++){
+            validatorChange storage vc = _changeValidators[_changes[i]];
+            if(block.timestamp >= vc.expiredTime){
+                validatorTransfer(_changes[i]);
             }
         }
     }
