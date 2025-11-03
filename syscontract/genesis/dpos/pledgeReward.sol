@@ -51,6 +51,7 @@ contract StakeManager is DelegateCallBase, Common {
 
     struct Order {
       uint256 amount;               //质押额
+      uint256 shares;               //质押份数=质押额*锁仓倍数/1e18, 每1ENI（即 1e18 wei）为1份
       uint256 enterTime;            //质押开始时间
       uint256 lockPeriod;           //锁仓周期，根据锁仓周期和质押额，可计算质押倍率后的算力
       uint256 rewardDebt;           //奖励债务，用于记录已结算过的奖励
@@ -128,7 +129,8 @@ contract StakeManager is DelegateCallBase, Common {
         uint256 totalReward = blocksPassed * totalRewardPerBlock;
 
         // 5. 计算每份额应增加的奖励，一个eni为1份(不是1wei)
-        uint256 rewardPerSharePhased = totalReward / (totalStaked / 1e18);
+        //uint256 rewardPerSharePhased = totalReward / (totalStaked / 1e18);
+        uint256 rewardPerSharePhased = totalReward / totalStaked;
 
         // 6. 更新全局累计每份额奖励
         rewardPerShare += rewardPerSharePhased;
@@ -139,8 +141,10 @@ contract StakeManager is DelegateCallBase, Common {
 
     function claimRewardBasic(Order storage order) internal {
         //应该用order.amount先除1e18得出有多少股份，然后再用股份数乘rewardPerShare
-        order.unclaimedReward += ((order.amount / 1e18) * rewardPerShare) - order.rewardDebt;
-        order.rewardDebt = (order.amount / 1e18) * rewardPerShare;
+        //order.unclaimedReward += ((order.amount / 1e18) * rewardPerShare) - order.rewardDebt;
+        //order.rewardDebt = (order.amount / 1e18) * rewardPerShare;
+        order.unclaimedReward += (order.shares * rewardPerShare) - order.rewardDebt;
+        order.rewardDebt = order.shares * rewardPerShare;
     }
 
     //投票者领取奖励
@@ -158,7 +162,10 @@ contract StakeManager is DelegateCallBase, Common {
 
         //未指定验证者，不计算奖励
         require(order.validator != address(0), "There is no validator for current order");
+
+        updatePool();
         claimRewardBasic(order);
+        order.coolingExpired = block.timestamp + coolingPeriod;
     }
 
     //验证者领取奖励：因为验证者只有一个质押订单，无需序号
@@ -166,14 +173,17 @@ contract StakeManager is DelegateCallBase, Common {
         Validator storage val = _validators[msg.sender];
         require(val.order.amount != 0, "msg.sender is not validator");
         require(val.frozen == false, "validator was frozen");
+        require(val.exitExpired ==0 || block.timestamp < val.exitExpired, "The validator has exited.");
 
         Order storage order = val.order;
         require(order.enterTime + order.lockPeriod < block.timestamp, "The lock-up period expires but the pledge is not renewed");
 
+        updatePool();
         claimRewardBasic(order);
+        order.coolingExpired = block.timestamp + coolingPeriod;
     }
 
-    //根据锁仓周期推到质押放大倍数
+    //根据锁仓周期推导质押放大倍数
     function multiNumber(uint256 lockPeriod) internal pure returns(uint256){
         if(lockPeriod == LOCK_TIME_90){
             return POW_MULTI1;
@@ -186,7 +196,8 @@ contract StakeManager is DelegateCallBase, Common {
         }else if(lockPeriod == LOCK_TIME_1440){
             return POW_MULTI5;
         }else{
-            return POW_MULTI_ERR;
+            //return POW_MULTI_ERR;
+            revert("error lock-up period.");
         }
     }
 
@@ -195,15 +206,17 @@ contract StakeManager is DelegateCallBase, Common {
         if((continueFlag == NO_CONTINUE) ||(continueFlag == CONTINUE_PLEDGE)|| (continueFlag == COMPOUND_INTEREST)){
             return true;
         }
-        return false;
+        //return false;
+        revert("error continue type for pledge");
     }
 
     //填充基本订单
-    function fillOrder(Order storage order, uint256 lockPeriod, uint256 continueFlag) internal{
+    function fillOrder(Order storage order, uint256 lockPeriod, uint256 continueFlag, uint256 multi) internal{
         order.amount = msg.value;
+        order.shares = (msg.value * multi) / 1e18;
         order.enterTime = block.timestamp;
         order.lockPeriod = lockPeriod;
-        order.rewardDebt = (order.amount / 1e18) * rewardPerShare;
+        order.rewardDebt = order.shares * rewardPerShare;
         order.unclaimedReward = 0;
         order.continueFlag = continueFlag;
         order.coolingExpired = block.timestamp + coolingPeriod;
@@ -212,19 +225,22 @@ contract StakeManager is DelegateCallBase, Common {
     //验证者质押
     function validatorStake(uint256 lockPeriod, uint256 continueFlag, address node, bytes calldata pubKey) payable external {
         uint256 multi = multiNumber(lockPeriod);
-        require(multi != POW_MULTI_ERR, "Lock period error!");
+        //require(multi != POW_MULTI_ERR, "Lock period error!");
         require(msg.value >= MIN_PLEDGE_AMOUNT, "The transfer amount is less than validator minimum pledge amount!");
-        require(continueFlagValid(continueFlag), "Continue flag error!");
+        require(msg.value <= MAX_PLEDGE_AMOUNT, "The transfer amount is greater than validator max pledge amount!");
+        //require(continueFlagValid(continueFlag), "Continue flag error!");
 
+        continueFlagValid(continueFlag);
         updatePool();
         Validator storage vali = _validators[msg.sender];
         require(vali.order.amount == 0, "Validator alread exist.");
 
         Order storage order = vali.order;
-        fillOrder(order, lockPeriod, continueFlag);
+        fillOrder(order, lockPeriod, continueFlag, multi);
 
-        uint256 pledgePower = order.amount * multi;
-        totalStaked += pledgePower; //将放大后的算力加总到总股本中
+        //uint256 pledgePower = order.amount * multi;
+        //totalStaked += pledgePower; //将放大后的算力加总到总股本中
+        totalStaked += order.shares;
 
         IValidatorManager(VALIDATOR_MANAGER_ADDR).addValidator(
             msg.sender,
@@ -240,9 +256,11 @@ contract StakeManager is DelegateCallBase, Common {
         //将订单ID插入时序表中，供自动化检测到期处理
         OrderId memory orderId;
         orderId.shareholder = msg.sender;
+        orderId.sequence = 0;
 
         OrderSeq storage orderSeq = _orderSequences[multi];
         orderSeq.seqList.push(orderId);
+        //order.coolingExpired = block.timestamp + coolingPeriod;
     }
 
     //投票者质押
@@ -255,20 +273,23 @@ contract StakeManager is DelegateCallBase, Common {
         //检查指向的验证者是为合法验证者
         Validator storage vali = _validators[validator];
         require(vali.order.amount != 0, "Validator not exist.");
+        require(vali.order.amount + vali.poll + msg.value <= MAX_PLEDGE_AMOUNT, "The total amount of pledge for validators has exceeded the limit");
 
         updatePool();
 
         Voter storage voter = _voters[msg.sender];
         Order storage order = voter.orders[voter.orders.length];
 
-        fillOrder(order, lockPeriod, continueFlag);
+        fillOrder(order, lockPeriod, continueFlag, multi);
         order.validator = validator;
 
         //根据锁仓周期放大质押算力
-        uint256 pledgePower = order.amount * multi;
-        totalStaked += pledgePower;
+        //uint256 pledgePower = order.amount * multi;
+        //totalStaked += pledgePower;
+        totalStaked += order.shares;
 
-        //验证者的投票额加上投票者的质押额
+        //得票额和验证者的自质押额用于计算出块奖励，而非质押奖励，所以不需要倍率和份额计算
+        //vali.poll += msg.value / 1e18;
         vali.poll += msg.value;
 
         //验证者中记录支持自己的订单
@@ -280,6 +301,7 @@ contract StakeManager is DelegateCallBase, Common {
         //将订单ID插入时序表中，供自动化检测到期处理
         OrderSeq storage orderSeq = _orderSequences[multi];
         orderSeq.seqList.push(orderId);
+        //order.coolingExpired = block.timestamp + coolingPeriod;
     }
 
     function validatorValid(Validator storage vali) internal view returns (bool) {
@@ -340,6 +362,8 @@ contract StakeManager is DelegateCallBase, Common {
         delete _exitingValidators[validator];
         delete _validators[validator];
 
+        //todo: 将orderId从订单时序表中删除
+
     }
 
     //缓冲期到期后，被区块自动调用
@@ -387,12 +411,51 @@ contract StakeManager is DelegateCallBase, Common {
         }
         delete _changeValidators[from];
         delete _validators[from];
+
+        //todo: 将orderId从订单时序表中删除
     }
 
+    //COMPOUND_INTEREST
+    function voterCompoundInterest(OrderId memory id, Order storage order, OrderSeq storage orderSeq, uint256 idx) internal {
+        Validator storage vali = _validators[order.validator];
+        if(validatorValid(vali)){
+            //验证者还在，且未被冻结
+            if(vali.order.amount + vali.poll + order.unclaimedReward > MAX_PLEDGE_AMOUNT){
+                //复利超出验证者总质押限额
+                //计算最终奖励
+                claimRewardBasic(order);
 
+                //复利导致验证者总质押超额，将质押额从验证者得票额中减除
+                vali.poll -= order.amount;
 
-    // 自动处理内容(首先更新奖励池计算奖励):
-    // - 遍历验证者待退出列表，缓冲期到期的：将验证者删除，并返还质押，同时遍历所有投票者，更新其奖励，并将其指向验证者删除。
+                //将订单指向的验证者索引设为无效值
+                order.validator = address(0);
+
+                //从订单有序表中删除订单ID
+                delete orderSeq.seqList[idx];
+                orderSeq.realStartIdx += 1;
+
+                //将投票订单从验证者的投票者列表中删除
+                for(uint iii = 0; iii<vali.voters.length; iii++){
+                    if(vali.voters[iii].shareholder == id.shareholder && vali.voters[iii].sequence == id.sequence){
+                        //delete vali.voters[iii];
+                        vali.voters[iii] = vali.voters[vali.voters.length - 1];
+                        vali.voters.pop();
+                    }
+                }
+            }else {
+                //复利未导致验证者总质押额超额
+                totalStaked -= order.shares;
+                order.amount += order.unclaimedReward;
+                order.shares = (order.amount * multiNumber(order.lockPeriod))/1e18;
+                totalStaked += order.shares;
+                order.enterTime = block.timestamp;
+                vali.poll += order.unclaimedReward;
+            }
+        }
+    }
+
+    // 自动处理内容：质押到期处理，验证者退出或转手缓冲期到期处理
     function autoProcByBlock() external {
 
         //订单到期处理
@@ -417,7 +480,7 @@ contract StakeManager is DelegateCallBase, Common {
                         if(validatorValid(vali)){
                             //验证者还在，且未被冻结
                             if(vali.order.amount + vali.poll + order.unclaimedReward > MAX_PLEDGE_AMOUNT){
-                                //复利超出验证者总算力限额
+                                //复利超出验证者总质押限额
                                 //计算最终奖励
                                 claimRewardBasic(order);
 
@@ -434,12 +497,17 @@ contract StakeManager is DelegateCallBase, Common {
                                 //将投票订单从验证者的投票者列表中删除
                                 for(uint iii = 0; iii<vali.voters.length; iii++){
                                     if(vali.voters[iii].shareholder == id.shareholder && vali.voters[iii].sequence == id.sequence){
-                                        delete vali.voters[iii];
+                                        //delete vali.voters[iii];
+                                        vali.voters[iii] = vali.voters[vali.voters.length - 1];
+                                        vali.voters.pop();
                                     }
                                 }
                             }else {
                                 //复利未导致验证者总质押额超额
+                                totalStaked -= order.shares;
                                 order.amount += order.unclaimedReward;
+                                order.shares = (order.amount * multiNumber(order.lockPeriod))/1e18;
+                                totalStaked += order.shares;
                                 order.enterTime = block.timestamp;
                                 vali.poll += order.unclaimedReward;
                             }
@@ -457,7 +525,9 @@ contract StakeManager is DelegateCallBase, Common {
                             //将订单从验证者列表中删除
                             for(uint iii = 0; iii<vali.voters.length; iii++){
                                 if(vali.voters[iii].shareholder == id.shareholder && vali.voters[iii].sequence == id.sequence){
-                                    delete vali.voters[iii];
+                                    //delete vali.voters[iii];
+                                    vali.voters[iii] = vali.voters[vali.voters.length - 1];
+                                    vali.voters.pop();
                                 }
                             }
                         }
@@ -480,7 +550,10 @@ contract StakeManager is DelegateCallBase, Common {
                         //todo: 验证者复利超过了质押额上限该如何处理？是否让验证者退出？还是按复投处理？此处暂按复投处理，后期需要讨论确认
                          Validator storage vali = _validators[id.shareholder];
                         if(order.amount + vali.poll + order.unclaimedReward < MAX_PLEDGE_AMOUNT){
+                            totalStaked -= order.shares;
                             order.amount += order.unclaimedReward;
+                            order.shares = (order.amount * multiNumber(order.lockPeriod))/1e18;
+                            totalStaked += order.shares;
                             order.enterTime = block.timestamp;
                         }else{
                             //复利超出质押额上限，按照复投处理
@@ -514,28 +587,219 @@ contract StakeManager is DelegateCallBase, Common {
         }
     }
 
-    //转移质押
-    function transferStake() external{
+    //验证者转移质押
+    function validatorTransferStake(address to, address node, bytes memory pk) external{
+        Validator storage vali = _validators[msg.sender];
+        require(validatorValid(vali), "validator invalid");
 
+        Order storage order = vali.order;
+        require(block.timestamp < order.enterTime + order.lockPeriod, "the lock-up period has expired");
+        require(block.timestamp >= order.coolingExpired, "cooling period has not yet ended");
+
+
+        //将验证者标记为转移，审核缓冲期到期后，将自动执行转移
+        markValidatorTransfer(msg.sender, to, node, pk);
+        order.coolingExpired = block.timestamp + coolingPeriod;
+    }
+
+    //投票者转移质押
+    function voterTransferStake(uint256 sequence, uint256 amount, address to, address validator) external {
+        Voter storage sender = _voters[msg.sender];
+        require(sender.orders.length > 0, "the sender has no pledged orders");
+        require(sequence < sender.orders.length, "invalid sequence");
+
+        Order storage orderS = sender.orders[sequence];
+        require(orderS.amount >= amount, "transfer amount greater than pledged amount");
+        require(block.timestamp < orderS.enterTime + orderS.lockPeriod, "the lock-up period has expired");
+        require(block.timestamp >= orderS.coolingExpired, "cooling period has not yet ended");
+
+        updatePool();
+        uint256 multi = multiNumber(orderS.lockPeriod);
+
+        //生成接收者订单
+        Voter storage recipient = _voters[to];
+        Order storage orderR = recipient.orders[recipient.orders.length];
+
+        //fillOrder(orderR, orderS.lockPeriod, orderS.continueFlag, multi);
+        orderR.amount = amount;
+        orderR.shares = (orderR.amount * multi) / 1e18;
+        orderR.rewardDebt = orderR.shares * rewardPerShare;
+
+        orderR.continueFlag = orderS.continueFlag;
+        orderR.enterTime = orderS.enterTime;
+        orderR.lockPeriod = orderS.lockPeriod;
+        orderR.coolingExpired = block.timestamp + coolingPeriod;
+        orderR.validator = validator;
+
+        if(orderS.amount == amount){
+            //全部转移
+            Validator storage vali = _validators[orderS.validator];
+            require(vali.order.amount > 0, "the validator not exist");
+            require(vali.voters.length > 0, "the validator has no voters");
+
+            //从指向验证者的投票者中删除订单
+            for(uint i = 0; i < vali.voters.length; i++){
+                if(vali.voters[i].shareholder == msg.sender && vali.voters[i].sequence == sequence){
+                    //delete vali.voters[i];
+                    vali.voters[i] = vali.voters[vali.voters.length - 1];
+                    vali.voters.pop();
+                    break;
+                }
+            }
+
+            //将质押额从指向验证者的得票额中删除
+            vali.poll -= orderS.amount;
+
+            //删除订单
+            //delete sender.orders[sequence];
+            sender.orders[sequence] = sender.orders[sender.orders.length - 1];
+            sender.orders.pop();
+
+            //如果投票者的订单簿为空，删除投票者
+            if(sender.orders.length ==0){
+                delete _voters[msg.sender];
+            }
+
+            //更改订单时序表，将时序表中的位置挪移给接收者
+            OrderSeq storage orderSeq = _orderSequences[multi];
+            for(uint i = orderSeq.realStartIdx; i < orderSeq.seqList.length; i++){
+                if(orderSeq.seqList[i].shareholder == msg.sender && orderSeq.seqList[i].sequence == sequence){
+                    orderSeq.seqList[i].shareholder = to;
+                }
+            }
+        }else{
+            //部分转移
+            //totalStaked -= orderS.shares;
+            orderS.amount -= amount;
+            orderS.shares = (orderS.amount * multi) / 1e18;
+            //totalStaked += orderS.shares;//转移质押，总质押额不变
+            orderS.coolingExpired = block.timestamp + coolingPeriod;
+
+            //转出者验证者更新
+            Validator storage valiS = _validators[orderS.validator];
+            require(valiS.order.amount > 0, "the validator not exist");
+            require(valiS.voters.length > 0, "the validator has no voters");
+
+            //将转出方订单质押额从指向验证者的得票额中删除
+            valiS.poll -= amount;
+
+            //接收者指向的验证者检查
+            Validator storage valiR = _validators[orderR.validator];
+            require(valiR.order.amount > 0, "the validator not exist");
+            require(valiR.voters.length > 0, "the validator has no voters");
+            require(valiR.order.amount + valiR.poll + amount <= MAX_PLEDGE_AMOUNT, "The total staking amount of the validators pointed to by the recipient has exceeded the limit");
+
+            //接收者指向的验证者得票额更新
+            valiR.poll += amount;
+
+            //接收者指向验证者中记录支持自己的订单
+            OrderId memory orderIdR;
+            orderIdR.shareholder = to;
+            orderIdR.sequence = recipient.orders.length;
+            valiR.voters.push(orderIdR);
+
+            //将接收订单ID插入时序表中，供自动化检测到期处理
+            OrderSeq storage orderSeq = _orderSequences[multi];
+            orderSeq.seqList.push(orderIdR);
+        }
     }
 
     //续质押，修改续质押参数，选项有不续，复投，复利，其他为非法参数，直接报错返回
-    function reStake(uint256 continueFlag) external{
+    function reStake(uint256 continueFlag, uint256 sequence) external{
+        require(continueFlag == 0 || continueFlag == 1 || continueFlag == 2, "invalid parameter");
+        updatePool();
 
+        Validator storage vali = _validators[msg.sender];
+        if(vali.order.amount != 0){
+            //验证者续质押
+            Order storage order = vali.order;
+            require(block.timestamp >= order.coolingExpired, "the order is in the cooling period");
+            require(block.timestamp < order.enterTime + order.lockPeriod, "the order lock has expired");
+
+            order.continueFlag = continueFlag;
+            return;
+        }
+
+        Voter storage voter = _voters[msg.sender];
+        require(voter.orders.length != 0 && sequence < voter.orders.length, "invalid sequence");
+
+        Order storage order = voter.orders[sequence];
+        require(block.timestamp < order.enterTime + order.lockPeriod, "the order lock has expired");
+        require(block.timestamp >= order.coolingExpired, "the order is in the cooling period");
+
+        order.continueFlag = continueFlag;
+        order.coolingExpired = block.timestamp + coolingPeriod;
     }
 
     //切换指定订单指向的验证者
     function changeOrderValidator(uint256 sequence, address validator) external{
+        Voter storage voter = _voters[msg.sender];
+        require(voter.orders.length != 0 && sequence < voter.orders.length, "invalid sequence");
 
+        Order storage order = voter.orders[sequence];
+        require(block.timestamp < order.enterTime + order.lockPeriod, "the order lock has expired");
+        require(block.timestamp >= order.coolingExpired, "the order is in the cooling period");
+
+        //更新旧验证者和新验证者的投票订单与得票额
+        Validator storage newVali = _validators[validator];
+        require(validatorValid(newVali), "invalid validator");
+        require(newVali.order.amount + newVali.poll + order.amount <= MAX_PLEDGE_AMOUNT, "The total staking amount of the validators has exceeded the limit");
+
+        //新指向验证者更新得票额
+        newVali.poll += order.amount;
+
+        //新指向验证者中记录支持自己的订单ID
+        OrderId memory orderId;
+        orderId.shareholder = msg.sender;
+        orderId.sequence = sequence;
+        newVali.voters.push(orderId);
+
+        //旧验证者更新得票额
+        Validator storage oldVali = _validators[order.validator];
+        require(validatorValid(oldVali), "invalid validator");
+        oldVali.poll -= order.amount;
+
+        //从旧指向验证者的投票者中删除订单
+        for(uint i = 0; i < oldVali.voters.length; i++){
+            if(oldVali.voters[i].shareholder == msg.sender && oldVali.voters[i].sequence == sequence){
+                //delete oldVali.voters[i];
+                oldVali.voters[i] = oldVali.voters[oldVali.voters.length - 1];
+                oldVali.voters.pop();
+                break;
+            }
+        }
+
+        //更新指向的验证者和操作冷却期
+        order.validator = validator;
+        order.coolingExpired = block.timestamp + coolingPeriod;
     }
 
-    //提取奖励
-    function withdrawProfit() external{
-
-    }
 
     //到期赎回
-    function redemption() external{
+    function redemption(uint256 sequence) external{
+        updatePool();
+
+        Validator storage vali = _validators[msg.sender];
+        if(vali.order.amount != 0){
+            require(validatorValid(vali), "invalid validator");
+            require(block.timestamp >= vali.order.enterTime + vali.order.lockPeriod, "the order lock has not expired");
+            require(block.timestamp >= vali.order.coolingExpired, "the order is in the cooling period");
+
+
+            //标记退出，审核缓冲期过后，会自动退出并返还质押金与奖励
+            markValidatorExit(msg.sender);
+            return;
+        }
+
+        Voter storage voter = _voters[msg.sender];
+        require(voter.orders.length != 0 && sequence < voter.orders.length, "invalid sequence");
+
+        Order storage order = voter.orders[sequence];
+        require(block.timestamp >= order.enterTime + order.lockPeriod, "the order lock has not expired");
+        require(block.timestamp >= vali.order.coolingExpired, "the order is in the cooling period");
+
+        payable(msg.sender).transfer(order.amount + order.unclaimedReward);
+        //todo: 删除订单，需要与自动处理方法中，订单到期不续的情况协调好
 
     }
 
