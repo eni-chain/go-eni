@@ -532,12 +532,12 @@ contract StakeManager is DelegateCallBase, Common {
                             }
                         }
 
-                        //从订单有序表中删除订单ID
+                        //从订单有序表中删除订单ID，但不从订单映射表中删除存储的订单，订单在用户赎回的时候删除
                         delete orderSeq.seqList[ii];
                         orderSeq.realStartIdx += 1;
 
-                        //返还质押金额
-                        payable(id.shareholder).transfer(order.amount+order.unclaimedReward);
+                        //返还质押金额，不自动返回质押金额，有用户赎回的时候返还
+                        //payable(id.shareholder).transfer(order.amount+order.unclaimedReward);
                     }
                 }else{
                     //验证者持有的质押订单
@@ -781,6 +781,7 @@ contract StakeManager is DelegateCallBase, Common {
 
         Validator storage vali = _validators[msg.sender];
         if(vali.order.amount != 0){
+            //用户为验证者
             require(validatorValid(vali), "invalid validator");
             require(block.timestamp >= vali.order.enterTime + vali.order.lockPeriod, "the order lock has not expired");
             require(block.timestamp >= vali.order.coolingExpired, "the order is in the cooling period");
@@ -791,6 +792,7 @@ contract StakeManager is DelegateCallBase, Common {
             return;
         }
 
+        //用户为投票者
         Voter storage voter = _voters[msg.sender];
         require(voter.orders.length != 0 && sequence < voter.orders.length, "invalid sequence");
 
@@ -798,8 +800,9 @@ contract StakeManager is DelegateCallBase, Common {
         require(block.timestamp >= order.enterTime + order.lockPeriod, "the order lock has not expired");
         require(block.timestamp >= vali.order.coolingExpired, "the order is in the cooling period");
 
+        //转账返还质押金
         payable(msg.sender).transfer(order.amount + order.unclaimedReward);
-        //todo: 删除订单，需要与自动处理方法中，订单到期不续的情况协调好
+        //todo: 删除订单，需要与自动处理方法中，订单到期不续的情况协调好--自动处理那块儿，不应该缓冲期到期自动删除，而应该在这里，由用户手动赎回时删除
 
     }
 
