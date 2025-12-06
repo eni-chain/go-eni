@@ -45,19 +45,18 @@ type PrecompileExecutor struct {
 	TransferWithDefaultTimeoutID []byte
 }
 
-func NewPrecompile(
-	transferKeeper pcommon.TransferKeeper,
-	evmKeeper pcommon.EVMKeeper,
-	clientKeeper pcommon.ClientKeeper,
-	connectionKeeper pcommon.ConnectionKeeper) (*pcommon.DynamicGasPrecompile, error) {
+func NewPrecompile(transferKeeper pcommon.TransferKeeper) (*pcommon.DynamicGasPrecompile, error) {
+	//evmKeeper pcommon.EVMKeeper,
+	//clientKeeper pcommon.ClientKeeper,
+	//connectionKeeper pcommon.ConnectionKeeper,
 	//channelKeeper pcommon.ChannelKeeper) (*pcommon.DynamicGasPrecompile, error) {
 	newAbi := pcommon.MustGetABI(f, "abi.json")
 
 	p := &PrecompileExecutor{
-		transferKeeper:   transferKeeper,
-		evmKeeper:        evmKeeper,
-		clientKeeper:     clientKeeper,
-		connectionKeeper: connectionKeeper,
+		transferKeeper: transferKeeper,
+		//evmKeeper:        evmKeeper,
+		//clientKeeper:     clientKeeper,
+		//connectionKeeper: connectionKeeper,
 		//channelKeeper:    channelKeeper,
 	}
 
@@ -65,8 +64,8 @@ func NewPrecompile(
 		switch name {
 		case TransferMethod:
 			p.TransferID = m.ID
-		case TransferWithDefaultTimeoutMethod:
-			p.TransferWithDefaultTimeoutID = m.ID
+			//case TransferWithDefaultTimeoutMethod:
+			//	p.TransferWithDefaultTimeoutID = m.ID
 		}
 	}
 
@@ -167,8 +166,8 @@ func (p PrecompileExecutor) transfer(ctx sdk.Context, method *abi.Method, args [
 		return
 	}
 
-	_, err = p.transferKeeper.Transfer(sdk.WrapSDKContext(ctx), &msg)
-
+	//_, err = p.transferKeeper.Transfer(sdk.WrapSDKContext(ctx), &msg)
+	p.transferKeeper.Logger(ctx)
 	if err != nil {
 		rerr = err
 		return

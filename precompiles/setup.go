@@ -1,6 +1,8 @@
 package precompiles
 
 import (
+	"github.com/eni-chain/go-eni/precompiles/ibc"
+	"github.com/eni-chain/go-eni/precompiles/utils"
 	"sync"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -10,6 +12,8 @@ import (
 
 var SetupMtx = &sync.Mutex{}
 var Initialized = false
+
+type VersionedPrecompiles map[string]vm.PrecompiledContract
 
 type PrecompileInfo struct {
 	ABI     abi.ABI
@@ -147,4 +151,25 @@ func addPrecompileToVM(p IPrecompile) {
 	vm.PrecompiledAddressesIstanbul = append(vm.PrecompiledAddressesIstanbul, p.Address())
 	vm.PrecompiledAddressesBerlin = append(vm.PrecompiledAddressesBerlin, p.Address())
 	vm.PrecompiledAddressesCancun = append(vm.PrecompiledAddressesCancun, p.Address())
+}
+
+func GetCustomPrecompiles(
+	latestUpgrade string,
+	keepers utils.Keepers,
+) map[ecommon.Address]utils.VersionedPrecompiles {
+	return map[ecommon.Address]utils.VersionedPrecompiles{
+		//ecommon.HexToAddress(bank.BankAddress):               bank.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(wasmd.WasmdAddress):             wasmd.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(json.JSONAddress):               json.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(addr.AddrAddress):               addr.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(staking.StakingAddress):         staking.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(gov.GovAddress):                 gov.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(distribution.DistrAddress):      distribution.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(oracle.OracleAddress):           oracle.GetVersioned(latestUpgrade, keepers),
+		ecommon.HexToAddress(ibc.IBCAddress): ibc.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(pointer.PointerAddress):         pointer.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(pointerview.PointerViewAddress): pointerview.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(p256.P256VerifyAddress):         p256.GetVersioned(latestUpgrade, keepers),
+		//ecommon.HexToAddress(solo.SoloAddress):               solo.GetVersioned(latestUpgrade, keepers),
+	}
 }

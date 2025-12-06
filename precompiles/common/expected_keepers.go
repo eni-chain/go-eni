@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 	"github.com/cosmos/ibc-go/v8/modules/core/exported"
 
@@ -13,7 +14,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ibctypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	//ibctypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	"github.com/eni-chain/go-eni/utils"
 	//oracletypes "github.com/eni-chain/go-eni/x/oracle/types"
 	"github.com/ethereum/go-ethereum/common"
@@ -99,7 +100,8 @@ type DistributionKeeper interface {
 }
 
 type TransferKeeper interface {
-	Transfer(goCtx context.Context, msg *ibctypes.MsgTransfer) (*ibctypes.MsgTransferResponse, error)
+	//Transfer(goCtx context.Context, msg *ibctypes.MsgTransfer) (*ibctypes.MsgTransferResponse, error)
+	Logger(ctx sdk.Context) log.Logger
 }
 
 type ClientKeeper interface {

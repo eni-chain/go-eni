@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var LatestUpgrade = "0.2.2"
+
 // NOTE: When performing upgrades, make sure to keep / register the handlers
 // for both the current (n) and the previous (n-1) upgrade name. There is a bug
 // in a missing value in a log statement for which the fix is not released

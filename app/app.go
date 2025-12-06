@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/eni-chain/go-eni/precompiles"
 	"io"
 
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -342,6 +343,8 @@ func New(
 	app.SetAnteHandler(anteHandler)
 	app.SetEvmMsgsHandler(app.SetEvmMsgs)
 	app.SetEvmResultsHandler(app.EvmKeeper.SetTxResults)
+	customPrecompiles := precompiles.GetCustomPrecompiles(LatestUpgrade, app.GetPrecompileKeepers())
+	app.EvmKeeper.SetCustomPrecompiles(customPrecompiles, LatestUpgrade)
 
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
