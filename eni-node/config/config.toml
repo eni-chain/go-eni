@@ -270,6 +270,14 @@ dial_timeout = "3s"
 ###          Mempool Configuration Option          ###
 #######################################################
 [mempool]
+# Temporary modification
+# The max number of transactions that the consensus layer can pull each time, the original value is 10,000
+pull_max_txs = 100
+#The max number of transactions that the consensus layer can pull each time limit by gas,the original value is 10,000
+max_block_gas = 100000000
+
+#The maximum gas for single transaction
+max_tx_gas = 4000
 
 # The type of mempool for this node to use.
 #
