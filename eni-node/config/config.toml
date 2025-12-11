@@ -277,7 +277,7 @@ pull_max_txs = 100
 max_block_gas = 100000000
 
 #The maximum gas for single transaction
-max_tx_gas = 4000
+max_tx_gas = 30000000
 
 # The type of mempool for this node to use.
 #
