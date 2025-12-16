@@ -43,7 +43,7 @@ All these features combine to unlock a brand new, scalable design space for the 
 
 ## Deployment Guide
 
-**1. Clone git repository and build the node**
+### 1. Clone git repository and build the node
 
 ```bash
 git clone https://github.com/eni-chain/go-eni.git
@@ -51,7 +51,7 @@ cd go-eni
 git checkout $VERSION
 make build
 ```
-**2. Start a Single Node**
+### 2. Start a Single Node
 ```bash
  cd ${PROJECT_DIR}
  ./build/enid start --home=./eni-node
@@ -59,7 +59,7 @@ make build
 ```
 🔧 Config path for single node: ${PROJECT_DIR}/eni-node
 
-**3. Start a 4-Node Local Network**
+### 3. Start a 4-Node Local Network
 ```bash
   make start4-node
 ```
@@ -68,15 +68,13 @@ make build
 This will launch a 4-node validator testnet locally.
 
 
-**4. Stop the 4-Node Network**
+### 4. Stop the 4-Node Network
 ```bash
   make stop4-node
 ```
 Gracefully stops all running processes from start4-node.
 
-
-
-**5. Clean Node Data**
+### 5. Clean Node Data
 - Single Node Reset
 ```bash
   make reset-eni-node
@@ -86,6 +84,102 @@ Gracefully stops all running processes from start4-node.
   make reset-multi-node
  ```
 Removes all blockchain data and configuration from the respective node directories.
+
+## Full node network access configuration
+If you want to start a new full node, join the ENI mainnet, testnet, or other blockchain networks deployed by ENI code, you should follow these steps.
+
+### 1. Clone git repository and build the node
+
+```bash
+git clone https://github.com/eni-chain/go-eni.git
+cd go-eni
+git checkout $VERSION
+make build
+```
+
+### 2. Node configuration copy
+
+The basic configuration of the new node must be consistent with the configuration of other nodes in the blockchain network to be joined. Therefore, a copy of the node configuration should be copied from any other node in the network first, and sensitive information such as the node's key should be deleted, and then sent to the new node user.
+
+This step is applied by the new node user to the official blockchain network to be joined, and sent to the new node user after being operated by the official team.
+
+#### 2.1 Configuration copy
+
+Copy a configuration from any node to be added to the network.
+
+```bash
+cd go-eni/eni-nodes
+
+# node5 should be replaced with the actual name of the new node
+cp -r node4 node5
+```
+#### 2.2 Delete sensitive data
+
+Delete sensitive and redundant data from the copy configuration.
+
+```bash
+# node5 should be replaced with the actual name of the new node
+cd go-eni/eni-nodes/node5
+
+# After deleting the sensitive data of the node and starting the new node, these two files will be automatically generated
+rm -rf config/priv_validator_key.json
+rm -rf config/node_key.json
+
+# Delete redundant data
+rm -rf data
+rm -rf keyring-test
+rm -rf config/gentx
+```
+
+After deleting sensitive data, the configuration copy is sent to the new node.
+
+### 3 Configuration modification
+
+#### 3.1 Configuration must be modified
+
+The following configuration items are mandatory changes, otherwise network node name conflicts may occur.
+
+```bash
+# node5 should be replaced with the actual name of the new node
+moniker = "node5"
+```
+
+#### 3.2 Optional configuration modification
+
+The following content is optional to modify, but it is strongly recommended not to modify it. Generally, only when multiple nodes are started on one machine, in order to prevent port conflicts, the port of the configuration item will be modified.
+
+**Config.toml configuration**
+
+```bash
+# TCP or UNIX socket address of the ABCI application,
+# or the name of an ABCI application compiled in with the CometBFT binary
+proxy_app = "tcp://127.0.0.1:26608"
+
+[rpc]
+# TCP or UNIX socket address for the RPC server to listen on
+laddr = "tcp://127.0.0.1:26697"
+
+[p2p]
+# Address to listen for incoming connections
+laddr = "tcp://0.0.0.0:26696"
+```
+
+**App.toml configuration**
+
+```bash
+[evm]
+http_enabled = true
+http_port = 8595
+```
+
+### 4 Node startup
+
+After the configuration modification is completed, you can start the node to join the blockchain network.
+
+```bash
+#node5 should be replaced with the actual name of the new node
+nohup ./build/enid start --home=./eni-nodes/node5 &> ./build/node.log &
+```
 
 # Build with Us!
 If you are interested in building with Eni Network:  
