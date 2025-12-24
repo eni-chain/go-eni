@@ -19,7 +19,7 @@ version = "0.38.17"
 proxy_app = "tcp://127.0.0.1:26608"
 
 # A custom human readable name for this node
-moniker = "mynode"
+moniker = "node1"
 
 # Database backend: goleveldb | cleveldb | boltdb | rocksdb | badgerdb
 # * goleveldb (github.com/syndtr/goleveldb - most popular implementation)
@@ -92,7 +92,7 @@ laddr = "tcp://0.0.0.0:26607"
 # A list of origins a cross-domain request can be executed from
 # Default value '[]' disables cors support
 # Use '["*"]' to allow any origin
-cors_allowed_origins = ["*", ]
+cors_allowed_origins = []
 
 # A list of methods the client is allowed to use with cross-domain requests
 cors_allowed_methods = ["HEAD", "GET", "POST", ]
@@ -214,7 +214,7 @@ external_address = ""
 seeds = ""
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = "be144eb017cf71028ee1a87c872fd47222e950a2@localhost:26656"
+persistent_peers = "aeae7d4753419b11c958248de72fc8ba26460701@localhost:26656,c816663066d786f89e61c23076a37e0c0c81be7d@localhost:26666,9b6526775a0b81e72b2e1ed9a1ad7c58601618ff@localhost:26676,66594928af8120b4af318125b5d23f5545cf03a7@localhost:26686,"
 
 # Path to address book
 addr_book_file = "config/addrbook.json"
@@ -260,7 +260,7 @@ seed_mode = false
 private_peer_ids = ""
 
 # Toggle to disable guard against peers connecting from the same ip.
-allow_duplicate_ip = false
+allow_duplicate_ip = true
 
 # Peer connection configuration.
 handshake_timeout = "20s"
@@ -270,6 +270,11 @@ dial_timeout = "3s"
 ###          Mempool Configuration Option          ###
 #######################################################
 [mempool]
+# Temporary modification
+# The max number of transactions that the consensus layer can pull each time, the original value is 10,000
+pull_max_txs = 100
+#The max number of transactions that the consensus layer can pull each time limit by gas,the original value is 10,000
+max_block_gas = 100000000
 
 # The type of mempool for this node to use.
 #
@@ -289,8 +294,8 @@ type = "flood"
 recheck = true
 
 # recheck_timeout is the time the application has during the rechecking process
-# to return CheckTx responses, once all requests have been sent. Responses that 
-# arrive after the timeout expires are discarded. It only applies to 
+# to return CheckTx responses, once all requests have been sent. Responses that
+# arrive after the timeout expires are discarded. It only applies to
 # non-local ABCI clients and when recheck is enabled.
 #
 # The ideal value will strongly depend on the application. It could roughly be estimated as the
@@ -313,7 +318,7 @@ broadcast = true
 wal_dir = ""
 
 # Maximum number of transactions in the mempool
-size = 50000
+size = 5000
 
 # Limit the total size of all txs in the mempool.
 # This only accounts for raw transactions (e.g. given 1MB transactions and
@@ -351,6 +356,10 @@ max_batch_bytes = 0
 # performance results using the default P2P configuration.
 experimental_max_gossip_connections_to_persistent_peers = 0
 experimental_max_gossip_connections_to_non_persistent_peers = 0
+pending-size = 5000
+
+max-pending-txs-bytes = 1073741824
+
 
 #######################################################
 ###         State Sync Configuration Options        ###
@@ -361,7 +370,7 @@ experimental_max_gossip_connections_to_non_persistent_peers = 0
 # the network to take and serve state machine snapshots. State sync is not attempted if the node
 # has any local state (LastBlockHeight > 0). The node will have a truncated block history,
 # starting from the height of the snapshot.
-enable = false
+enable = true
 
 # RPC servers (comma-separated) for light client verification of the synced state machine and
 # retrieval of state data for node bootstrapping. Also needs a trusted height and corresponding
@@ -369,9 +378,9 @@ enable = false
 #
 # For Cosmos SDK-based chains, trust_period should usually be about 2/3 of the unbonding time (~2
 # weeks) during which they can be financially punished (slashed) for misbehavior.
-rpc_servers = ""
-trust_height = 0
-trust_hash = ""
+rpc_servers = "127.0.0.1:26657,127.0.0.1:26667"
+trust_height = 1
+trust_hash = "153E44FE19D6A85CC0B09B5A395D9192B5AC95243E90083969DEAE6045E1BA73"
 trust_period = "168h0m0s"
 
 # Time to spend discovering snapshots before initiating a restore.
@@ -409,7 +418,7 @@ version = "v0"
 wal_file = "data/cs.wal/wal"
 
 # How long we wait for a proposal block before prevoting nil
-timeout_propose = "1s"
+timeout_propose = "3s"
 # How much timeout_propose increases with each round
 timeout_propose_delta = "500ms"
 # How long we wait after receiving +2/3 prevotes for “anything” (ie. not a single block or nil)
@@ -483,7 +492,7 @@ psql-conn = ""
 # When true, Prometheus metrics are served under /metrics on
 # PrometheusListenAddr.
 # Check out the documentation for the list of available metrics.
-prometheus = true
+prometheus = false
 
 # Address to listen for Prometheus collector(s) connections
 prometheus_listen_addr = ":26660"
