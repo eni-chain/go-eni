@@ -298,5 +298,5 @@ ss-import-num-workers = 1
 http_enabled = true
 http_port = 8505
 ws_enabled = true
-ws_port = 8546
+ws_port = 8506
 
