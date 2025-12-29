@@ -379,8 +379,8 @@ enable = true
 # For Cosmos SDK-based chains, trust_period should usually be about 2/3 of the unbonding time (~2
 # weeks) during which they can be financially punished (slashed) for misbehavior.
 rpc_servers = "127.0.0.1:26657,127.0.0.1:26667"
-trust_height = 1
-trust_hash = "153E44FE19D6A85CC0B09B5A395D9192B5AC95243E90083969DEAE6045E1BA73"
+trust_height = 2
+trust_hash = "9DE5F86F1720CA863EB26426ECE642645BEAEA3DC5E7AEE1AF7061CA6C2C9419"
 trust_period = "168h0m0s"
 
 # Time to spend discovering snapshots before initiating a restore.
