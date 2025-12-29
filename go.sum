@@ -501,6 +501,8 @@ github.com/eni-chain/eni-cosmos/store v0.0.0-20250623111109-3509f0c4ad27 h1:T3JA
 github.com/eni-chain/eni-cosmos/store v0.0.0-20250623111109-3509f0c4ad27/go.mod h1:jdnWIGc2FvmJAAqCYncH8p3HTWGWfB9b/XvdTI+T+m4=
 github.com/eni-chain/eni-db v0.0.0-20250515110049-b80f3999693b h1:kuM8zg6BnzS979Mu3JYF7+4ixDwzU05gJFQ3PU83OkU=
 github.com/eni-chain/eni-db v0.0.0-20250515110049-b80f3999693b/go.mod h1:+i++fYfO7H+HeVYKJjO9zI+bBAfKKLUCK33/jmzHsI4=
+github.com/eni-chain/eni-db v0.0.0-20251229121612-503b8b375e14 h1:MVHw0keFWNSxioyNLOsloeyMuZnPJetDtP4WgHxpdqs=
+github.com/eni-chain/eni-db v0.0.0-20251229121612-503b8b375e14/go.mod h1:+i++fYfO7H+HeVYKJjO9zI+bBAfKKLUCK33/jmzHsI4=
 github.com/eni-chain/go-ethereum v0.0.0-20251020134746-5174f1d4f10d h1:WqS4/RkNPGkyyojlOMVQWUNHMLtDWJuM1GkcM52AY5A=
 github.com/eni-chain/go-ethereum v0.0.0-20251020134746-5174f1d4f10d/go.mod h1:4q+4t48P2C03sjqGvTXix5lEOplf5dz4CTosbjt5tGs=
 github.com/envoyproxy/go-control-plane v0.6.9/go.mod h1:SBwIajubJHhxtWwsL9s8ss4safvEdbitLhGGK48rN6g=
