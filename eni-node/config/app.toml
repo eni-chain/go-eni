@@ -129,6 +129,7 @@ ss-keep-last-version = true
   http_port = 8545
   ws_enabled = true
   ws_port = 8546
+  debug_trace_enable = true
 
 [update]
 contract_admin_addr= "0x110b6FB6675Fb2a310394ac3a43b23Fc23aB9BC6"

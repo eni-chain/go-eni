@@ -86,6 +86,8 @@ type Config struct {
 
 	// test api enables certain override apis for integration test situations
 	EnableTestAPI bool `mapstructure:"enable_test_api"`
+
+	DebugTraceEnable bool `mapstructure:"debug_trace_enable"`
 }
 
 var DefaultConfig = Config{
@@ -110,6 +112,7 @@ var DefaultConfig = Config{
 	MaxBlocksForLog:         2000,
 	MaxSubscriptionsNewHead: 10000,
 	EnableTestAPI:           false,
+	DebugTraceEnable:        false,
 }
 
 const (
@@ -134,6 +137,7 @@ const (
 	flagMaxBlocksForLog         = "evm.max_blocks_for_log"
 	flagMaxSubscriptionsNewHead = "evm.max_subscriptions_new_head"
 	flagEnableTestAPI           = "evm.enable_test_api"
+	flagDebugTraceEnable        = "evm.debug_trace_enable"
 )
 
 func ReadConfig(opts servertypes.AppOptions) (Config, error) {
@@ -241,6 +245,11 @@ func ReadConfig(opts servertypes.AppOptions) (Config, error) {
 	}
 	if v := opts.Get(flagEnableTestAPI); v != nil {
 		if cfg.EnableTestAPI, err = cast.ToBoolE(v); err != nil {
+			return cfg, err
+		}
+	}
+	if v := opts.Get(flagDebugTraceEnable); v != nil {
+		if cfg.DebugTraceEnable, err = cast.ToBoolE(v); err != nil {
 			return cfg, err
 		}
 	}

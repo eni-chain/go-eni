@@ -123,15 +123,23 @@ func NewEVMHTTPServer(
 			Namespace: "web3",
 			Service:   &Web3API{},
 		},
-		{
-			Namespace: "debug",
-			Service:   debugAPI,
-		},
+		//{
+		//	Namespace: "debug",
+		//	Service:   debugAPI,
+		//},
 		{
 			Namespace: "eni",
 			Service:   eniDebugAPI,
 		},
 	}
+
+	if config.DebugTraceEnable {
+		apis = append(apis, rpc.API{
+			Namespace: "debug",
+			Service:   debugAPI,
+		})
+	}
+
 	// Test API can only exist on non-live chain IDs.  These APIs instrument certain overrides.
 	//ctx := sdk.UnwrapSDKContext(ctx)
 	if config.EnableTestAPI && !evmCfg.IsLiveChainID(ctx) {
