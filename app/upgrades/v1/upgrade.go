@@ -79,27 +79,42 @@ func (h *HardForkUpgradeHandler) GetTargetHeight() int64 {
 }
 
 func (h *HardForkUpgradeHandler) ExecuteHandler(ctx sdk.Context) error {
+	logger := ctx.Logger()
 	oldAddr := common.HexToAddress(h.oldContractAddr)
 	newAddr := common.HexToAddress(h.newContractAddr)
+
+	logger.Info("========== HARD FORK BEGIN ==========")
+	logger.Info(fmt.Sprintf("[HardFork] handler=%s chainID=%s height=%d",
+		h.name, h.targetChainID, ctx.BlockHeight()))
+	logger.Info(fmt.Sprintf("[HardFork] old contract (target): %s", h.oldContractAddr))
+	logger.Info(fmt.Sprintf("[HardFork] new contract (source): %s", h.newContractAddr))
+
+	// Read existing bytecode of the old contract before replacement
+	oldCode := h.evmKeeper.GetCode(ctx, oldAddr)
+	logger.Info(fmt.Sprintf("[HardFork] old contract current bytecode size: %d bytes", len(oldCode)))
 
 	// Read the correct bytecode from the new contract
 	code := h.evmKeeper.GetCode(ctx, newAddr)
 	if len(code) == 0 {
+		logger.Error(fmt.Sprintf("[HardFork] FAILED: source contract %s has no bytecode", h.newContractAddr))
 		return fmt.Errorf("source contract %s has no bytecode, cannot perform bytecode redirect", h.newContractAddr)
 	}
-
-	ctx.Logger().Info(fmt.Sprintf(
-		"Hard fork v1: redirecting bytecode from %s to %s (code size: %d bytes)",
-		h.newContractAddr, h.oldContractAddr, len(code),
-	))
+	logger.Info(fmt.Sprintf("[HardFork] new contract bytecode size: %d bytes", len(code)))
 
 	// Write the correct bytecode to the old contract address
 	h.evmKeeper.SetCode(ctx, oldAddr, code)
+	logger.Info(fmt.Sprintf("[HardFork] SetCode executed: wrote %d bytes to %s", len(code), h.oldContractAddr))
 
-	ctx.Logger().Info(fmt.Sprintf(
-		"Hard fork v1: bytecode redirect completed for %s",
-		h.oldContractAddr,
-	))
+	// Verify the write was successful
+	verifyCode := h.evmKeeper.GetCode(ctx, oldAddr)
+	if len(verifyCode) != len(code) {
+		logger.Error(fmt.Sprintf("[HardFork] VERIFICATION FAILED: expected %d bytes, got %d bytes at %s",
+			len(code), len(verifyCode), h.oldContractAddr))
+		return fmt.Errorf("bytecode verification failed for %s: expected %d bytes, got %d bytes",
+			h.oldContractAddr, len(code), len(verifyCode))
+	}
+	logger.Info(fmt.Sprintf("[HardFork] VERIFICATION PASSED: %s now has %d bytes of bytecode", h.oldContractAddr, len(verifyCode)))
+	logger.Info("========== HARD FORK COMPLETE ==========")
 
 	return nil
 }

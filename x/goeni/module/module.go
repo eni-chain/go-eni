@@ -179,15 +179,20 @@ func (am *AppModule) BeginBlock(goCtx context.Context) error {
 
 	// Initialize HardForkManager on first call (chain ID is only available at runtime)
 	if !am.forkInitialized {
-		am.HardForkManager = upgrades.NewHardForkManager(ctx.ChainID())
+		chainID := ctx.ChainID()
+		ctx.Logger().Info(fmt.Sprintf("[HardFork] Initializing HardForkManager for chainID=%s at height=%d", chainID, ctx.BlockHeight()))
+		am.HardForkManager = upgrades.NewHardForkManager(chainID)
 		am.HardForkManager.RegisterHandler(upgradev1.NewTestnetHandler(am.EvmKeeper))
 		am.HardForkManager.RegisterHandler(upgradev1.NewMainnetHandler(am.EvmKeeper))
 		am.forkInitialized = true
+		ctx.Logger().Info("[HardFork] HardForkManager initialized and handlers registered")
 	}
 
 	// Execute hard fork handlers if the target height is reached
 	if am.HardForkManager.TargetHeightReached(ctx) {
+		ctx.Logger().Info(fmt.Sprintf("[HardFork] Target height reached! height=%d, executing hard fork handlers...", ctx.BlockHeight()))
 		am.HardForkManager.ExecuteForTargetHeight(ctx)
+		ctx.Logger().Info(fmt.Sprintf("[HardFork] All hard fork handlers executed successfully at height=%d", ctx.BlockHeight()))
 	}
 
 	return nil
