@@ -16,6 +16,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/eni-chain/go-eni/app/upgrades"
+	upgradev1 "github.com/eni-chain/go-eni/app/upgrades/v1"
 	"github.com/eni-chain/go-eni/precompiles/ed25519Verify"
 	ContractNodeLog "github.com/eni-chain/go-eni/precompiles/nodeLog"
 	"github.com/eni-chain/go-eni/syscontract"
@@ -109,11 +111,13 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
-	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
-	EvmKeeper     *evmKeeper.Keeper
-	EpochKeeper   epochtypes.Keeper
+	keeper          keeper.Keeper
+	accountKeeper   types.AccountKeeper
+	bankKeeper      types.BankKeeper
+	EvmKeeper       *evmKeeper.Keeper
+	EpochKeeper     epochtypes.Keeper
+	HardForkManager *upgrades.HardForkManager
+	forkInitialized bool
 }
 
 func NewAppModule(
@@ -123,8 +127,8 @@ func NewAppModule(
 	bankKeeper types.BankKeeper,
 	EvmKeeper *evmKeeper.Keeper,
 	EpochKeeper epochtypes.Keeper,
-) AppModule {
-	return AppModule{
+) *AppModule {
+	return &AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
@@ -165,13 +169,27 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
-func (am AppModule) BeginBlock(goCtx context.Context) error {
+func (am *AppModule) BeginBlock(goCtx context.Context) error {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if ctx.BlockHeight() == 1 {
 		// Temporary annotation fixes for consistency
 		ctx = ctx.WithMultiStore(ctx.MultiStore().CacheMultiStore())
 		syscontract.SetupSystemContracts(ctx, am.EvmKeeper)
 	}
+
+	// Initialize HardForkManager on first call (chain ID is only available at runtime)
+	if !am.forkInitialized {
+		am.HardForkManager = upgrades.NewHardForkManager(ctx.ChainID())
+		am.HardForkManager.RegisterHandler(upgradev1.NewTestnetHandler(am.EvmKeeper))
+		am.HardForkManager.RegisterHandler(upgradev1.NewMainnetHandler(am.EvmKeeper))
+		am.forkInitialized = true
+	}
+
+	// Execute hard fork handlers if the target height is reached
+	if am.HardForkManager.TargetHeightReached(ctx) {
+		am.HardForkManager.ExecuteForTargetHeight(ctx)
+	}
+
 	return nil
 }
 
