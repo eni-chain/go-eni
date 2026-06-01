@@ -12,9 +12,9 @@ import (
 const (
 	TestnetUpgradeName = "v1-bytecode-redirect-testnet"
 	TestnetChainID     = "ENI Testnet"
-	TestnetHeight      int64 = 28151000
-	TestnetOldContract = "0x642Ad927f251cE7c4796A1dA56caa25F8FEdB5eE"
-	TestnetNewContract = "0x0E8738d67c8479e75b2a4A76e99575e58ED855D0"
+	TestnetHeight      int64 = 28845000
+	TestnetOldContract = "0x16E7a7cD80fE7c61311Ce079Bcea7B993FDD02B4"
+	TestnetNewContract = "0xfA165C2C58A8A22bA0508a1CF34cA79E1d891F0b"
 )
 
 // Mainnet constants (ChainID 173)
