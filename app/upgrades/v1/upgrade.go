@@ -21,9 +21,9 @@ const (
 const (
 	MainnetUpgradeName = "v1-bytecode-redirect-mainnet"
 	MainnetChainID     = "ENI Mainnet"
-	MainnetHeight      int64 = 30028500
-	MainnetOldContract = "0x3ba1da3C4ab549B1816D8050E4368440b92d92A0"
-	MainnetNewContract = "0x5e63338AfCE7d5a4d97Da1714f6a6bfA5A26F0f9"
+	MainnetHeight      int64 = 31131657
+	MainnetOldContract = "0xDC1a8A35b0BaA3229b13f348ED708a2fd50b5e3a"
+	MainnetNewContract = "0x28AD7bA8Ea86FAb30Fc46cB3C0a337A4a1A7D220"
 )
 
 // EVMCodeKeeper defines the interface for reading/writing contract bytecode.
